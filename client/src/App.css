@@ -2,14 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
-
-body {
-  font-family: "Poppins";
-}
-
 #chair {
   margin: auto;
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(243 250 247);
 }
