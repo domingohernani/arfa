@@ -1,5 +1,4 @@
 import React from "react";
-import "@google/model-viewer";
 
 function ShowModel({path}) {
   console.log('the model rendered');
