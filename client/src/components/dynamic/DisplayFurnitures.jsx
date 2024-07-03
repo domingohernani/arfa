@@ -95,9 +95,9 @@ const displayFurnitures = () => {
 
           <div className="text-right">
             <del className="mt-px text-xs font-semibold text-gray-600 sm:text-sm">
-              $79.00
+              $179.00
             </del>
-            <p className="text-xs font-normal sm:text-sm md:text-base">
+            <p className="text-xs font-normal text-arfablack sm:text-sm md:text-base">
               $99.00
             </p>
           </div>
