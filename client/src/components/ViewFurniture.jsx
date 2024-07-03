@@ -44,6 +44,17 @@ const ViewFurniture = () => {
               </div>
               <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
                 <ShowModel path="../src/assets/models/5.glb" />
+                <span className="hidden text-xs italic md:block">
+                  Note: AR feature is currently only available on Android and
+                  IOS devices. {""}
+                  <a
+                    className="not-italic font-normal text-blue-700 underline"
+                    href="https://modelviewer.dev/docs/faq.html"
+                    target="_blank"
+                  >
+                    Learn more
+                  </a>
+                </span>
               </div>
             </div>
 
