@@ -6,13 +6,13 @@ function ShowModel({path}) {
     <model-viewer
       id="chair"
       ar
-      // ar-scale="fixed"
       loading="eager"
       camera-controls
       touch-action="pan-y"
       auto-rotate
       src={path}
       shadow-intensity="1"
+       camera-orbit="0deg 90deg 2.9m"
     ></model-viewer>
   );
 }
