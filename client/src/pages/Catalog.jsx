@@ -215,7 +215,7 @@ const Catalog = () => {
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
                     <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
-                      Sort
+                      Sort by
                       <ChevronDownIcon
                         className="flex-shrink-0 w-5 h-5 ml-1 -mr-1 text-gray-400 group-hover:text-gray-500"
                         aria-hidden="true"
@@ -268,7 +268,7 @@ const Catalog = () => {
 
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                 {/* Filters */}
-                <form className="hidden pr-8 border-r border-gray-200 lg:block">
+                <form className="hidden pr-8 lg:block">
                   <h3 className="sr-only">Categories</h3>
                   <ul
                     role="list"
@@ -348,7 +348,7 @@ const Catalog = () => {
                 {/* This is where the content (side side) will be displayed*/}
                 <main className="lg:col-span-3">
                   <div className="max-w-md">
-                    <div className="flex items-center gap-2 text-sm text-arfablack">
+                    <div className="flex items-center gap-2 text-sm lg:pl-8 md:pl-4 text-arfablack">
                       <span className="cursor-pointer hover:text-arfagreen">
                         Home
                       </span>
@@ -357,7 +357,6 @@ const Catalog = () => {
                         Catalog
                       </span>
                     </div>
-                    
                   </div>
                   <Outlet />
                 </main>

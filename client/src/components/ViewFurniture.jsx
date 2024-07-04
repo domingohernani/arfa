@@ -2,13 +2,14 @@ import React from "react";
 import ShowModel from "./ShowModel";
 import cart from "../assets/icons/cart.svg";
 import { Carousel } from "flowbite-react";
+import CustomerReview from "./dynamic/CustomerReview";
 
 const ViewFurniture = () => {
   return (
     <section className="h-screen">
       {/*  */}
 
-      <section className="py-8 antialiased bg-white md:py-16 dark:bg-gray-900">
+      <section className="box-border py-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
         <div className="max-w-screen-xl px-4 pb-4 mx-auto 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
@@ -76,7 +77,7 @@ const ViewFurniture = () => {
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">
                   <div className="flex items-center gap-1">
                     <svg
-                      className="w-4 h-4 text-yellow-300"
+                      className="w-4 h-4 text-arfagreen"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -87,7 +88,7 @@ const ViewFurniture = () => {
                       <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
                     </svg>
                     <svg
-                      className="w-4 h-4 text-yellow-300"
+                      className="w-4 h-4 text-arfagreen"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -98,7 +99,7 @@ const ViewFurniture = () => {
                       <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
                     </svg>
                     <svg
-                      className="w-4 h-4 text-yellow-300"
+                      className="w-4 h-4 text-arfagreen"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -109,7 +110,7 @@ const ViewFurniture = () => {
                       <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
                     </svg>
                     <svg
-                      className="w-4 h-4 text-yellow-300"
+                      className="w-4 h-4 text-arfagreen"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -120,7 +121,7 @@ const ViewFurniture = () => {
                       <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
                     </svg>
                     <svg
-                      className="w-4 h-4 text-yellow-300"
+                      className="w-4 h-4 text-gray-300"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -167,7 +168,7 @@ const ViewFurniture = () => {
                       d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
                     />
                   </svg>
-                  Add to favorites
+                  Add to wishlist
                 </a>
 
                 <a
@@ -203,7 +204,7 @@ const ViewFurniture = () => {
                 ample seating for family and friends.
               </p>
 
-              <p className="text-arfablack">
+              <p className=" text-arfablack">
                 This modern green velvet sofa is a stylish and versatile piece
                 of furniture that would be a great addition to any living room.
                 The soft, luxurious velvet fabric is inviting and comfortable,
@@ -215,6 +216,9 @@ const ViewFurniture = () => {
           </div>
         </div>
         <hr />
+        <section>
+          <CustomerReview />
+        </section>
       </section>
     </section>
   );
