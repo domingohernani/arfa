@@ -41,26 +41,30 @@ function NavigationBar() {
           alt="profile"
           className="w-4 h-auto mx-3 cursor-pointer"
         />
-        <button className="flex justify-center gap-2 px-4 bg-transparent focus:outline-none md:px-5">
-          <span className="text-xs font-normal text-arfagreen md:text-sm">
-            Wishlist
-          </span>
-          <img
-            src={heart}
-            alt="wishlist"
-            className="w-3 h-auto cursor-pointer md:w-4"
-          />
-        </button>
-        <button className="flex justify-center gap-2 px-4 bg-transparent focus:outline-none md:px-4">
-          <span className="text-xs font-normal text-arfagreen md:text-sm">
-            Cart
-          </span>
-          <img
-            src={cart}
-            alt="cart"
-            className="w-3 h-auto cursor-pointer md:w-4"
-          />
-        </button>
+        <Link to={"/wishlist"}>
+          <button className="flex justify-center gap-2 px-4 bg-transparent focus:outline-none md:px-5">
+            <span className="text-xs font-normal text-arfagreen md:text-sm">
+              Wishlist
+            </span>
+            <img
+              src={heart}
+              alt="wishlist"
+              className="w-3 h-auto cursor-pointer md:w-4"
+            />
+          </button>
+        </Link>
+        <Link to={"/cart"}>
+          <button className="flex justify-center gap-2 px-4 bg-transparent focus:outline-none md:px-4">
+            <span className="text-xs font-normal text-arfagreen md:text-sm">
+              Cart
+            </span>
+            <img
+              src={cart}
+              alt="cart"
+              className="w-3 h-auto cursor-pointer md:w-4"
+            />
+          </button>
+        </Link>
       </div>
     </div>
   );
