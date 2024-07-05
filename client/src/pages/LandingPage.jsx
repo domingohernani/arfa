@@ -2,6 +2,7 @@ import React from "react";
 import NavigationBar from "../components/navigation/NavigationBar";
 import LatestTrends from "../components/dynamic/LatestTrends";
 import { Link } from "react-router-dom";
+import { FooterSection } from "../components/navigation/FooterSection";
 
 const LandingPage = () => {
   return (
@@ -193,6 +194,9 @@ const LandingPage = () => {
             />
           </li>
         </ul>
+      </section>
+      <section>
+        <FooterSection></FooterSection>
       </section>
     </div>
   );

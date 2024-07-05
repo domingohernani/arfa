@@ -6,6 +6,7 @@ import { MdDashboard } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import greaterthan from "../../assets/icons/greater-than.svg";
 import heart from "../../assets/icons/heart-black.svg";
+import { FooterSection } from "../../components/navigation/FooterSection";
 
 const displayFurnituresOnCart = () => {
   let onCart = Array(5).fill(null);
@@ -273,6 +274,9 @@ const Cart = () => {
           </Tabs.Item>
         </Tabs>
       </div>
+      <section className="mt-10">
+        <FooterSection />
+      </section>
     </section>
   );
 };
