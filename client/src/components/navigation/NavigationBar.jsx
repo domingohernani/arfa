@@ -6,6 +6,7 @@ import search from "../../assets/icons/search.svg";
 import heart from "../../assets/icons/heart.svg";
 import notif from "../../assets/icons/notif.svg";
 import { Link } from "react-router-dom";
+import { NotificationDrawer } from "../dynamic/NotificationDrawer";
 
 function NavigationBar() {
   return (
@@ -31,11 +32,7 @@ function NavigationBar() {
         />
       </div>
       <div className="flex items-center justify-end col-start-11 ">
-        <img
-          src={notif}
-          alt="notif"
-          className="w-4 h-auto mx-3 cursor-pointer"
-        />
+        <NotificationDrawer />
         <img
           src={profile}
           alt="profile"
