@@ -126,10 +126,10 @@ const Wishlist = () => {
                 <div class="space-y-6">{displayFurnituresOnWishlist()}</div>
               </div>
             </div>
-            <div className="w-full max-w-xl mt-8 ml-auto">
+            <div className="w-full max-w-md mt-8 ml-auto">
               <a
                 href="#"
-                class="flex w-full bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
+                class="flex w-full bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-3 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
               >
                 Add all to Cart
               </a>
