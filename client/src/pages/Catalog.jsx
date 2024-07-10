@@ -261,7 +261,6 @@ const Catalog = () => {
                     onClick={() => setMobileFiltersOpen(true)}
                   >
                     <span className="sr-only">Filters</span>
-                    {/* <FunnelIcon className="w-5 h-5 " aria-hidden="true" /> */}
                     <img src={filter} aria-hidden="true" className="w-5 h-5 " />
                   </button>
                 </div>
