@@ -7,8 +7,8 @@ const displayFurnitures = () => {
 
   let item = "arabian-family-sofa";
 
-  return furnitures.map(() => (
-    <Link to={`/catalog/${item}`}>
+  return furnitures.map((e, index) => (
+    <Link to={`/catalog/${item}`} key={index}>
       <article className="relative cursor-pointer">
         <div className="overflow-hidden rounded-lg aspect-square">
           <img
@@ -25,14 +25,12 @@ const displayFurnitures = () => {
         <div className="flex items-start justify-between mt-4">
           <div className="">
             <h3 className="text-xs font-semibold sm:text-sm md:text-base">
-              <a
-                href="#"
-                title=""
+              <span
                 className="cursor-pointer text-arfablack hover:text-arfablack"
               >
                 Arabian Family Sofa
                 <span className="absolute" aria-hidden="true"></span>
-              </a>
+              </span>
             </h3>
             <div className="flex items-center mt-2">
               <svg

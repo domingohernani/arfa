@@ -5,8 +5,8 @@ import notif from "../../assets/icons/notif.svg";
 const displayNotification = () => {
   const notifcs = Array(5).fill(null);
 
-  return notifcs.map(() => (
-    <section className="flex items-center gap-4 my-5 ">
+  return notifcs.map((e, index) => (
+    <section className="flex items-center gap-4 my-5 " key={index}>
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
