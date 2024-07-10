@@ -1,7 +1,6 @@
 import React from "react";
 
 function ShowModel({path}) {
-  console.log('the model rendered');
   return (
     <model-viewer
       id="chair"
