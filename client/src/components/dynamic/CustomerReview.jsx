@@ -1,6 +1,7 @@
 import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import DisplayStars from "./DisplayStars";
 
 const displayReviews = () => {
   let furnitures = Array(25).fill();
@@ -10,62 +11,8 @@ const displayReviews = () => {
       className="pt-11 pb-8 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto"
       key={index}
     >
-      <div className="flex items-center gap-3 mb-4">
-        <svg
-          className="text-arfagreen"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          fill="currentColor"
-          viewBox="0 0 25 25"
-        >
-          <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-        </svg>
-        <svg
-          className="text-arfagreen"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          fill="currentColor"
-          viewBox="0 0 25 25"
-        >
-          <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-        </svg>
-        <svg
-          className="text-arfagreen"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          fill="currentColor"
-          viewBox="0 0 25 25"
-        >
-          <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-        </svg>
-        <svg
-          className="text-arfagreen"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          fill="currentColor"
-          viewBox="0 0 25 25"
-        >
-          <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-        </svg>
-        <svg
-          className="text-gray-300 "
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          fill="currentColor"
-          viewBox="0 0 25 25"
-        >
-          <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-        </svg>
+      <div className="flex items-center mb-4">
+        <DisplayStars number={4} size={7} />
       </div>
       <h3 className="text-xl pb-5 font-semibold text sm:text-2xl leading-9 text-arfablack mb-6">
         Outstanding Experience!!!
@@ -79,7 +26,9 @@ const displayReviews = () => {
           />
           <h6 className="leading-8 font-medium text-arfagreen">John Watson</h6>
         </div>
-        <p className="font-normal leading-8 text-gray-400 text-sm">Nov 01, 2023</p>
+        <p className="font-normal leading-8 text-gray-400 text-sm">
+          Nov 01, 2023
+        </p>
       </div>
       <p className="font-normal leading-8 ">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa dolorem
@@ -99,7 +48,7 @@ const CustomerReview = () => {
       <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
         <div className="w-full">
           <h2 className="text-xl pb-5 font-semibold text-gray-900 sm:text-2xl">
-            Our customer reviews
+            Customer Reviews
           </h2>
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-11 pb-11 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto">
             <div className="box flex flex-col gap-y-4 w-full ">
@@ -238,62 +187,8 @@ const CustomerReview = () => {
               <h2 className=" text-3xl text-arfagreen mb-6 font-bold sm:text-3xl ">
                 4.3
               </h2>
-              <div className="flex items-center justify-center gap-2 sm:gap-6 mb-4">
-                <svg
-                  className=" text-arfagreen"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  fill="currentColor"
-                  viewBox="0 0 23 23"
-                >
-                  <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                </svg>
-                <svg
-                  className=" text-arfagreen"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  fill="currentColor"
-                  viewBox="0 0 23 23"
-                >
-                  <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                </svg>
-                <svg
-                  className=" text-arfagreen"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  fill="currentColor"
-                  viewBox="0 0 23 23"
-                >
-                  <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                </svg>
-                <svg
-                  className=" text-arfagreen"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  fill="currentColor"
-                  viewBox="0 0 23 23"
-                >
-                  <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                </svg>
-                <svg
-                  className="text-gray-300 "
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  fill="currentColor"
-                  viewBox="0 0 23 23"
-                >
-                  <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                </svg>
+              <div className="flex items-center justify-center mb-4">
+                <DisplayStars number={4} size={14} />
               </div>
               <p className="text-base leading-8 text-gray-900 text-center">
                 5563 Ratings
