@@ -26,15 +26,13 @@ const displayFurnitures = () => {
         <div className="flex items-start justify-between mt-4">
           <div className="">
             <h3 className="text-xs font-semibold sm:text-sm md:text-base">
-              <span
-                className="cursor-pointer text-arfablack hover:text-arfablack"
-              >
+              <span className="cursor-pointer text-arfablack hover:text-arfablack">
                 Arabian Family Sofa
                 <span className="absolute" aria-hidden="true"></span>
               </span>
             </h3>
             <div className="flex items-center mt-2">
-                <DisplayStars number={4} size={4}/>              
+              <DisplayStars number={4} size={4} />
             </div>
           </div>
 
@@ -65,12 +63,23 @@ const DisplayFurnitures = () => {
         <div className="grid grid-cols-2 gap-6 mt-5 lg:mt-10 lg:grid-cols-5 lg:gap-4">
           {displayFurnitures()}
         </div>
-        <div className="flex w-full mt-10 overflow-x-scroll text-sm font-normal paginationContainer sm:justify-center">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={234}
-            onPageChange={onPageChange}
-          />
+        <div className="flex mt-10 text-sm font-normal paginationContainer sm:justify-center">
+          <div className="block mx-auto sm:hidden">
+            <Pagination
+              layout="table"
+              currentPage={currentPage}
+              totalPages={234}
+              onPageChange={onPageChange}
+              showIcons 
+            />
+          </div>
+          <div className="hidden mx-auto sm:block">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={234}
+              onPageChange={onPageChange}
+            />
+          </div>
         </div>
       </div>
     </section>
