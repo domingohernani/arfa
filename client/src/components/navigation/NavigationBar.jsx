@@ -19,7 +19,7 @@ function NavigationBar() {
       <div className="relative col-span-11 row-start-2 text-xs md:text-sm md:col-start-2 md:col-span-4 md:row-start-1">
         <input
           type="text"
-          className="w-full px-4 py-2 text-sm border-none focus:ring-arfagreen bg-arfagray"
+          className="w-full px-4 py-2 text-sm border-none focus:ring-arfagreen focus:ring-2 focus:bg-white bg-arfagray"
           placeholder="Search furniture"
           id="catalogSearchbar"
         />
