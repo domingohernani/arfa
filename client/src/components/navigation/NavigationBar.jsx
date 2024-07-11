@@ -33,11 +33,13 @@ function NavigationBar() {
       </div>
       <div className="flex items-center justify-end col-start-11 ">
         <NotificationDrawer />
-        <img
-          src={profile}
-          alt="profile"
-          className="w-4 h-auto mx-3 cursor-pointer"
-        />
+        <Link to={"/profile"} className="mr-3 ">
+          <img
+            src={profile}
+            alt="profile"
+            className="w-4 h-auto mx-3 cursor-pointer"
+          />
+        </Link>
         <Link to={"/wishlist"}>
           <button className="flex justify-center gap-2 px-4 bg-transparent focus:outline-none md:px-5">
             <span className="text-xs font-normal text-arfagreen md:text-sm">
