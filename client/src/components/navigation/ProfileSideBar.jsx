@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 export const ProfileSideBar = () => {
   return (
-    <aside class="top-0 left-0 border-r z-40 w-fit h-screen">
+    <aside class="top-0 left-0 border-r z-10 w-fit h-screen">
       <div class="h-full px-3 py-4 overflow-y-auto">
         <ul class="space-y-2 text-sm">
           <li>
