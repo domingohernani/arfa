@@ -7,6 +7,7 @@ import DisplayFurniture from "./components/dynamic/DisplayFurnitures";
 import ViewFurniture from "./components/ViewFurniture";
 import Cart from "./pages/shopper/Cart";
 import Wishlist from "./pages/shopper/Wishlist";
+import Profile from "./pages/shopper/Profile";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           {/* Private routes: exclusive to shopper */}
           <Route element={<Cart />} path="/cart"></Route>
           <Route element={<Wishlist />} path="/wishlist"></Route>
+          <Route element={<Profile />} path="/profile"></Route>
 
           {/* Private routes: exclusive to seller */}
         </Routes>
