@@ -12,7 +12,10 @@ const displayNotification = () => {
     <section className="px-4" key={index}>
       <Timeline>
         <Timeline.Item>
-          <Timeline.Point className="text-red-300" icon={HiCalendar} />
+          <Timeline.Point
+          className="bg-yellow-400"
+            icon={() => <HiCalendar className="text-white" />}
+          />
           <Timeline.Content>
             <Timeline.Time className="text-sm">11/07/2024</Timeline.Time>
             <Timeline.Title className="text-sm">
