@@ -1,0 +1,23 @@
+Profile Information
+	Name
+	Email address
+	Phone number
+	Date of Birth
+	Address
+Order 
+	Order Number
+	Date of Purchase
+	Items Purchased
+	Order Status
+	Total Amount Spent
+	View Details Button
+
+Payment Methods
+	Saved Payment Methods
+	Add New Payment Method
+	Edit/Remove Existing Payment Methods
+
+Security
+    	Change Password
+    	Change Email with Email verification
+
