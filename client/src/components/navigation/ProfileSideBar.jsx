@@ -102,6 +102,90 @@ export const ProfileSideBar = () => {
               )}
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to={"payment-method"}
+              className={({ isActive }) =>
+                isActive
+                  ? "text-arfagreen flex items-center justify-center p-2 rounded-lg"
+                  : "text-arfablack flex items-center justify-center p-2 rounded-lg"
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    id="Outline"
+                    viewBox="0 0 24 24"
+                    width="512"
+                    height="512"
+                    className="w-4 h-4 text-arfagreen "
+                    fill={`${isActive ? "#0E9F6E" : "#111827"}`}
+                  >
+                    <circle cx="5.5" cy="15.5" r="1.5" />
+                    <path d="M19,3H5A5.006,5.006,0,0,0,0,8v8a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V8A5.006,5.006,0,0,0,19,3ZM5,5H19a3,3,0,0,1,3,3H2A3,3,0,0,1,5,5ZM19,19H5a3,3,0,0,1-3-3V10H22v6A3,3,0,0,1,19,19Z" />
+                  </svg>
+                  <span class="flex-1 ms-3 whitespace-nowrap md:inline hidden">
+                    Payment Methods
+                  </span>
+                </>
+              )}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to={"security"}
+              className={({ isActive }) =>
+                isActive
+                  ? "text-arfagreen flex items-center justify-center p-2 rounded-lg"
+                  : "text-arfablack flex items-center justify-center p-2 rounded-lg"
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    id="Outline"
+                    viewBox="0 0 24 24"
+                    width="512"
+                    height="512"
+                    className="w-4 h-4 text-arfagreen "
+                    fill={`${isActive ? "#0E9F6E" : "#111827"}`}
+                  >
+                    <path d="M18.581,2.14,12.316.051a1,1,0,0,0-.632,0L5.419,2.14A4.993,4.993,0,0,0,2,6.883V12c0,7.563,9.2,11.74,9.594,11.914a1,1,0,0,0,.812,0C12.8,23.74,22,19.563,22,12V6.883A4.993,4.993,0,0,0,18.581,2.14ZM20,12c0,5.455-6.319,9.033-8,9.889-1.683-.853-8-4.42-8-9.889V6.883A3,3,0,0,1,6.052,4.037L12,2.054l5.948,1.983A3,3,0,0,1,20,6.883Z" />
+                    <path d="M15.3,8.3,11.112,12.5,8.868,10.16a1,1,0,1,0-1.441,1.386l2.306,2.4a1.872,1.872,0,0,0,1.345.6h.033a1.873,1.873,0,0,0,1.335-.553l4.272-4.272A1,1,0,0,0,15.3,8.3Z" />
+                  </svg>
+                  <span class="flex-1 ms-3 whitespace-nowrap md:inline hidden">
+                    Security
+                  </span>
+                </>
+              )}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to={"security"}
+              className={
+                "text-arfablack flex items-center justify-center p-2 rounded-lg"
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                id="Layer_1"
+                data-name="Layer 1"
+                viewBox="0 0 24 24"
+                width="512"
+                height="512"
+                className="w-4 h-4 text-red-300 hover:text-blue-500"
+              >
+                <path d="M11.476,15a1,1,0,0,0-1,1v3a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H7.476a3,3,0,0,1,3,3V8a1,1,0,0,0,2,0V5a5.006,5.006,0,0,0-5-5H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H7.476a5.006,5.006,0,0,0,5-5V16A1,1,0,0,0,11.476,15Z" />
+                <path d="M22.867,9.879,18.281,5.293a1,1,0,1,0-1.414,1.414l4.262,4.263L6,11a1,1,0,0,0,0,2H6l15.188-.031-4.323,4.324a1,1,0,1,0,1.414,1.414l4.586-4.586A3,3,0,0,0,22.867,9.879Z" />
+              </svg>
+              <span class="flex-1 ms-3 whitespace-nowrap md:inline hidden">
+                Logout
+              </span>
+            </NavLink>
+          </li>
         </ul>
       </div>
     </aside>
