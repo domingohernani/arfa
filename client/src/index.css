@@ -17,12 +17,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-#catalogSearchbar::before,
-#catalogSearchbar::before {
-  /* border: none !important; */
-  border: none;
-  outline: none;
-}
 .cartWishlistTab {
   box-sizing: border-box;
 }

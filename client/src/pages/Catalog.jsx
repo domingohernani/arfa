@@ -25,7 +25,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import DisplayFurniture from "../components/dynamic/DisplayFurnitures";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { FooterSection } from "../components/navigation/FooterSection";
 
 const sortOptions = [
@@ -48,38 +48,20 @@ const subCategories = [
 ];
 const filters = [
   {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: true },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
-    ],
-  },
-  {
     id: "category",
     name: "Category",
     options: [
       { value: "new-arrivals", label: "New Arrivals", checked: false },
       { value: "sale", label: "Sale", checked: false },
-      { value: "travel", label: "Travel", checked: true },
-      { value: "organization", label: "Organization", checked: false },
-      { value: "accessories", label: "Accessories", checked: false },
     ],
   },
   {
-    id: "size",
-    name: "Size",
+    id: "pricing",
+    name: "Pricing",
     options: [
-      { value: "2l", label: "2L", checked: false },
-      { value: "6l", label: "6L", checked: false },
-      { value: "12l", label: "12L", checked: false },
-      { value: "18l", label: "18L", checked: false },
-      { value: "20l", label: "20L", checked: false },
-      { value: "40l", label: "40L", checked: true },
+      { value: "testing low", label: "From", checked: false },
+      { value: "testing high", label: "To", checked: false },
+      { label: "searchPrice" },
     ],
   },
 ];
@@ -183,20 +165,55 @@ const Catalog = () => {
                                     key={option.value}
                                     className="flex items-center text-sm"
                                   >
-                                    <input
-                                      id={`filter-mobile-${section.id}-${optionIdx}`}
-                                      name={`${section.id}[]`}
-                                      defaultValue={option.value}
-                                      type="checkbox"
-                                      defaultChecked={option.checked}
-                                      className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
-                                    />
-                                    <label
-                                      htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                      className="flex-1 min-w-0 ml-3 text-gray-500"
-                                    >
-                                      {option.label}
-                                    </label>
+                                    {/* Category Options (Smaller Screens) */}
+                                    {section.id == "category" ? (
+                                      <>
+                                        <input
+                                          id={`filter-mobile-${section.id}-${optionIdx}`}
+                                          name={`${section.id}[]`}
+                                          defaultValue={option.value}
+                                          type="checkbox"
+                                          defaultChecked={option.checked}
+                                          className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
+                                        />
+                                        <label
+                                          htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                                          className="flex-1 min-w-0 ml-3 text-gray-500"
+                                        >
+                                          {option.label}
+                                        </label>
+                                      </>
+                                    ) : null}
+
+                                    {/* Pricing (Smaller Screens)*/}
+                                    {section.id == "pricing" ? (
+                                      <>
+                                        {option.label != "searchPrice" ? (
+                                          <input
+                                            type="text"
+                                            className="w-full text-sm border-none rounded-sm focus:ring-2 focus:ring-arfagreen bg-arfagray"
+                                            placeholder={`${option.label}`}
+                                          />
+                                        ) : (
+                                          <button
+                                            type="button"
+                                            className="p-1 ml-auto rounded-sm bg-arfagreen"
+                                          >
+                                            <svg
+                                              className="w-4 h-auto "
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="white"
+                                              id="Outline"
+                                              viewBox="0 0 24 24"
+                                              width="512"
+                                              height="512"
+                                            >
+                                              <path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z" />
+                                            </svg>
+                                          </button>
+                                        )}
+                                      </>
+                                    ) : null}
                                   </div>
                                 ))}
                               </div>
@@ -325,25 +342,62 @@ const Catalog = () => {
                             <DisclosurePanel className="pt-6">
                               <div className="space-y-4">
                                 {section.options.map((option, optionIdx) => (
-                                  <div
-                                    key={option.value}
-                                    className="flex items-center"
-                                  >
-                                    <input
-                                      id={`filter-${section.id}-${optionIdx}`}
-                                      name={`${section.id}[]`}
-                                      defaultValue={option.value}
-                                      type="checkbox"
-                                      defaultChecked={option.checked}
-                                      className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
-                                    />
-                                    <label
-                                      htmlFor={`filter-${section.id}-${optionIdx}`}
-                                      className="ml-3 text-sm text-gray-600"
+                                  <>
+                                    <div
+                                      key={option.value}
+                                      className="flex items-center"
                                     >
-                                      {option.label}
-                                    </label>
-                                  </div>
+                                      {/* Category Options (larger Screens)*/}
+                                      {section.id == "category" ? (
+                                        <>
+                                          <input
+                                            id={`filter-${section.id}-${optionIdx}`}
+                                            name={`${section.id}[]`}
+                                            defaultValue={option.value}
+                                            type="checkbox"
+                                            defaultChecked={option.checked}
+                                            className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
+                                          />
+                                          <label
+                                            htmlFor={`filter-${section.id}-${optionIdx}`}
+                                            className="ml-3 text-sm text-gray-600"
+                                          >
+                                            {option.label}
+                                          </label>
+                                        </>
+                                      ) : null}
+
+                                      {/* Pricing (Larger Screens)*/}
+                                      {section.id == "pricing" ? (
+                                        <>
+                                          {option.label != "searchPrice" ? (
+                                            <input
+                                              type="text"
+                                              className="w-full text-sm border-none rounded-sm focus:ring-2 focus:ring-arfagreen bg-arfagray"
+                                              placeholder={`${option.label}`}
+                                            />
+                                          ) : (
+                                            <button
+                                              type="button"
+                                              className="p-1 ml-auto rounded-sm bg-arfagreen"
+                                            >
+                                              <svg
+                                                className="w-4 h-auto "
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="white"
+                                                id="Outline"
+                                                viewBox="0 0 24 24"
+                                                width="512"
+                                                height="512"
+                                              >
+                                                <path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z" />
+                                              </svg>
+                                            </button>
+                                          )}
+                                        </>
+                                      ) : null}
+                                    </div>
+                                  </>
                                 ))}
                               </div>
                             </DisclosurePanel>
