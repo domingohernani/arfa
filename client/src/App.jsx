@@ -8,6 +8,9 @@ import ViewFurniture from "./components/ViewFurniture";
 import Cart from "./pages/shopper/Cart";
 import Wishlist from "./pages/shopper/Wishlist";
 import Profile from "./pages/shopper/Profile";
+import UserProfile from "./pages/shopper/UserProfile";
+import Order from "./pages/shopper/Order";
+import Inbox from "./pages/shopper/Inbox";
 
 function App() {
   return (
@@ -25,7 +28,12 @@ function App() {
           {/* Private routes: exclusive to shopper */}
           <Route element={<Cart />} path="/cart"></Route>
           <Route element={<Wishlist />} path="/wishlist"></Route>
-          <Route element={<Profile />} path="/profile"></Route>
+
+          <Route path="/profile" element={<Profile />}>
+            <Route element={<UserProfile />} path="user-profile" />
+            <Route element={<Order />} path="order" />
+            <Route element={<Inbox />} path="inbox" />
+          </Route>
 
           {/* Private routes: exclusive to seller */}
         </Routes>

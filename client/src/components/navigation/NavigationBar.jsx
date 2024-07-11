@@ -33,7 +33,7 @@ function NavigationBar() {
       </div>
       <div className="flex items-center justify-end col-start-11 ">
         <NotificationDrawer />
-        <Link to={"/profile"} className="mr-3 ">
+        <Link to={"/profile/user-profile"} className="mr-3 ">
           <img
             src={profile}
             alt="profile"
