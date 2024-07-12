@@ -191,7 +191,7 @@ const Catalog = () => {
                                         {option.label != "searchPrice" ? (
                                           <input
                                             type="text"
-                                            className="w-full text-sm border-none rounded-sm focus:ring-2 focus:ring-arfagreen bg-arfagray"
+                                            className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
                                           />
                                         ) : (
@@ -373,7 +373,7 @@ const Catalog = () => {
                                           {option.label != "searchPrice" ? (
                                             <input
                                               type="text"
-                                              className="w-full text-sm border-none rounded-sm focus:ring-2 focus:ring-arfagreen bg-arfagray"
+                                              className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                               placeholder={`${option.label}`}
                                             />
                                           ) : (
