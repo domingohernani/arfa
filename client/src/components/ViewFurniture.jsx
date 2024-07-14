@@ -33,10 +33,10 @@ const ViewFurniture = () => {
                 </Carousel>
               </div>
               <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
-                <ShowModel path="../src/assets/models/5.glb" />
+                <ShowModel path="../src/assets/models/sofa.glb" />
                 <span className="hidden text-xs italic md:block">
                   Note: AR feature is currently only available on Android and
-                  IOS devices.
+                  IOS devices.{" "}
                   <a
                     className="not-italic font-normal text-blue-700 underline"
                     href="https://modelviewer.dev/docs/faq.html"
@@ -48,7 +48,7 @@ const ViewFurniture = () => {
               </div>
             </div>
 
-            <div className="mt-6 sm:mt-8 lg:mt-0">
+            <div className="mt-14 sm:mt-20 lg:mt-0">
               <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
                 Arabian Family Sofa
               </h1>
