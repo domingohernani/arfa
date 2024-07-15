@@ -19,6 +19,10 @@ function ShowModel({ path }) {
       }));
       setVariants(variantOptions);
 
+      if (variantOptions.length > 0) {
+        setInitialVariant(variantOptions[0].value);
+      }
+
       const center = modelViewer.getBoundingBoxCenter();
       const size = modelViewer.getDimensions();
       const x2 = size.x / 2;
@@ -192,6 +196,7 @@ function ShowModel({ path }) {
     const variantName =
       event.target.value === "default" ? null : event.target.value;
     modelViewerRef.current.variantName = variantName;
+    setInitialVariant(variantName);
   };
 
   return (
