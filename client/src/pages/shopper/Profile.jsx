@@ -1,5 +1,6 @@
 import React from "react";
 import NavigationBar from "../../components/navigation/NavigationBar";
+import { FooterSection } from "../../components/navigation/FooterSection";
 import { ProfileSideBar } from "../../components/navigation/ProfileSideBar";
 import { Outlet } from "react-router-dom";
 
@@ -9,9 +10,14 @@ const Profile = () => {
       <section className="mx-6 my-3">
         <NavigationBar />
       </section>
-      <section className="flex">
+      <section className="flex mb-10">
         <ProfileSideBar />
-        <Outlet />
+        <section className="flex-1 mt-5 border-l">
+          <Outlet />
+        </section>
+      </section>
+      <section className="p">
+        <FooterSection />
       </section>
     </section>
   );
