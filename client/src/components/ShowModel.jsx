@@ -301,14 +301,14 @@ function ShowModel({ path }) {
           <line className="dimensionLine"></line>
         </svg>
       </model-viewer>
-      <div className="mx-auto my-2 text-sm controls">
+      <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
         <div className="flex items-center">
           <span>Variant:</span>
           <select
             id="variant"
             onChange={handleVariantChange}
             value={initialVariant}
-            className="text-sm text-center border-b border-b-gray-300 focus:border-b-gray-300 focus:border-t-transparent focus:border-x-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
+            className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
           >
             {variants.map((variant, index) => (
               <option key={index} value={variant.value}>
@@ -316,12 +316,15 @@ function ShowModel({ path }) {
               </option>
             ))}
           </select>
-          <label htmlFor="show-dimensions">Show Dimensions:</label>
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="show-dimensions">Dimensions:</label>
           <input
             id="show-dimensions"
             type="checkbox"
             checked={toggleDimension}
             onChange={showDimension}
+            className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
           ></input>
         </div>
       </div>
