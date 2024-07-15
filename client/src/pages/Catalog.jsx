@@ -39,13 +39,14 @@ const sortOptions = [
 const subCategories = [
   { name: "Living Room", href: "#" },
   { name: "Bedroom", href: "#" },
-  { name: "Dining Romm", href: "#" },
+  { name: "Dining Room", href: "#" },
   { name: "Office", href: "#" },
   { name: "Outdoor", href: "#" },
   { name: "Accent", href: "#" },
   { name: "Storage", href: "#" },
   { name: "Entryway", href: "#" },
 ];
+
 const filters = [
   {
     id: "category",
@@ -98,9 +99,7 @@ const Catalog = () => {
                   className="relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full"
                 >
                   <div className="flex items-center justify-between px-4">
-                    <h2 className="text-lg font-medium text-gray-900">
-                      Filters
-                    </h2>
+                    <h2 className="text-lg font-medium text-gray-900">Filters</h2>
                     <button
                       type="button"
                       className="flex items-center justify-center w-10 h-10 p-2 -mr-2 text-gray-400 bg-white rounded-md hover:border-transparent"
@@ -162,7 +161,7 @@ const Catalog = () => {
                               <div className="space-y-6">
                                 {section.options.map((option, optionIdx) => (
                                   <div
-                                    key={option.value}
+                                    key={option.value || option.label}
                                     className="flex items-center text-sm"
                                   >
                                     {/* Category Options (Smaller Screens) */}
@@ -185,7 +184,7 @@ const Catalog = () => {
                                       </>
                                     ) : null}
 
-                                    {/* Pricing (Smaller Screens)*/}
+                                    {/* Pricing (Smaller Screens) */}
                                     {section.id == "pricing" ? (
                                       <>
                                         {option.label != "searchPrice" ? (
@@ -342,62 +341,60 @@ const Catalog = () => {
                             <DisclosurePanel className="pt-6">
                               <div className="space-y-4">
                                 {section.options.map((option, optionIdx) => (
-                                  <>
-                                    <div
-                                      key={option.value}
-                                      className="flex items-center"
-                                    >
-                                      {/* Category Options (larger Screens)*/}
-                                      {section.id == "category" ? (
-                                        <>
-                                          <input
-                                            id={`filter-${section.id}-${optionIdx}`}
-                                            name={`${section.id}[]`}
-                                            defaultValue={option.value}
-                                            type="checkbox"
-                                            defaultChecked={option.checked}
-                                            className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
-                                          />
-                                          <label
-                                            htmlFor={`filter-${section.id}-${optionIdx}`}
-                                            className="ml-3 text-sm text-gray-600"
-                                          >
-                                            {option.label}
-                                          </label>
-                                        </>
-                                      ) : null}
+                                  <div
+                                    key={option.value || option.label}
+                                    className="flex items-center"
+                                  >
+                                    {/* Category Options (larger Screens)*/}
+                                    {section.id == "category" ? (
+                                      <>
+                                        <input
+                                          id={`filter-${section.id}-${optionIdx}`}
+                                          name={`${section.id}[]`}
+                                          defaultValue={option.value}
+                                          type="checkbox"
+                                          defaultChecked={option.checked}
+                                          className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
+                                        />
+                                        <label
+                                          htmlFor={`filter-${section.id}-${optionIdx}`}
+                                          className="ml-3 text-sm text-gray-600"
+                                        >
+                                          {option.label}
+                                        </label>
+                                      </>
+                                    ) : null}
 
-                                      {/* Pricing (Larger Screens)*/}
-                                      {section.id == "pricing" ? (
-                                        <>
-                                          {option.label != "searchPrice" ? (
-                                            <input
-                                              type="text"
-                                              className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
-                                              placeholder={`${option.label}`}
-                                            />
-                                          ) : (
-                                            <button
-                                              type="button"
-                                              className="p-1 ml-auto rounded-sm bg-arfagreen"
+                                    {/* Pricing (Larger Screens)*/}
+                                    {section.id == "pricing" ? (
+                                      <>
+                                        {option.label != "searchPrice" ? (
+                                          <input
+                                            type="text"
+                                            className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+                                            placeholder={`${option.label}`}
+                                          />
+                                        ) : (
+                                          <button
+                                            type="button"
+                                            className="p-1 ml-auto rounded-sm bg-arfagreen"
+                                          >
+                                            <svg
+                                              className="w-4 h-auto "
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="white"
+                                              id="Outline"
+                                              viewBox="0 0 24 24"
+                                              width="512"
+                                              height="512"
                                             >
-                                              <svg
-                                                className="w-4 h-auto "
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="white"
-                                                id="Outline"
-                                                viewBox="0 0 24 24"
-                                                width="512"
-                                                height="512"
-                                              >
-                                                <path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z" />
-                                              </svg>
-                                            </button>
-                                          )}
-                                        </>
-                                      ) : null}
-                                    </div>
-                                  </>
+                                              <path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z" />
+                                            </svg>
+                                          </button>
+                                        )}
+                                      </>
+                                    ) : null}
+                                  </div>
                                 ))}
                               </div>
                             </DisclosurePanel>
