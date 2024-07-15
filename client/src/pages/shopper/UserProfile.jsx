@@ -10,7 +10,7 @@ const UserProfile = () => {
             Update your personal details to keep your profile up to date
           </div>
         </div>
-        <form className="w-full max-w-md px-5 mx-auto">
+        <form className="w-full max-w-md px-8 py-5 mx-auto mt-5 border">
           <div className="grid md:grid-cols-2 md:gap-6">
             <div className="relative z-0 w-full mb-5 group">
               <input
