@@ -11,11 +11,11 @@ const displayFurnituresOnWishlist = () => {
   let onCart = Array(5).fill(null);
 
   return onCart.map((e, index) => (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 md:p-6" key={index}>
+    <div className="p-4 bg-white border border-gray-200 rounded-lg md:p-6" key={index}>
       <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
         <a href="#" className="shrink-0 md:order-1">
           <img
-            className="h-40 w-auto rounded-lg"
+            className="w-auto h-40 rounded-lg"
             src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="image"
           />
@@ -24,12 +24,12 @@ const displayFurnituresOnWishlist = () => {
         <div className="flex items-center justify-between md:order-3 md:justify-end">
           <div className="text-end md:order-4 md:w-32">
             <p className="text-base font-semibold text-gray-900 dark:text-white">
-              $1,499
+              ₱19,999
             </p>
           </div>
         </div>
 
-        <div className="w-full min-w-0 flex-1 space-y-4 md:order-2">
+        <div className="flex-1 w-full min-w-0 space-y-4 md:order-2">
           <a
             href="#"
             className="text-base font-medium text-gray-900 hover:underline dark:text-white"
@@ -101,7 +101,7 @@ const Wishlist = () => {
       <section className="mx-6 my-3">
         <NavigationBar />
       </section>
-      <div className=" max-w-screen md:mx-8 px-4 2xl:px-0">
+      <div className="px-4  max-w-screen md:mx-8 2xl:px-0">
         <Tabs
           aria-label="Default tabs"
           variant="default"
@@ -121,8 +121,8 @@ const Wishlist = () => {
               Wishlist
             </h2>
 
-            <div className="mt-6  sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-              <div className=" w-full flex-none">
+            <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+              <div className="flex-none w-full ">
                 <div className="space-y-6">{displayFurnituresOnWishlist()}</div>
               </div>
             </div>
@@ -133,7 +133,7 @@ const Wishlist = () => {
               >
                 Add all to Cart
               </a>
-              <div className="flex items-center mt-4 justify-center gap-2">
+              <div className="flex items-center justify-center gap-2 mt-4">
                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                   or
                 </span>
@@ -143,7 +143,7 @@ const Wishlist = () => {
                 >
                   Continue Shopping
                   <svg
-                    className="h-5 w-5"
+                    className="w-5 h-5"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

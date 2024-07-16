@@ -26,7 +26,7 @@ const displayFurnitures = () => {
         <div className="flex items-start justify-between mt-4">
           <div className="">
             <h3 className="text-xs font-semibold sm:text-sm md:text-base">
-              <span className="cursor-pointer text-arfablack hover:text-arfablack">
+              <span className="text-sm cursor-pointer text-arfablack hover:text-arfablack">
                 Arabian Family Sofa
                 <span className="absolute" aria-hidden="true"></span>
               </span>
@@ -38,10 +38,10 @@ const displayFurnitures = () => {
 
           <div className="text-right">
             <del className="mt-px text-xs font-semibold text-gray-600 sm:text-sm">
-              $179.00
+              ₱21,999
             </del>
             <p className="text-xs font-normal text-arfablack sm:text-sm md:text-base">
-              $99.00
+              ₱19,999
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ const DisplayFurnitures = () => {
               currentPage={currentPage}
               totalPages={234}
               onPageChange={onPageChange}
-              showIcons 
+              showIcons
             />
           </div>
           <div className="hidden mx-auto sm:block">
