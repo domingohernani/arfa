@@ -57,9 +57,9 @@ const ViewFurniture = () => {
               </p>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
                 <p className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
-                  $99.00
+                  ₱19,999
                   <span className="text-sm font-normal text-arfablack">
-                    <del> $179.00</del>
+                    <del> ₱21,999</del>
                   </span>
                 </p>
 

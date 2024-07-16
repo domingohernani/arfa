@@ -101,7 +101,7 @@ const Order = () => {
                     Qty: 1
                   </span>
                   <p class="font-normal text-base leading-8 text-black whitespace-nowrap">
-                    Price $80.00
+                    Price ₱19,9999
                   </p>
                 </div>
               </div>
@@ -166,7 +166,7 @@ const Order = () => {
                     Qty: 1
                   </span>
                   <p class="font-normal text-base leading-8 text-black whitespace-nowrap">
-                    Price $80.00
+                    Price ₱19,9999
                   </p>
                 </div>
               </div>
