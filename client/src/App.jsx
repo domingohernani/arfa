@@ -13,6 +13,7 @@ import Order from "./pages/shopper/Order";
 import Inbox from "./pages/shopper/Inbox";
 import PaymentMethod from "./pages/shopper/PaymentMethod";
 import Security from "./pages/shopper/Security";
+import LoginShopper from "./pages/auth/LoginShopper";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route element={<LandingPage />} path="/"></Route>
+          <Route element={<LoginShopper />} path="/login-shopper"></Route>
 
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
