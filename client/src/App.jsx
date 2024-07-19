@@ -14,6 +14,7 @@ import Inbox from "./pages/shopper/Inbox";
 import PaymentMethod from "./pages/shopper/PaymentMethod";
 import Security from "./pages/shopper/Security";
 import LoginShopper from "./pages/auth/LoginShopper";
+import SignupShopper from "./pages/auth/SignupShopper";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           {/* Public routes */}
           <Route element={<LandingPage />} path="/"></Route>
           <Route element={<LoginShopper />} path="/login-shopper"></Route>
+          <Route element={<SignupShopper />} path="/signup-shopper"></Route>
 
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
