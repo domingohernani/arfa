@@ -29,7 +29,6 @@ import { Link, Outlet } from "react-router-dom";
 import { FooterSection } from "../components/navigation/FooterSection";
 
 const sortOptions = [
-  { name: "Most Popular", href: "#", current: true },
   { name: "Best Rating", href: "#", current: false },
   { name: "Newest", href: "#", current: false },
   { name: "Price: Low to High", href: "#", current: false },
@@ -49,8 +48,8 @@ const subCategories = [
 
 const filters = [
   {
-    id: "category",
-    name: "Category",
+    id: "filter",
+    name: "Filter",
     options: [
       { value: "new-arrivals", label: "New Arrivals", checked: false },
       { value: "sale", label: "Sale", checked: false },
@@ -99,7 +98,9 @@ const Catalog = () => {
                   className="relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full"
                 >
                   <div className="flex items-center justify-between px-4">
-                    <h2 className="text-lg font-medium text-gray-900">Filters</h2>
+                    <h2 className="text-lg font-medium text-gray-900">
+                      Filters
+                    </h2>
                     <button
                       type="button"
                       className="flex items-center justify-center w-10 h-10 p-2 -mr-2 text-gray-400 bg-white rounded-md hover:border-transparent"
@@ -346,7 +347,7 @@ const Catalog = () => {
                                     className="flex items-center"
                                   >
                                     {/* Category Options (larger Screens)*/}
-                                    {section.id == "category" ? (
+                                    {section.id == "filter" ? (
                                       <>
                                         <input
                                           id={`filter-${section.id}-${optionIdx}`}
