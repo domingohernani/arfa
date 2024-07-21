@@ -174,7 +174,7 @@ export const ProfileSideBar = () => {
           <li>
             <div
               className={
-                "text-arfablack flex items-center justify-center p-2 rounded-lg"
+                "text-arfablack cursor-pointer flex items-center justify-center p-2 rounded-lg"
               }
               onClick={logout}
             >
