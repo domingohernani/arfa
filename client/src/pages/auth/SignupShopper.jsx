@@ -37,10 +37,7 @@ const SignupShopper = () => {
         const userDoc = await getDoc(userDocRef);
         const userZustand = useAuthStore.getState().user;
 
-        if (userDoc.exists()) {
-          console.log("User Data:", userDoc.data());
-          console.log("From Zustand", userZustand.role);
-        } else {
+        if (!userDoc.exists()) {
           console.log("No such document!");
         }
       } catch (error) {
