@@ -50,33 +50,34 @@ const SignupShopper = () => {
 
   return (
     <div>
-      <form onSubmit={signup}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+      <div>Shopper Sign Up</div>
+
+      <div>
+        <label htmlFor="email">Email</label>
         <input
-          className="px-3 py-2 text-white cursor-pointer bg-arfagreen"
-          type="submit"
-          value="Sign Up"
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
         />
-      </form>
+      </div>
+      <div>
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <button
+        className="px-3 py-2 text-white cursor-pointer bg-arfagreen"
+        onClick={signup}
+      >
+        Sign Up
+      </button>
 
       {user && (
         <div>
