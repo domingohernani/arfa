@@ -13,15 +13,15 @@ export const SellerSideBar = () => {
 
   return (
     <aside class="top-0 left-0 z-10 w-fit h-screen">
-      <div class="h-full px-3 py-4 overflow-y-auto">
+      <div class="h-full px-5 py-4 overflow-y-auto">
         <ul class="space-y-2 text-sm">
           <li>
             <NavLink
               to={"dashboard"}
               className={({ isActive }) =>
                 isActive
-                  ? "text-arfagreen flex items-center justify-center p-2 md:px-10 rounded-lg bg-white"
-                  : "text-arfablack flex items-center justify-center p-2 md:px-10 rounded-lg"
+                  ? "text-arfagreen flex items-center justify-center p-2 pr-6 rounded-lg bg-white"
+                  : "text-arfablack flex items-center justify-center p-2 pr-6 rounded-lg"
               }
             >
               {({ isActive }) => (
@@ -50,8 +50,8 @@ export const SellerSideBar = () => {
               to={"order"}
               className={({ isActive }) =>
                 isActive
-                  ? "text-arfagreen flex items-center justify-center p-2 md:px-10 rounded-lg bg-white"
-                  : "text-arfablack flex items-center justify-center p-2 md:px-10 rounded-lg"
+                  ? "text-arfagreen flex items-center justify-center p-2 pr-6 rounded-lg bg-white"
+                  : "text-arfablack flex items-center justify-center p-2 pr-6 rounded-lg"
               }
             >
               {({ isActive }) => (
@@ -82,8 +82,8 @@ export const SellerSideBar = () => {
               to={"product"}
               className={({ isActive }) =>
                 isActive
-                  ? "text-arfagreen flex items-center justify-center p-2 md:px-10 rounded-lg bg-white"
-                  : "text-arfablack flex items-center justify-center p-2 md:px-10 rounded-lg"
+                  ? "text-arfagreen flex items-center justify-center p-2 pr-6 rounded-lg bg-white"
+                  : "text-arfablack flex items-center justify-center p-2 pr-6 rounded-lg"
               }
             >
               {({ isActive }) => (
@@ -112,8 +112,8 @@ export const SellerSideBar = () => {
               to={"category"}
               className={({ isActive }) =>
                 isActive
-                  ? "text-arfagreen flex items-center justify-center p-2 md:px-10 rounded-lg bg-white"
-                  : "text-arfablack flex items-center justify-center p-2 md:px-10 rounded-lg"
+                  ? "text-arfagreen flex items-center justify-center p-2 pr-6 rounded-lg bg-white"
+                  : "text-arfablack flex items-center justify-center p-2 pr-6 rounded-lg"
               }
             >
               {({ isActive }) => (
@@ -142,8 +142,8 @@ export const SellerSideBar = () => {
               to={"customer"}
               className={({ isActive }) =>
                 isActive
-                  ? "text-arfagreen flex items-center justify-center p-2 md:px-10 rounded-lg bg-white"
-                  : "text-arfablack flex items-center justify-center p-2 md:px-10 rounded-lg"
+                  ? "text-arfagreen flex items-center justify-center p-2 pr-6 rounded-lg bg-white"
+                  : "text-arfablack flex items-center justify-center p-2 pr-6 rounded-lg"
               }
             >
               {({ isActive }) => (
@@ -172,8 +172,8 @@ export const SellerSideBar = () => {
               to={"report"}
               className={({ isActive }) =>
                 isActive
-                  ? "text-arfagreen flex items-center justify-center p-2 md:px-10 rounded-lg bg-white"
-                  : "text-arfablack flex items-center justify-center p-2 md:px-10 rounded-lg"
+                  ? "text-arfagreen flex items-center justify-center p-2 pr-6 rounded-lg bg-white"
+                  : "text-arfablack flex items-center justify-center p-2 pr-6 rounded-lg"
               }
             >
               {({ isActive }) => (
@@ -202,8 +202,8 @@ export const SellerSideBar = () => {
               to={"inbox"}
               className={({ isActive }) =>
                 isActive
-                  ? "text-arfagreen flex items-center justify-center p-2 md:px-10 rounded-lg bg-white"
-                  : "text-arfablack flex items-center justify-center p-2 md:px-10 rounded-lg"
+                  ? "text-arfagreen flex items-center justify-center p-2 pr-6 rounded-lg bg-white"
+                  : "text-arfablack flex items-center justify-center p-2 pr-6 rounded-lg"
               }
             >
               {({ isActive }) => (
