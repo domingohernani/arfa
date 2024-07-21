@@ -6,6 +6,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut as firebaseSignOut,
+  sendPasswordResetEmail,
+  updatePassword,
+  sendEmailVerification,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import useAuthStore from "../store/useAuthStore";
@@ -68,3 +71,17 @@ export const doSigninWithGoogle = async () => {
 export const doSignOut = async () => {
   await firebaseSignOut(auth);
 };
+
+// export const doPasswordReset = (email) => {
+//   return sendPasswordResetEmail(auth, email);
+// };
+
+// export const doPasswordChange = (password) => {
+//   return updatePassword(auth.currentUser, password);
+// };
+
+// export const doSendEmailVerification = () => {
+//   return sendEmailVerification(auth.currentUser, {
+//     url: `${window.location.origin}/home`,
+//   });
+// };
