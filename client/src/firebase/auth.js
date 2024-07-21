@@ -27,8 +27,8 @@ export const doCreateUserWithEmailAndPassword = async (
     email: user.email,
     role: role,
   });
-  useAuthStore.getState().setUser({ ...user, role });
-  return userCredential;
+  const userData = { ...user, role };
+  return userData;
 };
 
 export const doSignInWithEmailAndPassword = async (email, password) => {
@@ -40,8 +40,8 @@ export const doSignInWithEmailAndPassword = async (email, password) => {
   const user = userCredential.user;
   const userDoc = await getDoc(doc(db, "users", user.uid));
   const role = userDoc.exists() ? userDoc.data().role : null;
-  useAuthStore.getState().setUser({ ...user, role });
-  return userCredential;
+  const userData = { ...user, role };
+  return userData;
 };
 
 export const doSigninWithGoogle = async () => {
@@ -67,5 +67,4 @@ export const doSigninWithGoogle = async () => {
 
 export const doSignOut = async () => {
   await firebaseSignOut(auth);
-  useAuthStore.getState().signOut();
 };
