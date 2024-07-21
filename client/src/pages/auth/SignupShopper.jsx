@@ -8,6 +8,8 @@ import useAuthStore from "../../store/useAuthStore";
 const SignupShopper = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setUser = useAuthStore((state) => state.setUser);
+  const user = useAuthStore((state) => state.user);
 
   const signup = async (e) => {
     e.preventDefault();
@@ -18,7 +20,7 @@ const SignupShopper = () => {
         password,
         "shopper"
       );
-      console.log(response);
+      setUser(response);
       alert("Account Created");
     } catch (error) {
       console.error("Error signing up:", error);
@@ -79,12 +81,11 @@ const SignupShopper = () => {
         />
       </form>
 
-      <input
-        className="px-3 py-2 text-white cursor-pointer bg-arfagreen"
-        type="button"
-        value="Show User Details"
-        onClick={showLoggedUser}
-      />
+      {user && (
+        <div>
+          <h2>Welcome, {user.email}</h2>
+        </div>
+      )}
     </div>
   );
 };

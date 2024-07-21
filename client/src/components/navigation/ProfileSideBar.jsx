@@ -1,7 +1,16 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { doSignOut } from "../../firebase/auth";
 
 export const ProfileSideBar = () => {
+  const logout = () => {
+    try {
+      doSignOut();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <aside class="top-0 left-0 z-10 w-fit h-screen">
       <div class="h-full px-3 py-4 overflow-y-auto">
@@ -163,11 +172,11 @@ export const ProfileSideBar = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink
-              to={"security"}
+            <div
               className={
                 "text-arfablack flex items-center justify-center p-2 rounded-lg"
               }
+              onClick={logout}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +193,7 @@ export const ProfileSideBar = () => {
               <span class="flex-1 ms-3 whitespace-nowrap md:inline hidden">
                 Logout
               </span>
-            </NavLink>
+            </div>
           </li>
         </ul>
       </div>

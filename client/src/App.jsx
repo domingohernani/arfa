@@ -15,6 +15,8 @@ import PaymentMethod from "./pages/shopper/PaymentMethod";
 import Security from "./pages/shopper/Security";
 import LoginShopper from "./pages/auth/LoginShopper";
 import SignupShopper from "./pages/auth/SignupShopper";
+import { SellerDashboard } from "./pages/seller/SellerDashboard";
+import ShopperProtectedRoutes from "./utils/ShopperProtectedRoutes";
 
 function App() {
   return (
@@ -32,18 +34,20 @@ function App() {
           </Route>
 
           {/* Private routes: exclusive to shopper */}
-          <Route element={<Cart />} path="/cart"></Route>
-          <Route element={<Wishlist />} path="/wishlist"></Route>
-
-          <Route path="/profile" element={<Profile />}>
-            <Route element={<UserProfile />} path="user-profile" />
-            <Route element={<Order />} path="order" />
-            <Route element={<Inbox />} path="inbox" />
-            <Route element={<PaymentMethod />} path="payment-method" />
-            <Route element={<Security />} path="security" />
+          <Route element={<ShopperProtectedRoutes />}>
+            <Route element={<Cart />} path="/cart"></Route>
+            <Route element={<Wishlist />} path="/wishlist"></Route>
+            <Route path="/profile" element={<Profile />}>
+              <Route element={<UserProfile />} path="user-profile" />
+              <Route element={<Order />} path="order" />
+              <Route element={<Inbox />} path="inbox" />
+              <Route element={<PaymentMethod />} path="payment-method" />
+              <Route element={<Security />} path="security" />
+            </Route>
           </Route>
 
           {/* Private routes: exclusive to seller */}
+          <Route element={<SellerDashboard />} path="/seller-dashboard"></Route>
         </Routes>
       </BrowserRouter>
     </>
