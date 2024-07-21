@@ -17,7 +17,6 @@ const LoginShopper = () => {
       const response = await doSignInWithEmailAndPassword(email, password);
       setUser(response);
       navigate("/");
-      console.log(response);
     } catch (error) {
       console.error("Error signing in:", error);
     }
@@ -31,11 +30,7 @@ const LoginShopper = () => {
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
 
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          console.log("User Data from Firestore:", userData);
-          console.log("User Role:", userData.role);
-        } else {
+        if (!userDoc.exists()) {
           console.log("No such document!");
         }
       } catch (error) {
@@ -49,7 +44,6 @@ const LoginShopper = () => {
   const logOut = async () => {
     try {
       const response = await doSignOut();
-      console.log(response);
     } catch (error) {
       console.error("Error signing in:", error);
     }
