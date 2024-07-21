@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { doSignInWithEmailAndPassword, doSignOut } from "../../firebase/auth";
+import {
+  doSignInWithEmailAndPassword,
+  doSigninWithGoogle,
+  doSignOut,
+} from "../../firebase/auth";
 import useAuthStore from "../../store/useAuthStore"; // Ensure this path is correct
 import { auth, db } from "../../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -8,8 +12,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 const LoginShopper = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const setUser = useAuthStore((state) => state.setUser);
-  const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
 
   const login = async () => {
@@ -48,9 +50,18 @@ const LoginShopper = () => {
       console.error("Error signing in:", error);
     }
   };
+  const loginUsingGoogle = async () => {
+    try {
+      const result = await doSigninWithGoogle();
+      if (result.user) navigate("/");
+    } catch (error) {
+      console.error("Error signing in:", error);
+    }
+  };
 
   return (
     <div>
+      <div>Login Shopper</div>
       <div>
         <label htmlFor="email">Email</label>
         <input
@@ -84,13 +95,12 @@ const LoginShopper = () => {
       <button className="px-3 py-2 text-white bg-arfagreen" onClick={logOut}>
         Logout
       </button>
-
-      {user && (
-        <div>
-          <h2>Welcome, {user.email}</h2>
-          {/* You can display more user information here */}
-        </div>
-      )}
+      <button
+        className="px-3 py-2 text-white bg-arfagreen"
+        onClick={loginUsingGoogle}
+      >
+        Login using Google
+      </button>
     </div>
   );
 };
