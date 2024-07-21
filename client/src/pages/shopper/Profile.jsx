@@ -16,7 +16,7 @@ const Profile = () => {
           <Outlet />
         </section>
       </section>
-      <section className="p">
+      <section className="pt-4">
         <FooterSection />
       </section>
     </section>
