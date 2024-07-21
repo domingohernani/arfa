@@ -17,6 +17,13 @@ import LoginShopper from "./pages/auth/LoginShopper";
 import SignupShopper from "./pages/auth/SignupShopper";
 import { SellerDashboard } from "./pages/seller/SellerDashboard";
 import ShopperProtectedRoutes from "./utils/ShopperProtectedRoutes";
+import SellerLayout from "./pages/seller/SellerLayout";
+import SellerOrders from "./pages/seller/SellerOrders";
+import SellerProducts from "./pages/seller/SellerProducts";
+import SellerCategories from "./pages/seller/SellerCategories";
+import SellerCustomers from "./pages/seller/SellerCustomers";
+import SellerReports from "./pages/seller/SellerReports";
+import SellerInbox from "./pages/seller/SellerInbox";
 
 function App() {
   return (
@@ -47,7 +54,15 @@ function App() {
           </Route>
 
           {/* Private routes: exclusive to seller */}
-          <Route element={<SellerDashboard />} path="/seller-dashboard"></Route>
+          <Route element={<SellerLayout />} path="/seller-page">
+            <Route element={<SellerDashboard />} path="dashboard" />
+            <Route element={<SellerOrders />} path="order" />
+            <Route element={<SellerProducts />} path="product" />
+            <Route element={<SellerCategories />} path="category" />
+            <Route element={<SellerCustomers />} path="customer" />
+            <Route element={<SellerReports />} path="report" />
+            <Route element={<SellerInbox />} path="inbox" />
+          </Route>
         </Routes>
       </BrowserRouter>
     </>

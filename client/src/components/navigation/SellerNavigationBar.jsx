@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/logos/logo_green.svg";
+import logo from "../../assets/logos/logo_white.svg";
 import profile from "../../assets/icons/profile-black.svg";
 import cart from "../../assets/icons/cart.svg";
 import search from "../../assets/icons/search.svg";
@@ -7,9 +7,9 @@ import heart from "../../assets/icons/heart-black.svg";
 import { Link } from "react-router-dom";
 import { NotificationDrawer } from "../dynamic/NotificationDrawer";
 
-function NavigationBar() {
+function SellerNavigationBar() {
   return (
-    <div className="grid items-center grid-cols-11 grid-rows-2 gap-2 md:grid-rows-1">
+    <div className="grid items-center grid-cols-11 grid-rows-2 gap-2 px-6 py-3 md:grid-rows-1">
       <div className="flex justify-start col-span-1 ">
         <Link to="/">
           <img src={logo} alt="ARFA" className="h-auto min-w-16 md:w-24" />
@@ -76,4 +76,4 @@ function NavigationBar() {
   );
 }
 
-export default NavigationBar;
+export default SellerNavigationBar;
