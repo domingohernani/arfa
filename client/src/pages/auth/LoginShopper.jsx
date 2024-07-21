@@ -17,7 +17,6 @@ const LoginShopper = () => {
   const login = async () => {
     try {
       const response = await doSignInWithEmailAndPassword(email, password);
-      setUser(response);
       navigate("/");
     } catch (error) {
       console.error("Error signing in:", error);
