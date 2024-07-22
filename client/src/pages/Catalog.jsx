@@ -166,7 +166,7 @@ const Catalog = () => {
                                     className="flex items-center text-sm"
                                   >
                                     {/* Category Options (Smaller Screens) */}
-                                    {section.id == "category" ? (
+                                    {section.id == "filter" ? (
                                       <>
                                         <input
                                           id={`filter-mobile-${section.id}-${optionIdx}`}
