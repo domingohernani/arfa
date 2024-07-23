@@ -1,11 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ShowModel from "./ShowModel";
 import cart from "../assets/icons/cart.svg";
 import { Carousel } from "flowbite-react";
 import CustomerReview from "./dynamic/CustomerReview";
 import DisplayStars from "./dynamic/DisplayStars";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "../firebase/firebase";
 
 const ViewFurniture = () => {
+  const [photoURL, setPhotoURL] = useState(null);
+  const photoPath = "model/sofa.glb";
+
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      try {
+        const storageRef = ref(storage, photoPath);
+        const url = await getDownloadURL(storageRef);
+        setPhotoURL(url);
+      } catch (error) {
+        console.error("Error fetching photo:", error);
+      }
+    };
+
+    fetchPhoto();
+  }, [photoPath]);
+
   return (
     <section className="h-screen">
       <section className="box-border py-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
@@ -33,7 +52,11 @@ const ViewFurniture = () => {
                 </Carousel>
               </div>
               <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
-                <ShowModel path="../src/assets/models/sofa.glb" />
+                {photoURL ? (
+                  <ShowModel path={photoURL} />
+                ) : (
+                  "Loading Model"
+                )}
                 <span className="hidden text-xs italic md:block">
                   Note: AR feature is currently only available on Android and
                   IOS devices.{" "}

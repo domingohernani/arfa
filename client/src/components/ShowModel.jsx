@@ -202,7 +202,7 @@ function ShowModel({ path }) {
   return (
     <>
       <model-viewer
-        id="chair"
+        class="model"
         ar
         ar-modes="webxr scene-viewer quick-look"
         loading="eager"
