@@ -89,7 +89,10 @@ const SellerProducts = () => {
       ) : (
         <div>
           {files.map((file) => (
-            <div key={file.name} className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
+            <div
+              key={file.name}
+              className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray"
+            >
               <ShowModel path={file.url} />
             </div>
           ))}
