@@ -1,10 +1,13 @@
-import mysql from "mysql";
+import mysql from 'mysql2/promise';
 
-const db = mysql.createConnection({
+const pool = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
   database: "arfa",
+  connectionLimit: 10,
+  waitForConnections: true,
+  queueLimit: 0,
 });
 
-export default db;
+export default pool;

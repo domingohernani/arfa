@@ -1,22 +1,16 @@
 import express from "express";
-import mysql from "mysql";
+import shopper from "./routes/shopper.js";
+import seller from "./routes/seller.js";
+import admin from "./routes/admin.js";
 
 const app = express();
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "arfa",
+app.use(express.json());
+app.use("/shopper", shopper);
+app.use("/seller", seller);
+app.use("/admin", admin);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-app.get("/", (req, res) => {
-  const query = "SELECT * FROM model";
-
-  db.query(query, (err, data) => {
-    if (err) return res.json(err).sendStatus(500);
-    return res.json(data);
-  });
-});
-
-app.listen(8800, () => console.log("Server is running"));
