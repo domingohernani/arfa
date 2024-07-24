@@ -18,7 +18,7 @@ const SellerProducts = () => {
   const upload = () => {
     if (model) {
       setUploading(true);
-      const storageRef = ref(storage, `model/${model.name}`);
+      const storageRef = ref(storage, `models/${model.name}`);
       const uploadTask = uploadBytesResumable(storageRef, model);
 
       uploadTask.on(
@@ -52,7 +52,7 @@ const SellerProducts = () => {
 
   const fetchFiles = async () => {
     setLoading(true);
-    const listRef = ref(storage, "model/");
+    const listRef = ref(storage, "models/");
     try {
       const res = await listAll(listRef);
       const fileUrls = await Promise.all(

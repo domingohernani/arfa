@@ -9,7 +9,7 @@ import { storage } from "../firebase/firebase";
 
 const ViewFurniture = () => {
   const [photoURL, setPhotoURL] = useState(null);
-  const photoPath = "model/sofa.glb";
+  const photoPath = "models/sofa.glb";
 
   useEffect(() => {
     const fetchPhoto = async () => {
