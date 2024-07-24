@@ -2,7 +2,7 @@ import express from "express";
 import shopper from "./routes/shopper.js";
 import seller from "./routes/seller.js";
 import admin from "./routes/admin.js";
-s
+
 const app = express();
 
 app.use(express.json());
