@@ -4,9 +4,9 @@ import pool from "../config/db.js";
 const router = express.Router();
 
 // Get all model
-router.get("/testing", async (req, res) => {
+router.get("/getAllImages", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM model");
+    const [rows] = await pool.query("SELECT * FROM image");
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });

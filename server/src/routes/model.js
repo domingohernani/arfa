@@ -4,7 +4,7 @@ import pool from "../config/db.js";
 const router = express.Router();
 
 // Get all model
-router.get("/testing", async (req, res) => {
+router.get("/getAllModels", async (req, res) => {
   //   try {
   //     const [rows] = await pool.query("SELECT * FROM model");
   //     res.json(rows);
