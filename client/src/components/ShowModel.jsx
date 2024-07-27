@@ -307,21 +307,24 @@ function ShowModel({ path }) {
         </svg>
       </model-viewer>
       <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
-        <div className="flex items-center">
-          <span>Variant:</span>
-          <select
-            id="variant"
-            onChange={handleVariantChange}
-            value={initialVariant}
-            className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
-          >
-            {variants.map((variant, index) => (
-              <option key={index} value={variant.value}>
-                {variant.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        {variants.length != 0 ? (
+          <div className="flex items-center">
+            <span>Variant:</span>
+            <select
+              id="variant"
+              onChange={handleVariantChange}
+              value={initialVariant}
+              className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
+            >
+              {variants.map((variant, index) => (
+                <option key={index} value={variant.value}>
+                  {variant.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+
         <div className="flex items-center gap-2">
           <label htmlFor="show-dimensions">Dimensions:</label>
           <input
