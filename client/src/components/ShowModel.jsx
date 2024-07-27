@@ -323,7 +323,9 @@ function ShowModel({ path }) {
               ))}
             </select>
           </div>
-        ) : null}
+        ) : (
+          <div className="flex items-center mt-9"></div>
+        )}
 
         <div className="flex items-center gap-2">
           <label htmlFor="show-dimensions">Dimensions:</label>
