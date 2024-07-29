@@ -5,7 +5,7 @@ import { FooterSection } from "../../components/navigation/FooterSection";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../../firebase/firebase";
 import ShowModel from "../../components/ShowModel";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 const CartWishlistAugmentedReality = () => {
   const [photoURL, setPhotoURL] = useState(null);
   const photoPath = "models/sofa.glb";
@@ -30,6 +30,8 @@ const CartWishlistAugmentedReality = () => {
     setPhotoURL(url);
   };
 
+  const { page } = useParams();
+
   return (
     <section className="antialiased dark:bg-gray-900">
       <section className="mx-6 my-3">
@@ -39,14 +41,16 @@ const CartWishlistAugmentedReality = () => {
         <div className="flex items-center gap-2 py-5 text-sm text-arfablack">
           <span className="cursor-pointer hover:text-arfagreen">Home</span>
           <img src={greaterthan} alt=">" className="w-2 h-2" />
-          <span className="cursor-pointer hover:text-arfagreen">Cart</span>
+          <span className="cursor-pointer hover:text-arfagreen">
+            {page.charAt(0).toUpperCase() + page.slice(1)}
+          </span>
           <img src={greaterthan} alt=">" className="w-2 h-2" />
           <span className="cursor-pointer hover:text-arfagreen">
             Augmented Reality
           </span>
         </div>
         <div className="mb-8 ml-auto underline cursor-pointer w-fit underline-offset-2 decoration-arfablack">
-          <NavLink to={"/cart"}>
+          <NavLink to={`/${page}`}>
             <div className="flex gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +66,7 @@ const CartWishlistAugmentedReality = () => {
                 <circle cx="17" cy="22" r="2" />
               </svg>
               <span className="text-sm font-normal text-arfablack hover:text-arfagreen ">
-                Back to Cart
+                Back to {page.charAt(0).toUpperCase() + page.slice(1)}
               </span>
             </div>
           </NavLink>

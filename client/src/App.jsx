@@ -46,7 +46,7 @@ function App() {
             <Route element={<Cart />} path="/cart"></Route>
             <Route
               element={<CartWishlistAugmentedReality />}
-              path="/cart/augmented-reality"
+              path="/:page/augmented-reality"
             ></Route>
             <Route element={<Wishlist />} path="/wishlist"></Route>
             <Route path="/profile" element={<Profile />}>
