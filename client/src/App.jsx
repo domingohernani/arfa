@@ -24,6 +24,7 @@ import SellerCategories from "./pages/seller/SellerCategories";
 import SellerCustomers from "./pages/seller/SellerCustomers";
 import SellerReports from "./pages/seller/SellerReports";
 import SellerInbox from "./pages/seller/SellerInbox";
+import CartWishlistAugmentedReality from "./pages/shopper/CartWishlistAugmentedReality";
 
 function App() {
   return (
@@ -43,6 +44,10 @@ function App() {
           {/* Private routes: exclusive to shopper */}
           <Route element={<ShopperProtectedRoutes />}>
             <Route element={<Cart />} path="/cart"></Route>
+            <Route
+              element={<CartWishlistAugmentedReality />}
+              path="/:page/augmented-reality"
+            ></Route>
             <Route element={<Wishlist />} path="/wishlist"></Route>
             <Route path="/profile" element={<Profile />}>
               <Route element={<UserProfile />} path="user-profile" />
