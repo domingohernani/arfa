@@ -8,7 +8,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../firebase/firebase";
 
 const ViewFurniture = () => {
-  const [photoURL, setPhotoURL] = useState(null);
+  const [modelURL, setModelURL] = useState(null);
   const photoPath = "models/sofa.glb";
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const ViewFurniture = () => {
       try {
         const storageRef = ref(storage, photoPath);
         const url = await getDownloadURL(storageRef);
-        setPhotoURL(url);
+        setModelURL(url);
       } catch (error) {
         console.error("Error fetching photo:", error);
       }
@@ -52,11 +52,7 @@ const ViewFurniture = () => {
                 </Carousel>
               </div>
               <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
-                {photoURL ? (
-                  <ShowModel path={photoURL} />
-                ) : (
-                  "Loading Model"
-                )}
+                {modelURL ? <ShowModel path={modelURL} /> : "Loading Model"}
                 <span className="hidden text-xs italic md:block">
                   Note: AR feature is currently only available on Android and
                   IOS devices.{" "}
