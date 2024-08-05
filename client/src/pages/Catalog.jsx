@@ -19,14 +19,10 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
-  FunnelIcon,
   MinusIcon,
   PlusIcon,
-  Squares2X2Icon,
 } from "@heroicons/react/20/solid";
-import DisplayFurniture from "../components/dynamic/DisplayFurnitures";
-import { Link, Outlet } from "react-router-dom";
-import { FooterSection } from "../components/navigation/FooterSection";
+import { Outlet } from "react-router-dom";
 
 const sortOptions = [
   { name: "Best Rating", href: "#", current: false },
