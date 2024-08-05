@@ -93,7 +93,7 @@ const DisplayFurnitures = () => {
             <div className="flex items-start justify-between mt-4">
               <div className="relative">
                 <h3 className="text-xs font-semibold sm:text-sm md:text-base">
-                  <div className="w-32 text-sm truncate cursor-pointer md:w-full 2xl:w-32 lg:w-20 text-arfablack hover:text-arfablack whitespace-nowrap">
+                  <div className="w-20 text-sm truncate cursor-pointer sm:w-full 2xl:w-32 lg:w-20 text-arfablack hover:text-arfablack whitespace-nowrap">
                     {furniture.name}
                     <span className="absolute" aria-hidden="true"></span>
                   </div>
