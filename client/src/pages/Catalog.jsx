@@ -22,7 +22,7 @@ import {
   MinusIcon,
   PlusIcon,
 } from "@heroicons/react/20/solid";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 const sortOptions = [
   { name: "Best Rating", href: "#", current: false },
@@ -32,14 +32,14 @@ const sortOptions = [
 ];
 
 const subCategories = [
-  { name: "Living Room", href: "#" },
-  { name: "Bedroom", href: "#" },
-  { name: "Dining Room", href: "#" },
-  { name: "Office", href: "#" },
-  { name: "Outdoor", href: "#" },
-  { name: "Accent", href: "#" },
-  { name: "Storage", href: "#" },
-  { name: "Entryway", href: "#" },
+  { name: "Living Room", href: "living-room" },
+  { name: "Bedroom", href: "bedroom" },
+  { name: "Dining Room", href: "dining-room" },
+  { name: "Office", href: "office" },
+  { name: "Outdoor", href: "outdoor" },
+  { name: "Accent", href: "accent" },
+  { name: "Storage", href: "storage" },
+  { name: "Entryway", href: "entryway" },
 ];
 
 const filters = [
@@ -297,12 +297,16 @@ const Catalog = () => {
                     >
                       {subCategories.map((category) => (
                         <li key={category.name}>
-                          <a
-                            href={category.href}
-                            className="text-gray-900 hover:text-arfagreen"
+                          <NavLink
+                            to={category.href}
+                            className={({ isActive }) =>
+                              isActive
+                                ? "text-arfagreen"
+                                : "text-gray-900 hover:text-arfagreen"
+                            }
                           >
                             {category.name}
-                          </a>
+                          </NavLink>
                         </li>
                       ))}
                     </ul>

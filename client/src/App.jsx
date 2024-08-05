@@ -25,6 +25,7 @@ import SellerCustomers from "./pages/seller/SellerCustomers";
 import SellerReports from "./pages/seller/SellerReports";
 import SellerInbox from "./pages/seller/SellerInbox";
 import CartWishlistAugmentedReality from "./pages/shopper/CartWishlistAugmentedReality";
+import DisplayFurnituresCategory from "./components/dynamic/DisplayFurnituresCategory";
 
 function App() {
   return (
@@ -38,6 +39,10 @@ function App() {
 
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
+            <Route
+              path=":category"
+              element={<DisplayFurnituresCategory />}
+            ></Route>
             <Route path=":item" element={<ViewFurniture />} />
           </Route>
 
