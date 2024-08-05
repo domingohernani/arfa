@@ -109,12 +109,12 @@ const DisplayFurnitures = () => {
                     <del className="mt-px text-xs text-gray-600 sm:text-xs">
                       {formatToPeso(furniture.price)}
                     </del>
-                    <p className="font-normal text-arfablack sm:text-sm md:text-sm">
+                    <p className="text-sm font-normal text-arfablack">
                       {formatToPeso(furniture.discountedPrice)}
                     </p>
                   </>
                 ) : (
-                  <p className="font-normal text-arfablack sm:text-sm md:text-sm">
+                  <p className="text-sm font-normal text-arfablack">
                     {formatToPeso(furniture.price)}
                   </p>
                 )}
