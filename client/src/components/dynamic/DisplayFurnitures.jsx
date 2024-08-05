@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Pagination } from "flowbite-react";
 import { Link } from "react-router-dom";
 import DisplayStars from "./DisplayStars";
 import { fetchFurnitureCollection } from "../../firebase/furniture";
@@ -130,24 +129,6 @@ const DisplayFurnitures = () => {
         </h2>
         <div className="grid grid-cols-2 gap-6 mt-5 lg:mt-10 lg:grid-cols-5 lg:gap-4">
           {displayFurnitures(furnitures, imageUrls, loading)}
-        </div>
-        <div className="flex mt-10 text-sm font-normal paginationContainer sm:justify-center">
-          <div className="block mx-auto sm:hidden">
-            <Pagination
-              layout="table"
-              currentPage={currentPage}
-              totalPages={234}
-              onPageChange={onPageChange}
-              showIcons
-            />
-          </div>
-          <div className="hidden mx-auto sm:block">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={234}
-              onPageChange={onPageChange}
-            />
-          </div>
         </div>
       </div>
     </section>
