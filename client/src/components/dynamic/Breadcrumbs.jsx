@@ -69,7 +69,7 @@ const Breadcrumbs = () => {
             <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
               /
             </span>
-            <Link className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[100px] sm:max-w-full">
+            <Link className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[70px] sm:max-w-full">
               <span className="font-normal truncate text-arfablack hover:text-arfagreen">
                 {formatString(item)}
               </span>
