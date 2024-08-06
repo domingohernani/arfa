@@ -26,7 +26,7 @@ const ViewFurniture = () => {
   }, [photoPath]);
 
   return (
-    <section className="h-screen">
+    <section>
       <section className="box-border py-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
         <div className="max-w-screen-xl px-4 pb-4 mx-auto 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
