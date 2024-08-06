@@ -14,7 +14,7 @@ const displayReviews = () => {
       <div className="flex items-center mb-4">
         <DisplayStars number={4} size={5} />
       </div>
-      <h3 className="text-xl font-semibold leading-9 text sm:text-2xl text-arfablack">
+      <h3 className="text-base font-semibold leading-9 text sm:text-base text-arfablack">
         Outstanding Experience!!!
       </h3>
       <div className="flex sm:items-center flex-col min-[400px]:flex-row justify-between gap-5 mb-4">
