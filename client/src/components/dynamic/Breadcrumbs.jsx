@@ -1,26 +1,23 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import greaterthan from "../../assets/icons/greater-than.svg";
+import { Link, useParams } from "react-router-dom";
 
 const Breadcrumbs = () => {
-  const formatSegment = (segment) => {
-    return segment
-      .split("-")
+  const formatString = (str) => {
+    const replaced = str.replace(/-/g, " ");
+    const capitalized = replaced
+      .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+    return capitalized;
   };
 
-  const location = useLocation();
-  const pathSegments = location.pathname
-    .split("/")
-    .filter((segment) => segment);
-
-  const formattedSegments = pathSegments.map((segment) =>
-    formatSegment(segment)
-  );
+  const { category, item } = useParams();
 
   return (
-    <nav aria-label="breadcrumb" className="w-full max-w-full overflow-x-auto text-arfablack">
+    <nav
+      aria-label="breadcrumb"
+      className="w-full max-w-full overflow-x-auto text-arfablack"
+    >
       <ol className="flex items-center px-4 py-2 rounded-md flex-nowrap bg-blue-gray-50 bg-opacity-60">
         <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-blue-gray-900 hover:text-light-blue-500">
           <Link to={"/"}>
@@ -36,27 +33,49 @@ const Breadcrumbs = () => {
             </svg>
           </Link>
         </li>
-        {formattedSegments.map((path, index) => {
-          if (path === "Item" || path === "Category") return null;
-          return (
-            <li
-              key={index}
-              className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500"
+
+        <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
+          <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
+            /
+          </span>
+          <Link
+            to={"/catalog"}
+            className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[100px] sm:max-w-full"
+          >
+            <span className="font-normal truncate text-arfablack hover:text-arfagreen">
+              Catalog
+            </span>
+          </Link>
+        </li>
+
+        {category ? (
+          <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
+            <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
+              /
+            </span>
+            <Link
+              to={`category/${category}`}
+              className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[100px] sm:max-w-full"
             >
-              <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
-                /
+              <span className="font-normal truncate text-arfablack hover:text-arfagreen">
+                {formatString(category)}
               </span>
-              <Link
-                to={"/"}
-                className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[100px] sm:max-w-full"
-              >
-                <span className="font-normal truncate text-arfablack">
-                  {path}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
+            </Link>
+          </li>
+        ) : null}
+
+        {item ? (
+          <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
+            <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
+              /
+            </span>
+            <Link className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[100px] sm:max-w-full">
+              <span className="font-normal truncate text-arfablack hover:text-arfagreen">
+                {formatString(item)}
+              </span>
+            </Link>
+          </li>
+        ) : null}
       </ol>
     </nav>
   );
