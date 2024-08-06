@@ -1,20 +1,30 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import DisplayStars from "./DisplayStars";
 import { fetchFurnitureCollection } from "../../firebase/furniture";
-import formatToPeso from "../formatToPeso";
+import { formatToPeso, toSlug, unSlug } from "../globalFunctions";
 import { getImageDownloadUrl } from "../../firebase/photos";
+import { where } from "firebase/firestore";
+import noResult from "../../assets/images/no-result.png";
 
 const DisplayFurnitures = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [furnitures, setFurnitures] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
+  const { category } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dataList = await fetchFurnitureCollection("furnitures");
+        setLoading(true);
+        let dataList = [];
+        if (category !== undefined) {
+          const filter = [where("category", "==", unSlug(category))];
+          dataList = await fetchFurnitureCollection("furnitures", filter);
+        } else {
+          dataList = await fetchFurnitureCollection("furnitures");
+        }
         setFurnitures(dataList);
 
         const urls = await Promise.all(
@@ -34,7 +44,7 @@ const DisplayFurnitures = () => {
     };
 
     fetchData();
-  }, []);
+  }, [category]);
 
   const onPageChange = useCallback((page) => {
     setCurrentPage(page);
@@ -74,7 +84,7 @@ const DisplayFurnitures = () => {
       }
 
       return furnitures.map((furniture, index) => (
-        <Link to={`/catalog/${furniture.name}`} key={index}>
+        <Link to={`item/${toSlug(furniture.name)}/${furniture.id}`} key={index}>
           <article className="relative cursor-pointer">
             <div className="overflow-hidden border rounded-lg aspect-square">
               <img
@@ -130,12 +140,21 @@ const DisplayFurnitures = () => {
   return (
     <section className="bg-white md:pl-8 md:border-l text-arfablack">
       <div className="max-w-screen-xl mx-auto ">
-        <h2 className="mt-4 text-lg font-semibold sm:text-2xl">
-          Showing 25 out of 234
-        </h2>
         <div className="grid grid-cols-2 gap-6 mt-5 lg:mt-10 lg:grid-cols-5 lg:gap-4">
           {displayFurnitures(furnitures, imageUrls, loading)}
         </div>
+        {furnitures.length == 0 ? (
+          <div className="flex flex-col items-center justify-center w-full gap-3 mt-10">
+            <img src={noResult} className="w-60 h-60" />
+            <h1 className="text-2xl font-semibold tracking-tight text-arfablack">
+              No results found.
+            </h1>
+            <p className="text-sm text-center">
+              Sorry, no results were found. Please try adjusting your filters or
+              check back later.
+            </p>
+          </div>
+        ) : null}
       </div>
     </section>
   );

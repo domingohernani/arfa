@@ -6,30 +6,56 @@ import CustomerReview from "./dynamic/CustomerReview";
 import DisplayStars from "./dynamic/DisplayStars";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../firebase/firebase";
+import { useParams } from "react-router-dom";
+import { fetchFurnitureById } from "../firebase/furniture";
+import { formatToPeso } from "../components/globalFunctions";
 
 const ViewFurniture = () => {
+  const { id } = useParams();
+  const [furniture, setFurniture] = useState(null); // Initialize as null
   const [modelURL, setModelURL] = useState(null);
-  const photoPath = "models/sofa.glb";
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    const fetchPhoto = async () => {
+    const fetchModal = async (path) => {
       try {
-        const storageRef = ref(storage, photoPath);
+        const storageRef = ref(storage, path);
         const url = await getDownloadURL(storageRef);
         setModelURL(url);
       } catch (error) {
-        console.error("Error fetching photo:", error);
+        console.error("Error fetching model:", error);
       }
     };
 
-    fetchPhoto();
-  }, [photoPath]);
+    const fetchFurniture = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchFurnitureById("furnitures", id);
+        setFurniture(data);
+        fetchModal(data.modelUrl);
+      } catch (error) {
+        console.error("Error fetching furniture:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFurniture();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Handle loading state
+  }
+
+  if (!furniture) {
+    return <div>No furniture found</div>; // Handle the case when no furniture is found
+  }
 
   return (
     <section>
       <section className="box-border py-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
-        <div className="max-w-screen-xl px-4 pb-4 mx-auto 2xl:px-0">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
+        <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
               <div className="h-56 md:h-64 2xl:h-90">
                 <Carousel>
@@ -37,18 +63,7 @@ const ViewFurniture = () => {
                     src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="..."
                   />
-                  <img
-                    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="..."
-                  />
-                  <img
-                    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="..."
-                  />
-                  <img
-                    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="..."
-                  />
+                  {/* Additional images */}
                 </Carousel>
               </div>
               <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
@@ -69,36 +84,35 @@ const ViewFurniture = () => {
 
             <div className="mt-14 sm:mt-20 lg:mt-0">
               <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-                Arabian Family Sofa
+                {furniture.name}
               </h1>
               <p className="mt-2 text-sm ">
-                by <span className="underline">Domskie Furniture Shop</span>
+                by <span className="underline">{furniture.modelUrl}</span>
               </p>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
-                <p className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
-                  ₱19,999
-                  <span className="text-sm font-normal text-arfablack">
-                    <del> ₱21,999</del>
-                  </span>
+                <p className="flex gap-2 text-2xl font-bold text-gray-900 sm:text-2xl dark:text-white">
+                  <span>{formatToPeso(furniture.discountedPrice) || 0}</span>
+                  {furniture.price !== furniture.discountedPrice ? (
+                    <span className="text-sm font-normal text-arfablack">
+                      <del> {formatToPeso(furniture.price)}</del>
+                    </span>
+                  ) : null}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">
                   <div className="flex items-center">
                     <DisplayStars number={4} size={5} />
                   </div>
-                  <p className="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
-                    (4)
-                  </p>
-                  <a
+                  <span
                     href="#"
-                    className="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
+                    className="text-xs font-medium text-gray-900 underline hover:no-underline dark:text-white"
                   >
                     345 Reviews
-                  </a>
+                  </span>
                 </div>
               </div>
 
-              <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
+              <div className="mt-6 sm:gap-4 sm:items-center sm:flex">
                 <a
                   href="#"
                   title=""
@@ -141,29 +155,14 @@ const ViewFurniture = () => {
                 </a>
               </div>
 
-              <hr className="my-6 border-gray-200 md:my-8 dark:border-gray-800" />
-
-              <p className="mb-6 text-arfablack">
-                Crafted with high-quality materials, the Arabic Majlis Sofa is
-                built to last. The frame is typically made of sturdy wood, and
-                the cushions are upholstered in plush fabric, often velvet or
-                brocade. The sofa is also spacious and comfortable, providing
-                ample seating for family and friends.
-              </p>
-
-              <p className=" text-arfablack">
-                This modern green velvet sofa is a stylish and versatile piece
-                of furniture that would be a great addition to any living room.
-                The soft, luxurious velvet fabric is inviting and comfortable,
-                and the emerald green color adds a touch of glamour. The sofa
-                also has clean lines and a simple design, making it perfect for
-                both modern and traditional homes.
+              <p className="mt-6 text-sm leading-relaxed text-arfablack">
+                {furniture.description}
               </p>
             </div>
           </div>
         </div>
         <hr />
-        <section>
+        <section className="">
           <CustomerReview />
         </section>
       </section>

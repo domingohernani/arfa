@@ -1,7 +1,7 @@
 import React from "react";
 import NavigationBar from "../components/navigation/NavigationBar";
+import { FooterSection } from "../components/navigation/FooterSection";
 import filter from "../assets/icons/filter.svg";
-import greaterthan from "../assets/icons/greater-than.svg";
 
 import { useState } from "react";
 import {
@@ -22,7 +22,8 @@ import {
   MinusIcon,
   PlusIcon,
 } from "@heroicons/react/20/solid";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
+import Breadcrumbs from "../components/dynamic/Breadcrumbs";
 
 const sortOptions = [
   { name: "Best Rating", href: "#", current: false },
@@ -32,14 +33,14 @@ const sortOptions = [
 ];
 
 const subCategories = [
-  { name: "Living Room", href: "living-room" },
-  { name: "Bedroom", href: "bedroom" },
-  { name: "Dining Room", href: "dining-room" },
-  { name: "Office", href: "office" },
-  { name: "Outdoor", href: "outdoor" },
-  { name: "Accent", href: "accent" },
-  { name: "Storage", href: "storage" },
-  { name: "Entryway", href: "entryway" },
+  { name: "Living Room", href: "category/living-room" },
+  { name: "Bedroom", href: "category/bedroom" },
+  { name: "Dining Room", href: "category/dining-room" },
+  { name: "Office", href: "category/office" },
+  { name: "Outdoor", href: "category/outdoor" },
+  { name: "Accent", href: "category/accent" },
+  { name: "Storage", href: "category/storage" },
+  { name: "Entryway", href: "category/entryway" },
 ];
 
 const filters = [
@@ -116,12 +117,17 @@ const Catalog = () => {
                     >
                       {subCategories.map((category) => (
                         <li key={category.name}>
-                          <a
-                            href={category.href}
-                            className="block px-2 py-3 text-sm text-gray-900 hover:text-arfagreen"
+                          <NavLink
+                            to={category.href}
+                            onClick={() => setMobileFiltersOpen(false)}
+                            className={({ isActive }) =>
+                              isActive
+                                ? "text-arfagreen block px-2 py-3 text-sm"
+                                : "text-gray-900 hover:text-arfagreen block px-2 py-3 text-sm"
+                            }
                           >
                             {category.name}
-                          </a>
+                          </NavLink>
                         </li>
                       ))}
                     </ul>
@@ -407,17 +413,7 @@ const Catalog = () => {
 
                   {/* This is where the content (side side) will be displayed*/}
                   <main className="lg:col-span-3">
-                    <div className="max-w-md">
-                      <div className="flex items-center gap-2 text-sm lg:pl-8 md:pl-4 text-arfablack">
-                        <span className="cursor-pointer hover:text-arfagreen">
-                          Home
-                        </span>
-                        <img src={greaterthan} alt=">" className="w-2 h-2" />
-                        <span className="cursor-pointer hover:text-arfagreen">
-                          Catalog
-                        </span>
-                      </div>
-                    </div>
+                    <Breadcrumbs />
                     <Outlet />
                   </main>
                 </div>
@@ -425,8 +421,9 @@ const Catalog = () => {
             </main>
           </div>
         </div>
-        {/* <section className="mx-6 my-3">
-        </section> */}
+        <section>
+          <FooterSection></FooterSection>
+        </section>
       </section>
     </>
   );
