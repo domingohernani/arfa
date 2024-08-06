@@ -8,13 +8,13 @@ const displayReviews = () => {
 
   return furnitures.map((e, index) => (
     <div
-      className="pt-11 pb-8 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto"
+      className="pt-3 pb-8 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto"
       key={index}
     >
       <div className="flex items-center mb-4">
-        <DisplayStars number={4} size={7} />
+        <DisplayStars number={4} size={5} />
       </div>
-      <h3 className="text-xl pb-5 font-semibold text sm:text-2xl leading-9 text-arfablack mb-6">
+      <h3 className="text-xl font-semibold leading-9 text sm:text-2xl text-arfablack">
         Outstanding Experience!!!
       </h3>
       <div className="flex sm:items-center flex-col min-[400px]:flex-row justify-between gap-5 mb-4">
@@ -24,13 +24,13 @@ const displayReviews = () => {
             alt="John image"
             className="w-8 h-8"
           />
-          <h6 className="leading-8 font-medium text-arfagreen">John Watson</h6>
+          <h6 className="font-medium leading-8 text-arfagreen">John Watson</h6>
         </div>
-        <p className="font-normal leading-8 text-gray-400 text-sm">
+        <p className="text-sm font-normal leading-8 text-gray-400">
           Nov 01, 2023
         </p>
       </div>
-      <p className="font-normal leading-8 ">
+      <p className="text-sm font-normal leading-relaxed ">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa dolorem
         praesentium tempore ab fugiat esse dolore sapiente reiciendis officia,
         molestiae beatae similique inventore veritatis hic? Provident eos
@@ -44,14 +44,14 @@ const displayReviews = () => {
 
 const CustomerReview = () => {
   return (
-    <section className="py-5 relative">
-      <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
+    <section className="relative py-5">
+      <div className="w-full px-4 mx-auto max-w-7xl md:px-5 lg-6">
         <div className="w-full">
-          <h2 className="text-xl pb-5 font-semibold text-gray-900 sm:text-2xl">
+          <h2 className="pb-5 text-xl font-semibold text-gray-900 sm:text-2xl">
             Customer Reviews
           </h2>
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-11 pb-11 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto">
-            <div className="box flex flex-col gap-y-4 w-full ">
+          <div className="grid grid-cols-1 border-b border-gray-100 xl:grid-cols-2 gap-11 pb-11 max-xl:max-w-2xl max-xl:mx-auto">
+            <div className="flex flex-col w-full box gap-y-4 ">
               <div className="flex items-center w-full">
                 <p className=" text-arfablack mr-0.5">5</p>
                 <svg
@@ -183,14 +183,14 @@ const CustomerReview = () => {
                 <p className=" py-[1px] text-arfablack mr-0.5">8</p>
               </div>
             </div>
-            <div className="p-8 bg-arfagray rounded-lg flex items-center justify-center flex-col">
-              <h2 className=" text-3xl text-arfagreen mb-6 font-bold sm:text-3xl ">
+            <div className="flex flex-col items-center justify-center p-8 rounded-lg bg-arfagray">
+              <h2 className="mb-6 text-3xl font-bold text-arfagreen sm:text-3xl">
                 4.3
               </h2>
               <div className="flex items-center justify-center mb-4">
                 <DisplayStars number={4} size={14} />
               </div>
-              <p className="text-base leading-8 text-gray-900 text-center">
+              <p className="text-base leading-8 text-center text-gray-900">
                 5563 Ratings
               </p>
             </div>

@@ -1,16 +1,8 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
+import { unSlug } from "../globalFunctions";
 
 const Breadcrumbs = () => {
-  const formatString = (str) => {
-    const replaced = str.replace(/-/g, " ");
-    const capitalized = replaced
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    return capitalized;
-  };
-
   const { category, item } = useParams();
 
   return (
@@ -58,7 +50,7 @@ const Breadcrumbs = () => {
               className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[100px] sm:max-w-full"
             >
               <span className="font-normal truncate text-arfablack hover:text-arfagreen">
-                {formatString(category)}
+                {unSlug(category)}
               </span>
             </Link>
           </li>
@@ -71,7 +63,7 @@ const Breadcrumbs = () => {
             </span>
             <Link className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[70px] sm:max-w-full">
               <span className="font-normal truncate text-arfablack hover:text-arfagreen">
-                {formatString(item)}
+                {unSlug(item)}
               </span>
             </Link>
           </li>

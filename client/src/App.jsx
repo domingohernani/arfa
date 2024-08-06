@@ -47,13 +47,10 @@ function App() {
 
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
+            <Route path="category/:category" element={<DisplayFurniture />} />
+            <Route path="item/:item/:id" element={<ViewFurniture />} />
             <Route
-              path="category/:category"
-              element={<DisplayFurniture />}
-            />
-            <Route path="item/:item" element={<ViewFurniture />} />
-            <Route
-              path="category/:category/item/:item"
+              path="category/:category/item/:item/:id"
               element={<ViewFurniture />}
             />
           </Route>
