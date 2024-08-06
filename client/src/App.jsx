@@ -26,6 +26,7 @@ import SellerReports from "./pages/seller/SellerReports";
 import SellerInbox from "./pages/seller/SellerInbox";
 import CartWishlistAugmentedReality from "./pages/shopper/CartWishlistAugmentedReality";
 import DisplayFurnituresCategory from "./components/dynamic/DisplayFurnituresCategory";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -37,13 +38,24 @@ function App() {
           <Route element={<LoginShopper />} path="/login-shopper"></Route>
           <Route element={<SignupShopper />} path="/signup-shopper"></Route>
 
+          {/* <Route path="/catalog" element={<Catalog />}>
+            <Route index element={<DisplayFurniture />} />
+            <Route path=":category" element={<DisplayFurniture />}></Route>
+            <Route path="item/:item" element={<ViewFurniture />} />
+            <Route path=":category/item/:item" element={<ViewFurniture />} />
+          </Route> */}
+
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
             <Route
-              path=":category"
-              element={<DisplayFurnituresCategory />}
-            ></Route>
-            <Route path=":item" element={<ViewFurniture />} />
+              path="category/:category"
+              element={<DisplayFurniture />}
+            />
+            <Route path="item/:item" element={<ViewFurniture />} />
+            <Route
+              path="category/:category/item/:item"
+              element={<ViewFurniture />}
+            />
           </Route>
 
           {/* Private routes: exclusive to shopper */}
@@ -73,6 +85,9 @@ function App() {
             <Route element={<SellerReports />} path="report" />
             <Route element={<SellerInbox />} path="inbox" />
           </Route>
+
+          {/* Catch-all route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>
