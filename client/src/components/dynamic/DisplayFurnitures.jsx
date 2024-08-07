@@ -140,9 +140,6 @@ const DisplayFurnitures = () => {
   return (
     <section className="bg-white md:pl-8 md:border-l text-arfablack">
       <div className="max-w-screen-xl mx-auto ">
-        <div className="grid grid-cols-2 gap-6 mt-5 lg:mt-10 lg:grid-cols-5 lg:gap-4">
-          {displayFurnitures(furnitures, imageUrls, loading)}
-        </div>
         {furnitures.length == 0 ? (
           <div className="flex flex-col items-center justify-center w-full gap-3 mt-10">
             <img src={noResult} className="w-60 h-60" />
@@ -154,7 +151,11 @@ const DisplayFurnitures = () => {
               check back later.
             </p>
           </div>
-        ) : null}
+        ) : (
+          <div className="grid grid-cols-2 gap-6 mt-5 lg:mt-10 lg:grid-cols-5 lg:gap-4">
+            {displayFurnitures(furnitures, imageUrls, loading)}
+          </div>
+        )}
       </div>
     </section>
   );
