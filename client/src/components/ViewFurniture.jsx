@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ShowModel from "./ShowModel";
-import cart from "../assets/icons/cart.svg";
 import { Carousel } from "flowbite-react";
 import CustomerReview from "./dynamic/CustomerReview";
 import DisplayStars from "./dynamic/DisplayStars";
@@ -12,48 +11,50 @@ import { formatToPeso } from "../components/globalFunctions";
 
 const ViewFurniture = () => {
   const { id } = useParams();
-  const [furniture, setFurniture] = useState(null); // Initialize as null
+  const [furniture, setFurniture] = useState(null);
   const [modelURL, setModelURL] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+
+  const fetchModel = useCallback(async (path) => {
+    try {
+      const storageRef = ref(storage, path);
+      const url = await getDownloadURL(storageRef);
+      setModelURL(url);
+    } catch (error) {
+      console.error("Error fetching model:", error);
+      setError("Failed to load model");
+    }
+  }, []);
+
+  const fetchFurniture = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await fetchFurnitureById("furnitures", id);
+      setFurniture(data);
+      fetchModel(data.modelUrl);
+    } catch (error) {
+      console.error("Error fetching furniture:", error);
+      setError("Failed to load furniture data");
+    } finally {
+      setLoading(false);
+    }
+  }, [id, fetchModel]);
 
   useEffect(() => {
-    const fetchModal = async (path) => {
-      try {
-        const storageRef = ref(storage, path);
-        const url = await getDownloadURL(storageRef);
-        setModelURL(url);
-      } catch (error) {
-        console.error("Error fetching model:", error);
-      }
-    };
-
-    const fetchFurniture = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchFurnitureById("furnitures", id);
-        setFurniture(data);
-        fetchModal(data.modelUrl);
-      } catch (error) {
-        console.error("Error fetching furniture:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFurniture();
-  }, [id]);
+  }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Handle loading state
+    return <div>Loading...</div>;
   }
 
   if (!furniture) {
-    return <div>No furniture found</div>; // Handle the case when no furniture is found
+    return <div>No furniture found</div>;
   }
 
   return (
     <section>
-      <section className="box-border py-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
+      <section className="box-border pt-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
         <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
@@ -67,7 +68,7 @@ const ViewFurniture = () => {
                 </Carousel>
               </div>
               <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
-                {modelURL ? <ShowModel path={modelURL} /> : "Loading Model"}
+                {modelURL ? <ShowModel path={modelURL} /> : null}
                 <span className="hidden text-xs italic md:block">
                   Note: AR feature is currently only available on Android and
                   IOS devices.{" "}
@@ -87,7 +88,10 @@ const ViewFurniture = () => {
                 {furniture.name}
               </h1>
               <p className="mt-2 text-sm ">
-                by <span className="underline">{furniture.modelUrl}</span>
+                by{" "}
+                <span className="underline">
+                  {furniture.shopData?.name || "No shop assigned"}
+                </span>
               </p>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
                 <p className="flex gap-2 text-2xl font-bold text-gray-900 sm:text-2xl dark:text-white">
@@ -105,9 +109,9 @@ const ViewFurniture = () => {
                   </div>
                   <span
                     href="#"
-                    className="text-xs font-medium text-gray-900 underline hover:no-underline dark:text-white"
+                    className="text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white"
                   >
-                    345 Reviews
+                    {Object.keys(furniture.reviewsData).length} reviews
                   </span>
                 </div>
               </div>
@@ -163,7 +167,7 @@ const ViewFurniture = () => {
         </div>
         <hr />
         <section className="">
-          <CustomerReview />
+          <CustomerReview reviews={furniture.reviewsData} />
         </section>
       </section>
     </section>
