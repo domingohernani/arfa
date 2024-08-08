@@ -14,6 +14,11 @@ const ViewFurniture = () => {
   const [furniture, setFurniture] = useState(null);
   const [modelURL, setModelURL] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [aveReview, setAveReview] = useState(0);
+
+  const showAverageOfReview = (number) => {
+    setAveReview(number);
+  };
 
   const fetchModel = useCallback(async (path) => {
     try {
@@ -105,7 +110,7 @@ const ViewFurniture = () => {
 
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">
                   <div className="flex items-center">
-                    <DisplayStars number={4} size={5} />
+                    <DisplayStars number={Math.round(aveReview)} size={5} />
                   </div>
                   <span
                     href="#"
@@ -167,7 +172,10 @@ const ViewFurniture = () => {
         </div>
         <hr />
         <section className="">
-          <CustomerReview reviews={furniture.reviewsData} />
+          <CustomerReview
+            reviews={furniture.reviewsData}
+            showAverageOfReview={showAverageOfReview}
+          />
         </section>
       </section>
     </section>

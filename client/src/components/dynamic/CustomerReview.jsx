@@ -64,7 +64,7 @@ const displayReviews = (reviews, urls) => {
   });
 };
 
-const CustomerReview = memo(({ reviews }) => {
+const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
   const [profileUrls, setProfileUrls] = useState([]);
   const [rating, setRating] = useState({});
   const [loading, setLoading] = useState(true);
@@ -85,6 +85,7 @@ const CustomerReview = memo(({ reviews }) => {
           return null;
         })
       );
+      showAverageOfReview(rate.average);
       setProfileUrls(urls);
       setRating(rate);
     } catch (error) {
