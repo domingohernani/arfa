@@ -56,7 +56,7 @@ const displayFurnituresOnCart = () => {
               type="text"
               id="counter-input"
               data-input-counter
-              className="w-10 text-base font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white"
+              className="w-10 text-sm font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white"
               placeholder=""
               value="2"
               required
@@ -85,7 +85,7 @@ const displayFurnituresOnCart = () => {
             </button>
           </div>
           <div className="text-end md:order-4 md:w-32">
-            <p className="text-base font-semibold text-gray-900 dark:text-white">
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">
               ₱19,999
             </p>
           </div>
@@ -94,7 +94,7 @@ const displayFurnituresOnCart = () => {
         <div className="flex-1 w-full min-w-0 space-y-4 md:order-2 md:max-w-md">
           <a
             href="#"
-            className="text-base font-medium text-gray-900 hover:underline dark:text-white"
+            className="text-sm font-medium text-gray-900 hover:underline dark:text-white"
           >
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ex,
             tenetur.
@@ -103,7 +103,7 @@ const displayFurnituresOnCart = () => {
           <div className="flex items-center gap-4">
             <button
               type="button"
-              className="inline-flex items-center text-base font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
+              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +121,7 @@ const displayFurnituresOnCart = () => {
 
             <button
               type="button"
-              className="inline-flex items-center text-base font-medium text-red-600 hover:underline dark:text-red-500"
+              className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
             >
               <svg
                 className="me-1.5 h-5 w-5"
@@ -171,7 +171,7 @@ const Cart = () => {
         >
           <Tabs.Item title="Wishlist"></Tabs.Item>
           <Tabs.Item active title="Cart">
-            <div className="flex items-center gap-2 py-5 text-base text-arfablack">
+            <div className="flex items-center gap-2 py-5 text-sm text-arfablack">
               <span className="cursor-pointer hover:text-arfagreen">Home</span>
               <img src={greaterthan} alt=">" className="w-2 h-2" />
               <span className="cursor-pointer hover:text-arfagreen">Cart</span>
@@ -190,7 +190,7 @@ const Cart = () => {
                 >
                   <path d="m20.484,4.84l-6.5-3.715c-1.225-.699-2.745-.699-3.968,0h0l-6.5,3.715c-1.243.71-2.016,2.041-2.016,3.473v7.375c0,1.432.772,2.763,2.016,3.473l6.5,3.715c.612.35,1.298.524,1.984.524s1.372-.175,1.984-.524l6.5-3.715c1.243-.711,2.016-2.041,2.016-3.473v-7.375c0-1.432-.772-2.762-2.016-3.473Zm-9.477-1.979c.613-.349,1.374-.349,1.984,0l6.492,3.71-2.556,1.461c-.139-.118-.274-.241-.434-.333l-3.001-1.723c-.922-.529-2.064-.529-2.987,0l-3,1.723c-.161.092-.296.215-.435.333l-2.556-1.461,6.492-3.71Zm-3.008,8.005l3,1.714v3.424l-2.496-1.426c-.311-.178-.504-.511-.504-.868v-2.844Zm4-.017l-2.988-1.708,2.49-1.43c.153-.088.326-.132.498-.132s.344.044.498.132l2.491,1.43-2.988,1.708Zm1,1.732l3-1.714v2.844c0,.357-.193.69-.504.868l-2.496,1.426v-3.424Zm-8.492,4.844c-.622-.355-1.008-1.021-1.008-1.736v-7.375c0-.006.002-.011.002-.016l2.57,1.468c-.033.177-.072.353-.072.537v3.409c0,1.073.579,2.071,1.512,2.604l3,1.714c.155.089.323.141.489.199v2.906l-6.492-3.71Zm15.992-1.736c0,.716-.386,1.381-1.008,1.736l-6.492,3.711v-2.907c.165-.059.333-.111.488-.199l3.001-1.714c.932-.533,1.511-1.531,1.511-2.604v-3.409c0-.183-.039-.359-.072-.537l2.57-1.468c0,.006.002.011.002.016v7.375Z" />
                 </svg>
-                <span className="text-base font-normal text-arfablack">
+                <span className="text-sm font-normal text-arfablack">
                   View Cart on AR
                 </span>
               </div>
@@ -209,47 +209,47 @@ const Cart = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <dl className="flex items-center justify-between gap-4">
-                        <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                        <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                           Original price
                         </dt>
-                        <dd className="text-base font-medium text-gray-900 dark:text-white">
+                        <dd className="text-sm font-medium text-gray-900 dark:text-white">
                           $7,592.00
                         </dd>
                       </dl>
 
                       <dl className="flex items-center justify-between gap-4">
-                        <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                        <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                           Savings
                         </dt>
-                        <dd className="text-base font-medium text-green-600">
+                        <dd className="text-sm font-medium text-green-600">
                           -$299.00
                         </dd>
                       </dl>
 
                       <dl className="flex items-center justify-between gap-4">
-                        <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                        <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                           Delivery Fee
                         </dt>
-                        <dd className="text-base font-medium text-gray-900 dark:text-white">
+                        <dd className="text-sm font-medium text-gray-900 dark:text-white">
                           $99
                         </dd>
                       </dl>
 
                       <dl className="flex items-center justify-between gap-4">
-                        <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                        <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                           Tax
                         </dt>
-                        <dd className="text-base font-medium text-gray-900 dark:text-white">
+                        <dd className="text-sm font-medium text-gray-900 dark:text-white">
                           $799
                         </dd>
                       </dl>
                     </div>
 
                     <dl className="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
-                      <dt className="text-base font-bold text-gray-900 dark:text-white">
+                      <dt className="text-sm font-bold text-gray-900 dark:text-white">
                         Total
                       </dt>
-                      <dd className="text-base font-bold text-gray-900 dark:text-white">
+                      <dd className="text-sm font-bold text-gray-900 dark:text-white">
                         $8,191.00
                       </dd>
                     </dl>
@@ -257,17 +257,17 @@ const Cart = () => {
 
                   <a
                     href="#"
-                    className="flex w-full bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-base font-medium text-white hover:bg-primary-800"
+                    className="flex w-full bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
                   >
                     Proceed to Checkout
                   </a>
                   <div className="flex items-center justify-center gap-2">
-                    <span className="text-base font-normal text-gray-500 dark:text-gray-400">
+                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                       or
                     </span>
                     <Link
                       to={"/catalog"}
-                      className="inline-flex items-center gap-2 text-base font-medium underline text-primary-700 hover:no-underline dark:text-primary-500"
+                      className="inline-flex items-center gap-2 text-sm font-medium underline text-primary-700 hover:no-underline dark:text-primary-500"
                     >
                       Continue Shopping
                       <svg

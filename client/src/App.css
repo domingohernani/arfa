@@ -4,8 +4,9 @@
   box-sizing: border-box;
   /* font-family: 'Poppins', sans-serif; */
   /* font-family: "Hind", sans-serif; */
-  font-family: "Cormorant Garamond", serif;
+  /* font-family: "Cormorant Garamond", serif; */
   /* font-family: "Crimson Text", serif; */
+  font-family: "Raleway", sans-serif;
 }
 .model {
   margin: auto;

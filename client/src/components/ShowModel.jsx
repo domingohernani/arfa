@@ -306,7 +306,7 @@ function ShowModel({ path }) {
           <line className="dimensionLine"></line>
         </svg>
       </model-viewer>
-      <div className="flex items-center justify-between mx-auto my-2 text-base controls">
+      <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
         {variants.length != 0 ? (
           <div className="flex items-center">
             <span>Variant:</span>
@@ -314,7 +314,7 @@ function ShowModel({ path }) {
               id="variant"
               onChange={handleVariantChange}
               value={initialVariant}
-              className="text-base text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
+              className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
             >
               {variants.map((variant, index) => (
                 <option key={index} value={variant.value}>

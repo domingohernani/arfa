@@ -11,7 +11,7 @@ const Inbox = () => {
             <div className="relative">
               <input
                 type="text"
-                class="w-full px-7 py-2 text-base border border-gray-200 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+                class="w-full px-7 py-2 text-sm border border-gray-200 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                 placeholder="Search..."
                 id="catalogSearchbar convoSearchBar"
               ></input>
@@ -44,11 +44,11 @@ const Inbox = () => {
                         d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    <div class="flex text-arfablack font-semibold text-base">
+                    <div class="flex text-arfablack font-semibold text-sm">
                       Nikola Tesla
                     </div>
                   </div>
-                  <div class="text-base text-gray-500">5hr</div>
+                  <div class="text-sm text-gray-500">5hr</div>
                 </div>
 
                 <div class="flex flex-row items-center space-x-1">
@@ -78,11 +78,11 @@ const Inbox = () => {
                         d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    <div class="flex text-arfablack font-semibold text-base">
+                    <div class="flex text-arfablack font-semibold text-sm">
                       Nikola Tesla
                     </div>
                   </div>
-                  <div class="text-base text-gray-500">5hr</div>
+                  <div class="text-sm text-gray-500">5hr</div>
                 </div>
 
                 <div class="flex flex-row items-center space-x-1">
@@ -124,10 +124,10 @@ const Inbox = () => {
               </svg>
 
               <div class="flex flex-col">
-                <div class="bg-gray-200 rounded p-5 text-base">
+                <div class="bg-gray-200 rounded p-5 text-sm">
                   Some message text
                 </div>
-                <div class="text-base text-gray-600">4hr ago</div>
+                <div class="text-sm text-gray-600">4hr ago</div>
               </div>
             </div>
             <div class="flex flex-row space-x-2  space-x-reverse">
@@ -147,16 +147,16 @@ const Inbox = () => {
               </svg>
 
               <div class="flex flex-col">
-                <div class="bg-blue-100 rounded p-5 text-base">
+                <div class="bg-blue-100 rounded p-5 text-sm">
                   Some message text
                 </div>
-                <div class="text-base text-gray-600">5hr ago</div>
+                <div class="text-sm text-gray-600">5hr ago</div>
               </div>
             </div>
           </div>
 
           <div class="flex-none h-fit px-5 pt-0">
-            <textarea class="w-full min-h-16 max-h-32 px-2 py-2 text-base border border-gray-200 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white ">
+            <textarea class="w-full min-h-16 max-h-32 px-2 py-2 text-sm border border-gray-200 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white ">
               Hi
             </textarea>
           </div>
