@@ -14,7 +14,7 @@ export const ProfileSideBar = () => {
   return (
     <aside class="top-0 left-0 z-10 w-fit h-screen">
       <div class="h-full px-3 py-4 overflow-y-auto">
-        <ul class="space-y-2 text-sm">
+        <ul class="space-y-2 text-base">
           <li>
             <NavLink
               to={"user-profile"}
@@ -72,7 +72,7 @@ export const ProfileSideBar = () => {
                 </>
               )}
 
-              {/* <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
+              {/* <span class="inline-flex items-center justify-center px-2 ms-3 text-base font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
                 Pro
               </span> */}
             </NavLink>

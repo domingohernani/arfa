@@ -10,7 +10,7 @@ const PitchVideo = (props) => {
             <div className="space-y-8">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <span className="px-3 py-2 text-sm font-semibold leading-5 text-white rounded-full bg-arfagreen ">
+                  <span className="px-3 py-2 text-base font-semibold leading-5 text-white rounded-full bg-arfagreen ">
                     Pitch Video
                   </span>
                   <h1 className="text-4xl font-bold tracking-tight text-black sm:text-5xl md:text-6xl">

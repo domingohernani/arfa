@@ -17,11 +17,11 @@ const displayNotification = () => {
             icon={() => <HiCalendar className="text-white" />}
           />
           <Timeline.Content>
-            <Timeline.Time className="text-sm">11/07/2024</Timeline.Time>
-            <Timeline.Title className="text-sm">
+            <Timeline.Time className="text-base">11/07/2024</Timeline.Time>
+            <Timeline.Title className="text-base">
               Lorem, ipsum dolor.
             </Timeline.Title>
-            <Timeline.Body className="text-sm">
+            <Timeline.Body className="text-base">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
               neque
             </Timeline.Body>

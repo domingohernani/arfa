@@ -122,8 +122,8 @@ const Catalog = () => {
                             onClick={() => setMobileFiltersOpen(false)}
                             className={({ isActive }) =>
                               isActive
-                                ? "text-arfagreen block px-2 py-3 text-sm"
-                                : "text-gray-900 hover:text-arfagreen block px-2 py-3 text-sm"
+                                ? "text-arfagreen block px-2 py-3 text-base"
+                                : "text-gray-900 hover:text-arfagreen block px-2 py-3 text-base"
                             }
                           >
                             {category.name}
@@ -165,7 +165,7 @@ const Catalog = () => {
                                 {section.options.map((option, optionIdx) => (
                                   <div
                                     key={option.value || option.label}
-                                    className="flex items-center text-sm"
+                                    className="flex items-center text-base"
                                   >
                                     {/* Category Options (Smaller Screens) */}
                                     {section.id == "filter" ? (
@@ -193,7 +193,7 @@ const Catalog = () => {
                                         {option.label != "searchPrice" ? (
                                           <input
                                             type="text"
-                                            className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+                                            className="w-full text-base border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
                                           />
                                         ) : (
@@ -237,7 +237,7 @@ const Catalog = () => {
                 <div className="flex items-center">
                   <Menu as="div" className="relative inline-block text-left">
                     <div>
-                      <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
+                      <MenuButton className="inline-flex justify-center text-base font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
                         Sort by
                         <ChevronDownIcon
                           className="flex-shrink-0 w-5 h-5 ml-1 -mr-1 text-gray-400 group-hover:text-gray-500"
@@ -263,7 +263,7 @@ const Catalog = () => {
                                   focus
                                     ? "bg-gray-100 hover:text-arfagreen"
                                     : "",
-                                  "block px-4 py-2 text-sm hover:text-arfagreen"
+                                  "block px-4 py-2 text-base hover:text-arfagreen"
                                 )}
                               >
                                 {option.name}
@@ -299,7 +299,7 @@ const Catalog = () => {
                     <h3 className="sr-only">Categories</h3>
                     <ul
                       role="list"
-                      className="pb-6 space-y-4 text-sm font-medium text-gray-900 border-b border-gray-200"
+                      className="pb-6 space-y-4 text-base font-medium text-gray-900 border-b border-gray-200"
                     >
                       {subCategories.map((category) => (
                         <li key={category.name}>
@@ -326,7 +326,7 @@ const Catalog = () => {
                         {({ open }) => (
                           <>
                             <h3 className="flow-root -my-3">
-                              <DisclosureButton className="flex items-center justify-between w-full py-3 text-sm text-gray-400 bg-white hover:border-transparent hover:text-gray-500">
+                              <DisclosureButton className="flex items-center justify-between w-full py-3 text-base text-gray-400 bg-white hover:border-transparent hover:text-gray-500">
                                 <span className="font-medium text-gray-900">
                                   {section.name}
                                 </span>
@@ -365,7 +365,7 @@ const Catalog = () => {
                                         />
                                         <label
                                           htmlFor={`filter-${section.id}-${optionIdx}`}
-                                          className="ml-3 text-sm text-gray-600"
+                                          className="ml-3 text-base text-gray-600"
                                         >
                                           {option.label}
                                         </label>
@@ -378,7 +378,7 @@ const Catalog = () => {
                                         {option.label != "searchPrice" ? (
                                           <input
                                             type="text"
-                                            className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+                                            className="w-full text-base border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
                                           />
                                         ) : (

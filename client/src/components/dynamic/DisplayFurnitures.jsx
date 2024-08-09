@@ -102,8 +102,8 @@ const DisplayFurnitures = () => {
             )}
             <div className="flex items-start justify-between mt-4">
               <div className="relative">
-                <h3 className="text-xs font-semibold sm:text-sm md:text-base">
-                  <div className="w-20 text-sm truncate cursor-pointer sm:w-24 2xl:w-32 lg:w-20 text-arfablack hover:text-arfablack whitespace-nowrap">
+                <h3 className="text-xs font-semibold sm:text-base md:text-base">
+                  <div className="w-20 text-base truncate cursor-pointer sm:w-24 2xl:w-32 lg:w-20 text-arfablack hover:text-arfablack whitespace-nowrap">
                     {furniture.name}
                     <span className="absolute" aria-hidden="true"></span>
                   </div>
@@ -119,12 +119,12 @@ const DisplayFurnitures = () => {
                     <del className="mt-px text-xs text-gray-600 sm:text-xs">
                       {formatToPeso(furniture.price)}
                     </del>
-                    <p className="text-sm font-normal text-arfablack">
+                    <p className="text-base font-normal text-arfablack">
                       {formatToPeso(furniture.discountedPrice)}
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm font-normal text-arfablack">
+                  <p className="text-base font-normal text-arfablack">
                     {formatToPeso(furniture.price)}
                   </p>
                 )}
@@ -149,7 +149,7 @@ const DisplayFurnitures = () => {
             <h1 className="text-2xl font-semibold tracking-tight text-arfablack">
               No results found.
             </h1>
-            <p className="text-sm text-center">
+            <p className="text-base text-center">
               Sorry, no results were found. Please try adjusting your filters or
               check back later.
             </p>
