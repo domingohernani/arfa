@@ -1,57 +1,117 @@
-import React from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import DisplayStars from "./DisplayStars";
+import { calculateRatingSummary, formatTimestamp } from "../globalFunctions";
+import { getImageDownloadUrl } from "../../firebase/photos";
+import noReview from "../../assets/images/no-review.jpg";
+import { Progress } from "flowbite-react";
 
-const displayReviews = () => {
-  let furnitures = Array(25).fill();
-
-  return furnitures.map((e, index) => (
-    <div
-      className="pt-11 pb-8 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto"
-      key={index}
-    >
-      <div className="flex items-center mb-4">
-        <DisplayStars number={4} size={7} />
-      </div>
-      <h3 className="text-xl pb-5 font-semibold text sm:text-2xl leading-9 text-arfablack mb-6">
-        Outstanding Experience!!!
-      </h3>
-      <div className="flex sm:items-center flex-col min-[400px]:flex-row justify-between gap-5 mb-4">
-        <div className="flex items-center gap-3">
-          <img
-            src="https://pagedone.io/asset/uploads/1704349572.png"
-            alt="John image"
-            className="w-8 h-8"
-          />
-          <h6 className="leading-8 font-medium text-arfagreen">John Watson</h6>
-        </div>
-        <p className="font-normal leading-8 text-gray-400 text-sm">
-          Nov 01, 2023
+const displayReviews = (reviews, urls) => {
+  if (Object.keys(reviews).length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full gap-3 mt-10">
+        <img src={noReview} className="w-60 h-60" />
+        <h1 className="text-2xl font-semibold tracking-tight text-arfablack">
+          No Reviews Yet
+        </h1>
+        <p className="text-sm text-center">
+          Sorry, but it looks like there are no reviews available at the moment.
+          Please check back later.
         </p>
       </div>
-      <p className="font-normal leading-8 ">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa dolorem
-        praesentium tempore ab fugiat esse dolore sapiente reiciendis officia,
-        molestiae beatae similique inventore veritatis hic? Provident eos
-        eveniet fugit iure iste corrupti, magni laboriosam quas. Laborum
-        recusandae cum doloremque, suscipit nemo earum modi. Voluptatem quaerat
-        commodi fugiat officiis ea asperiores.
-      </p>
-    </div>
-  ));
+    );
+  }
+
+  return Object.entries(reviews).map(([key, review], index) => {
+    return (
+      <div
+        className="flex flex-col pt-3 border-b border-gray-100 md:gap-2 max-xl:max-w-2xl max-xl:mx-auto"
+        key={key}
+      >
+        <div className="flex items-center mb-4">
+          <DisplayStars number={review.rating} size={5} />
+        </div>
+        <div className="flex sm:items-center flex-col min-[400px]:flex-row justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center overflow-hidden rounded-md bg-arfagray w-14 h-14 aspect-square">
+              {urls[index] != null ? (
+                <img
+                  className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                  src={urls[index]}
+                  loading="lazy"
+                />
+              ) : (
+                <span className="font-bold">HD</span>
+              )}
+            </div>
+            <h6 className="text-sm font-medium leading-8 text-arfablack">
+              {review.userData.email}
+            </h6>
+          </div>
+          <p className="text-sm italic font-normal leading-8 text-arfablack">
+            {formatTimestamp(review.date)}
+          </p>
+        </div>
+        <h3 className="text-base font-semibold leading-9 text sm:text-base text-arfablack">
+          {review.title}
+        </h3>
+
+        <p className="text-sm font-normal leading-relaxed">
+          {review.description}
+        </p>
+      </div>
+    );
+  });
 };
 
-const CustomerReview = () => {
+const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
+  const [profileUrls, setProfileUrls] = useState([]);
+  const [rating, setRating] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const fetchProfileUrlsAndRating = useCallback(async () => {
+    try {
+      setLoading(true);
+      // Calculate rating
+      const rate = calculateRatingSummary(reviews);
+
+      // Fetch profile URLs
+      const urls = await Promise.all(
+        Object.keys(reviews).map(async (key) => {
+          const profileUrl = reviews[key].userData.profileUrl;
+          if (profileUrl) {
+            return await getImageDownloadUrl(profileUrl);
+          }
+          return null;
+        })
+      );
+      showAverageOfReview(rate.average);
+      setProfileUrls(urls);
+      setRating(rate);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [reviews]);
+  useEffect(() => {
+    fetchProfileUrlsAndRating();
+  }, [fetchProfileUrlsAndRating, reviews]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <section className="py-5 relative">
-      <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
+    <section className="relative pt-5">
+      <div className="w-full px-4 mx-auto max-w-7xl md:px-5 lg-6">
         <div className="w-full">
-          <h2 className="text-xl pb-5 font-semibold text-gray-900 sm:text-2xl">
+          <h2 className="pb-5 text-xl font-semibold text-gray-900 sm:text-2xl">
             Customer Reviews
           </h2>
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-11 pb-11 border-b border-gray-100 max-xl:max-w-2xl max-xl:mx-auto">
-            <div className="box flex flex-col gap-y-4 w-full ">
+          <div className="grid grid-cols-1 border-b border-gray-100 xl:grid-cols-2 gap-11 pb-11 max-xl:max-w-2xl max-xl:mx-auto">
+            <div className="flex flex-col w-full box">
               <div className="flex items-center w-full">
                 <p className=" text-arfablack mr-0.5">5</p>
                 <svg
@@ -74,9 +134,14 @@ const CustomerReview = () => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full sm:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[30%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["5"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
-                <p className="  text-arfablack mr-0.5">989</p>
+                <p className="text-arfablack mr-0.5">
+                  {rating.ratingCounter["5"]}
+                </p>
               </div>
               <div className="flex items-center w-full">
                 <p className=" text-arfablack mr-0.5">4</p>
@@ -100,9 +165,15 @@ const CustomerReview = () => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[40%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["4"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
-                <p className="text-arfablack mr-0.5">4.5K</p>
+                <p className="text-arfablack mr-0.5">
+                  {" "}
+                  {rating.ratingCounter["4"]}
+                </p>
               </div>
               <div className="flex items-center">
                 <p className="text-arfablack mr-0.5">3</p>
@@ -126,12 +197,17 @@ const CustomerReview = () => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[20%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["3"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
-                <p className="  text-arfablack mr-0.5">50</p>
+                <p className="  text-arfablack mr-0.5">
+                  {rating.ratingCounter["3"]}
+                </p>
               </div>
               <div className="flex items-center">
-                <p className="  text-arfablack mr-0.5">2</p>
+                <p className="text-arfablack mr-0.5">2</p>
                 <svg
                   width="20"
                   height="20"
@@ -152,9 +228,14 @@ const CustomerReview = () => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[16%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["2"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
-                <p className=" text-arfablack mr-0.5">16</p>
+                <p className=" text-arfablack mr-0.5">
+                  {rating.ratingCounter["2"]}
+                </p>
               </div>
               <div className="flex items-center">
                 <p className=" text-arfablack mr-0.5">1</p>
@@ -178,20 +259,25 @@ const CustomerReview = () => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[8%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["1"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
-                <p className=" py-[1px] text-arfablack mr-0.5">8</p>
+                <p className=" py-[1px] text-arfablack mr-0.5">
+                  {rating.ratingCounter["1"]}
+                </p>
               </div>
             </div>
-            <div className="p-8 bg-arfagray rounded-lg flex items-center justify-center flex-col">
-              <h2 className=" text-3xl text-arfagreen mb-6 font-bold sm:text-3xl ">
-                4.3
+            <div className="flex flex-col items-center justify-center p-8 rounded-lg bg-arfagray">
+              <h2 className="text-3xl font-bold text-arfagreen sm:text-3xl">
+                {rating.average.toFixed(1)}
               </h2>
               <div className="flex items-center justify-center mb-4">
-                <DisplayStars number={4} size={14} />
+                <DisplayStars number={Math.round(rating.average)} size={10} />
               </div>
-              <p className="text-base leading-8 text-gray-900 text-center">
-                5563 Ratings
+              <p className="text-base leading-8 text-center text-gray-900">
+                {rating.numberOfRatings} Ratings
               </p>
             </div>
           </div>
@@ -213,54 +299,54 @@ const CustomerReview = () => {
               >
                 <div className="flex flex-col py-1">
                   <MenuItem>
-                    <a
+                    <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       5 Stars
-                    </a>
+                    </span>
                   </MenuItem>
                   <MenuItem>
-                    <a
+                    <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       4 Stars
-                    </a>
+                    </span>
                   </MenuItem>
                   <MenuItem>
-                    <a
+                    <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       3 Stars
-                    </a>
+                    </span>
                   </MenuItem>
                   <MenuItem>
-                    <a
+                    <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       2 Stars
-                    </a>
+                    </span>
                   </MenuItem>
                   <MenuItem>
-                    <a
+                    <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       1 Star
-                    </a>
+                    </span>
                   </MenuItem>
                 </div>
               </MenuItems>
             </Menu>
           </div>
-          {displayReviews()}
+          {displayReviews(reviews, profileUrls)}
         </div>
       </div>
     </section>
   );
-};
+});
 
 export default CustomerReview;

@@ -11,7 +11,6 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import useAuthStore from "../store/useAuthStore";
 
 export const doCreateUserWithEmailAndPassword = async (
   email,
@@ -59,10 +58,6 @@ export const doSigninWithGoogle = async () => {
       email: user.email,
       role: role,
     });
-    useAuthStore.getState().setUser({ ...user, role });
-  } else {
-    const role = userDoc.data().role;
-    useAuthStore.getState().setUser({ ...user, role });
   }
 
   return result;
