@@ -135,7 +135,7 @@ button {
 }
 
 .dimensionLine {
-  stroke:#0e9f6e;
+  stroke: #0e9f6e;
   stroke-width: 2;
   stroke-dasharray: 2;
 }
@@ -146,4 +146,9 @@ button {
 /* This keeps child nodes hidden while the element loads */
 :not(:defined) > * {
   display: none;
+}
+
+/* progress of reviews */
+.progressBarBg > div {
+  background-color: rgba(14, 159, 110, 1);
 }
