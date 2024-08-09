@@ -74,15 +74,6 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
     try {
       setLoading(true);
       // Calculate rating
-      const rev = {
-        6: { rating: 1 },
-        1: { rating: 2 },
-        2: { rating: 2 },
-        3: { rating: 3 },
-        4: { rating: 4 },
-        5: { rating: 5 },
-      };
-
       const rate = calculateRatingSummary(rev);
 
       console.log(rate);
