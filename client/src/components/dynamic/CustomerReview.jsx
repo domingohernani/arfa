@@ -74,7 +74,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
     try {
       setLoading(true);
       // Calculate rating
-      const rate = calculateRatingSummary(rev);
+      const rate = calculateRatingSummary(reviews);
 
       console.log(rate);
 
@@ -140,7 +140,6 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                     progress={rating.percentages["5"]}
                     className="bg-arfagray progressBarBg"
                   />
-                  ;
                 </p>
                 <p className="text-arfablack mr-0.5">
                   {rating.ratingCounter["5"]}
