@@ -10,14 +10,14 @@ const PitchVideo = (props) => {
             <div className="space-y-8">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <span className="px-3 py-2 text-base font-semibold leading-5 text-white rounded-full bg-arfagreen ">
+                  <span className="px-3 py-2 text-sm font-semibold leading-5 text-white rounded-full bg-arfagreen ">
                     Pitch Video
                   </span>
                   <h1 className="text-4xl font-bold tracking-tight text-black sm:text-5xl md:text-6xl">
                     Ready to immerse yourself in the world of augmented reality?
                   </h1>
                 </div>
-                <p className="text-base text-black sm:mt-5 ">
+                <p className="text-sm text-black sm:mt-5 ">
                   We're revolutionizing furniture shopping in the Philippines
                   with an innovative platform that simplifies browsing, offers
                   personalized recommendations, and promotes sustainable living.

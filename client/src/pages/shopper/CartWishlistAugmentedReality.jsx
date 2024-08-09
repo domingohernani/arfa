@@ -38,7 +38,7 @@ const CartWishlistAugmentedReality = () => {
         <NavigationBar />
       </section>
       <div className="px-4 max-w-screen md:mx-8 2xl:px-0">
-        <div className="flex items-center gap-2 py-5 text-base text-arfablack">
+        <div className="flex items-center gap-2 py-5 text-sm text-arfablack">
           <span className="cursor-pointer hover:text-arfagreen">Home</span>
           <img src={greaterthan} alt=">" className="w-2 h-2" />
           <span className="cursor-pointer hover:text-arfagreen">
@@ -65,7 +65,7 @@ const CartWishlistAugmentedReality = () => {
                 <circle cx="7" cy="22" r="2" />
                 <circle cx="17" cy="22" r="2" />
               </svg>
-              <span className="text-base font-normal text-arfablack hover:text-arfagreen ">
+              <span className="text-sm font-normal text-arfablack hover:text-arfagreen ">
                 Back to {page.charAt(0).toUpperCase() + page.slice(1)}
               </span>
             </div>

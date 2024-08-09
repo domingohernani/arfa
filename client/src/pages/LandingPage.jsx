@@ -15,7 +15,7 @@ const LandingPage = () => {
       <div className="flex flex-col items-center justify-center flex-1 w-full px-4 py-20 text-center from-green-50/50 via-teal-50 to-green-50/50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800">
         {/* <a
           href=""
-          className="px-4 py-2 mb-5 text-base transition duration-300 ease-in-out border border-white-700 dark:border-gray-300 text-white-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-400"
+          className="px-4 py-2 mb-5 text-sm transition duration-300 ease-in-out border border-white-700 dark:border-gray-300 text-white-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-400"
         >
           View Start Up Video Pitch ??? (Isip ano pwede ilagay here)
         </a> */}
@@ -34,7 +34,7 @@ const LandingPage = () => {
             <span className="relative"> with AR</span>
           </span>
         </h1>
-        <h2 className="max-w-xl mx-auto mt-12 text-base leading-7 sm:text-white-400 text-white-500 dark:text-gray-300">
+        <h2 className="max-w-xl mx-auto mt-12 text-sm leading-7 sm:text-white-400 text-white-500 dark:text-gray-300">
           Explore the future of furniture shopping with our state-of-the-art
           Augmented Reality tool. From visualizing pieces in your home to
           interactive product features, our innovative system enhances every
@@ -42,7 +42,7 @@ const LandingPage = () => {
         </h2>
         <Link
           to="/catalog"
-          className="px-4 py-3 mt-8 text-base font-medium text-white transition bg-arfagreen rounded-xl hover:text-white sm:mt-10"
+          className="px-4 py-3 mt-8 text-sm font-medium text-white transition bg-arfagreen rounded-xl hover:text-white sm:mt-10"
         >
           Get started
         </Link>
@@ -59,19 +59,19 @@ const LandingPage = () => {
           <li className="relative flex flex-col items-start sm:flex-row xl:flex-col">
             <div className="order-1 sm:ml-6 xl:ml-0">
               <h3 className="mb-1 font-semibold text-slate-900">
-                <span className="block mb-1 text-base leading-6 text-indigo-500">
+                <span className="block mb-1 text-sm leading-6 text-indigo-500">
                   Headless UI
                 </span>
                 Completely unstyled, fully accessible UI components
               </h3>
-              <div className="text-base prose-sm prose prose-slate">
+              <div className="text-sm prose-sm prose prose-slate">
                 <p>
                   Completely unstyled, fully accessible UI components, designed
                   to integrate beautifully with Tailwind CSS.
                 </p>
               </div>
               <a
-                className="inline-flex items-center px-3 mt-6 text-base font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
+                className="inline-flex items-center px-3 mt-6 text-sm font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
                 href=""
               >
                 Learn more
@@ -104,19 +104,19 @@ const LandingPage = () => {
           <li className="relative flex flex-col items-start sm:flex-row xl:flex-col">
             <div className="order-1 sm:ml-6 xl:ml-0">
               <h3 className="mb-1 font-semibold text-slate-900">
-                <span className="block mb-1 text-base leading-6 text-purple-500">
+                <span className="block mb-1 text-sm leading-6 text-purple-500">
                   Heroicons
                 </span>
                 Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS.
               </h3>
-              <div className="text-base prose-sm prose prose-slate">
+              <div className="text-sm prose-sm prose prose-slate">
                 <p>
                   A set of 450+ free MIT-licensed SVG icons. Available as basic
                   SVG icons and via first-party React and Vue libraries.
                 </p>
               </div>
               <a
-                className="inline-flex items-center px-3 mt-6 text-base font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
+                className="inline-flex items-center px-3 mt-6 text-sm font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
                 href=""
               >
                 Learn more
@@ -150,19 +150,19 @@ const LandingPage = () => {
           <li className="relative flex flex-col items-start sm:flex-row xl:flex-col">
             <div className="order-1 sm:ml-6 xl:ml-0">
               <h3 className="mb-1 font-semibold text-slate-900">
-                <span className="block mb-1 text-base leading-6 text-cyan-500">
+                <span className="block mb-1 text-sm leading-6 text-cyan-500">
                   Hero Patterns
                 </span>
                 Seamless SVG background patterns by the makers of Tailwind CSS.
               </h3>
-              <div className="text-base prose-sm prose prose-slate">
+              <div className="text-sm prose-sm prose prose-slate">
                 <p>
                   A collection of over 100 free MIT-licensed high-quality SVG
                   patterns for you to use in your web projects.
                 </p>
               </div>
               <a
-                className="inline-flex items-center px-3 mt-6 text-base font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
+                className="inline-flex items-center px-3 mt-6 text-sm font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
                 href=""
               >
                 Learn more

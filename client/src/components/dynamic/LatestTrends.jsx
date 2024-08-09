@@ -33,7 +33,7 @@ const LatestTrends = () => {
                   $149
                 </p>
                 <del>
-                  <p className="ml-2 text-base text-gray-600 cursor-auto">$199</p>
+                  <p className="ml-2 text-sm text-gray-600 cursor-auto">$199</p>
                 </del>
                 <div className="ml-auto">
                   <svg
@@ -75,7 +75,7 @@ const LatestTrends = () => {
                   $149
                 </p>
                 <del>
-                  <p className="ml-2 text-base text-gray-600 cursor-auto">$199</p>
+                  <p className="ml-2 text-sm text-gray-600 cursor-auto">$199</p>
                 </del>
                 <div className="ml-auto">
                   <svg
@@ -117,7 +117,7 @@ const LatestTrends = () => {
                   $149
                 </p>
                 <del>
-                  <p className="ml-2 text-base text-gray-600 cursor-auto">$199</p>
+                  <p className="ml-2 text-sm text-gray-600 cursor-auto">$199</p>
                 </del>
                 <div className="ml-auto">
                   <svg
@@ -159,7 +159,7 @@ const LatestTrends = () => {
                   $149
                 </p>
                 <del>
-                  <p className="ml-2 text-base text-gray-600 cursor-auto">$199</p>
+                  <p className="ml-2 text-sm text-gray-600 cursor-auto">$199</p>
                 </del>
                 <div className="ml-auto">
                   <svg
@@ -201,7 +201,7 @@ const LatestTrends = () => {
                   $149
                 </p>
                 <del>
-                  <p className="ml-2 text-base text-gray-600 cursor-auto">$199</p>
+                  <p className="ml-2 text-sm text-gray-600 cursor-auto">$199</p>
                 </del>
                 <div className="ml-auto">
                   <svg
@@ -243,7 +243,7 @@ const LatestTrends = () => {
                   $149
                 </p>
                 <del>
-                  <p className="ml-2 text-base text-gray-600 cursor-auto">$199</p>
+                  <p className="ml-2 text-sm text-gray-600 cursor-auto">$199</p>
                 </del>
                 <div className="ml-auto">
                   <svg

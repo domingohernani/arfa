@@ -15,7 +15,7 @@ const displayReviews = (reviews, urls) => {
         <h1 className="text-2xl font-semibold tracking-tight text-arfablack">
           No Reviews Yet
         </h1>
-        <p className="text-base text-center">
+        <p className="text-sm text-center">
           Sorry, but it looks like there are no reviews available at the moment.
           Please check back later.
         </p>
@@ -45,19 +45,19 @@ const displayReviews = (reviews, urls) => {
                 <span className="font-bold">HD</span>
               )}
             </div>
-            <h6 className="text-base font-medium leading-8 text-arfablack">
+            <h6 className="text-sm font-medium leading-8 text-arfablack">
               {review.userData.email}
             </h6>
           </div>
-          <p className="text-base italic font-normal leading-8 text-arfablack">
+          <p className="text-sm italic font-normal leading-8 text-arfablack">
             {formatTimestamp(review.date)}
           </p>
         </div>
-        <h3 className="text-base font-semibold leading-9 text sm:text-base text-arfablack">
+        <h3 className="text-sm font-semibold leading-9 text sm:text-sm text-arfablack">
           {review.title}
         </h3>
 
-        <p className="text-base font-normal leading-relaxed">
+        <p className="text-sm font-normal leading-relaxed">
           {review.description}
         </p>
       </div>
@@ -276,7 +276,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
               <div className="flex items-center justify-center mb-4">
                 <DisplayStars number={Math.round(rating.average)} size={10} />
               </div>
-              <p className="text-base leading-8 text-center text-gray-900">
+              <p className="text-sm leading-8 text-center text-gray-900">
                 {rating.numberOfRatings} ratings
               </p>
             </div>
@@ -284,7 +284,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
           <div className="flex items-center justify-end mt-10">
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <MenuButton className="inline-flex justify-center text-base font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
+                <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
                   Sort by
                   <ChevronDownIcon
                     className="flex-shrink-0 w-5 h-5 ml-1 -mr-1 text-gray-400 group-hover:text-gray-500"
@@ -300,7 +300,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                 <div className="flex flex-col py-1">
                   <MenuItem>
                     <span
-                      className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
+                      className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       5 Stars
@@ -308,7 +308,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </MenuItem>
                   <MenuItem>
                     <span
-                      className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
+                      className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       4 Stars
@@ -316,7 +316,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </MenuItem>
                   <MenuItem>
                     <span
-                      className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
+                      className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       3 Stars
@@ -324,7 +324,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </MenuItem>
                   <MenuItem>
                     <span
-                      className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
+                      className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       2 Stars
@@ -332,7 +332,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </MenuItem>
                   <MenuItem>
                     <span
-                      className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
+                      className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                       href="#"
                     >
                       1 Star
