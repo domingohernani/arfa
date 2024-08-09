@@ -8,10 +8,12 @@ import { storage } from "../firebase/firebase";
 import { useParams } from "react-router-dom";
 import { fetchFurnitureById } from "../firebase/furniture";
 import { formatToPeso } from "../components/globalFunctions";
+import { getAllImageDownloadUrl } from "../firebase/photos";
 
 const ViewFurniture = () => {
   const { id } = useParams();
   const [furniture, setFurniture] = useState(null);
+  const [furnitureImgUrls, setFurnitureImgUrls] = useState([]);
   const [modelURL, setModelURL] = useState(null);
   const [loading, setLoading] = useState(true);
   const [aveReview, setAveReview] = useState(0);
@@ -27,19 +29,29 @@ const ViewFurniture = () => {
       setModelURL(url);
     } catch (error) {
       console.error("Error fetching model:", error);
-      setError("Failed to load model");
     }
   }, []);
+
+  const fetchFurnitureImages = useCallback(async (path) => {
+    try {
+      const data = await getAllImageDownloadUrl(path);
+      setFurnitureImgUrls(data);
+    } catch (error) {
+      console.error("Error fetching furniture:", error);
+      setError("Failed to load furniture data");
+    }
+  });
 
   const fetchFurniture = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchFurnitureById("furnitures", id);
+
       setFurniture(data);
       fetchModel(data.modelUrl);
+      fetchFurnitureImages(data.imagesUrl);
     } catch (error) {
       console.error("Error fetching furniture:", error);
-      setError("Failed to load furniture data");
     } finally {
       setLoading(false);
     }
@@ -65,11 +77,9 @@ const ViewFurniture = () => {
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
               <div className="h-56 md:h-64 2xl:h-90">
                 <Carousel>
-                  <img
-                    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="..."
-                  />
-                  {/* Additional images */}
+                  {furnitureImgUrls.map((image) => {
+                    return <img src={image} alt="..." />;
+                  })}
                 </Carousel>
               </div>
               <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">

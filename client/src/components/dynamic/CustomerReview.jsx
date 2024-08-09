@@ -76,8 +76,6 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
       // Calculate rating
       const rate = calculateRatingSummary(reviews);
 
-      console.log(rate);
-
       // Fetch profile URLs
       const urls = await Promise.all(
         Object.keys(reviews).map(async (key) => {
