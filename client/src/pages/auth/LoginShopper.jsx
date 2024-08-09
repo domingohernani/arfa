@@ -4,7 +4,7 @@ import {
   doSigninWithGoogle,
   doSignOut,
 } from "../../firebase/auth";
-import useAuthStore from "../../store/useAuthStore"; // Ensure this path is correct
+// import useAuthStore from "../../store/useAuthStore";
 import { auth, db } from "../../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { Navigate, useNavigate } from "react-router-dom";

@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fontsource/poppins": "^5.0.14",
     "@google/model-viewer": "^3.5.0",
     "@headlessui/react": "^2.1.1",
     "@heroicons/react": "^2.1.4",
