@@ -5,6 +5,7 @@ import DisplayStars from "./DisplayStars";
 import { calculateRatingSummary, formatTimestamp } from "../globalFunctions";
 import { getImageDownloadUrl } from "../../firebase/photos";
 import noReview from "../../assets/images/no-review.jpg";
+import { Progress } from "flowbite-react";
 
 const displayReviews = (reviews, urls) => {
   if (Object.keys(reviews).length === 0) {
@@ -73,7 +74,18 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
     try {
       setLoading(true);
       // Calculate rating
-      const rate = calculateRatingSummary(reviews);
+      const rev = {
+        6: { rating: 1 },
+        1: { rating: 2 },
+        2: { rating: 2 },
+        3: { rating: 3 },
+        4: { rating: 4 },
+        5: { rating: 5 },
+      };
+
+      const rate = calculateRatingSummary(rev);
+
+      console.log(rate);
 
       // Fetch profile URLs
       const urls = await Promise.all(
@@ -133,10 +145,14 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full sm:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[30%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["5"]}
+                    className="bg-arfagray progressBarBg"
+                  />
+                  ;
                 </p>
                 <p className="text-arfablack mr-0.5">
-                  {rating.ratingCounter["1"]}
+                  {rating.ratingCounter["5"]}
                 </p>
               </div>
               <div className="flex items-center w-full">
@@ -161,11 +177,14 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[40%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["4"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
                 <p className="text-arfablack mr-0.5">
                   {" "}
-                  {rating.ratingCounter["2"]}
+                  {rating.ratingCounter["4"]}
                 </p>
               </div>
               <div className="flex items-center">
@@ -190,14 +209,17 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[20%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["3"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
                 <p className="  text-arfablack mr-0.5">
                   {rating.ratingCounter["3"]}
                 </p>
               </div>
               <div className="flex items-center">
-                <p className="  text-arfablack mr-0.5">2</p>
+                <p className="text-arfablack mr-0.5">2</p>
                 <svg
                   width="20"
                   height="20"
@@ -218,10 +240,13 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[16%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["2"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
                 <p className=" text-arfablack mr-0.5">
-                  {rating.ratingCounter["4"]}
+                  {rating.ratingCounter["2"]}
                 </p>
               </div>
               <div className="flex items-center">
@@ -246,19 +271,22 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                   </defs>
                 </svg>
                 <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                  <span className="h-full w-[8%] rounded-3xl bg-arfagreen flex"></span>
+                  <Progress
+                    progress={rating.percentages["1"]}
+                    className="bg-arfagray progressBarBg"
+                  />
                 </p>
                 <p className=" py-[1px] text-arfablack mr-0.5">
-                  {rating.ratingCounter["5"]}
+                  {rating.ratingCounter["1"]}
                 </p>
               </div>
             </div>
             <div className="flex flex-col items-center justify-center p-8 rounded-lg bg-arfagray">
-              <h2 className="mb-6 text-3xl font-bold text-arfagreen sm:text-3xl">
-                {rating.average}
+              <h2 className="text-3xl font-bold text-arfagreen sm:text-3xl">
+                {rating.average.toFixed(1)}
               </h2>
               <div className="flex items-center justify-center mb-4">
-                <DisplayStars number={Math.round(rating.average)} size={14} />
+                <DisplayStars number={Math.round(rating.average)} size={10} />
               </div>
               <p className="text-base leading-8 text-center text-gray-900">
                 {rating.numberOfRatings} Ratings

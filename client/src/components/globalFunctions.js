@@ -27,7 +27,8 @@ export const formatTimestamp = (timestamp) => {
 // yung parameter is dapat Object na merong review Objects
 export const calculateRatingSummary = (reviews) => {
   const reviewArr = Object.values(reviews);
-  const rating = reviewArr.reduce(
+
+  const { average, ratingCounter } = reviewArr.reduce(
     ({ average, ratingCounter }, review, index, { length }) => {
       average += review.rating / length;
       ratingCounter[review.rating] = ratingCounter[review.rating] + 1;
@@ -38,6 +39,20 @@ export const calculateRatingSummary = (reviews) => {
       ratingCounter: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
     }
   );
-  rating.numberOfRatings = reviewArr.length;
-  return rating;
+
+  const percentages = Object.keys(ratingCounter).reduce((acc, rating) => {
+    acc[rating] =
+      reviewArr.length > 0
+        ? (ratingCounter[rating] / reviewArr.length) * 100
+        : 0;
+    return acc;
+  }, {});
+
+  const ratingSummary = {
+    average,
+    ratingCounter,
+    percentages,
+    numberOfRatings: reviewArr.length,
+  };
+  return ratingSummary;
 };
