@@ -11,7 +11,7 @@ const Breadcrumbs = () => {
       className="w-full max-w-full overflow-x-auto text-arfablack"
     >
       <ol className="flex items-center px-4 py-2 rounded-md flex-nowrap bg-blue-gray-50 bg-opacity-60">
-        <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-blue-gray-900 hover:text-light-blue-500">
+        <li className="flex items-center font-sans text-base antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-blue-gray-900 hover:text-light-blue-500">
           <Link to={"/"}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -26,8 +26,8 @@ const Breadcrumbs = () => {
           </Link>
         </li>
 
-        <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
-          <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
+        <li className="flex items-center font-sans text-base antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
+          <span className="mx-2 font-sans text-base antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
             /
           </span>
           <Link
@@ -41,8 +41,8 @@ const Breadcrumbs = () => {
         </li>
 
         {category ? (
-          <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
-            <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
+          <li className="flex items-center font-sans text-base antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
+            <span className="mx-2 font-sans text-base antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
               /
             </span>
             <Link
@@ -57,8 +57,8 @@ const Breadcrumbs = () => {
         ) : null}
 
         {item ? (
-          <li className="flex items-center font-sans text-sm antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
-            <span className="mx-2 font-sans text-sm antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
+          <li className="flex items-center font-sans text-base antialiased font-normal leading-normal transition-colors duration-300 cursor-pointer text-arfablack text-blue-gray-900 hover:text-light-blue-500">
+            <span className="mx-2 font-sans text-base antialiased font-normal leading-normal pointer-events-none select-none text-blue-gray-500">
               /
             </span>
             <Link className="truncate overflow-hidden text-arfablack whitespace-nowrap max-w-[70px] sm:max-w-full">
