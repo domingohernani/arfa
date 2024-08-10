@@ -43,6 +43,8 @@ const ViewFurniture = () => {
     }
   });
 
+  const sort = useStore((state) => state.sortOption)
+
   const fetchFurniture = useCallback(async () => {
     setLoading(true);
     try {

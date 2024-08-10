@@ -56,6 +56,10 @@ const Catalog = () => {
   const [maxPrice, setMaxPrice] = useState(maxP);
   const updateMaxPrice = useStore((state) => state.updateMaxPrice);
 
+  // Sorting
+  const sortOption = useStore((state) => state.sortOption);
+  const setSortOption = useStore((state) => state.setSortOption);
+
   const handlePriceRangeChange = (value, setState) => {
     if (value === "" || /^\d*$/.test(value)) {
       setState(value === "" ? null : Number(value));
@@ -72,6 +76,10 @@ const Catalog = () => {
       updateMaxPrice(maxPrice);
       toast.success("Price range updated successfully.");
     }
+  };
+
+  const handleSortChange = (value) => {
+    setSortOption(value);
   };
 
   return (
@@ -179,7 +187,25 @@ const Catalog = () => {
                                           name={`${section.id}[]`}
                                           defaultValue={option.value}
                                           type="checkbox"
-                                          defaultChecked={option.checked}
+                                          checked={
+                                            option.value === "new-arrivals"
+                                              ? isNewArrivalsOnly
+                                              : option.value === "sale"
+                                              ? isSaleOnly
+                                              : option.checked
+                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.checked;
+                                            if (
+                                              option.value === "new-arrivals"
+                                            ) {
+                                              updateIsNewArrivalsOnly(value);
+                                            } else if (
+                                              option.value === "sale"
+                                            ) {
+                                              updateIsSaleOnly(value);
+                                            }
+                                          }}
                                           className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
                                         />
                                         <label
@@ -199,11 +225,34 @@ const Catalog = () => {
                                             type="text"
                                             className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
+                                            value={
+                                              option.label === "From"
+                                                ? minPrice === null
+                                                  ? ""
+                                                  : minPrice
+                                                : maxPrice === null
+                                                ? ""
+                                                : maxPrice
+                                            }
+                                            onChange={(e) => {
+                                              if (option.label == "From") {
+                                                handlePriceRangeChange(
+                                                  e.target.value,
+                                                  setMinPrice
+                                                );
+                                              } else if (option.label == "To") {
+                                                handlePriceRangeChange(
+                                                  e.target.value,
+                                                  setMaxPrice
+                                                );
+                                              }
+                                            }}
                                           />
                                         ) : (
                                           <CheckIcon
                                             className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
                                             aria-hidden="true"
+                                            onClick={handleCheckClick}
                                           />
                                         )}
                                       </>
@@ -248,14 +297,19 @@ const Catalog = () => {
                             {({ focus }) => (
                               <span
                                 href={option.href}
+                                onClick={() => handleSortChange(option.value)}
                                 className={classNames(
                                   option.current
-                                    ? "font-medium text-gray-900"
+                                    ? "font-medium "
                                     : "text-gray-500",
                                   focus
                                     ? "bg-gray-100 hover:text-arfagreen"
                                     : "",
-                                  "block px-4 py-2 text-sm hover:text-arfagreen"
+                                  `block px-4 py-2 text-sm hover:text-arfagreen cursor-pointer ${
+                                    sortOption == option.value
+                                      ? "text-arfagreen font-semibold"
+                                      : "text-gray-900"
+                                  }`
                                 )}
                               >
                                 {option.name}

@@ -7,9 +7,10 @@ export const furnitureBrowsing = (set) => ({
 
   minPrice: "",
   updateMinPrice: (value) => set(() => ({ minPrice: value })),
-  
+
   maxPrice: "",
   updateMaxPrice: (value) => set(() => ({ maxPrice: value })),
 
-  
+  sortOption: null,
+  setSortOption: (value) => set(() => ({ sortOption: value })),
 });
