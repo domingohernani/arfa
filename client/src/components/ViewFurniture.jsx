@@ -94,7 +94,7 @@ const ViewFurniture = () => {
 
   return (
     <section>
-      <section className="box-border pt-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
+      <section className="box-border pt-5 antialiased lg:pl-8 md:pl-4 dark:bg-gray-900">
         <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
             <div className="flex flex-col w-full lg:gap-4 shrink-0">

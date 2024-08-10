@@ -33,6 +33,7 @@ import {
   filters,
   classNames,
 } from "../components/CatalogValues";
+import FilterSortBar from "../components/dynamic/FilterSortBar";
 
 const Catalog = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -69,6 +70,8 @@ const Catalog = () => {
   const handleCheckClick = () => {
     if (minPrice === null || maxPrice === null) {
       toast.error("Please enter both minimum and maximum prices.");
+    } else if (minPrice === 0 || maxPrice === 0) {
+      toast.error("Prices cannot be zero.");
     } else if (minPrice >= maxPrice) {
       toast.error("The minimum price must be less than the maximum price.");
     } else {
@@ -488,8 +491,11 @@ const Catalog = () => {
                   <Toaster />
 
                   {/* This is where the content (side side) will be displayed*/}
-                  <main className="lg:col-span-3">
+                  <main className="lg:border-l lg:col-span-3">
                     <Breadcrumbs />
+                    <div className="pb-4 md:pl-8">
+                      <FilterSortBar />
+                    </div>
                     <Outlet />
                   </main>
                 </div>
