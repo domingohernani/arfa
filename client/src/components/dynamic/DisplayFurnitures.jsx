@@ -189,9 +189,9 @@ const DisplayFurnitures = () => {
   );
 
   return (
-    <section className="bg-white md:pl-8 md:border-l text-arfablack">
+    <section className="bg-white md:pl-8 text-arfablack">
       <div className="max-w-screen-xl mx-auto ">
-        <div className="grid grid-cols-2 gap-6 mt-5 sm:grid-cols-3 md:grid-cols-4 lg:mt-10 lg:grid-cols-5 lg:gap-4">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
           {displayFurnitures(furnitures, imageUrls, loading)}
         </div>
         {furnitures.length == 0 && !loading ? (
