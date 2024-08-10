@@ -2,6 +2,7 @@ import React from "react";
 import NavigationBar from "../components/navigation/NavigationBar";
 import { FooterSection } from "../components/navigation/FooterSection";
 import filter from "../assets/icons/filter.svg";
+import toast, { Toaster } from "react-hot-toast";
 
 import { useState } from "react";
 import {
@@ -21,54 +22,73 @@ import {
   ChevronDownIcon,
   MinusIcon,
   PlusIcon,
+  CheckIcon,
 } from "@heroicons/react/20/solid";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import Breadcrumbs from "../components/dynamic/Breadcrumbs";
-
-const sortOptions = [
-  { name: "Best Rating", href: "#", current: false },
-  { name: "Newest", href: "#", current: false },
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
-];
-
-const subCategories = [
-  { name: "Living Room", href: "category/living-room" },
-  { name: "Bedroom", href: "category/bedroom" },
-  { name: "Dining Room", href: "category/dining-room" },
-  { name: "Office", href: "category/office" },
-  { name: "Outdoor", href: "category/outdoor" },
-  { name: "Accent", href: "category/accent" },
-  { name: "Storage", href: "category/storage" },
-  { name: "Entryway", href: "category/entryway" },
-];
-
-const filters = [
-  {
-    id: "filter",
-    name: "Filter",
-    options: [
-      { value: "new-arrivals", label: "New Arrivals", checked: false },
-      { value: "sale", label: "Sale", checked: false },
-    ],
-  },
-  {
-    id: "pricing",
-    name: "Pricing",
-    options: [
-      { value: "testing low", label: "From", checked: false },
-      { value: "testing high", label: "To", checked: false },
-      { label: "searchPrice" },
-    ],
-  },
-];
-
-const classNames = (...classes) => {
-  return classes.filter(Boolean).join(" ");
-};
+import { useStore } from "../stores/useStore";
+import {
+  sortOptions,
+  subCategories,
+  filters,
+  classNames,
+} from "../components/CatalogValues";
+import FilterSortBar from "../components/dynamic/FilterSortBar";
 
 const Catalog = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  // Filters
+  const isSaleOnly = useStore((state) => state.isSaleOnly);
+  const updateIsSaleOnly = useStore((state) => state.updateIsSaleOnly);
+
+  const isNewArrivalsOnly = useStore((state) => state.isNewArrivalsOnly);
+  const updateIsNewArrivalsOnly = useStore(
+    (state) => state.updateIsNewArrivalsOnly
+  );
+
+  // Default values ng min at max price
+  const minP = useStore((state) => state.minPrice);
+  const maxP = useStore((state) => state.maxPrice);
+
+  const [minPrice, setMinPrice] = useState(minP);
+  const updateMinPrice = useStore((state) => state.updateMinPrice);
+
+  const [maxPrice, setMaxPrice] = useState(maxP);
+  const updateMaxPrice = useStore((state) => state.updateMaxPrice);
+
+  // Sorting
+  const sortOption = useStore((state) => state.sortOption);
+  const setSortOption = useStore((state) => state.setSortOption);
+
+  const handlePriceRangeChange = (value, setState) => {
+    if (value === "" || /^\d*$/.test(value)) {
+      setState(value === "" ? null : Number(value));
+    }
+  };
+
+  const handleCheckClick = () => {
+    if (minPrice === null || maxPrice === null) {
+      toast.error("Please enter both minimum and maximum prices.");
+    } else if (minPrice === 0 || maxPrice === 0) {
+      toast.error("Prices cannot be zero.");
+    } else if (minPrice >= maxPrice) {
+      toast.error("The minimum price must be less than the maximum price.");
+    } else {
+      updateMinPrice(minPrice);
+      updateMaxPrice(maxPrice);
+      toast.success("Price range updated successfully.");
+    }
+  };
+
+  const handleSortChange = (value) => {
+    setSortOption(value);
+  };
+
+  const removePriceRange = () => {
+    setMinPrice("");
+    setMaxPrice("");
+  };
 
   return (
     <>
@@ -175,7 +195,25 @@ const Catalog = () => {
                                           name={`${section.id}[]`}
                                           defaultValue={option.value}
                                           type="checkbox"
-                                          defaultChecked={option.checked}
+                                          checked={
+                                            option.value === "new-arrivals"
+                                              ? isNewArrivalsOnly
+                                              : option.value === "sale"
+                                              ? isSaleOnly
+                                              : option.checked
+                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.checked;
+                                            if (
+                                              option.value === "new-arrivals"
+                                            ) {
+                                              updateIsNewArrivalsOnly(value);
+                                            } else if (
+                                              option.value === "sale"
+                                            ) {
+                                              updateIsSaleOnly(value);
+                                            }
+                                          }}
                                           className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
                                         />
                                         <label
@@ -195,24 +233,35 @@ const Catalog = () => {
                                             type="text"
                                             className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
+                                            value={
+                                              option.label === "From"
+                                                ? minPrice === null
+                                                  ? ""
+                                                  : minPrice
+                                                : maxPrice === null
+                                                ? ""
+                                                : maxPrice
+                                            }
+                                            onChange={(e) => {
+                                              if (option.label == "From") {
+                                                handlePriceRangeChange(
+                                                  e.target.value,
+                                                  setMinPrice
+                                                );
+                                              } else if (option.label == "To") {
+                                                handlePriceRangeChange(
+                                                  e.target.value,
+                                                  setMaxPrice
+                                                );
+                                              }
+                                            }}
                                           />
                                         ) : (
-                                          <button
-                                            type="button"
-                                            className="p-1 ml-auto rounded-sm bg-arfagreen"
-                                          >
-                                            <svg
-                                              className="w-4 h-auto "
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="white"
-                                              id="Outline"
-                                              viewBox="0 0 24 24"
-                                              width="512"
-                                              height="512"
-                                            >
-                                              <path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z" />
-                                            </svg>
-                                          </button>
+                                          <CheckIcon
+                                            className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
+                                            aria-hidden="true"
+                                            onClick={handleCheckClick}
+                                          />
                                         )}
                                       </>
                                     ) : null}
@@ -254,20 +303,25 @@ const Catalog = () => {
                         {sortOptions.map((option) => (
                           <MenuItem key={option.name}>
                             {({ focus }) => (
-                              <a
+                              <span
                                 href={option.href}
+                                onClick={() => handleSortChange(option.value)}
                                 className={classNames(
                                   option.current
-                                    ? "font-medium text-gray-900"
+                                    ? "font-medium "
                                     : "text-gray-500",
                                   focus
                                     ? "bg-gray-100 hover:text-arfagreen"
                                     : "",
-                                  "block px-4 py-2 text-sm hover:text-arfagreen"
+                                  `block px-4 py-2 text-sm hover:text-arfagreen cursor-pointer ${
+                                    sortOption == option.value
+                                      ? "text-arfagreen font-semibold"
+                                      : "text-gray-900"
+                                  }`
                                 )}
                               >
                                 {option.name}
-                              </a>
+                              </span>
                             )}
                           </MenuItem>
                         ))}
@@ -360,7 +414,25 @@ const Catalog = () => {
                                           name={`${section.id}[]`}
                                           defaultValue={option.value}
                                           type="checkbox"
-                                          defaultChecked={option.checked}
+                                          checked={
+                                            option.value === "new-arrivals"
+                                              ? isNewArrivalsOnly
+                                              : option.value === "sale"
+                                              ? isSaleOnly
+                                              : option.checked
+                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.checked;
+                                            if (
+                                              option.value === "new-arrivals"
+                                            ) {
+                                              updateIsNewArrivalsOnly(value);
+                                            } else if (
+                                              option.value === "sale"
+                                            ) {
+                                              updateIsSaleOnly(value);
+                                            }
+                                          }}
                                           className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
                                         />
                                         <label
@@ -380,24 +452,35 @@ const Catalog = () => {
                                             type="text"
                                             className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
+                                            value={
+                                              option.label === "From"
+                                                ? minPrice === null
+                                                  ? ""
+                                                  : minPrice
+                                                : maxPrice === null
+                                                ? ""
+                                                : maxPrice
+                                            }
+                                            onChange={(e) => {
+                                              if (option.label == "From") {
+                                                handlePriceRangeChange(
+                                                  e.target.value,
+                                                  setMinPrice
+                                                );
+                                              } else if (option.label == "To") {
+                                                handlePriceRangeChange(
+                                                  e.target.value,
+                                                  setMaxPrice
+                                                );
+                                              }
+                                            }}
                                           />
                                         ) : (
-                                          <button
-                                            type="button"
-                                            className="p-1 ml-auto rounded-sm bg-arfagreen"
-                                          >
-                                            <svg
-                                              className="w-4 h-auto "
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="white"
-                                              id="Outline"
-                                              viewBox="0 0 24 24"
-                                              width="512"
-                                              height="512"
-                                            >
-                                              <path d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z" />
-                                            </svg>
-                                          </button>
+                                          <CheckIcon
+                                            className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
+                                            aria-hidden="true"
+                                            onClick={handleCheckClick}
+                                          />
                                         )}
                                       </>
                                     ) : null}
@@ -410,10 +493,14 @@ const Catalog = () => {
                       </Disclosure>
                     ))}
                   </form>
+                  <Toaster />
 
                   {/* This is where the content (side side) will be displayed*/}
-                  <main className="lg:col-span-3">
+                  <main className="lg:border-l lg:col-span-3">
                     <Breadcrumbs />
+                    <div className="pb-4 md:pl-8">
+                      <FilterSortBar removePriceRange={removePriceRange} />
+                    </div>
                     <Outlet />
                   </main>
                 </div>

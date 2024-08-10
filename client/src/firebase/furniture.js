@@ -9,15 +9,26 @@ export const fetchFurnitureCollection = async (
   try {
     const collectionRef = collection(db, collectionName);
     let q = collectionRef;
+
     if (filters.length > 0) {
       q = query(collectionRef, ...filters);
     }
     const querySnapshot = await getDocs(q);
-    const dataList = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
 
+    // Fetch documents and reviews
+    const dataList = await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const documentData = {
+          id: doc.id,
+          ...doc.data(),
+        };
+
+        const reviewsData = await getReviewCollections(doc.ref);
+        documentData.reviewsData = reviewsData;
+        return documentData;
+      })
+    );
+    
     return dataList;
   } catch (error) {
     console.error("Error fetching data: ", error);

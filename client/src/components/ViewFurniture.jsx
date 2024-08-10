@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { fetchFurnitureById } from "../firebase/furniture";
 import { formatToPeso } from "../components/globalFunctions";
 import { getAllImageDownloadUrl } from "../firebase/photos";
+import { useStore } from "../stores/useStore";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -42,6 +43,8 @@ const ViewFurniture = () => {
     }
   });
 
+  const sort = useStore((state) => state.sortOption)
+
   const fetchFurniture = useCallback(async () => {
     setLoading(true);
     try {
@@ -66,7 +69,7 @@ const ViewFurniture = () => {
       <div role="status" className="flex items-center justify-center h-4/6">
         <svg
           aria-hidden="true"
-          class="w-14 h-w-14 text-gray-200 animate-spin fill-arfagreen"
+          className="text-gray-200 w-14 h-w-14 animate-spin fill-arfagreen"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +83,7 @@ const ViewFurniture = () => {
             fill="currentFill"
           />
         </svg>
-        <span class="sr-only">Loading...</span>
+        <span className="sr-only">Loading...</span>
       </div>
     );
   }
@@ -91,14 +94,14 @@ const ViewFurniture = () => {
 
   return (
     <section>
-      <section className="box-border pt-5 antialiased lg:pl-8 md:pl-4 lg:border-l dark:bg-gray-900">
+      <section className="box-border pt-5 antialiased lg:pl-8 md:pl-4 dark:bg-gray-900">
         <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
               <div className="h-56 md:h-64 2xl:h-90">
                 <Carousel>
-                  {furnitureImgUrls.map((image) => {
-                    return <img src={image} alt="..." />;
+                  {furnitureImgUrls.map((image, index) => {
+                    return <img src={image} alt="..." key={index} />;
                   })}
                 </Carousel>
               </div>

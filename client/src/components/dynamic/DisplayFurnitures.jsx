@@ -2,10 +2,32 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import DisplayStars from "./DisplayStars";
 import { fetchFurnitureCollection } from "../../firebase/furniture";
-import { formatToPeso, toSlug, unSlug } from "../globalFunctions";
+import {
+  calculateRatingSummary,
+  formatToPeso,
+  toSlug,
+  unSlug,
+} from "../globalFunctions";
 import { getImageDownloadUrl } from "../../firebase/photos";
 import { where } from "firebase/firestore";
 import noResult from "../../assets/images/no-result.png";
+import { useStore } from "../../stores/useStore";
+
+const sortFurnitures = (option, furnitures) => {
+  if (option === "best-rating") {
+    furnitures.sort((a, b) => {
+      const ratingA = calculateRatingSummary(a.reviewsData || {}).average || 0;
+      const ratingB = calculateRatingSummary(b.reviewsData || {}).average || 0;
+      return ratingB - ratingA;
+    });
+  } else if (option === "newest") {
+    furnitures.sort((a, b) => b.createdAt.seconds - a.createdAt.seconds);
+  } else if (option === "price-asc") {
+    furnitures.sort((a, b) => a.discountedPrice - b.discountedPrice);
+  } else if (option === "price-desc") {
+    furnitures.sort((a, b) => b.discountedPrice - a.discountedPrice);
+  }
+};
 
 const DisplayFurnitures = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,17 +36,42 @@ const DisplayFurnitures = () => {
   const [imageUrls, setImageUrls] = useState([]);
   const { category } = useParams();
 
+  // Zustand values
+  const sale = useStore((state) => state.isSaleOnly);
+  const newArrival = useStore((state) => state.isNewArrivalsOnly);
+  const minPrice = useStore((state) => state.minPrice);
+  const maxPrice = useStore((state) => state.maxPrice);
+  const sortOption = useStore((state) => state.sortOption);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         let dataList = [];
-        if (category !== undefined) {
-          const filter = [where("category", "==", unSlug(category))];
-          dataList = await fetchFurnitureCollection("furnitures", filter);
+        let filters = [];
+        if (category !== undefined)
+          filters.push(where("category", "==", unSlug(category)));
+
+        if (sale) filters.push(where("isSale", "==", true));
+
+        if (newArrival) {
+          const now = new Date();
+          const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+          filters.push(where("createdAt", ">=", thirtyDaysAgo));
+        }
+
+        if (minPrice) filters.push(where("discountedPrice", ">=", minPrice));
+        if (maxPrice) filters.push(where("discountedPrice", "<=", maxPrice));
+
+        if (filters.length > 0) {
+          dataList = await fetchFurnitureCollection("furnitures", filters);
         } else {
           dataList = await fetchFurnitureCollection("furnitures");
         }
+
+        // para sa sorting
+        sortFurnitures(sortOption, dataList);
+
         setFurnitures(dataList);
 
         const urls = await Promise.all(
@@ -44,7 +91,7 @@ const DisplayFurnitures = () => {
     };
 
     fetchData();
-  }, [category]);
+  }, [category, sale, newArrival, minPrice, maxPrice, sortOption]);
 
   const onPageChange = useCallback((page) => {
     setCurrentPage(page);
@@ -105,11 +152,15 @@ const DisplayFurnitures = () => {
                 <h3 className="text-xs font-semibold sm:text-sm md:text-sm">
                   <div className="w-20 text-sm truncate cursor-pointer sm:w-24 2xl:w-32 lg:w-20 text-arfablack hover:text-arfablack whitespace-nowrap">
                     {furniture.name}
-                    <span className="absolute" aria-hidden="true"></span>
                   </div>
                 </h3>
                 <div className="flex items-center mt-2">
-                  <DisplayStars number={4} size={4} />
+                  <DisplayStars
+                    number={Math.round(
+                      calculateRatingSummary(furniture.reviewsData).average
+                    )}
+                    size={4}
+                  />
                 </div>
               </div>
 
@@ -138,12 +189,12 @@ const DisplayFurnitures = () => {
   );
 
   return (
-    <section className="bg-white md:pl-8 md:border-l text-arfablack">
+    <section className="bg-white md:pl-8 text-arfablack">
       <div className="max-w-screen-xl mx-auto ">
-        <div className="grid grid-cols-2 gap-6 mt-5 sm:grid-cols-3 md:grid-cols-4 lg:mt-10 lg:grid-cols-5 lg:gap-4">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
           {displayFurnitures(furnitures, imageUrls, loading)}
         </div>
-        {furnitures.length == 0 && !loading? (
+        {furnitures.length == 0 && !loading ? (
           <div className="flex flex-col items-center justify-center w-full gap-3 mt-10">
             <img src={noResult} className="w-60 h-60" />
             <h1 className="text-2xl font-semibold tracking-tight text-arfablack">
