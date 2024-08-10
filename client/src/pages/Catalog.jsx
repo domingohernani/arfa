@@ -85,6 +85,11 @@ const Catalog = () => {
     setSortOption(value);
   };
 
+  const removePriceRange = () => {
+    setMinPrice("");
+    setMaxPrice("");
+  };
+
   return (
     <>
       <section>
@@ -494,7 +499,7 @@ const Catalog = () => {
                   <main className="lg:border-l lg:col-span-3">
                     <Breadcrumbs />
                     <div className="pb-4 md:pl-8">
-                      <FilterSortBar />
+                      <FilterSortBar removePriceRange={removePriceRange} />
                     </div>
                     <Outlet />
                   </main>
