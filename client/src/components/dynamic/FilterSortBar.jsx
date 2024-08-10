@@ -2,7 +2,7 @@ import React from "react";
 import { useStore } from "../../stores/useStore";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-const FilterSortBar = () => {
+const FilterSortBar = ({ removePriceRange }) => {
   const minP = useStore((state) => state.minPrice);
   const maxP = useStore((state) => state.maxPrice);
 
@@ -29,6 +29,7 @@ const FilterSortBar = () => {
             onClick={() => {
               updateMinPrice("");
               updateMaxPrice("");
+              removePriceRange();
             }}
           />
         </div>
