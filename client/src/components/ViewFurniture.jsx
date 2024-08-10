@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { fetchFurnitureById } from "../firebase/furniture";
 import { formatToPeso } from "../components/globalFunctions";
 import { getAllImageDownloadUrl } from "../firebase/photos";
+import { useStore } from "../stores/useStore";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -66,7 +67,7 @@ const ViewFurniture = () => {
       <div role="status" className="flex items-center justify-center h-4/6">
         <svg
           aria-hidden="true"
-          class="w-14 h-w-14 text-gray-200 animate-spin fill-arfagreen"
+          className="text-gray-200 w-14 h-w-14 animate-spin fill-arfagreen"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +81,7 @@ const ViewFurniture = () => {
             fill="currentFill"
           />
         </svg>
-        <span class="sr-only">Loading...</span>
+        <span className="sr-only">Loading...</span>
       </div>
     );
   }
@@ -97,8 +98,8 @@ const ViewFurniture = () => {
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
               <div className="h-56 md:h-64 2xl:h-90">
                 <Carousel>
-                  {furnitureImgUrls.map((image) => {
-                    return <img src={image} alt="..." />;
+                  {furnitureImgUrls.map((image, index) => {
+                    return <img src={image} alt="..." key={index} />;
                   })}
                 </Carousel>
               </div>

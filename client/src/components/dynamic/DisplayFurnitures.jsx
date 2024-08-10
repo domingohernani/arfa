@@ -20,8 +20,12 @@ const DisplayFurnitures = () => {
         setLoading(true);
         let dataList = [];
         if (category !== undefined) {
-          const filter = [where("category", "==", unSlug(category))];
+          const filter = [
+            where("category", "==", unSlug(category)),
+            // where("isSale", "==", true),
+          ];
           dataList = await fetchFurnitureCollection("furnitures", filter);
+          console.log(dataList);
         } else {
           dataList = await fetchFurnitureCollection("furnitures");
         }
@@ -143,7 +147,7 @@ const DisplayFurnitures = () => {
         <div className="grid grid-cols-2 gap-6 mt-5 sm:grid-cols-3 md:grid-cols-4 lg:mt-10 lg:grid-cols-5 lg:gap-4">
           {displayFurnitures(furnitures, imageUrls, loading)}
         </div>
-        {furnitures.length == 0 && !loading? (
+        {furnitures.length == 0 && !loading ? (
           <div className="flex flex-col items-center justify-center w-full gap-3 mt-10">
             <img src={noResult} className="w-60 h-60" />
             <h1 className="text-2xl font-semibold tracking-tight text-arfablack">

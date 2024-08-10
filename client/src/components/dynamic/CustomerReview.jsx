@@ -133,12 +133,12 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                     </clipPath>
                   </defs>
                 </svg>
-                <p className="h-2 w-full sm:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
+                <div className="h-2 w-full sm:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
                   <Progress
                     progress={rating.percentages["5"]}
                     className="bg-arfagray progressBarBg"
                   />
-                </p>
+                </div>
                 <p className="text-arfablack mr-0.5">
                   {rating.ratingCounter["5"]}
                 </p>
@@ -164,12 +164,12 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                     </clipPath>
                   </defs>
                 </svg>
-                <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
+                <div className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
                   <Progress
                     progress={rating.percentages["4"]}
                     className="bg-arfagray progressBarBg"
                   />
-                </p>
+                </div>
                 <p className="text-arfablack mr-0.5">
                   {" "}
                   {rating.ratingCounter["4"]}
@@ -196,12 +196,12 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                     </clipPath>
                   </defs>
                 </svg>
-                <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
+                <div className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
                   <Progress
                     progress={rating.percentages["3"]}
                     className="bg-arfagray progressBarBg"
                   />
-                </p>
+                </div>
                 <p className="  text-arfablack mr-0.5">
                   {rating.ratingCounter["3"]}
                 </p>
@@ -227,12 +227,12 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                     </clipPath>
                   </defs>
                 </svg>
-                <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
+                <div className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
                   <Progress
                     progress={rating.percentages["2"]}
                     className="bg-arfagray progressBarBg"
                   />
-                </p>
+                </div>
                 <p className=" text-arfablack mr-0.5">
                   {rating.ratingCounter["2"]}
                 </p>
@@ -258,12 +258,12 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                     </clipPath>
                   </defs>
                 </svg>
-                <p className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
+                <div className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
                   <Progress
                     progress={rating.percentages["1"]}
                     className="bg-arfagray progressBarBg"
                   />
-                </p>
+                </div>
                 <p className=" py-[1px] text-arfablack mr-0.5">
                   {rating.ratingCounter["1"]}
                 </p>
@@ -285,7 +285,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
-                  Sort by
+                  Filter
                   <ChevronDownIcon
                     className="flex-shrink-0 w-5 h-5 ml-1 -mr-1 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
@@ -298,42 +298,37 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                 className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
               >
                 <div className="flex flex-col py-1">
-                  <MenuItem>
+                  <MenuItem className="cursor-pointer">
                     <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
-                      href="#"
                     >
                       5 Stars
                     </span>
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem className="cursor-pointer">
                     <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
-                      href="#"
                     >
                       4 Stars
                     </span>
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem className="cursor-pointer">
                     <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
-                      href="#"
                     >
                       3 Stars
                     </span>
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem className="cursor-pointer">
                     <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
-                      href="#"
                     >
                       2 Stars
                     </span>
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem className="cursor-pointer">
                     <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
-                      href="#"
                     >
                       1 Star
                     </span>
