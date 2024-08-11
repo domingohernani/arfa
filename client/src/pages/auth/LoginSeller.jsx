@@ -9,7 +9,6 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-import { Tooltip } from "flowbite-react";
 const LoginSeller = () => {
   return (
     <>
