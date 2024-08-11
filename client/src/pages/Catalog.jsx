@@ -498,7 +498,7 @@ const Catalog = () => {
                   {/* This is where the content (side side) will be displayed*/}
                   <main className="lg:border-l lg:col-span-3">
                     <Breadcrumbs />
-                    <div className="pb-4 md:pl-8">
+                    <div className="py-4 md:pl-8">
                       <FilterSortBar removePriceRange={removePriceRange} />
                     </div>
                     <Outlet />
