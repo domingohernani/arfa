@@ -2,13 +2,9 @@ import React from "react";
 import signupImg from "../../assets/images/login-signup.svg";
 import google from "../../assets/icons/google.png";
 import facebook from "../../assets/icons/facebook.png";
-import {
-  QuestionMarkCircleIcon,
-  PhoneIcon,
-  EyeIcon,
-  EyeSlashIcon,
-} from "@heroicons/react/24/solid";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+
 const LoginSeller = () => {
   return (
     <>
