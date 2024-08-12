@@ -24,7 +24,7 @@ import {
   PlusIcon,
   CheckIcon,
 } from "@heroicons/react/20/solid";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useParams } from "react-router-dom";
 import Breadcrumbs from "../components/dynamic/Breadcrumbs";
 import { useStore } from "../stores/useStore";
 import {
@@ -34,9 +34,11 @@ import {
   classNames,
 } from "../components/CatalogValues";
 import FilterSortBar from "../components/dynamic/FilterSortBar";
+import { unSlug } from "../components/globalFunctions";
 
 const Catalog = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const { category } = useParams();
 
   // Filters
   const isSaleOnly = useStore((state) => state.isSaleOnly);
@@ -116,7 +118,7 @@ const Catalog = () => {
                 >
                   <div className="flex items-center justify-between px-4">
                     <h2 className="text-lg font-medium text-gray-900">
-                      Filters
+                      {category ? unSlug(category) : "Catalog"}
                     </h2>
                     <button
                       type="button"
@@ -281,7 +283,7 @@ const Catalog = () => {
             <main className="max-w-full px-4 mx-auto sm:px-6 lg:px-8">
               <div className="flex items-baseline justify-between pt-5 pb-6 border-b border-gray-200">
                 <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
-                  Catalog
+                  {category ? unSlug(category) : "Catalog"}
                 </h1>
                 <div className="flex items-center">
                   <Menu as="div" className="relative inline-block text-left">
