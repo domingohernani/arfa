@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { doCreateUserWithEmailAndPassword } from "../../firebase/auth";
+import { doCreateUserWithEmailAndPassword, doSigninWithGoogle } from "../../firebase/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
@@ -49,6 +49,17 @@ const SignupShopper = () => {
         toast.error("Error signing up. Please try again later.");
       }
       console.error("Error signing up:", error);
+    }
+  };
+
+  const loginUsingGoogle = async () => {
+    try {
+      const result = await doSigninWithGoogle();
+      if (result.user) navigate("/");
+      toast.success("Successfully signed in with Google!");
+    } catch (error) {
+      toast.error("Error signing in with Google. Please try again later.");
+      console.error("Error signing in with Google:", error);
     }
   };
 
@@ -136,7 +147,10 @@ const SignupShopper = () => {
         </div>
         <p className="text-sm text-center">Or sign up using:</p>
         <section className="flex flex-col items-center gap-3">
-          <div className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24">
+          <div
+            onClick={loginUsingGoogle}
+            className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
+          >
             <img src={google} className="w-4 h-4" alt="google" />
             <span className="text-sm text-blue-600">Continue with Google</span>
           </div>
