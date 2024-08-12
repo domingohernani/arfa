@@ -17,6 +17,9 @@ export const furnitureBrowsing = (set) => ({
   is3dOpen: false,
   updateIs3dOpen: (value) => set(() => ({ is3dOpen: value })),
 
+  isImgsOpen: false,
+  updateIsImgsOpen: (value) => set(() => ({ isImgsOpen: value })),
+
   isQRCodeOpen: false,
   updateIsQRCodeOpen: (value) => set(() => ({ isQRCodeOpen: value })),
 });

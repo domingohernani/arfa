@@ -366,7 +366,7 @@ function ShowModel({ path }) {
         </div>
       </div>
       <button
-        className="absolute p-1 transform -translate-x-1/2 border border-gray-300 rounded-full shadow-sm bottom-3 left-1/2"
+        className="absolute p-1 transform -translate-x-1/2 border border-gray-300 rounded-full shadow-sm bottom-4 left-1/2"
         onClick={() => {
           handleArClick();
         }}
