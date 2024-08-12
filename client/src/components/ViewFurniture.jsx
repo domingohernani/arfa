@@ -10,6 +10,12 @@ import { fetchFurnitureById } from "../firebase/furniture";
 import { formatToPeso } from "../components/globalFunctions";
 import { getAllImageDownloadUrl } from "../firebase/photos";
 import { useStore } from "../stores/useStore";
+import {
+  CubeTransparentIcon,
+  Bars2Icon,
+  ArrowsPointingOutIcon,
+} from "@heroicons/react/20/solid";
+import Show3D from "./dynamic/Show3D";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -18,6 +24,7 @@ const ViewFurniture = () => {
   const [modelURL, setModelURL] = useState(null);
   const [loading, setLoading] = useState(true);
   const [aveReview, setAveReview] = useState(0);
+  const updateIs3dOpen = useStore((state) => state.updateIs3dOpen);
 
   const showAverageOfReview = (number) => {
     setAveReview(number);
@@ -42,8 +49,6 @@ const ViewFurniture = () => {
       setError("Failed to load furniture data");
     }
   });
-
-  const sort = useStore((state) => state.sortOption)
 
   const fetchFurniture = useCallback(async () => {
     setLoading(true);
@@ -98,30 +103,37 @@ const ViewFurniture = () => {
         <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
-              <div className="h-56 md:h-64 2xl:h-90">
+              <div className="relative h-64 sm:h-80 md:h-96 lg:h-full">
                 <Carousel>
                   {furnitureImgUrls.map((image, index) => {
-                    return <img src={image} alt="..." key={index} />;
+                    return (
+                      <img
+                        src={image}
+                        alt="..."
+                        key={index}
+                        className="object-cover w-full h-full"
+                      />
+                    );
                   })}
                 </Carousel>
-              </div>
-              <div className="h-56 rounded-none md:rounded-lg md:h-64 2xl:h-90 bg-arfagray">
-                {modelURL ? <ShowModel path={modelURL} /> : null}
-                <span className="hidden text-xs italic md:block">
-                  Note: AR feature is currently only available on Android and
-                  IOS devices.{" "}
-                  <a
-                    className="not-italic font-normal text-blue-700 underline"
-                    href="https://modelviewer.dev/docs/faq.html"
-                    target="_blank"
+
+                <div className="absolute flex gap-2 top-3 right-3">
+                  <div
+                    className="flex items-center gap-1 px-2 py-1 bg-white border rounded-md cursor-pointer hover:border-arfablack w-fit"
+                    onClick={() => {
+                      updateIs3dOpen(true);
+                    }}
                   >
-                    Learn more
-                  </a>
-                </span>
+                    <CubeTransparentIcon className="w-4 h-4 "></CubeTransparentIcon>
+                  </div>
+                  <div className="flex items-center gap-1 px-2 py-1 bg-white border rounded-md cursor-pointer hover:border-arfablack w-fit">
+                    <ArrowsPointingOutIcon className="w-4 h-4 "></ArrowsPointingOutIcon>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="mt-14 sm:mt-20 lg:mt-0">
+            <div className="mt-5 lg:mt-0">
               <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
                 {furniture.name}
               </h1>
@@ -210,6 +222,7 @@ const ViewFurniture = () => {
             showAverageOfReview={showAverageOfReview}
           />
         </section>
+        <Show3D path={modelURL} furniture={furniture}></Show3D>
       </section>
     </section>
   );
