@@ -18,7 +18,6 @@ function ShowModel({ path }) {
   const goAr = () => {
     if (openAR === "open-ar") {
       handleArClick();
-      console.log(openAR);
     }
     
   };
