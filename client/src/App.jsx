@@ -27,6 +27,8 @@ import SellerInbox from "./pages/seller/SellerInbox";
 import CartWishlistAugmentedReality from "./pages/shopper/CartWishlistAugmentedReality";
 import DisplayFurnituresCategory from "./components/dynamic/DisplayFurnituresCategory";
 import NotFound from "./pages/NotFound";
+import SignupSeller from "./pages/auth/SignupSeller";
+import LoginSeller from "./pages/auth/LoginSeller";
 
 function App() {
   return (
@@ -37,6 +39,9 @@ function App() {
           <Route element={<LandingPage />} path="/"></Route>
           <Route element={<LoginShopper />} path="/login-shopper"></Route>
           <Route element={<SignupShopper />} path="/signup-shopper"></Route>
+
+          <Route element={<SignupSeller />} path="/signup-seller"></Route>
+          <Route element={<LoginSeller />} path="/login-seller"></Route>
 
           {/* <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
