@@ -17,6 +17,7 @@ import {
 } from "@heroicons/react/20/solid";
 import Show3D from "./dynamic/Show3D";
 import ViewFurnitureSkeleton from "./skeletons/ViewFurnitureSkeleton";
+import MaximizeImages from "./dynamic/MaximizeImages";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -26,6 +27,7 @@ const ViewFurniture = () => {
   const [loading, setLoading] = useState(true);
   const [aveReview, setAveReview] = useState(0);
   const updateIs3dOpen = useStore((state) => state.updateIs3dOpen);
+  const updateIsImgsOpen = useStore((state) => state.updateIsImgsOpen);
 
   const showAverageOfReview = (number) => {
     setAveReview(number);
@@ -107,7 +109,12 @@ const ViewFurniture = () => {
                   >
                     <CubeTransparentIcon className="w-4 h-4 "></CubeTransparentIcon>
                   </div>
-                  <div className="flex items-center gap-1 px-2 py-1 bg-white border rounded-md cursor-pointer hover:border-arfablack w-fit">
+                  <div
+                    className="flex items-center gap-1 px-2 py-1 bg-white border rounded-md cursor-pointer hover:border-arfablack w-fit"
+                    onClick={() => {
+                      updateIsImgsOpen(true);
+                    }}
+                  >
                     <ArrowsPointingOutIcon className="w-4 h-4 "></ArrowsPointingOutIcon>
                   </div>
                 </div>
@@ -203,6 +210,7 @@ const ViewFurniture = () => {
             showAverageOfReview={showAverageOfReview}
           />
         </section>
+        <MaximizeImages furnitureImgUrls={furnitureImgUrls}></MaximizeImages>
         <Show3D path={modelURL} furniture={furniture}></Show3D>
       </section>
     </section>
