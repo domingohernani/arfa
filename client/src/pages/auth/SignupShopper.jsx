@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { doCreateUserWithEmailAndPassword, doSigninWithGoogle } from "../../firebase/auth";
+import {
+  doCreateUserWithEmailAndPassword,
+  doSigninWithGoogle,
+} from "../../firebase/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
@@ -145,7 +148,7 @@ const SignupShopper = () => {
             Already have an account?
           </Link>
         </div>
-        <p className="text-sm text-center">Or sign up using:</p>
+        <p className="mt-4 text-sm text-center">Or sign up using:</p>
         <section className="flex flex-col items-center gap-3">
           <div
             onClick={loginUsingGoogle}
