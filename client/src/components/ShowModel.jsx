@@ -3,6 +3,7 @@ import arIcon from "../assets/icons/ar.svg";
 import { Tooltip } from "flowbite-react";
 import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
+import { useParams } from "react-router-dom";
 
 function ShowModel({ path }) {
   const modelViewerRef = useRef(null);
@@ -12,8 +13,19 @@ function ShowModel({ path }) {
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
+  const { openAR } = useParams();
+
+  const goAr = () => {
+    if (openAR === "open-ar") {
+      handleArClick();
+      console.log(openAR);
+    }
+    
+  };
 
   useEffect(() => {
+    goAr();
+
     const modelViewer = modelViewerRef.current;
 
     const handleLoad = () => {

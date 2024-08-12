@@ -13,4 +13,10 @@ export const furnitureBrowsing = (set) => ({
 
   sortOption: null,
   setSortOption: (value) => set(() => ({ sortOption: value })),
+
+  is3dOpen: false,
+  updateIs3dOpen: (value) => set(() => ({ is3dOpen: value })),
+
+  isQRCodeOpen: false,
+  updateIsQRCodeOpen: (value) => set(() => ({ isQRCodeOpen: value })),
 });
