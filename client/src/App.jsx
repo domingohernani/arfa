@@ -48,9 +48,9 @@ function App() {
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
             <Route path="category/:category" element={<DisplayFurniture />} />
-            <Route path="item/:item/:id" element={<ViewFurniture />} />
+            <Route path="item/:item/:id/:openAR?" element={<ViewFurniture />} />
             <Route
-              path="category/:category/item/:item/:id"
+              path="category/:category/item/:item/:id/:openAR?"
               element={<ViewFurniture />}
             />
           </Route>
