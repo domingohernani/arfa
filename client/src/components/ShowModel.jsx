@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import arIcon from "../assets/icons/ar.svg";
+import { Tooltip } from "flowbite-react";
+import QRCodeModal from "./QRCodeModal";
+import { useStore } from "../stores/useStore";
 
 function ShowModel({ path }) {
   const modelViewerRef = useRef(null);
@@ -7,6 +11,7 @@ function ShowModel({ path }) {
   const [toggleDimension, setToggleDimension] = useState(true);
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
   const dimLine = useRef(null);
+  const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
 
   useEffect(() => {
     const modelViewer = modelViewerRef.current;
@@ -199,6 +204,16 @@ function ShowModel({ path }) {
     setInitialVariant(variantName);
   };
 
+  const handleArClick = () => {
+    const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+
+    if (!isMobileDevice) {
+      updateIsQRCodeOpen(true);
+    } else {
+      modelViewerRef.current.activateAR();
+    }
+  };
+
   return (
     <>
       <model-viewer
@@ -214,6 +229,17 @@ function ShowModel({ path }) {
         camera-orbit="0deg 90deg 2.9m"
         ref={modelViewerRef}
       >
+        <button
+          className="absolute bottom-0 p-1 transform -translate-x-1/2 border border-gray-300 rounded-full bg-arfagray left-1/2"
+          onClick={() => {
+            handleArClick();
+          }}
+        >
+          <img src={arIcon} alt="ar" className="w-6 h-6" />
+        </button>
+
+        <button slot="ar-button" className="hidden"></button>
+
         <button
           slot="hotspot-dot+X-Y+Z"
           className="dot"
@@ -338,6 +364,7 @@ function ShowModel({ path }) {
           ></input>
         </div>
       </div>
+      <QRCodeModal></QRCodeModal>
     </>
   );
 }
