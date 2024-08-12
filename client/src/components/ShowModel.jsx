@@ -229,8 +229,7 @@ function ShowModel({ path }) {
       <model-viewer
         class="model"
         ar
-        // ar-modes="webxr scene-viewer quick-look"
-        ar-modes="webxr"
+        ar-modes="webxr scene-viewer quick-look"
         loading="eager"
         camera-controls
         touch-action="pan-y"
