@@ -12,8 +12,6 @@ function ShowModel({ path }) {
   const [toggleDimension, setToggleDimension] = useState(true);
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
   const dimLine = useRef(null);
-  const showARButton = useStore((state) => state.showARButton);
-  const updateShowARButton = useStore((state) => state.updateShowARButton);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
   const { openAR } = useParams();
 
@@ -231,7 +229,8 @@ function ShowModel({ path }) {
       <model-viewer
         class="model"
         ar
-        ar-modes="webxr scene-viewer quick-look"
+        // ar-modes="webxr scene-viewer quick-look"
+        ar-modes="webxr"
         loading="eager"
         camera-controls
         touch-action="pan-y"
