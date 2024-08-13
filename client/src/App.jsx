@@ -60,8 +60,6 @@ function App() {
             />
           </Route>
 
-          <Route element={<Wishlist />} path="/wishlist"></Route>
-
           {/* Private routes: exclusive to shopper */}
           <Route element={<ShopperProtectedRoutes />}>
             <Route element={<Cart />} path="/cart"></Route>
@@ -69,7 +67,7 @@ function App() {
               element={<CartWishlistAugmentedReality />}
               path="/:page/augmented-reality"
             ></Route>
-            {/* <Route element={<Wishlist />} path="/wishlist"></Route> */}
+            <Route element={<Wishlist />} path="/wishlist"></Route>
             <Route path="/profile" element={<Profile />}>
               <Route element={<UserProfile />} path="user-profile" />
               <Route element={<Order />} path="order" />
