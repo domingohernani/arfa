@@ -17,19 +17,11 @@ function ShowMultiModel() {
   const [openBar, setOpenBar] = useState(false);
 
   const goAr = () => {
-    const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
-
-    if (!isMobileDevice) {
-      updateIsQRCodeOpen(true);
-    } else {
-      modelViewerRef.current.activateAR();
-    }
+    handleArClick();
   };
 
   useEffect(() => {
     const modelViewer = modelViewerRef.current;
-
-    
 
     const handleLoad = () => {
       const names = modelViewer.availableVariants;
@@ -119,7 +111,6 @@ function ShowMultiModel() {
         position: `${center.x - x2} ${center.y - y2} ${center.z + z2}`,
       });
 
-      
       renderSVG();
     };
 
@@ -220,9 +211,19 @@ function ShowMultiModel() {
     setInitialVariant(variantName);
   };
 
+  const handleArClick = () => {
+    const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+
+    if (!isMobileDevice) {
+      updateIsQRCodeOpen(true);
+    } else {
+      modelViewerRef.current.activateAR();
+    }
+  };
+
   return (
     <>
-      <div className="relative h-svh">
+      <div className="relative h-96">
         <model-viewer
           class="model"
           ar
@@ -236,8 +237,6 @@ function ShowMultiModel() {
           camera-orbit="0deg 90deg 2.9m"
           ref={modelViewerRef}
         >
-          <button slot="ar-button">👋 Activate AR</button>
-
           <button
             slot="hotspot-dot+X-Y+Z"
             className="dot"
@@ -395,6 +394,9 @@ function ShowMultiModel() {
             </div>
           </div>
         </model-viewer>
+        <button slot="ar-button" id="ar-button" className="bg-red-300" onClick={goAr}>
+          View in your space
+        </button>
         <QRCodeModal></QRCodeModal>
       </div>
     </>
