@@ -5,7 +5,7 @@ import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
 
-function ShowMultiModel({ paths }) {
+function ShowMultiModel() {
   const modelViewerRef = useRef(null);
   const [variants, setVariants] = useState([]);
   const [initialVariant, setInitialVariant] = useState("");
@@ -234,7 +234,7 @@ function ShowMultiModel({ paths }) {
         camera-controls
         touch-action="pan-y"
         auto-rotate
-        src={path}
+        src="https://firebasestorage.googleapis.com/v0/b/aria-16a4d.appspot.com/o/models%2Fsofa.glb?alt=media&token=9c363de4-5eff-4c0a-9622-b96f340cce3c"
         shadow-intensity="1"
         camera-orbit="0deg 90deg 2.9m"
         ref={modelViewerRef}
