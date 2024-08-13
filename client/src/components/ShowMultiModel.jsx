@@ -5,7 +5,7 @@ import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
 
-function ShowMultiModel({ path }) {
+function ShowMultiModel({ paths }) {
   const modelViewerRef = useRef(null);
   const [variants, setVariants] = useState([]);
   const [initialVariant, setInitialVariant] = useState("");
