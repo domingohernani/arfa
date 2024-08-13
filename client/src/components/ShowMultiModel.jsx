@@ -17,11 +17,17 @@ function ShowMultiModel() {
   const [openBar, setOpenBar] = useState(false);
 
   const goAr = () => {
-    handleArClick();
+    const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+
+    if (!isMobileDevice) {
+      updateIsQRCodeOpen(true);
+    } else {
+      modelViewerRef.current.activateAR();
+    }
   };
 
   useEffect(() => {
-    goAr();
+    // goAr();
 
     const modelViewer = modelViewerRef.current;
 
@@ -114,6 +120,11 @@ function ShowMultiModel() {
       });
 
       renderSVG();
+
+      // Trigger AR mode after everything is loaded
+      if (arButtonRef.current) {
+        arButtonRef.current.click();
+      }
     };
 
     const drawLine = (svgLine, dotHotspot1, dotHotspot2, dimensionHotspot) => {
@@ -213,15 +224,7 @@ function ShowMultiModel() {
     setInitialVariant(variantName);
   };
 
-  const handleArClick = () => {
-    const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
-
-    if (!isMobileDevice) {
-      updateIsQRCodeOpen(true);
-    } else {
-      modelViewerRef.current.activateAR();
-    }
-  };
+  const handleArClick = () => {};
 
   return (
     <>
