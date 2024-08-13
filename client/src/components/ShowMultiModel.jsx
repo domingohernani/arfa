@@ -226,7 +226,7 @@ function ShowMultiModel() {
 
   return (
     <>
-      <div className="h-96">
+      <div className="relative h-svh">
         <model-viewer
           class="model"
           ar
@@ -241,39 +241,6 @@ function ShowMultiModel() {
           ref={modelViewerRef}
         >
           <button slot="ar-button" className="hidden"></button>
-
-          <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
-            {variants.length != 0 ? (
-              <div className="flex items-center">
-                <span>Variant:</span>
-                <select
-                  id="variant"
-                  onChange={handleVariantChange}
-                  value={initialVariant}
-                  className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
-                >
-                  {variants.map((variant, index) => (
-                    <option key={index} value={variant.value}>
-                      {variant.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              <div className="flex items-center mt-9"></div>
-            )}
-
-            <div className="flex items-center gap-2">
-              <label htmlFor="show-dimensions">Dimensions:</label>
-              <input
-                id="show-dimensions"
-                type="checkbox"
-                checked={toggleDimension}
-                onChange={showDimension}
-                className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
-              ></input>
-            </div>
-          </div>
 
           <button
             slot="hotspot-dot+X-Y+Z"
@@ -366,17 +333,44 @@ function ShowMultiModel() {
             <line className="dimensionLine"></line>
             <line className="dimensionLine"></line>
           </svg>
-        </model-viewer>
 
-        <button
-          className="absolute p-1 transform -translate-x-1/2 border border-gray-300 rounded-full shadow-sm bottom-4 left-1/2"
-          onClick={() => {
-            handleArClick();
-          }}
-        >
-          <img src={arIcon} alt="ar" className="w-7 h-7" />
-        </button>
-        <QRCodeModal></QRCodeModal>
+          <div className="absolute bottom-0 right-0 z-50 flex flex-col w-3/4 bg-blue-400 h-5/6">
+            <div className="flex-1 bg-red-300">Hello</div>
+            <hr className="my-4 border-t border-gray-300 border-dashed" />
+            <div className="flex flex-col items-start justify-around text-sm basis-1/5 bg-red-50 controls">
+              {variants.length != 0 ? (
+                <div className="flex items-center">
+                  <span>Variant:</span>
+                  <select
+                    id="variant"
+                    onChange={handleVariantChange}
+                    value={initialVariant}
+                    className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
+                  >
+                    {variants.map((variant, index) => (
+                      <option key={index} value={variant.value}>
+                        {variant.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div className="flex items-center mt-9"></div>
+              )}
+
+              <div className="flex items-center gap-2">
+                <label htmlFor="show-dimensions">Dimensions:</label>
+                <input
+                  id="show-dimensions"
+                  type="checkbox"
+                  checked={toggleDimension}
+                  onChange={showDimension}
+                  className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
+                ></input>
+              </div>
+            </div>
+          </div>
+        </model-viewer>
       </div>
     </>
   );
