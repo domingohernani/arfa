@@ -27,9 +27,9 @@ function ShowMultiModel() {
   };
 
   useEffect(() => {
-    // goAr();
-
     const modelViewer = modelViewerRef.current;
+
+    
 
     const handleLoad = () => {
       const names = modelViewer.availableVariants;
@@ -119,12 +119,8 @@ function ShowMultiModel() {
         position: `${center.x - x2} ${center.y - y2} ${center.z + z2}`,
       });
 
+      
       renderSVG();
-
-      // Trigger AR mode after everything is loaded
-      if (arButtonRef.current) {
-        arButtonRef.current.click();
-      }
     };
 
     const drawLine = (svgLine, dotHotspot1, dotHotspot2, dimensionHotspot) => {
@@ -224,8 +220,6 @@ function ShowMultiModel() {
     setInitialVariant(variantName);
   };
 
-  const handleArClick = () => {};
-
   return (
     <>
       <div className="relative h-svh">
@@ -242,7 +236,7 @@ function ShowMultiModel() {
           camera-orbit="0deg 90deg 2.9m"
           ref={modelViewerRef}
         >
-          <button slot="ar-button" className="hidden"></button>
+          <button slot="ar-button">👋 Activate AR</button>
 
           <button
             slot="hotspot-dot+X-Y+Z"
