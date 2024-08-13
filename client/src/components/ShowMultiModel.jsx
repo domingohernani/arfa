@@ -14,13 +14,10 @@ function ShowMultiModel() {
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
-  const { openAR } = useParams();
-  const [openBar, setOpenBar] = useState(true);
+  const [openBar, setOpenBar] = useState(false);
 
   const goAr = () => {
-    if (openAR === "open-ar") {
-      handleArClick();
-    }
+    handleArClick();
   };
 
   useEffect(() => {
@@ -401,6 +398,7 @@ function ShowMultiModel() {
             </div>
           </div>
         </model-viewer>
+        <QRCodeModal></QRCodeModal>
       </div>
     </>
   );
