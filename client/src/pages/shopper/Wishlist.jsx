@@ -110,7 +110,7 @@ const Wishlist = () => {
 
   return (
     <section className="antialiased dark:bg-gray-900">
-      <section className="mx-6 my-3">
+      {/* <section className="mx-6 my-3">
         <NavigationBar />
       </section>
       <div className="px-4 max-w-screen md:mx-8 2xl:px-0">
@@ -191,12 +191,12 @@ const Wishlist = () => {
           </Tabs.Item>
           <Tabs.Item title="Cart"></Tabs.Item>
         </Tabs>
-      </div>
+      </div> */}
 
       <ShowMultiModel></ShowMultiModel>
-      <section className="mt-10">
+      {/* <section className="mt-10">
         <FooterSection />
-      </section>
+      </section> */}
     </section>
   );
 };
