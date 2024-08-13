@@ -29,6 +29,7 @@ import DisplayFurnituresCategory from "./components/dynamic/DisplayFurnituresCat
 import NotFound from "./pages/NotFound";
 import SignupSeller from "./pages/auth/SignupSeller";
 import LoginSeller from "./pages/auth/LoginSeller";
+import ShowMultiModel from "./components/ShowMultiModel";
 
 function App() {
   return (
@@ -59,6 +60,8 @@ function App() {
               element={<ViewFurniture />}
             />
           </Route>
+
+          <Route element={<ShowMultiModel />} path="/mutli"></Route>
 
           {/* Private routes: exclusive to shopper */}
           <Route element={<ShopperProtectedRoutes />}>
