@@ -4,6 +4,7 @@ import { Tooltip } from "flowbite-react";
 import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
+import { XMarkIcon, Bars3Icon } from "@heroicons/react/20/solid";
 
 function ShowMultiModel() {
   const modelViewerRef = useRef(null);
@@ -14,6 +15,7 @@ function ShowMultiModel() {
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
   const { openAR } = useParams();
+  const [openBar, setOpenBar] = useState(true);
 
   const goAr = () => {
     if (openAR === "open-ar") {
@@ -334,11 +336,39 @@ function ShowMultiModel() {
             <line className="dimensionLine"></line>
           </svg>
 
-          <div className="absolute bottom-0 right-0 z-50 flex flex-col w-3/4 bg-blue-400 h-5/6">
-            <div className="flex-1 bg-red-300">Hello</div>
-            <hr className="my-4 border-t border-gray-300 border-dashed" />
-            <div className="flex flex-col items-start justify-around text-sm basis-1/5 bg-red-50 controls">
-              {variants.length != 0 ? (
+          {!openBar && (
+            <div
+              className="absolute top-0 flex items-center justify-center p-1 m-3 bg-white rounded-md w-fit"
+              onClick={() => {
+                setOpenBar(!openBar);
+              }}
+            >
+              <Bars3Icon className="w-5 h-5" aria-hidden="true" />
+            </div>
+          )}
+
+          <div
+            className={`absolute top-0 left-0 z-50 flex bg-white opacity-70 flex-col w-3/4 h-full p-4 transform transition-transform duration-300 ${
+              openBar ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            <div className="flex justify-between">
+              <div className="font-semibold">Furnitures</div>
+              <div
+                className="flex items-center justify-center p-1 rounded-md w-fit"
+                onClick={() => {
+                  setOpenBar(!openBar);
+                }}
+              >
+                <XMarkIcon className="w-5 h-5" aria-hidden="true" />
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-scroll">
+              <p className="text-sm truncate">Arabian Family Sofa</p>
+            </div>
+            <hr className="my-4 border-t border-dashed" />
+            <div className="flex flex-col items-start justify-around text-sm basis-1/5 controls">
+              {variants.length !== 0 ? (
                 <div className="flex items-center">
                   <span>Variant:</span>
                   <select
@@ -366,7 +396,7 @@ function ShowMultiModel() {
                   checked={toggleDimension}
                   onChange={showDimension}
                   className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
-                ></input>
+                />
               </div>
             </div>
           </div>
