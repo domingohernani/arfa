@@ -6,6 +6,7 @@ import { MdDashboard } from "react-icons/md";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import greaterthan from "../../assets/icons/greater-than.svg";
 import { FooterSection } from "../../components/navigation/FooterSection";
+import ShowMultiModel from "../../components/ShowMultiModel";
 
 const displayFurnituresOnWishlist = () => {
   let onCart = Array(5).fill(null);
@@ -91,6 +92,12 @@ const displayFurnituresOnWishlist = () => {
     </div>
   ));
 };
+
+const modelPaths = [
+  "https://firebasestorage.googleapis.com/v0/b/aria-16a4d.appspot.com/o/models%2Fsofa.glb?alt=media&token=9c363de4-5eff-4c0a-9622-b96f340cce3c",
+  "https://firebasestorage.googleapis.com/v0/b/aria-16a4d.appspot.com/o/models%2Fsofa.glb?alt=media&token=9c363de4-5eff-4c0a-9622-b96f340cce3c",
+  "https://firebasestorage.googleapis.com/v0/b/aria-16a4d.appspot.com/o/models%2Fsofa.glb?alt=media&token=9c363de4-5eff-4c0a-9622-b96f340cce3c",
+];
 
 const Wishlist = () => {
   const tabsRef = useRef(null);
@@ -183,6 +190,8 @@ const Wishlist = () => {
           <Tabs.Item title="Cart"></Tabs.Item>
         </Tabs>
       </div>
+
+      <ShowMultiModel paths={modelPaths}></ShowMultiModel>
       <section className="mt-10">
         <FooterSection />
       </section>
