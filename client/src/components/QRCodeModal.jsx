@@ -47,7 +47,7 @@ const QRCodeModal = () => {
             <button
               type="button"
               onClick={handleClose}
-              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
+              className="inline-flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
             >
               Cancel
             </button>
