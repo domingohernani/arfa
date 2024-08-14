@@ -367,7 +367,7 @@ function ShowMultiModel() {
               <p className="text-sm truncate">Arabian Family Sofa</p>
             </div>
             <hr className="my-4 border-t border-dashed" />
-            <div className="flex flex-col items-start justify-around text-sm basis-1/5 controls">
+            <div className="flex flex-col items-start justify-center text-sm basis-1/5 controls">
               {variants.length !== 0 ? (
                 <div className="flex items-center">
                   <span>Variant:</span>
