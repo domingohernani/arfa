@@ -13,17 +13,8 @@ function ShowModel({ path }) {
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
-  const { openAR } = useParams();
-
-  const goAr = () => {
-    if (openAR === "open-ar") {
-      handleArClick();
-    }
-  };
-
+  
   useEffect(() => {
-    goAr();
-
     const modelViewer = modelViewerRef.current;
 
     const handleLoad = () => {

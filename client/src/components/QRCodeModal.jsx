@@ -12,7 +12,7 @@ const QRCodeModal = () => {
   useEffect(() => {
     const generateQRCode = async () => {
       try {
-        const currentUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}/open-ar`;
+        const currentUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
         const qrCode = await QRCode.toDataURL(currentUrl);
         setQrcodeSrc(qrCode);
       } catch (error) {
