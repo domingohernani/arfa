@@ -212,7 +212,6 @@ function ShowMultiModel() {
   };
 
   const handleVariantChange = (event) => {
-    event.preventDefault();
     const variantName =
       event.target.value === "default" ? null : event.target.value;
     modelViewerRef.current.variantName = variantName;
