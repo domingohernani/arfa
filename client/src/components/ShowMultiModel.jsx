@@ -409,7 +409,7 @@ function ShowMultiModel() {
 
             <div className="flex justify-center gap-10 px-6 pt-3">
               <button
-                className="px-5 py-1 text-sm text-black"
+                className="px-5 py-1 text-sm text-black focus:outline-none"
                 onClick={() => {
                   setOpenModal(false);
                   goAr();
@@ -419,7 +419,7 @@ function ShowMultiModel() {
               </button>
 
               <button
-                className="px-5 py-1 text-sm text-black"
+                className="px-5 py-1 text-sm text-black focus:outline-none"
                 onClick={() => setOpenModal(false)}
               >
                 No
