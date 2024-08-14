@@ -5,6 +5,7 @@ import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
 import { XMarkIcon, Bars3Icon } from "@heroicons/react/20/solid";
+import { Modal } from "flowbite-react";
 
 function ShowMultiModel() {
   const modelViewerRef = useRef(null);
@@ -15,6 +16,7 @@ function ShowMultiModel() {
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
   const [openBar, setOpenBar] = useState(false);
+  const [openModal, setOpenModal] = useState(true);
 
   const goAr = () => {
     handleArClick();
@@ -164,6 +166,11 @@ function ShowMultiModel() {
 
     modelViewer.addEventListener("load", handleLoad);
     modelViewer.addEventListener("camera-change", renderSVG);
+
+    // if (buttonARRef.current) {
+    //   buttonARRef.current.click();
+    // }
+    // alert
 
     return () => {
       modelViewer.removeEventListener("load", handleLoad);
@@ -394,9 +401,33 @@ function ShowMultiModel() {
             </div>
           </div>
         </model-viewer>
-        <button slot="ar-button" id="ar-button" className="bg-red-300" onClick={goAr}>
-          View in your space
-        </button>
+        <Modal show={openModal} size="sm" onClose={() => setOpenModal(false)}>
+          <Modal.Body>
+            <div className="px-6 text-sm text-center">
+              Would you like to launch the AR experience?
+            </div>
+
+            <div className="flex justify-center gap-10 px-6 pt-3">
+              <button
+                className="px-5 py-1 text-sm text-black"
+                onClick={() => {
+                  setOpenModal(false);
+                  goAr();
+                }}
+              >
+                Yes
+              </button>
+
+              <button
+                className="px-5 py-1 text-sm text-black"
+                onClick={() => setOpenModal(false)}
+              >
+                No
+              </button>
+            </div>
+          </Modal.Body>
+        </Modal>
+
         <QRCodeModal></QRCodeModal>
       </div>
     </>
