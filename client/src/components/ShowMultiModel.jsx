@@ -184,6 +184,8 @@ function ShowMultiModel({ data }) {
         setModelUrls(results);
         modelViewerRef.current.src = results[0];
         setSelectedItem(data[0]);
+
+        console.log(data[0].name);
       } catch (error) {
         console.error("Error fetching model URLs:", error);
       }
@@ -243,7 +245,6 @@ function ShowMultiModel({ data }) {
       modelViewerRef.current.activateAR();
     }
   };
-
   return (
     <>
       <div className="relative h-96">
@@ -354,13 +355,15 @@ function ShowMultiModel({ data }) {
 
           {!openBar && (
             <div
-              className="absolute top-0 flex flex-col items-start gap-4 p-1 m-3 bg-white rounded-md cursor-pointer w-fit"
+              className="absolute top-0 flex items-start gap-4 p-1 m-3 bg-white rounded-md cursor-pointer w-fit"
               onClick={() => {
                 setOpenBar(!openBar);
               }}
             >
               <img src={filter} aria-hidden="true" className="w-5 h-5 " />
-              <span className="text-sm">{selectedItem.name}</span>
+              {selectedItem && (
+                <span className="text-sm">{selectedItem.name}</span>
+              )}
             </div>
           )}
 
