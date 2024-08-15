@@ -44,13 +44,6 @@ function App() {
           <Route element={<SignupSeller />} path="/signup-seller"></Route>
           <Route element={<LoginSeller />} path="/login-seller"></Route>
 
-          {/* <Route path="/catalog" element={<Catalog />}>
-            <Route index element={<DisplayFurniture />} />
-            <Route path=":category" element={<DisplayFurniture />}></Route>
-            <Route path="item/:item" element={<ViewFurniture />} />
-            <Route path=":category/item/:item" element={<ViewFurniture />} />
-          </Route> */}
-
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
             <Route path="category/:category" element={<DisplayFurniture />} />
@@ -61,13 +54,11 @@ function App() {
             />
           </Route>
 
-          <Route element={<ShowMultiModel />} path="/mutli"></Route>
-
           {/* Private routes: exclusive to shopper */}
           <Route element={<ShopperProtectedRoutes />}>
             <Route element={<Cart />} path="/cart"></Route>
             <Route
-              element={<CartWishlistAugmentedReality />}
+              element={<ShowMultiModel />}
               path="/:page/augmented-reality"
             ></Route>
             <Route element={<Wishlist />} path="/wishlist"></Route>

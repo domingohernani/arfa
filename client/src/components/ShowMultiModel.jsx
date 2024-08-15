@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import arIcon from "../assets/icons/ar.svg";
-import { Tooltip } from "flowbite-react";
 import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { XMarkIcon, Bars3Icon } from "@heroicons/react/20/solid";
-import { Modal } from "flowbite-react";
+import filter from "../assets/icons/filter.svg";
+import { get3DModelUrl } from "../firebase/models";
 
-function ShowMultiModel() {
+function ShowMultiModel({ data }) {
   const modelViewerRef = useRef(null);
   const [variants, setVariants] = useState([]);
   const [initialVariant, setInitialVariant] = useState("");
@@ -16,7 +16,8 @@ function ShowMultiModel() {
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
   const [openBar, setOpenBar] = useState(false);
-  const [openModal, setOpenModal] = useState(true);
+  const [modelUrls, setModelUrls] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const goAr = () => {
     handleArClick();
@@ -167,16 +168,31 @@ function ShowMultiModel() {
     modelViewer.addEventListener("load", handleLoad);
     modelViewer.addEventListener("camera-change", renderSVG);
 
-    // if (buttonARRef.current) {
-    //   buttonARRef.current.click();
-    // }
-    // alert
-
     return () => {
       modelViewer.removeEventListener("load", handleLoad);
       modelViewer.removeEventListener("camera-change", renderSVG);
     };
   }, []);
+
+  useEffect(() => {
+    const fetchModelUrls = async () => {
+      try {
+        const fetchPromises = data.map(async (furniture) => {
+          return await get3DModelUrl(furniture.modelUrl);
+        });
+        const results = await Promise.all(fetchPromises);
+        setModelUrls(results);
+        modelViewerRef.current.src = results[0];
+        setSelectedItem(data[0]);
+      } catch (error) {
+        console.error("Error fetching model URLs:", error);
+      }
+    };
+
+    if (data && data.length > 0) {
+      fetchModelUrls();
+    }
+  }, [data]);
 
   const showDimension = () => {
     const modelViewer = modelViewerRef.current;
@@ -221,7 +237,6 @@ function ShowMultiModel() {
 
   const handleArClick = () => {
     const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
-
     if (!isMobileDevice) {
       updateIsQRCodeOpen(true);
     } else {
@@ -339,12 +354,13 @@ function ShowMultiModel() {
 
           {!openBar && (
             <div
-              className="absolute top-0 flex items-center justify-center p-1 m-3 bg-white rounded-md w-fit"
+              className="absolute top-0 flex flex-col items-start gap-4 p-1 m-3 bg-white rounded-md cursor-pointer w-fit"
               onClick={() => {
                 setOpenBar(!openBar);
               }}
             >
-              <Bars3Icon className="w-5 h-5" aria-hidden="true" />
+              <img src={filter} aria-hidden="true" className="w-5 h-5 " />
+              <span className="text-sm">{selectedItem.name}</span>
             </div>
           )}
 
@@ -356,7 +372,7 @@ function ShowMultiModel() {
             <div className="flex justify-between">
               <div className="font-semibold">Furnitures</div>
               <div
-                className="flex items-center justify-center p-1 rounded-md w-fit"
+                className="flex items-center justify-center p-1 rounded-md cursor-pointer w-fit"
                 onClick={() => {
                   setOpenBar(!openBar);
                 }}
@@ -364,8 +380,22 @@ function ShowMultiModel() {
                 <XMarkIcon className="w-5 h-5" aria-hidden="true" />
               </div>
             </div>
-            <div className="flex-1 overflow-y-scroll">
-              <p className="text-sm truncate">Arabian Family Sofa</p>
+            <div className="flex-1 overflow-auto">
+              {data.map((item, index) => {
+                return (
+                  <p
+                    className="text-sm truncate cursor-pointer"
+                    key={index}
+                    onClick={() => {
+                      modelViewerRef.current.src = modelUrls[index];
+                      setSelectedItem(data[index]);
+                      setOpenBar(false);
+                    }}
+                  >
+                    {item.name}
+                  </p>
+                );
+              })}
             </div>
             <hr className="my-4 border-t border-dashed" />
             <div className="flex flex-col items-start justify-center gap-4 text-sm basis-1/5 controls">
@@ -402,33 +432,14 @@ function ShowMultiModel() {
             </div>
           </div>
         </model-viewer>
-        <Modal show={openModal} size="sm" onClose={() => setOpenModal(false)}>
-          <Modal.Body>
-            <div className="px-6 text-sm text-center">
-              Would you like to launch the AR experience?
-            </div>
-
-            <div className="flex justify-center gap-10 px-6 pt-3">
-              <button
-                className="px-5 py-1 text-sm text-black focus:outline-none"
-                onClick={() => {
-                  setOpenModal(false);
-                  goAr();
-                }}
-              >
-                Yes
-              </button>
-
-              <button
-                className="px-5 py-1 text-sm text-black focus:outline-none"
-                onClick={() => setOpenModal(false)}
-              >
-                No
-              </button>
-            </div>
-          </Modal.Body>
-        </Modal>
-
+        <div className="flex justify-end ">
+          <button
+            className="p-1 border border-gray-300 rounded-full shadow-sm"
+            onClick={goAr}
+          >
+            <img src={arIcon} alt="ar" className="w-7 h-7" />
+          </button>
+        </div>
         <QRCodeModal></QRCodeModal>
       </div>
     </>
