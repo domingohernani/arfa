@@ -4,6 +4,7 @@ import { Tooltip } from "flowbite-react";
 import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
+import { CubeTransparentIcon } from "@heroicons/react/20/solid";
 
 function ShowModel({ path }) {
   const modelViewerRef = useRef(null);
@@ -13,7 +14,7 @@ function ShowModel({ path }) {
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
-  
+
   useEffect(() => {
     const modelViewer = modelViewerRef.current;
 
@@ -357,12 +358,12 @@ function ShowModel({ path }) {
         </div>
       </div>
       <button
-        className="absolute p-1 transform -translate-x-1/2 border border-gray-300 rounded-full shadow-sm bottom-4 left-1/2"
+        className="absolute flex items-center justify-center p-2 transform -translate-x-1/2 border border-gray-300 rounded-full shadow-sm bottom-4 left-1/2"
         onClick={() => {
           handleArClick();
         }}
       >
-        <img src={arIcon} alt="ar" className="w-7 h-7" />
+        <CubeTransparentIcon className="w-5 h-5 text-black"></CubeTransparentIcon>
       </button>
       <QRCodeModal></QRCodeModal>
     </>

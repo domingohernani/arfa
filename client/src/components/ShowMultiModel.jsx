@@ -3,7 +3,7 @@ import arIcon from "../assets/icons/ar.svg";
 import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useNavigate, useParams } from "react-router-dom";
-import { XMarkIcon, Bars3Icon } from "@heroicons/react/20/solid";
+import { XMarkIcon, CubeTransparentIcon } from "@heroicons/react/20/solid";
 import filter from "../assets/icons/filter.svg";
 import { get3DModelUrl } from "../firebase/models";
 
@@ -261,6 +261,7 @@ function ShowMultiModel({ data }) {
           camera-orbit="0deg 90deg 2.9m"
           ref={modelViewerRef}
         >
+          <button slot="ar-button" className="hidden"></button>
           <button
             slot="hotspot-dot+X-Y+Z"
             className="dot"
@@ -437,10 +438,10 @@ function ShowMultiModel({ data }) {
         </model-viewer>
         <div className="flex justify-end ">
           <button
-            className="p-1 border border-gray-300 rounded-full shadow-sm"
+            className="p-2 border border-gray-300 rounded-full shadow-sm"
             onClick={goAr}
           >
-            <img src={arIcon} alt="ar" className="w-7 h-7" />
+            <CubeTransparentIcon className="w-5 h-5 text-black"></CubeTransparentIcon>
           </button>
         </div>
         <QRCodeModal></QRCodeModal>
