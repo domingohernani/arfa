@@ -6,13 +6,13 @@ import { Outlet } from "react-router-dom";
 import { FooterSection } from "../../components/navigation/FooterSection";
 const SellerLayout = () => {
   return (
-    <section>
-      <section className=" bg-arfagreen">
+    <section className="bg-gray-50">
+      <section className="bg-white shadow-sm">
         <SellerNavigationBar />
       </section>
 
       <section className="flex mb-10">
-        <section className="bg-green-300 w-fit ">
+        <section className="bg-white shadow-sm w-fit ">
           <SellerSideBar></SellerSideBar>
         </section>
         <section className="flex-1 border-l">
