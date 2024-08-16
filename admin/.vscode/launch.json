@@ -8,7 +8,8 @@
             "name": "admin",
             "cwd": "admin",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart"
         },
         {
             "name": "admin (profile mode)",
