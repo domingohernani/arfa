@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/logos/logo_white.svg";
+import logo from "../../assets/logos/logo_black.svg";
 import profile from "../../assets/icons/profile-black.svg";
 import cart from "../../assets/icons/cart.svg";
 import search from "../../assets/icons/search.svg";
@@ -12,7 +12,7 @@ function SellerNavigationBar() {
     <div className="grid items-center grid-cols-11 grid-rows-2 gap-2 px-6 py-3 md:grid-rows-1">
       <div className="flex justify-start col-span-1 ">
         <Link to="/">
-          <img src={logo} alt="ARFA" className="h-auto min-w-16 md:w-24" />
+          <img src={logo} alt="ARFA" className="h-auto min-w-16 md:w-20" />
         </Link>
       </div>
       <div className="relative col-span-11 row-start-2 text-xs md:text-sm md:col-start-2 md:col-span-4 md:row-start-1">
