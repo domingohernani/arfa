@@ -7,20 +7,17 @@ import { FooterSection } from "../../components/navigation/FooterSection";
 const SellerLayout = () => {
   return (
     <section className="bg-gray-50">
-      <section className="bg-white shadow-sm">
+      <section className="bg-white border-b border-gray-300">
         <SellerNavigationBar />
       </section>
 
       <section className="flex mb-10">
-        <section className="bg-white shadow-sm w-fit ">
+        <section className="bg-white border-r border-gray-300 w-fit">
           <SellerSideBar></SellerSideBar>
         </section>
-        <section className="flex-1 border-l">
+        <section className="flex-1 ">
           <Outlet />
         </section>
-      </section>
-      <section className="pt-4">
-        <FooterSection />
       </section>
     </section>
   );
