@@ -175,3 +175,8 @@ button {
   background-color: red !important;
   color: black;
 }
+
+/* ag grid font family */
+canvas {
+  font-family: "Raleway, sans-serif" !important;
+}
