@@ -61,7 +61,7 @@ export const SellerDashboard = () => {
         <div className="p-5 bg-white rounded-md shadow-sm basis-3/5">
           <OrdersOverTime />
         </div>
-        <div className="flex flex-col self-stretch w-full gap-3 px-5 py-3 bg-white rounded-md shadow-sm lg:gap-0 lg:py-0 basis-2/5 justify-evenly">
+        <div className="flex flex-col self-stretch w-full gap-2 px-5 py-3 bg-white rounded-md shadow-sm basis-2/5 justify-evenly">
           <div className="flex flex-col gap-5 ">
             <h3 className="text-base font-medium">Weekly Sales</h3>
             <div className="flex flex-col">
