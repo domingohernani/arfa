@@ -58,10 +58,10 @@ export const SellerDashboard = () => {
         </div>
       </section>
       <section className="flex flex-col gap-5 pb-5 text-gray-500 md:flex-row ">
-        <div className="p-5 bg-white rounded-md shadow-sm basis-3/4">
+        <div className="p-5 bg-white rounded-md shadow-sm basis-3/5">
           <OrdersOverTime />
         </div>
-        <div className="flex flex-col self-stretch w-full gap-3 px-5 py-3 bg-white rounded-md shadow-sm lg:gap-0 lg:py-0 basis-1/4 justify-evenly">
+        <div className="flex flex-col self-stretch w-full gap-3 px-5 py-3 bg-white rounded-md shadow-sm lg:gap-0 lg:py-0 basis-2/5 justify-evenly">
           <div className="flex flex-col gap-5 ">
             <h3 className="text-base font-medium">Weekly Sales</h3>
             <div className="flex flex-col">
@@ -78,14 +78,14 @@ export const SellerDashboard = () => {
         </div>
       </section>
       <section className="flex flex-col gap-5 lg:flex-row">
-        <div className="py-5 bg-white rounded-md shadow-sm basis-2/5">
+        <div className="py-5 bg-white rounded-md shadow-sm basis-1/2">
           <BasicTable
             rowData={rowData}
             columnDefs={columnDefs}
             title="Recent Transactions"
           ></BasicTable>
         </div>
-        <div className="flex-1 py-5 bg-white rounded-md shadow-sm">
+        <div className="py-5 bg-white rounded-md shadow-sm basis-1/2">
           <BasicTable
             rowData={rowData}
             columnDefs={columnDefs}
