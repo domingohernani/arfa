@@ -328,8 +328,7 @@ const SellerOrders = () => {
 
   return (
     <>
-      <h2 className="px-10 py-3 text-lg font-medium text-gray-900">Orders</h2>
-      <div className={"ag-theme-quartz px-10"} style={{ height: 500 }}>
+      <div className={"ag-theme-quartz p-5"} style={{ height: "90%" }}>
         <AgGridReact
           rowData={rowData}
           ref={gridRef}
@@ -340,6 +339,7 @@ const SellerOrders = () => {
           pagination={true}
           paginationPageSize={10}
           paginationPageSizeSelector={[10, 25, 50]}
+          domLayout="normal"
         />
       </div>
     </>
