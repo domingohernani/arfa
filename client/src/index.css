@@ -163,12 +163,12 @@ button {
 
 /* Styling the focues cell (AG-Grid)*/
 .ag-cell-focus {
-  border: 1px solid #0e9f6e !important;
+  border: 1px solid transparent !important;
 }
 
 /* Styling the selected cell (AG-Grid)*/
 .ag-cell-range-selected {
-  border: 1px solid #0e9f6e !important;
+  border: 1px solid transparent !important;
 }
 
 .ag-checkbox-input {
