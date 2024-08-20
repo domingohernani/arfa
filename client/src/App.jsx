@@ -77,7 +77,6 @@ function App() {
             <Route element={<SellerOrders />} path="order" />
             <Route element={<SellerProducts />} path="product" />
             <Route element={<SellerTransaction />} path="transaction" />
-            <Route element={<SellerCustomers />} path="customer" />
             <Route element={<SellerReports />} path="report" />
             <Route element={<SellerInbox />} path="inbox" />
           </Route>

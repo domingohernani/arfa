@@ -138,36 +138,6 @@ export const SellerSideBar = () => {
           </li>
           <li>
             <NavLink
-              to={"customer"}
-              className={({ isActive }) =>
-                isActive
-                  ? "text-white flex items-center justify-center p-2 md:pr-6 rounded-lg bg-arfagreen"
-                  : "text-arfablack flex items-center justify-center p-2 md:pr-6 rounded-lg"
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    id="Layer_1"
-                    data-name="Layer 1"
-                    viewBox="0 0 24 24"
-                    width="512"
-                    height="512"
-                    className="w-4 h-4 text-arfagreen "
-                    fill={`${isActive ? "white" : "#111827"}`}
-                  >
-                    <path d="M12,16a4,4,0,1,1,4-4A4,4,0,0,1,12,16Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,12,10Zm6,13A6,6,0,0,0,6,23a1,1,0,0,0,2,0,4,4,0,0,1,8,0,1,1,0,0,0,2,0ZM18,8a4,4,0,1,1,4-4A4,4,0,0,1,18,8Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,18,2Zm6,13a6.006,6.006,0,0,0-6-6,1,1,0,0,0,0,2,4,4,0,0,1,4,4,1,1,0,0,0,2,0ZM6,8a4,4,0,1,1,4-4A4,4,0,0,1,6,8ZM6,2A2,2,0,1,0,8,4,2,2,0,0,0,6,2ZM2,15a4,4,0,0,1,4-4A1,1,0,0,0,6,9a6.006,6.006,0,0,0-6,6,1,1,0,0,0,2,0Z" />
-                  </svg>
-                  <span class="flex-1 ms-3 whitespace-nowrap md:inline hidden">
-                    Customer
-                  </span>
-                </>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to={"report"}
               className={({ isActive }) =>
                 isActive
