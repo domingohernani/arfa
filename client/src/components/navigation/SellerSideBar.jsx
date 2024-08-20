@@ -106,7 +106,7 @@ export const SellerSideBar = () => {
           </li>
           <li>
             <NavLink
-              to={"category"}
+              to={"transaction"}
               className={({ isActive }) =>
                 isActive
                   ? "text-white flex items-center justify-center p-2 md:pr-6 rounded-lg bg-arfagreen"
