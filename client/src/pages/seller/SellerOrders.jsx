@@ -18,7 +18,7 @@ import {
   PencilIcon,
   TrashIcon,
   EllipsisVerticalIcon,
-} from "@heroicons/react/16/solid";
+} from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -140,6 +140,7 @@ const SellerOrders = () => {
       headerName: "Action",
       field: "action",
       filter: false,
+      flex: 1,
       cellRenderer: CustomRowActions,
     },
   ]);
