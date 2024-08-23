@@ -11,6 +11,12 @@ import {
   TrashIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect } from "react";
+import { fetchFurnitureCollection } from "../../firebase/furniture";
+import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
+import { where } from "firebase/firestore";
+import { auth } from "../../firebase/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -84,96 +90,16 @@ const CustomRowActions = ({ data }) => {
 const SellerProducts = () => {
   const gridRef = useRef();
 
-  const [rowData, setRowData] = useState([
-    {
-      product: "The Avalon Altar",
-      category: "Storage",
-      description: "A sleek, modern cabinet with ample storage.",
-      inventory: "6 in stock",
-      price: "₱ 4,490.00",
-      rating: "5.0 (32 Votes)",
-      createdAt: "2024-07-12",
-      status: "On Sale",
-    },
-    {
-      product: "The Windsor Whisper",
-      category: "Living Room",
-      description: "Comfortable chair perfect for any living room.",
-      inventory: "6 in stock",
-      price: "₱ 2,499.00",
-      rating: "4.8 (24 Votes)",
-      createdAt: "2024-06-18",
-      status: "Not On Sale",
-    },
-    {
-      product: "The Valencia Vista",
-      category: "Dining Room",
-      description: "Elegant dining table for modern spaces.",
-      inventory: "8 in stock",
-      price: "₱ 1,290.00",
-      rating: "5.0 (54 Votes)",
-      createdAt: "2024-07-01",
-      status: "On Sale",
-    },
-    {
-      product: "The Cambridge Cache",
-      category: "Bedroom",
-      description: "Stylish cabinet for bedroom storage.",
-      inventory: "2 in stock",
-      price: "₱ 3,490.00",
-      rating: "4.5 (31 Votes)",
-      createdAt: "2024-07-08",
-      status: "Not On Sale",
-    },
-    {
-      product: "The Avalon Accent",
-      category: "Office",
-      description: "Ergonomic office chair with a modern design.",
-      inventory: "12 in stock",
-      price: "₱ 1,990.00",
-      rating: "4.9 (22 Votes)",
-      createdAt: "2024-07-10",
-      status: "On Sale",
-    },
-    {
-      product: "The Seraphina Surface",
-      category: "Accent",
-      description: "A beautiful accent table to elevate your space.",
-      inventory: "9 in stock",
-      price: "₱ 1,890.00",
-      rating: "5.0 (32 Votes)",
-      createdAt: "2024-06-22",
-      status: "Not On Sale",
-    },
-    {
-      product: "The Meridian Marvel",
-      category: "Entryway",
-      description: "Modern storage cabinet for your entryway.",
-      inventory: "5 in stock",
-      price: "₱ 4,990.00",
-      rating: "4.8 (24 Votes)",
-      createdAt: "2024-07-15",
-      status: "On Sale",
-    },
-    {
-      product: "The Berkshire Breeze",
-      category: "Outdoor",
-      description: "Stylish outdoor chair for your garden.",
-      inventory: "Out of Stock",
-      price: "₱ 1,490.00",
-      rating: "5.0 (54 Votes)",
-      createdAt: "2024-07-03",
-      status: "Not On Sale",
-    },
-  ]);
+  const [rowData, setRowData] = useState([]);
 
   const columnDefs = useMemo(
     () => [
       {
-        headerName: "Product",
-        field: "product",
+        headerName: "Product ID",
+        field: "id",
         flex: 1,
         filter: "agTextColumnFilter",
+        checkboxSelection: true,
       },
       {
         headerName: "Category",
@@ -231,12 +157,36 @@ const SellerProducts = () => {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
-      filter: "agTextColumnFilter", // Default filter
-      floatingFilter: true, // Enable floating filter for each column
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
       resizable: true,
     }),
     []
   );
+
+  useEffect(() => {
+    const fetchFurniture = async (userId) => {
+      try {
+        let filter = [];
+        filter.push(where("ownerId", "==", userId));
+        const furnitures = await fetchFurnitureCollection("furnitures", filter);
+        setRowData(furnitures);
+      } catch (error) {
+        console.error("Error fetching furniture:", error);
+      }
+    };
+
+    const auth = getAuth();
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchFurniture(user.uid);
+      } else {
+        console.log("No user is logged in");
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div
