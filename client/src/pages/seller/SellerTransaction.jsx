@@ -86,7 +86,7 @@ const SellerTransaction = () => {
         filter: "agTextColumnFilter",
         cellRendererFramework: (params) => (
           <div className="flex items-center">
-            <div className="rounded-full bg-gray-300 text-center text-white w-8 h-8 flex items-center justify-center mr-3">
+            <div className="flex items-center justify-center w-8 h-8 mr-3 text-center text-white bg-gray-300 rounded-full">
               {params.value.charAt(0)}
             </div>
             {params.value}
@@ -133,7 +133,7 @@ const SellerTransaction = () => {
 
   return (
     <div
-      className="ag-theme-quartz p-5"
+      className="p-5 ag-theme-quartz"
       style={{ height: "90%", width: "100%" }}
     >
       <AgGridReact
