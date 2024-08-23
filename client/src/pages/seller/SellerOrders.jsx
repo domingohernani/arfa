@@ -102,22 +102,9 @@ const SellerOrders = () => {
     },
     {
       headerName: "Date",
-      field: "createdAt",
+      field: "createdAtDate",
       filter: "agDateColumnFilter",
       flex: 1,
-      valueGetter: (params) => {
-        const createdAt = params.data.createdAt;
-        if (createdAt && createdAt.seconds) {
-          const date = new Date(
-            createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000
-          );
-          const year = date.getFullYear();
-          const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure 2 digits
-          const day = date.getDate().toString().padStart(2, '0'); // Ensure 2 digits
-          return `${year}-${month}-${day}`;
-        }
-        return "";
-      },
       sort: "desc",
       sortIndex: 0,
     },
