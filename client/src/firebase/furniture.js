@@ -15,20 +15,35 @@ export const fetchFurnitureCollection = async (
     }
     const querySnapshot = await getDocs(q);
 
-    // Fetch documents and reviews
     const dataList = await Promise.all(
       querySnapshot.docs.map(async (doc) => {
         const documentData = {
           id: doc.id,
           ...doc.data(),
         };
-
         const reviewsData = await getReviewCollections(doc.ref);
         documentData.reviewsData = reviewsData;
+
+        if (documentData.shop) {
+          const shopDoc = await getDoc(documentData.shop);
+
+          if (shopDoc.exists()) {
+            (documentData.shopId = shopDoc.id),
+              (documentData.shopDetails = {
+                // id: shopDoc.id,
+                ...shopDoc.data(),
+              });
+          } else {
+            documentData.shopDetails = null;
+            documentData.shopId = null;
+          }
+        } else {
+          documentData.shopDetails = null;
+          documentData.shopId = null;
+        }
         return documentData;
       })
     );
-    
     return dataList;
   } catch (error) {
     console.error("Error fetching data: ", error);
