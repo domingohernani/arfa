@@ -120,28 +120,25 @@ const SellerProducts = () => {
         filter: "agTextColumnFilter",
       },
       {
-        headerName: "Price",
+        headerName: "Price (₱)",
         field: "price",
         flex: 1,
         filter: "agNumberColumnFilter",
       },
       {
-        headerName: "Rating",
-        field: "rating",
-        flex: 1,
-        filter: "agTextColumnFilter",
-      },
-      {
         headerName: "Created At",
-        field: "createdAt",
+        field: "createdAtDate",
         flex: 1,
         filter: "agDateColumnFilter",
+        sort: "desc",
+        sortIndex: 0,
       },
       {
         headerName: "Status",
-        field: "status",
+        field: "isSale",
         flex: 1,
         filter: "agTextColumnFilter",
+        valueGetter: (val) => (val ? "On Sale" : "Not On Sale"),
       },
       {
         headerName: "Action",
@@ -171,6 +168,7 @@ const SellerProducts = () => {
         filter.push(where("ownerId", "==", userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
         setRowData(furnitures);
+        console.log(furnitures);
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
