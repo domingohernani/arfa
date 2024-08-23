@@ -34,7 +34,10 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
@@ -49,23 +52,13 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAaT769kGe08TQlKFymLXChN1OhDjctHP0',
-    appId: '1:121696785605:ios:995b968ae640795fb68cac',
-    messagingSenderId: '121696785605',
-    projectId: 'aria-16a4d',
-    storageBucket: 'aria-16a4d.appspot.com',
-    iosClientId: '121696785605-npl4jrfolem9eqi9pd4agph9ugmdirb4.apps.googleusercontent.com',
-    iosBundleId: 'com.example.admin',
-  );
-
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyB2XDFTtgpmOM_hEzinZfaGmJtvd-CkO24',
-    appId: '1:121696785605:web:5e6cc55d9216e8a3b68cac',
+    appId: '1:121696785605:web:0cb84ae9c6ddbb07b68cac',
     messagingSenderId: '121696785605',
     projectId: 'aria-16a4d',
     authDomain: 'aria-16a4d.firebaseapp.com',
     storageBucket: 'aria-16a4d.appspot.com',
-    measurementId: 'G-4M0CW5MN8C',
+    measurementId: 'G-Q61W6FJ3ES',
   );
 }
