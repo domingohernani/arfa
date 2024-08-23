@@ -21,6 +21,13 @@ export const fetchFurnitureCollection = async (
           id: doc.id,
           ...doc.data(),
         };
+
+        // Format the createdAt timestamp to yyyy-mm-dd
+        if (documentData.createdAt) {
+          const createdAt = documentData.createdAt.toDate(); // Convert Firestore Timestamp to JavaScript Date
+          documentData.createdAtDate = createdAt.toISOString().split("T")[0]; // Format to yyyy-mm-dd
+        }
+
         const reviewsData = await getReviewCollections(doc.ref);
         documentData.reviewsData = reviewsData;
 
