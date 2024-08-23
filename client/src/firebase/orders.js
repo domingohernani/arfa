@@ -47,8 +47,6 @@ export const fetchOrdersByShopId = async () => {
         };
       })
     );
-    console.log(ordersList);
-
     return ordersList;
   } catch (error) {
     console.error("Error fetching orders:", error);

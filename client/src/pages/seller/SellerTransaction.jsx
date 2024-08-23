@@ -84,14 +84,6 @@ const SellerTransaction = () => {
         field: "name",
         flex: 1,
         filter: "agTextColumnFilter",
-        cellRendererFramework: (params) => (
-          <div className="flex items-center">
-            <div className="flex items-center justify-center w-8 h-8 mr-3 text-center text-white bg-gray-300 rounded-full">
-              {params.value.charAt(0)}
-            </div>
-            {params.value}
-          </div>
-        ),
       },
       {
         headerName: "Location",
