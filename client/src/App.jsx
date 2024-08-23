@@ -20,7 +20,7 @@ import ShopperProtectedRoutes from "./utils/ShopperProtectedRoutes";
 import SellerLayout from "./pages/seller/SellerLayout";
 import SellerOrders from "./pages/seller/SellerOrders";
 import SellerProducts from "./pages/seller/SellerProducts";
-import SellerCategories from "./pages/seller/SellerCategories";
+import SellerTransaction from "./pages/seller/SellerTransaction";
 import SellerCustomers from "./pages/seller/SellerCustomers";
 import SellerReports from "./pages/seller/SellerReports";
 import SellerInbox from "./pages/seller/SellerInbox";
@@ -76,8 +76,7 @@ function App() {
             <Route element={<SellerDashboard />} path="dashboard" />
             <Route element={<SellerOrders />} path="order" />
             <Route element={<SellerProducts />} path="product" />
-            <Route element={<SellerCategories />} path="category" />
-            <Route element={<SellerCustomers />} path="customer" />
+            <Route element={<SellerTransaction />} path="transaction" />
             <Route element={<SellerReports />} path="report" />
             <Route element={<SellerInbox />} path="inbox" />
           </Route>

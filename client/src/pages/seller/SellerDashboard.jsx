@@ -18,9 +18,9 @@ export const SellerDashboard = () => {
   ];
 
   const columnDefs = [
-    { headerName: "Name", field: "name", filter: true },
-    { headerName: "Date", field: "date", filter: true },
-    { headerName: "Amount", field: "amount", filter: true },
+    { headerName: "Name", field: "name", filter: false },
+    { headerName: "Date", field: "date", filter: false },
+    { headerName: "Amount", field: "amount", filter: false },
   ];
 
   return (
