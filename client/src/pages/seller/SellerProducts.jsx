@@ -18,8 +18,54 @@ import { where } from "firebase/firestore";
 import { auth } from "../../firebase/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useStore } from "../../stores/useStore";
+import toast, { Toaster } from "react-hot-toast";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+const HoverCopyCellRenderer = ({ value }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleCellClick = () => {
+    setIsVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsVisible(false);
+  };
+
+  const handleCopyClick = async () => {
+    if (isVisible) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(value);
+          toast.success(`Copied "${value}" to clipboard!`);
+        } else {
+          toast.error("Clipboard API is not available in this browser.");
+        }
+      } catch (err) {
+        toast.error("Failed to copy.");
+      }
+    }
+  };
+
+  return (
+    <div
+      className="relative"
+      onClick={handleCellClick}
+      onMouseLeave={handleMouseLeave}
+    >
+      <span>{value}</span>
+      <div
+        className={`absolute top-0 left-0 z-50 p-2 text-xs text-white bg-gray-800 rounded shadow-lg cursor-pointer w-fit transition-opacity duration-300 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={handleCopyClick}
+      >
+        {`Copy`}
+      </div>
+    </div>
+  );
+};
 
 const CustomRowActions = ({ data }) => {
   return (
@@ -101,6 +147,7 @@ const SellerProducts = () => {
         flex: 1,
         filter: "agTextColumnFilter",
         checkboxSelection: true,
+        cellRenderer: HoverCopyCellRenderer,
       },
       {
         headerName: "Category",
@@ -119,6 +166,37 @@ const SellerProducts = () => {
         field: "inventory",
         flex: 1,
         filter: "agTextColumnFilter",
+        cellRenderer: (params) => {
+          const inventory = params.value;
+
+          let statusText;
+          let colorClass;
+          let bgColorClass;
+
+          // Determine inventory status and corresponding color
+          if (inventory <= 5) {
+            statusText = "Few";
+            colorClass = "text-red-600"; // Red for "Few"
+            bgColorClass = "bg-red-600";
+          } else if (inventory <= 20) {
+            statusText = "Normal";
+            colorClass = "text-yellow-300"; // Yellow for "Normal"
+            bgColorClass = "bg-yellow-300";
+          } else {
+            statusText = "High";
+            colorClass = "text-green-600"; // Green for "High"
+            bgColorClass = "bg-green-600";
+          }
+
+          return (
+            <div className="flex items-center justify-between">
+              <span className={`font-bold ${colorClass} font-normal`}>
+                ({inventory}) {statusText}
+              </span>
+              <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+            </div>
+          );
+        },
       },
       {
         headerName: "Price (₱)",
@@ -139,7 +217,33 @@ const SellerProducts = () => {
         field: "isSale",
         flex: 1,
         filter: "agTextColumnFilter",
-        valueGetter: (val) => (val ? "On Sale" : "Not On Sale"),
+        cellRenderer: (params) => {
+          const isOnSale = params.value;
+
+          let statusText;
+          let colorClass;
+          let bgColorClass;
+
+          // Determine status and corresponding colors
+          if (isOnSale) {
+            statusText = "On Sale";
+            colorClass = "text-blue-600"; // Blue for "On Sale"
+            bgColorClass = "bg-blue-600"; // Blue background for the indicator
+          } else {
+            statusText = "Not On Sale";
+            colorClass = "text-green-500"; // Green for "Not On Sale"
+            bgColorClass = "bg-green-500"; // Green background for the indicator
+          }
+
+          return (
+            <div className="flex items-center justify-between">
+              <span className={`font-bold ${colorClass} font-normal`}>
+                {statusText}
+              </span>
+              <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+            </div>
+          );
+        },
       },
       {
         headerName: "Action",
@@ -167,7 +271,6 @@ const SellerProducts = () => {
         filter.push(where("ownerId", "==", userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
         setRowFurnituresData(furnitures);
-        console.log(furnitures);
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
@@ -186,23 +289,26 @@ const SellerProducts = () => {
   }, []);
 
   return (
-    <div
-      className="p-5 ag-theme-quartz"
-      style={{ height: "90%", width: "100%" }}
-    >
-      <AgGridReact
-        rowData={rowFurnituresData}
-        ref={gridRef}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        rowSelection="multiple"
-        suppressRowClickSelection={true}
-        pagination={true}
-        paginationPageSize={10}
-        paginationPageSizeSelector={[10, 25, 50]}
-        domLayout="normal"
-      />
-    </div>
+    <>
+      <div
+        className="p-5 ag-theme-quartz"
+        style={{ height: "90%", width: "100%" }}
+      >
+        <AgGridReact
+          rowData={rowFurnituresData}
+          ref={gridRef}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          rowSelection="multiple"
+          suppressRowClickSelection={true}
+          pagination={true}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 25, 50]}
+          domLayout="normal"
+        />
+      </div>
+      <Toaster />
+    </>
   );
 };
 
