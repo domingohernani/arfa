@@ -17,6 +17,7 @@ import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
 import { where } from "firebase/firestore";
 import { auth } from "../../firebase/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useStore } from "../../stores/useStore";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -90,7 +91,7 @@ const CustomRowActions = ({ data }) => {
 const SellerProducts = () => {
   const gridRef = useRef();
 
-  const [rowData, setRowData] = useState([]);
+  const { rowFurnituresData, setRowFurnituresData } = useStore();
 
   const columnDefs = useMemo(
     () => [
@@ -151,15 +152,13 @@ const SellerProducts = () => {
     []
   );
 
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
+  const defaultColDef = useMemo(() => {
+    return {
       filter: "agTextColumnFilter",
       floatingFilter: true,
-      resizable: true,
-    }),
-    []
-  );
+      sortable: true,
+    };
+  }, []);
 
   useEffect(() => {
     const fetchFurniture = async (userId) => {
@@ -167,7 +166,7 @@ const SellerProducts = () => {
         let filter = [];
         filter.push(where("ownerId", "==", userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
-        setRowData(furnitures);
+        setRowFurnituresData(furnitures);
         console.log(furnitures);
       } catch (error) {
         console.error("Error fetching furniture:", error);
@@ -192,7 +191,7 @@ const SellerProducts = () => {
       style={{ height: "90%", width: "100%" }}
     >
       <AgGridReact
-        rowData={rowData}
+        rowData={rowFurnituresData}
         ref={gridRef}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
@@ -202,7 +201,6 @@ const SellerProducts = () => {
         paginationPageSize={10}
         paginationPageSizeSelector={[10, 25, 50]}
         domLayout="normal"
-        quickFilterText="" // For global search
       />
     </div>
   );
