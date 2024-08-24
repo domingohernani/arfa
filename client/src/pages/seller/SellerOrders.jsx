@@ -20,8 +20,54 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import { useStore } from "../../stores/useStore";
+import toast, { Toaster } from "react-hot-toast";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+const HoverCopyCellRenderer = ({ value }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleCellClick = () => {
+    setIsVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsVisible(false);
+  };
+
+  const handleCopyClick = async () => {
+    if (isVisible) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(value);
+          toast.success(`Copied "${value}" to clipboard!`);
+        } else {
+          toast.error("Clipboard API is not available in this browser.");
+        }
+      } catch (err) {
+        toast.error("Failed to copy.");
+      }
+    }
+  };
+
+  return (
+    <div
+      className="relative"
+      onClick={handleCellClick}
+      onMouseLeave={handleMouseLeave}
+    >
+      <span>{value}</span>
+      <div
+        className={`absolute top-0 left-0 z-50 p-2 text-xs text-white bg-gray-800 rounded shadow-lg cursor-pointer w-fit transition-opacity duration-300 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={handleCopyClick}
+      >
+        {`Copy`}
+      </div>
+    </div>
+  );
+};
 
 const CustomRowActions = ({ data }) => {
   return (
@@ -92,6 +138,7 @@ const CustomRowActions = ({ data }) => {
 
 const SellerOrders = () => {
   const { rowOrdersData, setRowOrdersData } = useStore();
+  const gridRef = useRef();
 
   const [columnDefs, setColumnDefs] = useState([
     {
@@ -100,6 +147,7 @@ const SellerOrders = () => {
       flex: 1,
       checkboxSelection: true,
       filter: "agTextColumnFilter",
+      cellRenderer: HoverCopyCellRenderer,
     },
     {
       headerName: "Date",
@@ -116,6 +164,7 @@ const SellerOrders = () => {
       filter: "agTextColumnFilter",
       valueGetter: (params) =>
         params.data.shopper ? params.data.shopper.email : "--",
+      cellRenderer: HoverCopyCellRenderer,
     },
     {
       headerName: "Quantity",
@@ -154,12 +203,11 @@ const SellerOrders = () => {
     };
   }, []);
 
-  const gridRef = useRef();
-
   useEffect(() => {
     const fetchOrders = async () => {
       const orders = await fetchOrdersByShopId();
       setRowOrdersData(orders);
+      console.log(orders);
     };
     fetchOrders();
   }, []);
@@ -180,6 +228,7 @@ const SellerOrders = () => {
           domLayout="normal"
         />
       </div>
+      <Toaster />
     </>
   );
 };
