@@ -166,6 +166,37 @@ const SellerProducts = () => {
         field: "inventory",
         flex: 1,
         filter: "agTextColumnFilter",
+        cellRenderer: (params) => {
+          const inventory = params.value;
+
+          let statusText;
+          let colorClass;
+          let bgColorClass;
+
+          // Determine inventory status and corresponding color
+          if (inventory <= 5) {
+            statusText = "Few";
+            colorClass = "text-red-600"; // Red for "Few"
+            bgColorClass = "bg-red-600";
+          } else if (inventory <= 20) {
+            statusText = "Normal";
+            colorClass = "text-yellow-300"; // Yellow for "Normal"
+            bgColorClass = "bg-yellow-300";
+          } else {
+            statusText = "High";
+            colorClass = "text-green-600"; // Green for "High"
+            bgColorClass = "bg-green-600";
+          }
+
+          return (
+            <div className="flex items-center justify-between">
+              <span className={`font-bold ${colorClass} font-normal`}>
+                ({inventory}) {statusText}
+              </span>
+              <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+            </div>
+          );
+        },
       },
       {
         headerName: "Price (₱)",
@@ -186,7 +217,33 @@ const SellerProducts = () => {
         field: "isSale",
         flex: 1,
         filter: "agTextColumnFilter",
-        valueGetter: (val) => (val ? "On Sale" : "Not On Sale"),
+        cellRenderer: (params) => {
+          const isOnSale = params.value;
+
+          let statusText;
+          let colorClass;
+          let bgColorClass;
+
+          // Determine status and corresponding colors
+          if (isOnSale) {
+            statusText = "On Sale";
+            colorClass = "text-blue-600"; // Blue for "On Sale"
+            bgColorClass = "bg-blue-600"; // Blue background for the indicator
+          } else {
+            statusText = "Not On Sale";
+            colorClass = "text-green-500"; // Green for "Not On Sale"
+            bgColorClass = "bg-green-500"; // Green background for the indicator
+          }
+
+          return (
+            <div className="flex items-center justify-between">
+              <span className={`font-bold ${colorClass} font-normal`}>
+                {statusText}
+              </span>
+              <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+            </div>
+          );
+        },
       },
       {
         headerName: "Action",
