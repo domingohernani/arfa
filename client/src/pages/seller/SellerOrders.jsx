@@ -20,8 +20,54 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import { useStore } from "../../stores/useStore";
+import toast, { Toaster } from "react-hot-toast";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+const HoverCopyCellRenderer = ({ value }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleCellClick = () => {
+    setIsVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsVisible(false);
+  };
+
+  const handleCopyClick = async () => {
+    if (isVisible) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(value);
+          toast.success(`Copied "${value}" to clipboard!`);
+        } else {
+          toast.error("Clipboard API is not available in this browser.");
+        }
+      } catch (err) {
+        toast.error("Failed to copy.");
+      }
+    }
+  };
+
+  return (
+    <div
+      className="relative"
+      onClick={handleCellClick}
+      onMouseLeave={handleMouseLeave}
+    >
+      <span>{value}</span>
+      <div
+        className={`absolute top-0 left-0 z-50 p-2 text-xs text-white bg-gray-800 rounded shadow-lg cursor-pointer w-fit transition-opacity duration-300 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={handleCopyClick}
+      >
+        {`Copy`}
+      </div>
+    </div>
+  );
+};
 
 const CustomRowActions = ({ data }) => {
   return (
@@ -92,6 +138,7 @@ const CustomRowActions = ({ data }) => {
 
 const SellerOrders = () => {
   const { rowOrdersData, setRowOrdersData } = useStore();
+  const gridRef = useRef();
 
   const [columnDefs, setColumnDefs] = useState([
     {
@@ -100,6 +147,7 @@ const SellerOrders = () => {
       flex: 1,
       checkboxSelection: true,
       filter: "agTextColumnFilter",
+      cellRenderer: HoverCopyCellRenderer,
     },
     {
       headerName: "Date",
@@ -116,6 +164,7 @@ const SellerOrders = () => {
       filter: "agTextColumnFilter",
       valueGetter: (params) =>
         params.data.shopper ? params.data.shopper.email : "--",
+      cellRenderer: HoverCopyCellRenderer,
     },
     {
       headerName: "Quantity",
@@ -136,6 +185,76 @@ const SellerOrders = () => {
       field: "orderStatus",
       flex: 1,
       filter: "agTextColumnFilter",
+      cellRenderer: (params) => {
+        const orderStatus = params.value;
+
+        let statusText;
+        let colorClass;
+        let bgColorClass;
+
+        // Determine order status and corresponding color
+        switch (orderStatus) {
+          case "Placed":
+            statusText = "Placed";
+            colorClass = "text-blue-400"; // Blue for "Placed"
+            bgColorClass = "bg-blue-400";
+            break;
+          case "Confirmed":
+            statusText = "Confirmed";
+            colorClass = "text-indigo-500"; // Indigo for "Confirmed"
+            bgColorClass = "bg-indigo-500";
+            break;
+          case "Preparing":
+            statusText = "Preparing";
+            colorClass = "text-orange-400"; // Orange for "Preparing"
+            bgColorClass = "bg-orange-400";
+            break;
+          case "Ready":
+            statusText = "Ready";
+            colorClass = "text-yellow-300"; // Yellow for "Ready"
+            bgColorClass = "bg-yellow-300";
+            break;
+          case "Out of Delivery":
+            statusText = "Out of Delivery";
+            colorClass = "text-purple-500"; // Purple for "Out for Del."
+            bgColorClass = "bg-purple-500";
+            break;
+          case "Delivered":
+            statusText = "Delivered";
+            colorClass = "text-green-500"; // Green for "Delivered"
+            bgColorClass = "bg-green-500";
+            break;
+          case "Cancelled":
+            statusText = "Cancelled";
+            colorClass = "text-red-500"; // Red for "Cancelled"
+            bgColorClass = "bg-red-500";
+            break;
+          case "Returned":
+            statusText = "Returned";
+            colorClass = "text-gray-500"; // Gray for "Returned"
+            bgColorClass = "bg-gray-500";
+            break;
+          case "Refunded":
+            statusText = "Refunded";
+            colorClass = "text-teal-500"; // Teal for "Refunded"
+            bgColorClass = "bg-teal-500";
+            break;
+          default:
+            statusText = "Unknown";
+            colorClass = "text-black"; // Black for unknown status
+            bgColorClass = "bg-black";
+            break;
+        }
+
+        return (
+          <div className="flex items-center justify-between">
+            <span className={`font-bold ${colorClass} font-normal`}>
+              {statusText}
+            </span>
+            <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+          </div>
+        );
+      },
     },
     {
       headerName: "Action",
@@ -154,12 +273,11 @@ const SellerOrders = () => {
     };
   }, []);
 
-  const gridRef = useRef();
-
   useEffect(() => {
     const fetchOrders = async () => {
       const orders = await fetchOrdersByShopId();
       setRowOrdersData(orders);
+      console.log(orders);
     };
     fetchOrders();
   }, []);
@@ -180,6 +298,7 @@ const SellerOrders = () => {
           domLayout="normal"
         />
       </div>
+      <Toaster />
     </>
   );
 };
