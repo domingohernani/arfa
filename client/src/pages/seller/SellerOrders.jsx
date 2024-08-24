@@ -19,6 +19,7 @@ import {
   TrashIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
+import { useStore } from "../../stores/useStore";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -90,7 +91,7 @@ const CustomRowActions = ({ data }) => {
 };
 
 const SellerOrders = () => {
-  const [rowData, setRowData] = useState([]);
+  const { rowOrdersData, setRowOrdersData } = useStore();
 
   const [columnDefs, setColumnDefs] = useState([
     {
@@ -158,7 +159,7 @@ const SellerOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       const orders = await fetchOrdersByShopId();
-      setRowData(orders);
+      setRowOrdersData(orders);
     };
     fetchOrders();
   }, []);
@@ -167,7 +168,7 @@ const SellerOrders = () => {
     <>
       <div className={"ag-theme-quartz p-5"} style={{ height: "90%" }}>
         <AgGridReact
-          rowData={rowData}
+          rowData={rowOrdersData}
           ref={gridRef}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
