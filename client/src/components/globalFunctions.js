@@ -21,7 +21,21 @@ export const toSlug = (name) => {
 
 export const formatTimestamp = (timestamp) => {
   const date = timestamp.toDate();
-  return date.toLocaleString();
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  };
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", options).format(date);
+
+  console.log(formattedDate);
+
+  return formattedDate;
 };
 
 // yung parameter is dapat Object na merong review Objects
