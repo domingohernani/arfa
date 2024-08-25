@@ -21,6 +21,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { useStore } from "../../stores/useStore";
 import toast, { Toaster } from "react-hot-toast";
+import { where } from "firebase/firestore";
+import { getOrderStatusStyles } from "../../components/globalFunctions";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -160,7 +162,7 @@ const SellerOrders = () => {
     {
       headerName: "Customer",
       field: "shopper",
-      flex: 1,
+      flex: 2,
       filter: "agTextColumnFilter",
       valueGetter: (params) =>
         params.data.shopper ? params.data.shopper.email : "--",
@@ -186,66 +188,9 @@ const SellerOrders = () => {
       flex: 1,
       filter: "agTextColumnFilter",
       cellRenderer: (params) => {
-        const orderStatus = params.value;
-
-        let statusText;
-        let colorClass;
-        let bgColorClass;
-
-        // Determine order status and corresponding color
-        switch (orderStatus) {
-          case "Placed":
-            statusText = "Placed";
-            colorClass = "text-blue-400"; // Blue for "Placed"
-            bgColorClass = "bg-blue-400";
-            break;
-          case "Confirmed":
-            statusText = "Confirmed";
-            colorClass = "text-indigo-500"; // Indigo for "Confirmed"
-            bgColorClass = "bg-indigo-500";
-            break;
-          case "Preparing":
-            statusText = "Preparing";
-            colorClass = "text-orange-400"; // Orange for "Preparing"
-            bgColorClass = "bg-orange-400";
-            break;
-          case "Ready":
-            statusText = "Ready";
-            colorClass = "text-yellow-300"; // Yellow for "Ready"
-            bgColorClass = "bg-yellow-300";
-            break;
-          case "Out of Delivery":
-            statusText = "Out of Delivery";
-            colorClass = "text-purple-500"; // Purple for "Out for Del."
-            bgColorClass = "bg-purple-500";
-            break;
-          case "Delivered":
-            statusText = "Delivered";
-            colorClass = "text-green-500"; // Green for "Delivered"
-            bgColorClass = "bg-green-500";
-            break;
-          case "Cancelled":
-            statusText = "Cancelled";
-            colorClass = "text-red-500"; // Red for "Cancelled"
-            bgColorClass = "bg-red-500";
-            break;
-          case "Returned":
-            statusText = "Returned";
-            colorClass = "text-gray-500"; // Gray for "Returned"
-            bgColorClass = "bg-gray-500";
-            break;
-          case "Refunded":
-            statusText = "Refunded";
-            colorClass = "text-teal-500"; // Teal for "Refunded"
-            bgColorClass = "bg-teal-500";
-            break;
-          default:
-            statusText = "Unknown";
-            colorClass = "text-black"; // Black for unknown status
-            bgColorClass = "bg-black";
-            break;
-        }
-
+        const { statusText, colorClass, bgColorClass } = getOrderStatusStyles(
+          params.value
+        );
         return (
           <div className="flex items-center justify-between">
             <span className={`font-bold ${colorClass} font-normal`}>
@@ -275,9 +220,9 @@ const SellerOrders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const orders = await fetchOrdersByShopId();
+      const filter = [where("orderStatus", "!=", "Delivered")];
+      const orders = await fetchOrdersByShopId(filter);
       setRowOrdersData(orders);
-      console.log(orders);
     };
     fetchOrders();
   }, []);

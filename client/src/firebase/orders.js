@@ -1,10 +1,18 @@
-import { collection, getDoc, getDocs, doc } from "firebase/firestore";
+import { collection, getDoc, getDocs, doc, query } from "firebase/firestore";
 import { db } from "./firebase";
 
-export const fetchOrdersByShopId = async () => {
+export const fetchOrdersByShopId = async (filters = []) => {
   try {
     const ordersCollection = collection(db, "orders");
-    const ordersSnapshot = await getDocs(ordersCollection);
+
+    let ordersQuery = ordersCollection;
+
+    // Apply filters if provided
+    if (filters.length > 0) {
+      ordersQuery = query(ordersCollection, ...filters);
+    }
+
+    const ordersSnapshot = await getDocs(ordersQuery);
 
     const ordersList = await Promise.all(
       ordersSnapshot.docs.map(async (orderDoc) => {

@@ -70,3 +70,65 @@ export const calculateRatingSummary = (reviews) => {
   };
   return ratingSummary;
 };
+
+export const getOrderStatusStyles = (orderStatus) => {
+  let statusText;
+  let colorClass;
+  let bgColorClass;
+
+  // Determine order status and corresponding color
+  switch (orderStatus) {
+    case "Placed":
+      statusText = "Placed";
+      colorClass = "text-blue-400"; // Blue for "Placed"
+      bgColorClass = "bg-blue-400";
+      break;
+    case "Confirmed":
+      statusText = "Confirmed";
+      colorClass = "text-indigo-500"; // Indigo for "Confirmed"
+      bgColorClass = "bg-indigo-500";
+      break;
+    case "Preparing":
+      statusText = "Preparing";
+      colorClass = "text-orange-400"; // Orange for "Preparing"
+      bgColorClass = "bg-orange-400";
+      break;
+    case "Ready":
+      statusText = "Ready";
+      colorClass = "text-yellow-300"; // Yellow for "Ready"
+      bgColorClass = "bg-yellow-300";
+      break;
+    case "Out of Delivery":
+      statusText = "Out of Delivery";
+      colorClass = "text-purple-500"; // Purple for "Out for Delivery"
+      bgColorClass = "bg-purple-500";
+      break;
+    case "Delivered":
+      statusText = "Delivered";
+      colorClass = "text-green-500"; // Green for "Delivered"
+      bgColorClass = "bg-green-500";
+      break;
+    case "Cancelled":
+      statusText = "Cancelled";
+      colorClass = "text-red-500"; // Red for "Cancelled"
+      bgColorClass = "bg-red-500";
+      break;
+    case "Returned":
+      statusText = "Returned";
+      colorClass = "text-gray-500"; // Gray for "Returned"
+      bgColorClass = "bg-gray-500";
+      break;
+    case "Refunded":
+      statusText = "Refunded";
+      colorClass = "text-teal-500"; // Teal for "Refunded"
+      bgColorClass = "bg-teal-500";
+      break;
+    default:
+      statusText = "Unknown";
+      colorClass = "text-black"; // Black for unknown status
+      bgColorClass = "bg-black";
+      break;
+  }
+
+  return { statusText, colorClass, bgColorClass };
+};
