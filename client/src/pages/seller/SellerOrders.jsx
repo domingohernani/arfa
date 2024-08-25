@@ -85,7 +85,7 @@ const CustomRowActions = ({ data }) => {
           as="div"
           className="flex items-center"
           onClick={() => {
-            alert(data.shopperId);
+            alert(data.id);
           }}
         >
           <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
@@ -103,7 +103,7 @@ const CustomRowActions = ({ data }) => {
           as="div"
           className="flex items-center"
           onClick={() => {
-            alert(data.shopperId);
+            alert(data.id);
           }}
         >
           <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
@@ -120,7 +120,7 @@ const CustomRowActions = ({ data }) => {
           as="div"
           className="flex items-center"
           onClick={() => {
-            alert(data.shopperId);
+            alert(data.id);
           }}
         >
           <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
