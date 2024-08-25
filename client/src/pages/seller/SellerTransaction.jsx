@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -13,6 +13,10 @@ import {
   TrashIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
+import { fetchOrdersByShopId } from "../../firebase/orders";
+import { useStore } from "../../stores/useStore";
+import { where } from "firebase/firestore";
+import { getOrderStatusStyles } from "../../components/globalFunctions";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -84,6 +88,7 @@ const CustomRowActions = ({ data }) => {
 };
 
 const SellerTransaction = () => {
+  const { rowTransactionsData, setRowTransactionsData } = useStore();
   const gridRef = useRef();
 
   const [rowData, setRowData] = useState([
@@ -149,33 +154,62 @@ const SellerTransaction = () => {
     () => [
       {
         headerName: "Transaction Number",
-        field: "transactionNumber",
+        field: "id",
         flex: 1,
         filter: "agTextColumnFilter",
       },
       {
-        headerName: "Name",
-        field: "name",
+        headerName: "Date",
+        // field: "shopper",
         flex: 1,
+        filter: "agDateColumnFilter",
+      },
+      {
+        headerName: "Name",
+        field: "shopper",
+        flex: 2,
         filter: "agTextColumnFilter",
+        valueGetter: (params) =>
+          params.data.shopper ? params.data.shopper.email : "--",
       },
       {
         headerName: "Location",
         field: "location",
-        flex: 1,
+        flex: 2,
         filter: "agTextColumnFilter",
       },
       {
-        headerName: "Orders",
+        headerName: "Quantity",
         field: "orders",
+        flex: 1,
+        filter: "agNumberColumnFilter",
+        valueGetter: (params) =>
+          params.data.orderItems ? params.data.orderItems.length : 0,
+      },
+      {
+        headerName: "Spent",
+        field: "orderTotal",
         flex: 1,
         filter: "agNumberColumnFilter",
       },
       {
-        headerName: "Spent",
-        field: "spent",
+        headerName: "Status",
+        field: "orderStatus",
         flex: 1,
-        filter: "agNumberColumnFilter",
+        filter: "agTextColumnFilter",
+        cellRenderer: (params) => {
+          const { statusText, colorClass, bgColorClass } = getOrderStatusStyles(
+            params.value
+          );
+          return (
+            <div className="flex items-center justify-between">
+              <span className={`font-bold ${colorClass} font-normal`}>
+                {statusText}
+              </span>
+              <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+            </div>
+          );
+        },
       },
       {
         headerName: "Action",
@@ -198,13 +232,31 @@ const SellerTransaction = () => {
     []
   );
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const filter = [
+        where("orderStatus", "in", [
+          "Delivered",
+          "Cancelled",
+          "Returned",
+          "Refunded",
+          "Unknown",
+        ]),
+      ];
+      const orders = await fetchOrdersByShopId(filter);
+      console.log(orders);
+      setRowTransactionsData(orders);
+    };
+    fetchOrders();
+  }, []);
+
   return (
     <div
       className="p-5 ag-theme-quartz"
       style={{ height: "90%", width: "100%" }}
     >
       <AgGridReact
-        rowData={rowData}
+        rowData={rowTransactionsData}
         ref={gridRef}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
