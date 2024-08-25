@@ -21,6 +21,8 @@ import { getOrderStatusStyles } from "../../components/globalFunctions";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const CustomRowActions = ({ data }) => {
+  console.log(data);
+
   return (
     <Menu as="div" className="relative inline-block w-full text-center ">
       <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
@@ -34,7 +36,7 @@ const CustomRowActions = ({ data }) => {
           as="div"
           className="flex items-center"
           onClick={() => {
-            alert(data.shopperId);
+            alert(data.id);
           }}
         >
           <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
@@ -52,7 +54,7 @@ const CustomRowActions = ({ data }) => {
           as="div"
           className="flex items-center"
           onClick={() => {
-            alert(data.shopperId);
+            alert(data.id);
           }}
         >
           <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
@@ -69,7 +71,7 @@ const CustomRowActions = ({ data }) => {
           as="div"
           className="flex items-center"
           onClick={() => {
-            alert(data.shopperId);
+            alert(data.id);
           }}
         >
           <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
