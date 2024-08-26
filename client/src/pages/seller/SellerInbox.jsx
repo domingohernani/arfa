@@ -4,7 +4,9 @@ import { getChatsByShopId } from "../../firebase/chats";
 import { useState } from "react";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+
+import { useStore } from "../../stores/useStore";
 
 const SellerInbox = () => {
   const [chats, setChats] = useState([]);
@@ -15,7 +17,6 @@ const SellerInbox = () => {
       try {
         setLoading(true);
         const chats = await getChatsByShopId("W54VKTXvFU9jCT2ItEkg");
-        console.log(chats);
         setChats(chats);
       } catch (error) {
         console.error("Error fetching chats:", error);
@@ -54,17 +55,22 @@ const SellerInbox = () => {
           <div className="flex-auto mt-5 overflow-y-auto">
             {chats.map((chat, index) => {
               return (
-                <a className="block border-b cursor-pointer" key={index}>
+                <Link
+                  className="cursor-pointer"
+                  key={index}
+                  to={chat.id}
+                  onClick={() => setSelectedChat(chat)}
+                >
                   {/* inactive chat style */}
-                  {/* <div className="p-3 space-y-4 border-l-2 border-transparent hover:bg-gray-100"> */}
-                  <div className="p-3 space-y-4 bg-gray-100 border-l-2 border-arfagreen">
+                  <div className="p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100">
+                    {/* <div className="p-3 space-y-4 bg-gray-100 border-l-2 border-arfagreen"> */}
                     <div className="flex flex-row items-center space-x-2">
                       <div className="flex items-center flex-1 gap-2">
                         <DisplayAvatar
                           url={chat.shopperInfo.profileUrl}
                           className="w-10 h-10"
                         />
-                        <div className="flex text-sm font-semibold text-arfablack">
+                        <div className="flex w-full text-sm font-semibold truncate text-arfablack">
                           {`${chat.shopperInfo.firstname} ${chat.shopperInfo.lastname}`}
                         </div>
                       </div>
@@ -79,14 +85,14 @@ const SellerInbox = () => {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               );
             })}
           </div>
         </div>
 
         <div className="flex flex-col flex-1 w-3/5 bg-green-100 border-l">
-          <Outlet />{" "}
+          <Outlet/>
         </div>
       </div>
     </div>
