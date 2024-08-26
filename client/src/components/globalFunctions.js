@@ -1,4 +1,5 @@
 import { average } from "firebase/firestore";
+import { formatDistanceToNowStrict } from "date-fns";
 
 export function formatToPeso(amount) {
   return "₱" + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -131,4 +132,20 @@ export const getOrderStatusStyles = (orderStatus) => {
   }
 
   return { statusText, colorClass, bgColorClass };
+};
+
+export const formatTimeAgo = (timestamp) => {
+  if (!timestamp || !timestamp.seconds) return "";
+
+  const date = new Date(timestamp.seconds * 1000);
+
+  const fullTimeAgo = formatDistanceToNowStrict(date, { addSuffix: false });
+  return fullTimeAgo
+    .replace(/ seconds?/, "s")
+    .replace(/ minutes?/, "m")
+    .replace(/ hours?/, "h")
+    .replace(/ days?/, "d")
+    .replace(/ weeks?/, "w")
+    .replace(/ months?/, "mo")
+    .replace(/ years?/, "y");
 };
