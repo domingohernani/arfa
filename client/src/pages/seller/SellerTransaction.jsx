@@ -31,7 +31,7 @@ const SellerTransaction = () => {
       {
         headerName: "Date",
         // field: "shopper",
-        flex: 1,
+        flex: 2,
         filter: "agDateColumnFilter",
       },
       {
