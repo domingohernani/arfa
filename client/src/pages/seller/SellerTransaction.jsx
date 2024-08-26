@@ -134,6 +134,7 @@ const SellerTransaction = () => {
           suppressRowClickSelection={true}
           pagination={true}
           paginationPageSize={10}
+          paginationPageSizeSelector={[10, 25, 50]}
           domLayout="normal"
           quickFilterText=""
         />
