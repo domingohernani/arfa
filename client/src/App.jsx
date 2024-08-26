@@ -30,6 +30,8 @@ import NotFound from "./pages/NotFound";
 import SignupSeller from "./pages/auth/SignupSeller";
 import LoginSeller from "./pages/auth/LoginSeller";
 import ShowMultiModel from "./components/ShowMultiModel";
+import DisplayChat from "./components/dynamic/DisplayChat";
+import SelectChat from "./components/SelectChat";
 
 function App() {
   return (
@@ -78,7 +80,10 @@ function App() {
             <Route element={<SellerProducts />} path="product" />
             <Route element={<SellerTransaction />} path="transaction" />
             <Route element={<SellerReports />} path="report" />
-            <Route element={<SellerInbox />} path="inbox" />
+            <Route element={<SellerInbox />} path="inbox">
+              <Route element={<DisplayChat />} path=":id" />
+              <Route index element={<SelectChat />} />
+            </Route>
           </Route>
 
           {/* Catch-all route */}
