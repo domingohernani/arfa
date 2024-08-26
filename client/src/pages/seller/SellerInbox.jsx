@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import search from "../../assets/icons/search.svg";
 import { getChatsByShopId } from "../../firebase/chats";
-import { useState } from "react";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
 import { Link } from "react-router-dom";
@@ -10,7 +9,7 @@ import DisplayChat from "../../components/dynamic/DisplayChat";
 const SellerInbox = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null); // Initial state set to null
+  const [selectedChat, setSelectedChat] = useState(null);
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -30,6 +29,10 @@ const SellerInbox = () => {
     fetchChats();
   }, []);
 
+  const handleChatSelect = useCallback((chat) => {
+    setSelectedChat(chat);
+  }, []);
+
   if (loading) return <div>loading...</div>;
 
   return (
@@ -40,10 +43,10 @@ const SellerInbox = () => {
             <div className="relative">
               <input
                 type="text"
-                className="w-full py-2 text-sm border border-gray-200 px-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+                className="w-full py-2 text-sm border border-gray-200 px-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
                 placeholder="Search..."
                 id="catalogSearchbar convoSearchBar"
-              ></input>
+              />
               <img
                 src={search}
                 alt="Search"
@@ -55,36 +58,36 @@ const SellerInbox = () => {
           </div>
 
           <div className="flex-auto mt-5 overflow-y-auto">
-            {chats.map((chat, index) => {
-              return (
-                <Link className="cursor-pointer" key={index}>
-                  {/* inactive chat style */}
-                  <div className="p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100">
-                    {/* <div className="p-3 space-y-4 bg-gray-100 border-l-2 border-arfagreen"> */}
-                    <div className="flex flex-row items-center space-x-2">
-                      <div className="flex items-center flex-1 gap-2">
-                        <DisplayAvatar
-                          url={chat.shopperInfo.profileUrl}
-                          className="w-10 h-10"
-                        />
-                        <div className="flex w-full text-sm font-semibold truncate text-arfablack">
-                          {`${chat.shopperInfo.firstname} ${chat.shopperInfo.lastname}`}
-                        </div>
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {formatTimeAgo(chat.lastMessageTimestamp)}
+            {chats.map((chat, index) => (
+              <Link
+                className="cursor-pointer"
+                key={index}
+                onClick={() => handleChatSelect(chat)}
+              >
+                <div className="p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100">
+                  <div className="flex flex-row items-center space-x-2">
+                    <div className="flex items-center flex-1 gap-2">
+                      <DisplayAvatar
+                        url={chat.shopperInfo.profileUrl}
+                        className="w-10 h-10"
+                      />
+                      <div className="flex w-full text-sm font-semibold truncate text-arfablack">
+                        {`${chat.shopperInfo.firstname} ${chat.shopperInfo.lastname}`}
                       </div>
                     </div>
-
-                    <div className="flex flex-row items-center space-x-1">
-                      <div className="flex-grow text-xs text-gray-500 truncate">
-                        {chat.lastMessage}
-                      </div>
+                    <div className="text-sm text-gray-500">
+                      {formatTimeAgo(chat.lastMessageTimestamp)}
                     </div>
                   </div>
-                </Link>
-              );
-            })}
+
+                  <div className="flex flex-row items-center space-x-1">
+                    <div className="flex-grow text-xs text-gray-500 truncate">
+                      {chat.lastMessage}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
 

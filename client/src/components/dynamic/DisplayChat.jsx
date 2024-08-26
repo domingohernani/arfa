@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { fetchMessages } from "../../firebase/chats";
 import DisplayAvatar from "./DisplayAvatar";
 import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 
-const DisplayChat = ({ chat }) => {
+const DisplayChat = memo(({ chat }) => {
   const shopper = chat.shopperInfo;
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,9 +42,7 @@ const DisplayChat = ({ chat }) => {
         </div>
       </div>
 
-      <div
-        className="flex flex-col flex-auto gap-3 p-5 overflow-y-auto"
-      >
+      <div className="flex flex-col flex-auto gap-3 p-5 overflow-y-auto">
         {messages.map((message, index) => {
           const position = message.senderId === shopper.id;
           return (
@@ -55,7 +53,10 @@ const DisplayChat = ({ chat }) => {
               key={index}
             >
               {position && (
-                <DisplayAvatar url={shopper.profileUrl} className={"w-8 h-8"}></DisplayAvatar>
+                <DisplayAvatar
+                  url={shopper.profileUrl}
+                  className={"w-8 h-8"}
+                ></DisplayAvatar>
               )}
 
               <div className="flex flex-col items-end">
@@ -132,6 +133,6 @@ const DisplayChat = ({ chat }) => {
       </div>
     </>
   );
-};
+});
 
 export default DisplayChat;
