@@ -5,6 +5,7 @@ import {
   getDocs,
   doc,
   getDoc,
+  orderBy,
 } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { db } from "./firebase";
@@ -56,20 +57,22 @@ export const getChatsByShopId = async (shopId) => {
 
 export const fetchMessages = async (chatId) => {
   try {
-    // Reference to the specific chat document
     const chatDocRef = doc(db, "chats", chatId);
 
-    // Reference to the messages subcollection
     const messagesCollectionRef = collection(chatDocRef, "messages");
 
-    // Fetch all documents from the messages subcollection
-    const messagesSnapshot = await getDocs(messagesCollectionRef);
+    const messagesQuery = query(
+      messagesCollectionRef,
+      orderBy("timestamp", "asc")
+    );
 
-    // Map over the documents and return the data
+    const messagesSnapshot = await getDocs(messagesQuery);
+
     const messages = messagesSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
+
     return messages;
   } catch (error) {
     console.error("Error fetching messages:", error);

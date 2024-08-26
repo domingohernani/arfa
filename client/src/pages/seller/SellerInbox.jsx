@@ -4,22 +4,24 @@ import { getChatsByShopId } from "../../firebase/chats";
 import { useState } from "react";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
-import { Link, Outlet } from "react-router-dom";
-
-import { useStore } from "../../stores/useStore";
+import { Link } from "react-router-dom";
+import DisplayChat from "../../components/dynamic/DisplayChat";
 
 const SellerInbox = () => {
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(null); // Initial state set to null
 
   useEffect(() => {
     const fetchChats = async () => {
       try {
         setLoading(true);
-        const chats = await getChatsByShopId("W54VKTXvFU9jCT2ItEkg");
-        setChats(chats);
+        const fetchedChats = await getChatsByShopId("W54VKTXvFU9jCT2ItEkg");
+        setChats(fetchedChats);
+        setSelectedChat(fetchedChats[0]);
       } catch (error) {
         console.error("Error fetching chats:", error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -55,12 +57,7 @@ const SellerInbox = () => {
           <div className="flex-auto mt-5 overflow-y-auto">
             {chats.map((chat, index) => {
               return (
-                <Link
-                  className="cursor-pointer"
-                  key={index}
-                  to={chat.id}
-                  onClick={() => setSelectedChat(chat)}
-                >
+                <Link className="cursor-pointer" key={index}>
                   {/* inactive chat style */}
                   <div className="p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100">
                     {/* <div className="p-3 space-y-4 bg-gray-100 border-l-2 border-arfagreen"> */}
@@ -91,8 +88,14 @@ const SellerInbox = () => {
           </div>
         </div>
 
-        <div className="flex flex-col flex-1 w-3/5 bg-green-100 border-l">
-          <Outlet/>
+        <div
+          className="flex flex-col flex-1 w-3/5 border-l"
+          style={{
+            backgroundImage:
+              "url(https://static.intercomassets.com/ember/assets/images/messenger-backgrounds/background-1-99a36524645be823aabcd0e673cb47f8.png)",
+          }}
+        >
+          {selectedChat && <DisplayChat chat={selectedChat} />}
         </div>
       </div>
     </div>
