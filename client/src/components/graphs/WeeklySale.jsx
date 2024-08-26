@@ -1,102 +1,79 @@
 import React from "react";
-import { Bar } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+  ResponsiveContainer,
+} from "recharts";
 
 const WeeklySale = () => {
-  const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        label: "Daily Revenue",
-        data: [1200, 1500, 2000, 2525, 2800, 3000, 2800],
-        backgroundColor: "rgb(74 222 128)",
-        borderRadius: 20,
-        hoverBackgroundColor: "rgb(22 163 74)",
-        barPercentage: 0.4,
-      },
-    ],
-  };
+  const data = [
+    { day: "Mon", revenue: 1200 },
+    { day: "Tue", revenue: 1500 },
+    { day: "Wed", revenue: 2000 },
+    { day: "Thu", revenue: 2525 },
+    { day: "Fri", revenue: 2800 },
+    { day: "Sat", revenue: 3000 },
+    { day: "Sun", revenue: 2800 },
+  ];
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (tooltipItem) {
-            return `₱${tooltipItem.raw.toLocaleString()}`;
-          },
-        },
-        bodyFont: {
-          family: "Raleway, sans-serif",
-          color: "#000000",
-        },
-        titleFont: {
-          family: "Raleway, sans-serif",
-          color: "#000000",
-        },
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Day of the Week",
-          font: {
-            family: "Raleway, sans-serif",
-            color: "#000000",
-          },
-        },
-        ticks: {
-          font: {
-            family: "Raleway, sans-serif",
-            color: "#000000",
-          },
-        },
-      },
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: "Revenue (₱)",
-          font: {
-            family: "Raleway, sans-serif",
-            color: "#000000",
-          },
-        },
-        ticks: {
-          font: {
-            family: "Raleway, sans-serif",
-            color: "#000000",
-          },
-        },
-      },
-    },
-  };
+  const formatCurrency = (value) => `₱${value.toLocaleString()}`;
 
   return (
-    <div>
-      <Bar data={data} options={options} />
-    </div>
+    <ResponsiveContainer width="100%" height={400}>
+      <BarChart
+        data={data}
+        margin={{ top: 50, right: 30, left: 20, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          dataKey="day"
+          tick={{
+            fontFamily: "Raleway, sans-serif",
+            fontSize: "0.875rem", // equivalent to 'font-sm'
+            fill: "#000000",
+          }}
+          label={{
+            value: "Day of the Week",
+            position: "insideBottom",
+            fontFamily: "Raleway, sans-serif",
+            fontSize: "0.875rem", // equivalent to 'font-sm'
+            fill: "#000000",
+            offset: -5,
+          }}
+        />
+        <YAxis
+          tick={{
+            fontFamily: "Raleway, sans-serif",
+            fontSize: "0.875rem", // equivalent to 'font-sm'
+            fill: "#000000",
+          }}
+          tickFormatter={formatCurrency}
+        />
+        <Tooltip
+          formatter={formatCurrency}
+          contentStyle={{
+            fontFamily: "Raleway, sans-serif",
+            fontSize: "0.875rem",
+            color: "#000000",
+          }}
+          labelStyle={{
+            fontFamily: "Raleway, sans-serif",
+            fontSize: "0.875rem",
+            color: "#000000",
+          }}
+        />
+        <Bar
+          dataKey="revenue"
+          fill="rgb(74 222 128)"
+          barSize={30}
+          radius={[20, 20, 0, 0]}
+        />
+      </BarChart>
+    </ResponsiveContainer>
   );
 };
 
