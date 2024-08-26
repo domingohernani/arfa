@@ -31,7 +31,20 @@ import SignupSeller from "./pages/auth/SignupSeller";
 import LoginSeller from "./pages/auth/LoginSeller";
 import ShowMultiModel from "./components/ShowMultiModel";
 
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
+
 function App() {
+  useEffect(() => {
+    AOS.init({
+      once: true,
+      disable: "phone",
+      duration: 600,
+      easing: "ease-out-sine",
+    });
+  });
+
   return (
     <>
       <BrowserRouter>
