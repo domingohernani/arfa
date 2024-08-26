@@ -1,88 +1,74 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
 import { fetchMessages } from "../../firebase/chats";
+import DisplayAvatar from "./DisplayAvatar";
+import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 
-const DisplayChat = () => {
-  const chatId = useParams().id;
+const DisplayChat = ({ chat }) => {
+  const shopper = chat.shopperInfo;
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const loadMessages = async () => {
+    const getImages = async () => {
       setLoading(true);
       try {
-        const messages = await fetchMessages(chatId);
+        const fetchedMessages = await fetchMessages(chat.id);
+        setMessages(fetchedMessages);
       } catch (error) {
-        console.error("Error fetching message ", error);
+        console.error("Error fetching messages ", error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
     };
-    loadMessages();
-  }, [chatId]); // Make sure to include 'chatId' in the dependency array
+    getImages();
+  }, []);
 
-  if (loading) return <div>loading..</div>;
+  if (loading) return <div>loading...</div>;
 
   return (
     <>
-      <div className="flex flex-row items-center justify-between flex-none h-12 p-5 border-b">
-        <div className="flex flex-col space-y-1">
-          <div className="font-semibold">Hello</div>
+      <div className="flex flex-row items-center justify-between flex-none p-5 border-b">
+        <div className="flex flex-row items-center gap-3 space-y-1">
+          {shopper.profileUrl && (
+            <DisplayAvatar
+              url={shopper.profileUrl}
+              className="w-10 h-10"
+            ></DisplayAvatar>
+          )}
+          <div className="font-semibold">
+            {`${shopper.firstname} ${shopper.lastname}`}
+          </div>
         </div>
       </div>
 
       <div
-        className="flex-auto p-5 space-y-4 overflow-y-auto"
-        style={{
-          backgroundImage:
-            "url(https://static.intercomassets.com/ember/assets/images/messenger-backgrounds/background-1-99a36524645be823aabcd0e673cb47f8.png)",
-        }}
+        className="flex flex-col flex-auto gap-3 p-5 overflow-y-auto"
       >
-        <div className="flex flex-row space-x-2">
-          <svg
-            className="flex-none w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
+        {messages.map((message, index) => {
+          const position = message.senderId === shopper.id;
+          return (
+            <div
+              className={`flex ${
+                position ? "mr-auto" : "ml-auto"
+              } flex-row gap-2 space-x-2 space-x-reverse  w-fit max-w-80`}
+              key={index}
+            >
+              {position && (
+                <DisplayAvatar url={shopper.profileUrl} className={"w-8 h-8"}></DisplayAvatar>
+              )}
 
-          <div className="flex flex-col">
-            <div className="p-5 text-sm bg-gray-200 rounded">
-              Some message text
+              <div className="flex flex-col items-end">
+                <div className="p-5 text-sm bg-gray-200 rounded">
+                  {message.text}
+                </div>
+                <div className="text-sm text-gray-600">
+                  {formatTimeAgo(message.timestamp)}
+                </div>
+              </div>
             </div>
-            <div className="text-sm text-gray-600">4hr ago</div>
-          </div>
-        </div>
-        <div className="flex flex-row space-x-2 space-x-reverse">
-          <svg
-            className="flex-none w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-
-          <div className="flex flex-col">
-            <div className="p-5 text-sm bg-blue-100 rounded">
-              Some message text
-            </div>
-            <div className="text-sm text-gray-600">5hr ago</div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
       <div className="w-11/12 mx-auto mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">

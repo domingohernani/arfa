@@ -80,10 +80,7 @@ function App() {
             <Route element={<SellerProducts />} path="product" />
             <Route element={<SellerTransaction />} path="transaction" />
             <Route element={<SellerReports />} path="report" />
-            <Route element={<SellerInbox />} path="inbox">
-              <Route element={<DisplayChat />} path=":id" />
-              <Route index element={<SelectChat />} />
-            </Route>
+            <Route element={<SellerInbox />} path="inbox" />
           </Route>
 
           {/* Catch-all route */}

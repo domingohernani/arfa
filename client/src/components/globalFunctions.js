@@ -134,6 +134,7 @@ export const getOrderStatusStyles = (orderStatus) => {
   return { statusText, colorClass, bgColorClass };
 };
 
+// para sa chats
 export const formatTimeAgo = (timestamp) => {
   if (!timestamp || !timestamp.seconds) return "";
 
