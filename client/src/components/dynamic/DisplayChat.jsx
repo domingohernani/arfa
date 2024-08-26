@@ -1,11 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useOutletContext, useParams } from "react-router-dom";
+import { fetchMessages } from "../../firebase/chats";
 
 const DisplayChat = () => {
+  const chatId = useParams().id;
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadMessages = async () => {
+      setLoading(true);
+      try {
+        const messages = await fetchMessages(chatId);
+      } catch (error) {
+        console.error("Error fetching message ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadMessages();
+  }, [chatId]); // Make sure to include 'chatId' in the dependency array
+
+  if (loading) return <div>loading..</div>;
+
   return (
     <>
       <div className="flex flex-row items-center justify-between flex-none h-12 p-5 border-b">
         <div className="flex flex-col space-y-1">
-          <div className="font-semibold">Nikola Tesla</div>
+          <div className="font-semibold">Hello</div>
         </div>
       </div>
 

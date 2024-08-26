@@ -53,3 +53,26 @@ export const getChatsByShopId = async (shopId) => {
     console.error("Error getting chats and user data: ", error);
   }
 };
+
+export const fetchMessages = async (chatId) => {
+  try {
+    // Reference to the specific chat document
+    const chatDocRef = doc(db, "chats", chatId);
+
+    // Reference to the messages subcollection
+    const messagesCollectionRef = collection(chatDocRef, "messages");
+
+    // Fetch all documents from the messages subcollection
+    const messagesSnapshot = await getDocs(messagesCollectionRef);
+
+    // Map over the documents and return the data
+    const messages = messagesSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return messages;
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    return [];
+  }
+};
