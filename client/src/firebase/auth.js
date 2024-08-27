@@ -50,17 +50,30 @@ export const doSigninWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
-  const userDoc = await getDoc(doc(db, "users", user.uid));
 
-  if (!userDoc.exists()) {
-    const role = "shopper";
-    await setDoc(doc(db, "users", user.uid), {
+  // Fetch the user's document from Firestore
+  const userDocRef = doc(db, "users", user.uid);
+  const userDocSnap = await getDoc(userDocRef);
+
+  let role;
+
+  if (!userDocSnap.exists()) {
+    // If user does not exist, assign a default role and store it in Firestore
+    role = "shopper";
+    await setDoc(userDocRef, {
       email: user.email,
       role: role,
     });
+  } else {
+    // If user exists, retrieve their role
+    role = userDocSnap.data().role;
   }
 
-  return result;
+  // Return the user along with the role
+  return {
+    user: user,
+    role: role,
+  };
 };
 
 export const doSignOut = async () => {

@@ -24,7 +24,7 @@ const LoginShopper = () => {
     setShowPassword(!showPassword);
   };
 
-  const login = async (e) => {
+  const loginEmailAndPassword = async (e) => {
     e.preventDefault();
     // Regular expression for validating email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,8 +36,16 @@ const LoginShopper = () => {
 
     try {
       const response = await doSignInWithEmailAndPassword(email, password);
-      navigate("/");
-      toast.success("Successfully signed in!");
+
+      console.log(response.role);
+
+      if (response.role == "shopper") {
+        navigate("/catalog");
+      } else if (response.role == "seller") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct seller account"
+        );
+      }
     } catch (error) {
       console.log(error);
 
@@ -54,8 +62,15 @@ const LoginShopper = () => {
   const loginUsingGoogle = async () => {
     try {
       const result = await doSigninWithGoogle();
-      if (result.user) navigate("/");
-      toast.success("Successfully signed in with Google!");
+      console.log(result.role);
+
+      if (result.role == "shopper") {
+        navigate("/catalog");
+      } else if (result.role == "seller") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct seller account"
+        );
+      }
     } catch (error) {
       toast.error("Error signing in with Google. Please try again later.");
       console.error("Error signing in with Google:", error);
@@ -79,7 +94,7 @@ const LoginShopper = () => {
           Welcome Back! Sign in to access your account to continue your shopping
           journey with us.
         </p>
-        <form onSubmit={login}>
+        <form onSubmit={loginEmailAndPassword}>
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -90,6 +105,7 @@ const LoginShopper = () => {
             <input
               type="email"
               id="email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
@@ -105,11 +121,12 @@ const LoginShopper = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
+              value={password}
               placeholder="Enter your password"
               onChange={(e) => setPassword(e.target.value)}
               className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
             />
-            {showPassword ? (
+            {!showPassword ? (
               <EyeSlashIcon
                 onClick={togglePasswordVisibility}
                 className="absolute right-0 w-5 h-5 ml-auto mr-1 text-gray-300 cursor-pointer bottom-3 hover:text-gray-500"
