@@ -30,6 +30,8 @@ import NotFound from "./pages/NotFound";
 import SignupSeller from "./pages/auth/SignupSeller";
 import LoginSeller from "./pages/auth/LoginSeller";
 import ShowMultiModel from "./components/ShowMultiModel";
+import DisplayChat from "./components/dynamic/DisplayChat";
+import SelectChat from "./components/SelectChat";
 
 function App() {
   return (
