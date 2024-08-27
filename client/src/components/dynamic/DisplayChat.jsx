@@ -22,7 +22,7 @@ const DisplayChat = memo(({ chat }) => {
       }
     };
     getImages();
-  }, []);
+  }, [chat]);
 
   if (loading) return <div>loading...</div>;
 
