@@ -9,15 +9,15 @@ import { NotificationDrawer } from "../dynamic/NotificationDrawer";
 import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
 import DisplayAvatar from "../dynamic/DisplayAvatar";
 import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
+import { useStore } from "../../stores/useStore";
 function SellerNavigationBar() {
-  const [user, setUser] = useState(null);
+  const { loggedUser, setLoggedUser } = useStore();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const user = await getLoggedShopInfo();
-        setUser(user);
-        console.log(user);
+        setLoggedUser(user);
       } catch (error) {
         console.error("Error fetching logged in user ", error);
       }
@@ -41,11 +41,11 @@ function SellerNavigationBar() {
         </div>
         <div className="flex items-center w-48">
           <DisplayAvatar
-            url={user && user.profileUrl ? user.profileUrl : null}
+            url={loggedUser && loggedUser.profileUrl ? loggedUser.profileUrl : null}
             className={"w-8 h-8 mr-2"}
           />
           <span className="flex-1 text-sm font-semibold truncate">
-            {user && user.name}
+            {loggedUser && loggedUser.name}
           </span>
         </div>
       </div>
