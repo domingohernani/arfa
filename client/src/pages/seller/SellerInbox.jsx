@@ -39,7 +39,7 @@ const SellerInbox = () => {
     <div className="flex flex-row m-5 bg-white h-5/6">
       <div className="flex flex-row flex-auto rounded-tl-xl">
         <div className="flex flex-col w-1/5">
-          <div className="flex flex-col gap-6 px-2 pt-3 md:px-5">
+          <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
             <div className="relative">
               <input
                 type="text"
@@ -58,46 +58,49 @@ const SellerInbox = () => {
           </div>
 
           <div className="flex-auto mt-5 overflow-y-auto">
-            {chats.map((chat, index) => (
-              <Link
-                className="cursor-pointer"
-                key={index}
-                onClick={() => handleChatSelect(chat)}
-              >
-                <div className="p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100">
-                  <div className="flex flex-row items-center space-x-2">
-                    <div className="flex items-center flex-1 gap-2">
-                      <DisplayAvatar
-                        url={chat.shopperInfo.profileUrl}
-                        className="w-10 h-10"
-                      />
-                      <div className="flex w-full text-sm font-semibold truncate text-arfablack">
-                        {`${chat.shopperInfo.firstname} ${chat.shopperInfo.lastname}`}
+            {chats.map((chat, index) => {
+              const isActive = chat.id === selectedChat.id;
+              return (
+                <section
+                  className="cursor-pointer"
+                  key={index}
+                  onClick={() => handleChatSelect(chat)}
+                >
+                  <div
+                    className={`${
+                      isActive
+                        ? "p-3 space-y-2 bg-gray-100 border-l-2 border-arfagreen"
+                        : "p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100"
+                    }`}
+                  >
+                    <div className="flex flex-row items-center space-x-2">
+                      <div className="flex items-center flex-1 gap-2">
+                        <DisplayAvatar
+                          url={chat.shopperInfo.profileUrl}
+                          className="w-10 h-10"
+                        />
+                        <div className="flex w-full text-sm font-semibold truncate text-arfablack">
+                          {`${chat.shopperInfo.firstname} ${chat.shopperInfo.lastname}`}
+                        </div>
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {formatTimeAgo(chat.lastMessageTimestamp)}
                       </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {formatTimeAgo(chat.lastMessageTimestamp)}
-                    </div>
-                  </div>
 
-                  <div className="flex flex-row items-center space-x-1">
-                    <div className="flex-grow text-xs text-gray-500 truncate">
-                      {chat.lastMessage}
+                    <div className="flex flex-row items-center space-x-1">
+                      <div className="flex-grow text-xs text-gray-500 truncate">
+                        {chat.lastMessage}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </section>
+              );
+            })}
           </div>
         </div>
 
-        <div
-          className="flex flex-col flex-1 w-3/5 border-l"
-          style={{
-            backgroundImage:
-              "url(https://static.intercomassets.com/ember/assets/images/messenger-backgrounds/background-1-99a36524645be823aabcd0e673cb47f8.png)",
-          }}
-        >
+        <div className="flex flex-col flex-1 w-3/5 border-l">
           {selectedChat && <DisplayChat chat={selectedChat} />}
         </div>
       </div>
