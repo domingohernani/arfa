@@ -71,6 +71,7 @@ export const doSigninWithGoogle = async (userRole) => {
       role: role,
       firstName: firstName,
       lastName: lastName,
+      profileUrl: user.reloadUserInfo.photoUrl,
     });
   } else {
     // If the user exists, retrieve their role
@@ -83,7 +84,6 @@ export const doSigninWithGoogle = async (userRole) => {
     role: role,
   };
 };
-
 
 export const doSigninWithFacebook = async (userRole) => {
   const provider = new FacebookAuthProvider();
@@ -109,6 +109,7 @@ export const doSigninWithFacebook = async (userRole) => {
       role: role,
       firstName: firstName,
       lastName: lastName,
+      profileUrl: user.reloadUserInfo.photoUrl,
     });
   } else {
     // If the user exists, retrieve their role

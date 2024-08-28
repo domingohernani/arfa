@@ -63,8 +63,6 @@ const LoginShopper = () => {
   const loginUsingGoogle = async () => {
     try {
       const result = await doSigninWithGoogle("shopper");
-      console.log(result.role);
-
       if (result.role == "shopper") {
         navigate("/catalog");
       } else if (result.role == "seller") {
