@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   doSignInWithEmailAndPassword,
+  doSigninWithFacebook,
   doSigninWithGoogle,
   doSignOut,
 } from "../../firebase/auth";
@@ -61,7 +62,7 @@ const LoginShopper = () => {
 
   const loginUsingGoogle = async () => {
     try {
-      const result = await doSigninWithGoogle();
+      const result = await doSigninWithGoogle("shopper");
       console.log(result.role);
 
       if (result.role == "shopper") {
@@ -74,6 +75,22 @@ const LoginShopper = () => {
     } catch (error) {
       toast.error("Error signing in with Google. Please try again later.");
       console.error("Error signing in with Google:", error);
+    }
+  };
+
+  const loginUsingFacebook = async () => {
+    try {
+      const result = await doSigninWithFacebook("shopper");
+      if (result.role == "shopper") {
+        navigate("/catalog");
+      } else if (result.role == "seller") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct shopper account"
+        );
+      }
+    } catch (error) {
+      toast.error("Error signing in with Facebook. Please try again later.");
+      console.error("Error signing in with Facebook:", error);
     }
   };
 
@@ -166,7 +183,10 @@ const LoginShopper = () => {
             <img src={google} className="w-4 h-4" alt="google" />
             <span className="text-sm text-blue-600">Continue with Google</span>
           </div>
-          <div className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24">
+          <div
+          className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
+          onClick={loginUsingFacebook}
+          >
             <img src={facebook} className="w-4 h-4" alt="facebook" />
             <span className="text-sm text-blue-600">
               Continue with Facebook
