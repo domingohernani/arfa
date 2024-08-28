@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
+  FacebookAuthProvider,
   signInWithPopup,
   signOut as firebaseSignOut,
   sendPasswordResetEmail,
@@ -46,10 +47,14 @@ export const doSignInWithEmailAndPassword = async (email, password) => {
   return userData;
 };
 
-export const doSigninWithGoogle = async () => {
+export const doSigninWithGoogle = async (userRole) => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
+
+  // Extracting the first name and last name from the display name
+  const displayName = user.displayName || "";
+  const [firstName = "", lastName = ""] = displayName.split(" ");
 
   // Fetch the user's document from Firestore
   const userDocRef = doc(db, "users", user.uid);
@@ -58,18 +63,59 @@ export const doSigninWithGoogle = async () => {
   let role;
 
   if (!userDocSnap.exists()) {
-    // If user does not exist, assign a default role and store it in Firestore
-    role = "shopper";
+    // If the user does not exist, assign a default role and store it in Firestore
+    role = userRole;
     await setDoc(userDocRef, {
+      id: user.uid,
       email: user.email,
       role: role,
+      firstName: firstName,
+      lastName: lastName,
     });
   } else {
-    // If user exists, retrieve their role
+    // If the user exists, retrieve their role
     role = userDocSnap.data().role;
   }
 
-  // Return the user along with the role
+  // Return the user along with the role and other details
+  return {
+    user: user,
+    role: role,
+  };
+};
+
+
+export const doSigninWithFacebook = async (userRole) => {
+  const provider = new FacebookAuthProvider();
+  const result = await signInWithPopup(auth, provider);
+  const user = result.user;
+
+  // Extracting the first name and last name from the display name
+  const displayName = user.displayName || "";
+  const [firstName = "", lastName = ""] = displayName.split(" ");
+
+  // Fetch the user's document from Firestore
+  const userDocRef = doc(db, "users", user.uid);
+  const userDocSnap = await getDoc(userDocRef);
+
+  let role;
+
+  if (!userDocSnap.exists()) {
+    // If the user does not exist, assign a default role and store it in Firestore
+    role = userRole;
+    await setDoc(userDocRef, {
+      id: user.uid,
+      email: user.email,
+      role: role,
+      firstName: firstName,
+      lastName: lastName,
+    });
+  } else {
+    // If the user exists, retrieve their role
+    role = userDocSnap.data().role;
+  }
+
+  // Return the user along with the role and other details
   return {
     user: user,
     role: role,

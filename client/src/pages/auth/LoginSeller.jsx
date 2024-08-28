@@ -4,7 +4,11 @@ import google from "../../assets/icons/google.png";
 import facebook from "../../assets/icons/facebook.png";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
-import { doSignInWithEmailAndPassword } from "../../firebase/auth";
+import {
+  doSignInWithEmailAndPassword,
+  doSigninWithFacebook,
+  doSigninWithGoogle,
+} from "../../firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { Toast } from "flowbite-react";
 
@@ -36,6 +40,42 @@ const LoginSeller = () => {
       toast.error("Failed to log in. Please check your email and password.");
     }
   };
+
+  const handleLoginWithGoogle = async () => {
+    try {
+      const result = await doSigninWithGoogle("seller");
+      console.log(result.role);
+
+      if (result.role == "seller") {
+        navigate("/seller-page/dashboard");
+      } else if (result.role == "shopper") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct seller account"
+        );
+      }
+    } catch (error) {
+      toast.error("Error signing in with Google. Please try again later.");
+      console.error("Error signing in with Google:", error);
+    }
+  };
+
+  const handleLoginWithFacebook = async () => {
+    try {
+      const result = await doSigninWithFacebook("seller");
+      if (result.role == "seller") {
+        navigate("/seller-page/dashboard");
+      } else if (result.role == "shopper") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct seller account"
+        );
+      }
+    } catch (error) {
+      toast.error("Error signing in with Facebook. Please try again later.");
+      console.error("Error signing in with Facebook:", error);
+    }
+  };
+
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -135,13 +175,19 @@ const LoginSeller = () => {
 
             <p className="text-sm text-center">Or sign in using:</p>
             <section className="flex flex-col items-center gap-3">
-              <div className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24">
+              <div
+                className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
+                onClick={handleLoginWithGoogle}
+              >
                 <img src={google} className="w-4 h-4" alt="google" />
                 <span className="text-sm text-blue-600">
                   Continue with Google
                 </span>
               </div>
-              <div className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24">
+              <div
+                className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
+                onClick={handleLoginWithFacebook}
+              >
                 <img src={facebook} className="w-4 h-4" alt="google" />
                 <span className="text-sm text-blue-600">
                   Continue with Facebook
