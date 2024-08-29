@@ -171,7 +171,7 @@ const LoginSeller = () => {
               </Link>
             </p>
 
-            <hr className="my-4 border-t border-gray-300 border-dashed" />
+            {/* <hr className="my-4 border-t border-gray-300 border-dashed" />
 
             <p className="text-sm text-center">Or sign in using:</p>
             <section className="flex flex-col items-center gap-3">
@@ -193,7 +193,7 @@ const LoginSeller = () => {
                   Continue with Facebook
                 </span>
               </div>
-            </section>
+            </section> */}
           </section>
         </div>
         <div className="relative right-0-0 bg-arfagray basis-2/4">
