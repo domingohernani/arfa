@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import {
   doCreateUserWithEmailAndPassword,
-  doSigninWithGoogle,
+  doSignupWithFacebook,
+  doSignupWithGoogle,
 } from "../../firebase/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ const SignupShopper = () => {
     setShowPassword(!showPassword);
   };
 
-  const signup = async (e) => {
+  const signUpEmailAndPassword = async (e) => {
     e.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,14 +56,24 @@ const SignupShopper = () => {
     }
   };
 
-  const loginUsingGoogle = async () => {
+  const handleSignupGoogle = async () => {
     try {
-      const result = await doSigninWithGoogle();
-      if (result.user) navigate("/");
+      const result = await doSignupWithGoogle("shopper");
+      if (result.user) navigate("/catalog");
       toast.success("Successfully signed in with Google!");
     } catch (error) {
       toast.error("Error signing in with Google. Please try again later.");
       console.error("Error signing in with Google:", error);
+    }
+  };
+  const handleSignupFacebook = async () => {
+    try {
+      const result = await doSignupWithFacebook("shopper");
+      if (result.user) navigate("/catalog");
+      toast.success("Successfully signed in with Facebook!");
+    } catch (error) {
+      toast.error("Error signing in with Facebook. Please try again later.");
+      console.error("Error signing in with Facebook:", error);
     }
   };
 
@@ -83,7 +94,7 @@ const SignupShopper = () => {
           Join us today! Create an account to start your shopping journey with
           us. Your next great find is just a few clicks away!
         </p>
-        <form onSubmit={signup}>
+        <form onSubmit={signUpEmailAndPassword}>
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -151,13 +162,16 @@ const SignupShopper = () => {
         <p className="mt-4 text-sm text-center">Or sign up using:</p>
         <section className="flex flex-col items-center gap-3">
           <div
-            onClick={loginUsingGoogle}
+            onClick={handleSignupGoogle}
             className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
           >
             <img src={google} className="w-4 h-4" alt="google" />
             <span className="text-sm text-blue-600">Continue with Google</span>
           </div>
-          <div className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24">
+          <div
+            className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
+            onClick={handleSignupFacebook}
+          >
             <img src={facebook} className="w-4 h-4" alt="facebook" />
             <span className="text-sm text-blue-600">
               Continue with Facebook

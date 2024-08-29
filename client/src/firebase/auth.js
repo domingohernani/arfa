@@ -47,36 +47,25 @@ export const doSignInWithEmailAndPassword = async (email, password) => {
   return userData;
 };
 
-export const doSigninWithGoogle = async (userRole) => {
+export const doSigninWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
+
+  // Sign in with Google
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
-
-  // Extracting the first name and last name from the display name
-  const displayName = user.displayName || "";
-  const [firstName = "", lastName = ""] = displayName.split(" ");
 
   // Fetch the user's document from Firestore
   const userDocRef = doc(db, "users", user.uid);
   const userDocSnap = await getDoc(userDocRef);
 
-  let role;
-
   if (!userDocSnap.exists()) {
-    // If the user does not exist, assign a default role and store it in Firestore
-    role = userRole;
-    await setDoc(userDocRef, {
-      id: user.uid,
-      email: user.email,
-      role: role,
-      firstName: firstName,
-      lastName: lastName,
-      profileUrl: user.reloadUserInfo.photoUrl,
-    });
-  } else {
-    // If the user exists, retrieve their role
-    role = userDocSnap.data().role;
+    console.error("No account found. Please sign up first.");
+    return false;
   }
+
+  // If the user exists, retrieve their role and other details
+  const userData = userDocSnap.data();
+  const role = userData.role;
 
   // Return the user along with the role and other details
   return {
@@ -85,41 +74,105 @@ export const doSigninWithGoogle = async (userRole) => {
   };
 };
 
-export const doSigninWithFacebook = async (userRole) => {
-  const provider = new FacebookAuthProvider();
+export const doSignupWithGoogle = async (userRole) => {
+  const provider = new GoogleAuthProvider();
+
+  // Sign in with Google
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
-
-  // Extracting the first name and last name from the display name
-  const displayName = user.displayName || "";
-  const [firstName = "", lastName = ""] = displayName.split(" ");
 
   // Fetch the user's document from Firestore
   const userDocRef = doc(db, "users", user.uid);
   const userDocSnap = await getDoc(userDocRef);
 
-  let role;
+  if (userDocSnap.exists()) {
+    // If the user already exists, you may want to throw an error or return a message
+    throw new Error("User already exists. Please sign in.");
+  }
+
+  // Extracting the first name and last name from the display name
+  const displayName = user.displayName || "";
+  const [firstName = "", lastName = ""] = displayName.split(" ");
+
+  // If the user does not exist, create a new document with the provided role and other details
+  await setDoc(userDocRef, {
+    id: user.uid,
+    email: user.email,
+    role: userRole,
+    firstName: firstName,
+    lastName: lastName,
+    profileUrl: user.reloadUserInfo.photoUrl,
+  });
+
+  // Return the user along with the role and other details
+  return {
+    user: user,
+    role: userRole,
+  };
+};
+
+export const doSigninWithFacebook = async () => {
+  const provider = new FacebookAuthProvider();
+
+  // Sign in with Facebook
+  const result = await signInWithPopup(auth, provider);
+  const user = result.user;
+
+  // Fetch the user's document from Firestore
+  const userDocRef = doc(db, "users", user.uid);
+  const userDocSnap = await getDoc(userDocRef);
 
   if (!userDocSnap.exists()) {
-    // If the user does not exist, assign a default role and store it in Firestore
-    role = userRole;
-    await setDoc(userDocRef, {
-      id: user.uid,
-      email: user.email,
-      role: role,
-      firstName: firstName,
-      lastName: lastName,
-      profileUrl: user.reloadUserInfo.photoUrl,
-    });
-  } else {
-    // If the user exists, retrieve their role
-    role = userDocSnap.data().role;
+    // If the user does not exist, throw an error or return a specific message
+    console.error("No account found. Please sign up first.");
+    return false;
   }
+
+  // If the user exists, retrieve their role and other details
+  const userData = userDocSnap.data();
+  const role = userData.role;
 
   // Return the user along with the role and other details
   return {
     user: user,
     role: role,
+  };
+};
+
+export const doSignupWithFacebook = async (userRole) => {
+  const provider = new FacebookAuthProvider();
+
+  // Sign in with Facebook
+  const result = await signInWithPopup(auth, provider);
+  const user = result.user;
+
+  // Fetch the user's document from Firestore
+  const userDocRef = doc(db, "users", user.uid);
+  const userDocSnap = await getDoc(userDocRef);
+
+  if (userDocSnap.exists()) {
+    // If the user already exists, you may want to throw an error or return a message
+    throw new Error("User already exists. Please sign in.");
+  }
+
+  // Extracting the first name and last name from the display name
+  const displayName = user.displayName || "";
+  const [firstName = "", lastName = ""] = displayName.split(" ");
+
+  // If the user does not exist, create a new document with the provided role and other details
+  await setDoc(userDocRef, {
+    id: user.uid,
+    email: user.email,
+    role: userRole,
+    firstName: firstName,
+    lastName: lastName,
+    profileUrl: user.reloadUserInfo.photoUrl,
+  });
+
+  // Return the user along with the role and other details
+  return {
+    user: user,
+    role: userRole,
   };
 };
 

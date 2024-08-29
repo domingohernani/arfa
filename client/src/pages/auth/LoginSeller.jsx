@@ -84,7 +84,7 @@ const LoginSeller = () => {
     <>
       <section className="px-5 pt-4 pb-10 sm:px-8 lg:px-0 lg:pb-0 lg:pt-0 lg:flex min-h-svh">
         <div className="lg:bg-gray-100 lg:px-8 lg:pb-8 lg:pt-4 basis-3/4">
-          <section className="lg:mt-5 lg:px-8 lg:py-8 lg:mx-36 xl:mx-40 lg:bg-white lg:shadow-lg">
+          <section className="lg:mt-5 lg:px-8 lg:py-8 xl:mx-24 lg:bg-white lg:shadow-lg">
             <form
               onSubmit={loginEmailAndPassword}
               className="flex flex-col gap-3"
