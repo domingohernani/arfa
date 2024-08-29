@@ -5,8 +5,6 @@ import {
   doSigninWithGoogle,
   doSignOut,
 } from "../../firebase/auth";
-import { auth, db } from "../../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import logo from "../../assets/logos/logo_black.svg";
@@ -60,14 +58,20 @@ const LoginShopper = () => {
     }
   };
 
-  const loginUsingGoogle = async () => {
+  const handleLoginWithGoogle = async () => {
     try {
-      const result = await doSigninWithGoogle("shopper");
+      const result = await doSigninWithGoogle();
+
+      if (!result) {
+        toast.error("Account not registered. Please sign up first.");
+        return;
+      }
+
       if (result.role == "shopper") {
         navigate("/catalog");
       } else if (result.role == "seller") {
         toast.error(
-          "Failed to log in. Please ensure you are using the correct seller account"
+          "Failed to log in. Please ensure you are using the correct shopper account"
         );
       }
     } catch (error) {
@@ -78,7 +82,13 @@ const LoginShopper = () => {
 
   const loginUsingFacebook = async () => {
     try {
-      const result = await doSigninWithFacebook("shopper");
+      const result = await doSigninWithFacebook();
+
+      if (!result) {
+        toast.error("Account not registered. Please sign up first.");
+        return;
+      }
+
       if (result.role == "shopper") {
         navigate("/catalog");
       } else if (result.role == "seller") {
@@ -175,15 +185,15 @@ const LoginShopper = () => {
         <p className="mt-4 text-sm text-center">Or sign in using:</p>
         <section className="flex flex-col items-center gap-3 mt-3">
           <div
-            onClick={loginUsingGoogle}
+            onClick={handleLoginWithGoogle}
             className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
           >
             <img src={google} className="w-4 h-4" alt="google" />
             <span className="text-sm text-blue-600">Continue with Google</span>
           </div>
           <div
-          className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
-          onClick={loginUsingFacebook}
+            className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
+            onClick={loginUsingFacebook}
           >
             <img src={facebook} className="w-4 h-4" alt="facebook" />
             <span className="text-sm text-blue-600">
