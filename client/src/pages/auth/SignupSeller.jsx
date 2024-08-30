@@ -11,7 +11,10 @@ import {
 } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
 import { Tooltip } from "flowbite-react";
-import { doSignupWithGoogle } from "../../firebase/auth";
+import {
+  doCreateUserWithEmailAndPassword,
+  doSignupWithGoogle,
+} from "../../firebase/auth";
 import { useEffect } from "react";
 import {
   regions,
@@ -19,6 +22,8 @@ import {
   cities,
   barangays,
 } from "select-philippines-address";
+import { createShopDocument } from "../../firebase/user";
+import { uploadFile } from "../../firebase/files";
 
 const SignupSeller = () => {
   const navigate = useNavigate();
@@ -40,6 +45,7 @@ const SignupSeller = () => {
   const [province, setProvince] = useState([]);
   const [region, setRegion] = useState([]);
   const [ownerId, setOwnerId] = useState(null);
+  const [businessPermit, setBusinessPermit] = useState(null);
 
   // State to hold the selected value for each dropdown
   const [selectedBarangay, setSelectedBarangay] = useState("");
@@ -47,13 +53,11 @@ const SignupSeller = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
 
-  const [businessPermit, setBusinessPermit] = useState(null);
-
   const handleEye = (set, value) => {
     set(value);
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (phoneNumber.length != 11) {
@@ -66,23 +70,61 @@ const SignupSeller = () => {
       return;
     }
 
-    const shopData = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phoneNumber: phoneNumber,
-      businessName: businessName,
-      address: {
-        street: streetNumber,
-        barangay: barangay,
-        city: cityMunicipal,
-        province: province,
-      },
-      validId: ownerId, // This should be the file path or URL after uploading
-      businessPermit: businessPermit, // This should be the file path or URL after uploading
-    };
+    try {
+      const createdUser = await doCreateUserWithEmailAndPassword(
+        email,
+        password,
+        "seller",
+        firstName,
+        lastName,
+        phoneNumber
+      );
+      console.log(createdUser);
 
-    console.log(shopData);
+      const validIdUrl = await uploadFile(
+        ownerId,
+        "files/validId",
+        createdUser.uid
+      );
+
+      const permitUrl = await uploadFile(
+        businessPermit,
+        "files/permit",
+        createdUser.uid
+      );
+
+      const shopData = {
+        street: streetNumber,
+        barangay: selectedBarangay,
+        city: selectedCityMunicipal,
+        province: selectedProvince,
+        region: selectedRegion,
+        name: businessName,
+        userId: createdUser.uid,
+        validId: validIdUrl,
+        businessPermit: permitUrl,
+      };
+
+      const responseShop = await createShopDocument(shopData);
+
+      if (responseShop) {
+        navigate("/seller-page/dashboard");
+      } else {
+        toast.error(
+          "Signup unsuccessful. Please check your details and try again."
+        );
+      }
+    } catch (error) {
+      console.log(error.code);
+
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("Email address is already in use.");
+      } else {
+        toast.error("Error signing up. Please try again later.");
+      }
+    }
+
+    // console.log(shopData);
   };
 
   useEffect(() => {
@@ -402,7 +444,9 @@ const SignupSeller = () => {
                   onChange={async (e) => {
                     const province = await provinces(e.target.value);
                     setProvince(province);
-                    setSelectedRegion(e.target.value);
+                    setSelectedRegion(
+                      e.target.options[e.target.selectedIndex].text
+                    );
 
                     setCityMunicipal([]);
                     setBarangay([]);
@@ -449,7 +493,9 @@ const SignupSeller = () => {
                   onChange={async (e) => {
                     const cityMunicipal = await cities(e.target.value);
                     setCityMunicipal(cityMunicipal);
-                    setSelectedProvince(e.target.value);
+                    setSelectedProvince(
+                      e.target.options[e.target.selectedIndex].text
+                    );
 
                     setBarangay([]);
                     setStreetNumber("");
@@ -496,7 +542,9 @@ const SignupSeller = () => {
                   onChange={async (e) => {
                     const barangay = await barangays(e.target.value);
                     setBarangay(barangay);
-                    setSelectedCityMunicipal(e.target.value);
+                    setSelectedCityMunicipal(
+                      e.target.options[e.target.selectedIndex].text
+                    );
 
                     setStreetNumber("");
                   }}
@@ -537,7 +585,9 @@ const SignupSeller = () => {
                   id="barangay"
                   className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                   onChange={async (e) => {
-                    setSelectedBarangay(e.target.value);
+                    setSelectedBarangay(
+                      e.target.options[e.target.selectedIndex].text
+                    );
                     setStreetNumber("");
                   }}
                 >

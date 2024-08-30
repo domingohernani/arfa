@@ -16,7 +16,10 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 export const doCreateUserWithEmailAndPassword = async (
   email,
   password,
-  role
+  role,
+  firstName,
+  lastName,
+  phoneNumber
 ) => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
@@ -26,9 +29,22 @@ export const doCreateUserWithEmailAndPassword = async (
   const user = userCredential.user;
 
   await setDoc(doc(db, "users", user.uid), {
-    id: user.uid,
+    cart: [],
     email: user.email,
+    firstName: firstName,
+    id: user.uid,
+    lastName: lastName,
+    location: {
+      barangay: null,
+      city: null,
+      province: null,
+      region: null,
+      street: null,
+    },
+    phoneNumber: phoneNumber,
+    profileUrl: null,
     role: role,
+    wishlist: [],
   });
   const userData = { ...user, role };
   return userData;
@@ -46,7 +62,6 @@ export const doSignInWithEmailAndPassword = async (email, password) => {
   const userData = { ...user, role };
   return userData;
 };
-
 
 export const doSigninWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
@@ -97,12 +112,22 @@ export const doSignupWithGoogle = async (userRole) => {
 
   // If the user does not exist, create a new document with the provided role and other details
   await setDoc(userDocRef, {
-    id: user.uid,
+    cart: [],
     email: user.email,
-    role: userRole,
     firstName: firstName,
+    id: user.uid,
     lastName: lastName,
-    profileUrl: user.reloadUserInfo.photoUrl,
+    location: {
+      barangay: null,
+      city: null,
+      province: null,
+      region: null,
+      street: null,
+    },
+    phoneNumber: null,
+    profileUrl: user.reloadUserInfo.photoUrl || null,
+    role: userRole,
+    wishlist: [],
   });
 
   // Return the user along with the role and other details
@@ -162,12 +187,23 @@ export const doSignupWithFacebook = async (userRole) => {
 
   // If the user does not exist, create a new document with the provided role and other details
   await setDoc(userDocRef, {
-    id: user.uid,
+    cart: [],
     email: user.email,
-    role: userRole,
     firstName: firstName,
+    id: user.uid,
     lastName: lastName,
-    profileUrl: user.reloadUserInfo.photoUrl,
+
+    location: {
+      barangay: null,
+      city: null,
+      province: null,
+      region: null,
+      street: null,
+    },
+    phoneNumber: null,
+    profileUrl: user.reloadUserInfo.photoUrl || null,
+    role: userRole,
+    wishlist: [],
   });
 
   // Return the user along with the role and other details
