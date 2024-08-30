@@ -17,6 +17,8 @@ const SellerInbox = () => {
         setLoading(true);
         const fetchedChats = await getChatsByShopId("W54VKTXvFU9jCT2ItEkg");
         setChats(fetchedChats);
+        console.log(fetchedChats);
+        
         setSelectedChat(fetchedChats[0]);
       } catch (error) {
         console.error("Error fetching chats:", error);
@@ -80,7 +82,7 @@ const SellerInbox = () => {
                           className="w-10 h-10"
                         />
                         <div className="flex w-full text-sm font-semibold truncate text-arfablack">
-                          {`${chat.shopperInfo.firstname} ${chat.shopperInfo.lastname}`}
+                          {`${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`}
                         </div>
                       </div>
                       <div className="text-sm text-gray-500">
