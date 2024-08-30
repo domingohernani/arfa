@@ -52,6 +52,10 @@ const LoginShopper = () => {
         toast.error(
           "Invalid credentials. Please check your email and password."
         );
+      } else if (
+        error.code === "auth/account-exists-with-different-credential"
+      ) {
+        toast.error("Account exists with different credential");
       } else {
         toast.error("Error signing in. Please try again later.");
       }
@@ -75,8 +79,12 @@ const LoginShopper = () => {
         );
       }
     } catch (error) {
-      toast.error("Error signing in with Google. Please try again later.");
-      console.error("Error signing in with Google:", error);
+      if (error.code === "auth/account-exists-with-different-credential") {
+        toast.error("Account exists with different credential");
+      } else {
+        toast.error("Error signing in with Google. Please try again later.");
+        console.error("Error signing in with Google:", error);
+      }
     }
   };
 
@@ -97,8 +105,12 @@ const LoginShopper = () => {
         );
       }
     } catch (error) {
-      toast.error("Error signing in with Facebook. Please try again later.");
-      console.error("Error signing in with Facebook:", error);
+      if (error.code === "auth/account-exists-with-different-credential") {
+        toast.error("Account exists with different credential");
+      } else {
+        toast.error("Error signing in with Facebook. Please try again later.");
+        console.error("Error signing in with Facebook:", error);
+      }
     }
   };
 

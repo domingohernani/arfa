@@ -82,25 +82,27 @@ export const getLoggedShopInfo = async () => {
 export const createShopDocument = async (shopData) => {
   try {
     // Create a new document in the `shops` collection
-    const shopRef = doc(firestore, "shops", shopData.userId); // Use userId as the document ID
+    const shopRef = doc(db, "shops", shopData.userId); // Use userId as the document ID
     // Set the document data
     await setDoc(shopRef, {
       address: {
+        street: shopData.street,
         barangay: shopData.barangay,
         city: shopData.city,
         province: shopData.province,
-        street: shopData.street,
+        region: shopData.region,
       },
       furnitures: [], // Initialize with an empty array if no furniture is provided
       name: shopData.name,
       userId: shopData.userId,
-      validId: shopData.validId, // Adding validId
-      businessPermit: shopData.businessPermit, // Adding businessPermit
+      validId: shopData.validId,
+      businessPermit: shopData.businessPermit,
     });
 
     console.log("Shop document created successfully:", shopData);
+    return true;
   } catch (error) {
     console.error("Error creating shop document:", error);
-    throw error;
+    return false;
   }
 };

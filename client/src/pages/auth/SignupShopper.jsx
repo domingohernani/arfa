@@ -41,9 +41,11 @@ const SignupShopper = () => {
       const response = await doCreateUserWithEmailAndPassword(
         email,
         password,
-        "shopper"
+        "shopper",
+        null,
+        null,
+        null
       );
-      toast.success("Account created successfully!");
       navigate("/");
       // setUser(response);
     } catch (error) {
