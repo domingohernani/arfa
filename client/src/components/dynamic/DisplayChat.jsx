@@ -37,7 +37,7 @@ const DisplayChat = memo(({ chat }) => {
             ></DisplayAvatar>
           )}
           <div className="font-semibold">
-            {`${shopper.firstname} ${shopper.lastname}`}
+            {`${shopper.firstName} ${shopper.lastName}`}
           </div>
         </div>
       </div>
