@@ -39,8 +39,12 @@ const SellerTransaction = () => {
         field: "shopper",
         flex: 2,
         filter: "agTextColumnFilter",
-        valueGetter: (params) =>
-          params.data.shopper ? params.data.shopper.email : "--",
+        valueGetter: (params) => {
+          const shopper = params.data.shopper;
+          if (!params.data && !shopper) return "---";
+          return `${shopper.firstname} ${shopper.lastname}`;
+        },
+        cellRenderer: CustomHoverCopyCell,
       },
       {
         headerName: "Location",

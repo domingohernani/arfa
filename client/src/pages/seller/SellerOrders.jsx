@@ -39,10 +39,13 @@ const SellerOrders = () => {
     {
       headerName: "Customer",
       field: "shopper",
-      flex: 2,
+      flex: 1,
       filter: "agTextColumnFilter",
-      valueGetter: (params) =>
-        params.data.shopper ? params.data.shopper.email : "--",
+      valueGetter: (params) => {
+        const shopper = params.data.shopper;
+        if (!params.data && !shopper) return "---";
+        return `${shopper.firstname} ${shopper.lastname}`;
+      },
       cellRenderer: CustomHoverCopyCell,
     },
     {

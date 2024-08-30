@@ -39,7 +39,7 @@ function SellerNavigationBar() {
           </Link>
           <NotificationDrawer />
         </div>
-        <div className="flex items-center w-48">
+        <div className="flex items-center w-48 md:w-full">
           <DisplayAvatar
             url={loggedUser && loggedUser.profileUrl ? loggedUser.profileUrl : null}
             className={"w-8 h-8 mr-2"}
