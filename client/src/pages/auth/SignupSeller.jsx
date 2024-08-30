@@ -12,6 +12,13 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { Tooltip } from "flowbite-react";
 import { doSignupWithGoogle } from "../../firebase/auth";
+import { useEffect } from "react";
+import {
+  regions,
+  provinces,
+  cities,
+  barangays,
+} from "select-philippines-address";
 
 const SignupSeller = () => {
   const navigate = useNavigate();
@@ -28,9 +35,10 @@ const SignupSeller = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [streetNumber, setStreetNumber] = useState("");
-  const [barangay, setBarangay] = useState("");
-  const [cityMunicipal, setCityMunicipal] = useState("");
-  const [province, setProvince] = useState("");
+  const [barangay, setBarangay] = useState([]);
+  const [cityMunicipal, setCityMunicipal] = useState([]);
+  const [province, setProvince] = useState([]);
+  const [region, setRegion] = useState([]);
   const [ownerId, setOwnerId] = useState(null);
   const [businessPermit, setBusinessPermit] = useState(null);
 
@@ -70,6 +78,15 @@ const SignupSeller = () => {
     console.log(shopData);
   };
 
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const region = await regions();
+      setRegion(region);
+    };
+
+    fetchAddress();
+  }, [region]);
+
   // Log form values
   const registerButton = () => {
     console.log("First Name:", firstName);
@@ -101,7 +118,7 @@ const SignupSeller = () => {
     <>
       <Toaster position="top-center" reverseOrder={false} />
       <section className="px-5 pt-4 pb-10 sm:px-8 lg:px-0 lg:pb-0 lg:pt-0 lg:flex">
-        <div className="lg:px-8 lg:pb-8 lg:pt-4">
+        <div className="max-w-3xl lg:px-8 lg:pb-8 lg:pt-4">
           <div>
             <h2 className="pb-3 font-bold ">Create Account</h2>
             <p className="text-sm">
@@ -358,79 +375,46 @@ const SignupSeller = () => {
               </div>
             </section>
 
-            <section className="grid items-center justify-center grid-cols-2 gap-3 md:grid-cols-4">
+            <p className="text-sm italic">
+              Note: Please enter the complete address location of shop.
+            </p>
+
+            <section className="grid items-center justify-center grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <label
-                    htmlFor="streetnumber"
+                    htmlFor="region"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Street Number
+                    Region
                   </label>
-                  <Tooltip content="Enter your street number">
+                  <Tooltip content="Enter your Region">
                     <QuestionMarkCircleIcon
                       className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
                       aria-hidden="true"
                     />
                   </Tooltip>
                 </div>
-                <input
-                  type="text"
-                  id="streetnumber"
-                  value={streetNumber}
-                  onChange={(e) => setStreetNumber(e.target.value)}
+                <select
+                  name="region"
+                  id="region"
                   className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
-                  required
-                />
+                  onChange={async (e) => {
+                    const province = await provinces(e.target.value);
+                    setProvince(province);
+                  }}
+                >
+                  <option value="" onClick={() => {}}>
+                    Select Region
+                  </option>
+                  {region.map((reg) => {
+                    return (
+                      <option value={reg.region_code}>{reg.region_name}</option>
+                    );
+                  })}
+                </select>
               </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="barangay"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Barangay
-                  </label>
-                  <Tooltip content="Enter your Barangay">
-                    <QuestionMarkCircleIcon
-                      className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
-                      aria-hidden="true"
-                    />
-                  </Tooltip>
-                </div>
-                <input
-                  type="text"
-                  id="barangay"
-                  value={barangay}
-                  onChange={(e) => setBarangay(e.target.value)}
-                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
-                  required
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="citymunicipal"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    City/Municipal
-                  </label>
-                  <Tooltip content="Enter your City or Municipal">
-                    <QuestionMarkCircleIcon
-                      className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
-                      aria-hidden="true"
-                    />
-                  </Tooltip>
-                </div>
-                <input
-                  type="text"
-                  id="citymunicipal"
-                  value={cityMunicipal}
-                  onChange={(e) => setCityMunicipal(e.target.value)}
-                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
-                  required
-                />
-              </div>
+
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <label
@@ -446,11 +430,117 @@ const SignupSeller = () => {
                     />
                   </Tooltip>
                 </div>
+                <select
+                  name="province"
+                  id="province"
+                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  onChange={async (e) => {
+                    const cityMunicipal = await cities(e.target.value);
+                    setCityMunicipal(cityMunicipal);
+                  }}
+                >
+                  <option value="" onClick={() => {}}>
+                    Select Province
+                  </option>
+                  {province.map((reg) => {
+                    return (
+                      <option value={reg.province_code}>
+                        {reg.province_name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="citymunicipal"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    City/Municipal
+                  </label>
+                  <Tooltip content="Enter your City or Municipal">
+                    <QuestionMarkCircleIcon
+                      className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Tooltip>
+                </div>
+                <select
+                  name="citymunicipal"
+                  id="citymunicipal"
+                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  onChange={async (e) => {
+                    const barangay = await barangays(e.target.value);
+                    setBarangay(barangay);
+                  }}
+                >
+                  <option value="" onClick={() => {}}>
+                    Select City/Municipal
+                  </option>
+                  {cityMunicipal.map((reg) => {
+                    return (
+                      <option value={reg.city_code}>{reg.city_name}</option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="barangay"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Barangay
+                  </label>
+                  <Tooltip content="Enter your Barangay">
+                    <QuestionMarkCircleIcon
+                      className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Tooltip>
+                </div>
+                <select
+                  name="barangay"
+                  id="barangay"
+                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  onChange={async (e) => {
+                    setStreetNumber("");
+                  }}
+                >
+                  <option value="" onClick={() => {}}>
+                    Select Barangay
+                  </option>
+                  {barangay.map((reg) => {
+                    return (
+                      <option value={reg.brgy_code}>{reg.brgy_name}</option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="streetnumber"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Street
+                  </label>
+                  <Tooltip content="Enter your street number">
+                    <QuestionMarkCircleIcon
+                      className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Tooltip>
+                </div>
                 <input
                   type="text"
-                  id="province"
-                  value={province}
-                  onChange={(e) => setProvince(e.target.value)}
+                  id="streetnumber"
+                  value={streetNumber}
+                  onChange={(e) => setStreetNumber(e.target.value)}
                   className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                   required
                 />
