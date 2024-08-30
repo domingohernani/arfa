@@ -40,6 +40,13 @@ const SignupSeller = () => {
   const [province, setProvince] = useState([]);
   const [region, setRegion] = useState([]);
   const [ownerId, setOwnerId] = useState(null);
+
+  // State to hold the selected value for each dropdown
+  const [selectedBarangay, setSelectedBarangay] = useState("");
+  const [selectedCityMunicipal, setSelectedCityMunicipal] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
+
   const [businessPermit, setBusinessPermit] = useState(null);
 
   const handleEye = (set, value) => {
@@ -130,13 +137,6 @@ const SignupSeller = () => {
               . Please read them carefully. We are GDPR compliant.
             </p>
           </div>
-          {/* 
-          <img
-            src={signupImg}
-            alt="Signup illustration"
-            className="lg:hidden"
-          /> */}
-
           <hr className="my-4 border-t border-gray-300 border-dashed" />
           <form onSubmit={handleSignUp}>
             <section className="grid grid-cols-2 gap-3">
@@ -402,9 +402,21 @@ const SignupSeller = () => {
                   onChange={async (e) => {
                     const province = await provinces(e.target.value);
                     setProvince(province);
+                    setSelectedRegion(e.target.value);
+
+                    setCityMunicipal([]);
+                    setBarangay([]);
+                    setStreetNumber("");
                   }}
                 >
-                  <option value="" onClick={() => {}}>
+                  <option
+                    value=""
+                    onClick={() => {
+                      setCityMunicipal([]);
+                      setBarangay([]);
+                      setStreetNumber("");
+                    }}
+                  >
                     Select Region
                   </option>
                   {region.map((reg) => {
@@ -437,9 +449,19 @@ const SignupSeller = () => {
                   onChange={async (e) => {
                     const cityMunicipal = await cities(e.target.value);
                     setCityMunicipal(cityMunicipal);
+                    setSelectedProvince(e.target.value);
+
+                    setBarangay([]);
+                    setStreetNumber("");
                   }}
                 >
-                  <option value="" onClick={() => {}}>
+                  <option
+                    value=""
+                    onClick={() => {
+                      setBarangay([]);
+                      setStreetNumber("");
+                    }}
+                  >
                     Select Province
                   </option>
                   {province.map((reg) => {
@@ -474,9 +496,17 @@ const SignupSeller = () => {
                   onChange={async (e) => {
                     const barangay = await barangays(e.target.value);
                     setBarangay(barangay);
+                    setSelectedCityMunicipal(e.target.value);
+
+                    setStreetNumber("");
                   }}
                 >
-                  <option value="" onClick={() => {}}>
+                  <option
+                    value=""
+                    onClick={() => {
+                      setStreetNumber("");
+                    }}
+                  >
                     Select City/Municipal
                   </option>
                   {cityMunicipal.map((reg) => {
@@ -507,10 +537,16 @@ const SignupSeller = () => {
                   id="barangay"
                   className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                   onChange={async (e) => {
+                    setSelectedBarangay(e.target.value);
                     setStreetNumber("");
                   }}
                 >
-                  <option value="" onClick={() => {}}>
+                  <option
+                    value=""
+                    onClick={() => {
+                      setStreetNumber("");
+                    }}
+                  >
                     Select Barangay
                   </option>
                   {barangay.map((reg) => {
