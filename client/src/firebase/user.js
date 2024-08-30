@@ -5,6 +5,7 @@ import {
   collection,
   query,
   where,
+  setDoc,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -76,4 +77,30 @@ export const getLoggedShopInfo = async () => {
       }
     });
   });
+};
+
+export const createShopDocument = async (shopData) => {
+  try {
+    // Create a new document in the `shops` collection
+    const shopRef = doc(firestore, "shops", shopData.userId); // Use userId as the document ID
+    // Set the document data
+    await setDoc(shopRef, {
+      address: {
+        barangay: shopData.barangay,
+        city: shopData.city,
+        province: shopData.province,
+        street: shopData.street,
+      },
+      furnitures: [], // Initialize with an empty array if no furniture is provided
+      name: shopData.name,
+      userId: shopData.userId,
+      validId: shopData.validId, // Adding validId
+      businessPermit: shopData.businessPermit, // Adding businessPermit
+    });
+
+    console.log("Shop document created successfully:", shopData);
+  } catch (error) {
+    console.error("Error creating shop document:", error);
+    throw error;
+  }
 };
