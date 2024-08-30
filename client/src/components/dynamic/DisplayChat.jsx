@@ -79,7 +79,7 @@ const DisplayChat = memo(({ chat }) => {
           </label>
           <textarea
             id="comment"
-            rows="4"
+            rows="1"
             className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
             placeholder="Write a comment..."
             required

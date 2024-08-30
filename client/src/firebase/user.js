@@ -1,77 +1,108 @@
-import { getAuth } from "firebase/auth";
 import {
-  getFirestore,
   doc,
   getDoc,
   getDocs,
   collection,
   query,
   where,
+  setDoc,
 } from "firebase/firestore";
+import { auth, db } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const getUserInfo = async () => {
-  try {
-    const auth = getAuth();
-    const firestore = getFirestore();
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const uid = user.uid;
 
-    const user = auth.currentUser;
+          // Reference the user's document in the "users" collection
+          const userDocRef = doc(db, "users", uid);
 
-    if (user) {
-      const uid = user.uid;
+          // Fetch the document
+          const userDocSnap = await getDoc(userDocRef);
 
-      // Reference the user's document in the "users" collection
-      const userDocRef = doc(firestore, "users", uid);
-
-      // Fetch the document
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (userDocSnap.exists()) {
-        // Return the document data along with the document ID
-        return {
-          ...userDocSnap.data(),
-        };
+          if (userDocSnap.exists()) {
+            // Resolve the promise with the document data
+            resolve({
+              ...userDocSnap.data(),
+            });
+          } else {
+            console.log("No such document!");
+            resolve(null);
+          }
+        } catch (error) {
+          console.error("Error getting user info:", error);
+          reject(error);
+        }
       } else {
-        console.log("No such document!");
-        return null;
+        console.log("No user is logged in");
+        resolve(null);
       }
-    } else {
-      console.log("No user is logged in");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error getting user info:", error);
-    return null;
-  }
+    });
+  });
 };
 
 export const getLoggedShopInfo = async () => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userId = user.uid;
+
+          const shopsRef = collection(db, "shops");
+          const q = query(shopsRef, where("userId", "==", userId));
+          const querySnapshot = await getDocs(q);
+
+          if (querySnapshot.empty) {
+            console.error("Shop information not found");
+            resolve(null);
+            return;
+          }
+
+          let shopInfo = null;
+          querySnapshot.forEach((doc) => {
+            shopInfo = doc.data();
+          });
+
+          resolve(shopInfo);
+        } catch (error) {
+          console.error("Error fetching shop information:", error);
+          reject(error);
+        }
+      } else {
+        console.error("User not logged in");
+        resolve(null);
+      }
+    });
+  });
+};
+
+export const createShopDocument = async (shopData) => {
   try {
-    const db = getFirestore();
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (!user) {
-      throw new Error("User not logged in");
-    }
-
-    const userId = user.uid;
-
-    const shopsRef = collection(db, "shops");
-    const q = query(shopsRef, where("userId", "==", userId));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      throw new Error("Shop information not found");
-    }
-
-    let shopInfo = null;
-    querySnapshot.forEach((doc) => {
-      shopInfo = doc.data();
+    // Create a new document in the `shops` collection
+    const shopRef = doc(db, "shops", shopData.userId); // Use userId as the document ID
+    // Set the document data
+    await setDoc(shopRef, {
+      address: {
+        street: shopData.street,
+        barangay: shopData.barangay,
+        city: shopData.city,
+        province: shopData.province,
+        region: shopData.region,
+      },
+      furnitures: [], // Initialize with an empty array if no furniture is provided
+      name: shopData.name,
+      userId: shopData.userId,
+      validId: shopData.validId,
+      businessPermit: shopData.businessPermit,
     });
 
-    return shopInfo;
+    console.log("Shop document created successfully:", shopData);
+    return true;
   } catch (error) {
-    console.error("Error fetching shop information:", error);
-    throw error;
+    console.error("Error creating shop document:", error);
+    return false;
   }
 };

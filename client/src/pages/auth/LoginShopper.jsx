@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import {
   doSignInWithEmailAndPassword,
+  doSigninWithFacebook,
   doSigninWithGoogle,
   doSignOut,
 } from "../../firebase/auth";
-import { auth, db } from "../../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import logo from "../../assets/logos/logo_black.svg";
@@ -24,7 +23,7 @@ const LoginShopper = () => {
     setShowPassword(!showPassword);
   };
 
-  const login = async (e) => {
+  const loginEmailAndPassword = async (e) => {
     e.preventDefault();
     // Regular expression for validating email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,8 +35,16 @@ const LoginShopper = () => {
 
     try {
       const response = await doSignInWithEmailAndPassword(email, password);
-      navigate("/");
-      toast.success("Successfully signed in!");
+
+      console.log(response.role);
+
+      if (response.role == "shopper") {
+        navigate("/catalog");
+      } else if (response.role == "seller") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct seller account"
+        );
+      }
     } catch (error) {
       console.log(error);
 
@@ -45,20 +52,65 @@ const LoginShopper = () => {
         toast.error(
           "Invalid credentials. Please check your email and password."
         );
+      } else if (
+        error.code === "auth/account-exists-with-different-credential"
+      ) {
+        toast.error("Account exists with different credential");
       } else {
         toast.error("Error signing in. Please try again later.");
       }
     }
   };
 
-  const loginUsingGoogle = async () => {
+  const handleLoginWithGoogle = async () => {
     try {
       const result = await doSigninWithGoogle();
-      if (result.user) navigate("/");
-      toast.success("Successfully signed in with Google!");
+
+      if (!result) {
+        toast.error("Account not registered. Please sign up first.");
+        return;
+      }
+
+      if (result.role == "shopper") {
+        navigate("/catalog");
+      } else if (result.role == "seller") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct shopper account"
+        );
+      }
     } catch (error) {
-      toast.error("Error signing in with Google. Please try again later.");
-      console.error("Error signing in with Google:", error);
+      if (error.code === "auth/account-exists-with-different-credential") {
+        toast.error("Account exists with different credential");
+      } else {
+        toast.error("Error signing in with Google. Please try again later.");
+        console.error("Error signing in with Google:", error);
+      }
+    }
+  };
+
+  const loginUsingFacebook = async () => {
+    try {
+      const result = await doSigninWithFacebook();
+
+      if (!result) {
+        toast.error("Account not registered. Please sign up first.");
+        return;
+      }
+
+      if (result.role == "shopper") {
+        navigate("/catalog");
+      } else if (result.role == "seller") {
+        toast.error(
+          "Failed to log in. Please ensure you are using the correct shopper account"
+        );
+      }
+    } catch (error) {
+      if (error.code === "auth/account-exists-with-different-credential") {
+        toast.error("Account exists with different credential");
+      } else {
+        toast.error("Error signing in with Facebook. Please try again later.");
+        console.error("Error signing in with Facebook:", error);
+      }
     }
   };
 
@@ -79,7 +131,7 @@ const LoginShopper = () => {
           Welcome Back! Sign in to access your account to continue your shopping
           journey with us.
         </p>
-        <form onSubmit={login}>
+        <form onSubmit={loginEmailAndPassword}>
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -90,6 +142,7 @@ const LoginShopper = () => {
             <input
               type="email"
               id="email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
@@ -105,11 +158,12 @@ const LoginShopper = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
+              value={password}
               placeholder="Enter your password"
               onChange={(e) => setPassword(e.target.value)}
               className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
             />
-            {showPassword ? (
+            {!showPassword ? (
               <EyeSlashIcon
                 onClick={togglePasswordVisibility}
                 className="absolute right-0 w-5 h-5 ml-auto mr-1 text-gray-300 cursor-pointer bottom-3 hover:text-gray-500"
@@ -143,13 +197,16 @@ const LoginShopper = () => {
         <p className="mt-4 text-sm text-center">Or sign in using:</p>
         <section className="flex flex-col items-center gap-3 mt-3">
           <div
-            onClick={loginUsingGoogle}
+            onClick={handleLoginWithGoogle}
             className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
           >
             <img src={google} className="w-4 h-4" alt="google" />
             <span className="text-sm text-blue-600">Continue with Google</span>
           </div>
-          <div className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24">
+          <div
+            className="flex items-center justify-center w-3/4 gap-3 py-2 border rounded-md cursor-pointer min-w-24"
+            onClick={loginUsingFacebook}
+          >
             <img src={facebook} className="w-4 h-4" alt="facebook" />
             <span className="text-sm text-blue-600">
               Continue with Facebook

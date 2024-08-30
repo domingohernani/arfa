@@ -4,6 +4,7 @@ import { furnitures } from "./store/furnitures";
 import { orders } from "./store/orders";
 import { transactions } from "./store/transactions";
 import { chats } from "./store/chats";
+import { auth } from "./store/auth";
 
 export const useStore = create((...a) => ({
   ...furnitureBrowsing(...a),
@@ -11,4 +12,5 @@ export const useStore = create((...a) => ({
   ...orders(...a),
   ...transactions(...a),
   ...chats(...a),
+  ...auth(...a),
 }));
