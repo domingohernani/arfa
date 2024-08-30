@@ -41,12 +41,33 @@ const SignupSeller = () => {
   const handleSignUp = (e) => {
     e.preventDefault();
 
+    if (phoneNumber.length != 11) {
+      toast.error("Please provide a valid phone number");
+      return;
+    }
+
     if (password !== confirmPassword) {
       toast.error("Passwords do not match. Please try again.");
       return;
     }
 
-    registerButton(); // Call the register button function
+    const shopData = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+      businessName: businessName,
+      address: {
+        street: streetNumber,
+        barangay: barangay,
+        city: cityMunicipal,
+        province: province,
+      },
+      validId: ownerId, // This should be the file path or URL after uploading
+      businessPermit: businessPermit, // This should be the file path or URL after uploading
+    };
+
+    console.log(shopData);
   };
 
   // Log form values
@@ -92,12 +113,12 @@ const SignupSeller = () => {
               . Please read them carefully. We are GDPR compliant.
             </p>
           </div>
-
+          {/* 
           <img
             src={signupImg}
             alt="Signup illustration"
             className="lg:hidden"
-          />
+          /> */}
 
           <hr className="my-4 border-t border-gray-300 border-dashed" />
           <form onSubmit={handleSignUp}>
@@ -197,7 +218,15 @@ const SignupSeller = () => {
                     type="text"
                     id="phonenumber"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const numbers = "0123456789";
+                      if (
+                        input.split("").every((char) => numbers.includes(char))
+                      ) {
+                        setPhoneNumber(input);
+                      }
+                    }}
                     className="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                     placeholder="09123456789"
                     required
@@ -329,7 +358,7 @@ const SignupSeller = () => {
               </div>
             </section>
 
-            <section className="flex gap-3">
+            <section className="grid items-center justify-center grid-cols-2 gap-3 md:grid-cols-4">
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <label

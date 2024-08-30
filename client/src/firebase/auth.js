@@ -47,6 +47,7 @@ export const doSignInWithEmailAndPassword = async (email, password) => {
   return userData;
 };
 
+
 export const doSigninWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
 
