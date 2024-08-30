@@ -42,7 +42,7 @@ const SellerTransaction = () => {
         valueGetter: (params) => {
           const shopper = params.data.shopper;
           if (!params.data && !shopper) return "---";
-          return `${shopper.firstname} ${shopper.lastname}`;
+          return `${shopper.firstName} ${shopper.lastName}`;
         },
         cellRenderer: CustomHoverCopyCell,
       },
