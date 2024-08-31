@@ -10,8 +10,18 @@ import {
   sendPasswordResetEmail,
   updatePassword,
   sendEmailVerification,
+  setPersistence,
+  browserLocalPersistence,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+
+export const setAuthPersistence = async () => {
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (error) {
+    console.error("Error setting persistence:", error);
+  }
+};
 
 export const doCreateUserWithEmailAndPassword = async (
   email,
@@ -21,6 +31,7 @@ export const doCreateUserWithEmailAndPassword = async (
   lastName,
   phoneNumber
 ) => {
+  await setAuthPersistence();
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,
@@ -51,6 +62,7 @@ export const doCreateUserWithEmailAndPassword = async (
 };
 
 export const doSignInWithEmailAndPassword = async (email, password) => {
+  await setAuthPersistence();
   const userCredential = await signInWithEmailAndPassword(
     auth,
     email,
@@ -64,6 +76,7 @@ export const doSignInWithEmailAndPassword = async (email, password) => {
 };
 
 export const doSigninWithGoogle = async () => {
+  await setAuthPersistence();
   const provider = new GoogleAuthProvider();
 
   // Sign in with Google
@@ -91,6 +104,7 @@ export const doSigninWithGoogle = async () => {
 };
 
 export const doSignupWithGoogle = async (userRole) => {
+  await setAuthPersistence();
   const provider = new GoogleAuthProvider();
 
   // Sign in with Google
@@ -138,6 +152,8 @@ export const doSignupWithGoogle = async (userRole) => {
 };
 
 export const doSigninWithFacebook = async () => {
+  await setAuthPersistence();
+
   const provider = new FacebookAuthProvider();
 
   // Sign in with Facebook
@@ -166,6 +182,7 @@ export const doSigninWithFacebook = async () => {
 };
 
 export const doSignupWithFacebook = async (userRole) => {
+  await setAuthPersistence();
   const provider = new FacebookAuthProvider();
 
   // Sign in with Facebook
