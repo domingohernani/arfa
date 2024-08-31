@@ -122,7 +122,7 @@ const SellerTransaction = () => {
       const orders = await fetchOrdersByShopId(filter);
       setRowTransactionsData(orders);
     };
-    if (loggedUser) {
+    if (loggedUser && loggedUser.userId) {
       fetchOrders();
     }
   }, [loggedUser]);
