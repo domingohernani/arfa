@@ -84,6 +84,7 @@ const SellerInbox = () => {
                         <DisplayAvatar
                           url={chat.shopperInfo.profileUrl}
                           className="w-10 h-10"
+                          name={selectedChat.shopperInfo.firstName}
                         />
                         <div className="flex w-full text-sm font-semibold truncate text-arfablack">
                           {`${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`}

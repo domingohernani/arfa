@@ -13,7 +13,7 @@ const DisplayChat = memo(({ chat }) => {
       setLoading(true);
       try {
         const fetchedMessages = await fetchMessages(chat.id);
-        setMessages(fetchedMessages);        
+        setMessages(fetchedMessages);
       } catch (error) {
         console.error("Error fetching messages ", error);
         setLoading(false);
@@ -34,6 +34,7 @@ const DisplayChat = memo(({ chat }) => {
             <DisplayAvatar
               url={shopper.profileUrl}
               className="w-10 h-10"
+              name={chat.shopperInfo.firstName}
             ></DisplayAvatar>
           )}
           <div className="font-semibold">
@@ -49,13 +50,14 @@ const DisplayChat = memo(({ chat }) => {
             <div
               className={`flex ${
                 position ? "mr-auto" : "ml-auto"
-              } flex-row gap-2 space-x-2 space-x-reverse  w-fit max-w-80`}
+              } flex-row gap-2 space-x-2 space-x-reverse w-fit max-w-80`}
               key={index}
             >
               {position && (
                 <DisplayAvatar
                   url={shopper.profileUrl}
                   className={"w-8 h-8"}
+                  name={chat.shopperInfo.firstName}
                 ></DisplayAvatar>
               )}
 
