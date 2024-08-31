@@ -157,6 +157,7 @@ const SellerProducts = () => {
         let filter = [];
         filter.push(where("ownerId", "==", loggedUser.userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
+        setRowFurnituresData(furnitures)
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
