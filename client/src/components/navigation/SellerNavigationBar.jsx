@@ -45,7 +45,7 @@ function SellerNavigationBar() {
               loggedUser && loggedUser.profileUrl ? loggedUser.profileUrl : null
             }
             className={"w-8 h-8 mr-2"}
-            name={loggedUser.name}
+            name={loggedUser && loggedUser.name ? loggedUser.name : "User"} // Fallback to "User" if name is null
           />
           <span className="flex-1 text-sm font-medium truncate">
             {loggedUser && loggedUser.name}
