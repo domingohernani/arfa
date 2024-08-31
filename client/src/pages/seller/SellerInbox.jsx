@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import DisplayChat from "../../components/dynamic/DisplayChat";
 import { getLoggedShopInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
+import noResult from "../../assets/images/no-result.png";
 
 const SellerInbox = () => {
   const { loggedUser } = useStore();
@@ -42,7 +43,7 @@ const SellerInbox = () => {
   if (loading) return <div>loading...</div>;
 
   return (
-    <div className="flex flex-row m-5 bg-white h-5/6">
+    <div className="flex flex-row m-5 bg-white border h-5/6">
       <div className="flex flex-row flex-auto rounded-tl-xl">
         <div className="flex flex-col w-1/5">
           <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
@@ -84,6 +85,7 @@ const SellerInbox = () => {
                         <DisplayAvatar
                           url={chat.shopperInfo.profileUrl}
                           className="w-10 h-10"
+                          name={selectedChat.shopperInfo.firstName}
                         />
                         <div className="flex w-full text-sm font-semibold truncate text-arfablack">
                           {`${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`}
@@ -107,7 +109,16 @@ const SellerInbox = () => {
         </div>
 
         <div className="flex flex-col flex-1 w-3/5 border-l">
-          {selectedChat && <DisplayChat chat={selectedChat} />}
+          {chats.length > 0 ? (
+            selectedChat && <DisplayChat chat={selectedChat} />
+          ) : (
+            <div className="flex flex-col items-center gap-3 mt-28">
+              <img src={noResult} alt="No Result" className="w-64 h-auto" />
+              <p className="text-sm">
+                No messages available at the moment. Please check back later.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

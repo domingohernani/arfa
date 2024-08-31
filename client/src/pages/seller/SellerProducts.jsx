@@ -157,26 +157,14 @@ const SellerProducts = () => {
         let filter = [];
         filter.push(where("ownerId", "==", loggedUser.userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
-        setRowFurnituresData(furnitures);
-        console.log(furnitures);
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
     };
 
-    // const auth = getAuth();
-
-    if (loggedUser) {
+    if (loggedUser && loggedUser.userId) {
       fetchFurniture();
     }
-
-    // const unsubscribe = onAuthStateChanged(auth, (user) => {
-    //   if (user) {
-    //   } else {
-    //     console.log("No user is logged in");
-    //   }
-    // });
-    // return () => unsubscribe();
   }, [loggedUser]);
 
   return (

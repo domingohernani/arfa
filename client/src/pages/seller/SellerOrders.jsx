@@ -110,7 +110,7 @@ const SellerOrders = () => {
       setRowOrdersData(orders);
     };
 
-    if (loggedUser) {
+    if (loggedUser && loggedUser.userId) {
       fetchOrders();
     }
   }, [loggedUser]);
