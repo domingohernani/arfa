@@ -58,6 +58,55 @@ export const getChatsByShopId = async (shopId) => {
   }
 };
 
+export const getChatsByShopperId = async (shopperId) => {
+  if (!shopperId) return [];
+
+  try {
+    const q = query(
+      collection(db, "chats"),
+      where("shopperId", "==", shopperId)
+    );
+    const querySnapshot = await getDocs(q);
+    let chats = [];
+
+    for (let chatDoc of querySnapshot.docs) {
+      const chatData = { id: chatDoc.id, ...chatDoc.data() };
+
+      // Fetch shop data based on shopId
+      const shopId = chatData.shopId;
+
+      if (shopId) {
+        const shopRef = doc(db, "shops", shopId);
+        const shopDoc = await getDoc(shopRef);
+        if (shopDoc.exists()) {
+          const shopData = shopDoc.data();
+          chatData.shopInfo = shopData; // Add shop data to the chat
+
+          // Get the profile URL from Storage if available
+          if (shopData.profileUrl) {
+            const profileRef = ref(storage, shopData.profileUrl);
+            try {
+              const profileUrl = await getDownloadURL(profileRef);
+              chatData.shopInfo.profileUrl = profileUrl; // Add the full URL to shopInfo
+            } catch (error) {
+              console.error("Error getting profile image URL: ", error);
+            }
+          }
+        } else {
+          console.log(`No such shop for shopId: ${shopId}`);
+        }
+      }
+
+      chats.push(chatData);
+    }
+
+    return chats;
+  } catch (error) {
+    console.error("Error getting chats and shop data: ", error);
+    return [];
+  }
+};
+
 export const fetchMessages = async (chatId) => {
   try {
     const chatDocRef = doc(db, "chats", chatId);
