@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import DisplayChat from "../../components/dynamic/DisplayChat";
 import { getLoggedShopInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
+import noResult from "../../assets/images/no-result.png";
 
 const SellerInbox = () => {
   const { loggedUser } = useStore();
@@ -108,7 +109,16 @@ const SellerInbox = () => {
         </div>
 
         <div className="flex flex-col flex-1 w-3/5 border-l">
-          {selectedChat && <DisplayChat chat={selectedChat} />}
+          {chats.length > 0 ? (
+            selectedChat && <DisplayChat chat={selectedChat} />
+          ) : (
+            <div className="flex flex-col items-center gap-3 mt-28">
+              <img src={noResult} alt="No Result" className="w-64 h-auto" />
+              <p className="text-sm">
+                No messages available at the moment. Please check back later.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
