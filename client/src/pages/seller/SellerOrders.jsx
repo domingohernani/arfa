@@ -16,6 +16,7 @@ import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const SellerOrders = () => {
+  const { loggedUser } = useStore();
   const { rowOrdersData, setRowOrdersData } = useStore();
   const gridRef = useRef();
 
@@ -44,7 +45,7 @@ const SellerOrders = () => {
       valueGetter: (params) => {
         const shopper = params.data.shopper;
         if (!params.data && !shopper) return "---";
-        return `${shopper.firstname} ${shopper.lastname}`;
+        return `${shopper.firstName} ${shopper.lastName}`;
       },
       cellRenderer: CustomHoverCopyCell,
     },
@@ -100,12 +101,19 @@ const SellerOrders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const filter = [where("orderStatus", "!=", "Delivered")];
+      const filter = [
+        where("orderStatus", "!=", "Delivered"),
+        where("shopId", "==", loggedUser.userId),
+      ];
       const orders = await fetchOrdersByShopId(filter);
+
       setRowOrdersData(orders);
     };
-    fetchOrders();
-  }, []);
+
+    if (loggedUser) {
+      fetchOrders();
+    }
+  }, [loggedUser]);
 
   return (
     <>

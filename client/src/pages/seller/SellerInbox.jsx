@@ -5,8 +5,11 @@ import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
 import { Link } from "react-router-dom";
 import DisplayChat from "../../components/dynamic/DisplayChat";
+import { getLoggedShopInfo } from "../../firebase/user";
+import { useStore } from "../../stores/useStore";
 
 const SellerInbox = () => {
+  const { loggedUser } = useStore();
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
@@ -15,8 +18,9 @@ const SellerInbox = () => {
     const fetchChats = async () => {
       try {
         setLoading(true);
-        const fetchedChats = await getChatsByShopId("W54VKTXvFU9jCT2ItEkg");
+        const fetchedChats = await getChatsByShopId(loggedUser.userId);
         setChats(fetchedChats);
+
         setSelectedChat(fetchedChats[0]);
       } catch (error) {
         console.error("Error fetching chats:", error);
@@ -26,8 +30,10 @@ const SellerInbox = () => {
       }
     };
 
-    fetchChats();
-  }, []);
+    if (loggedUser) {
+      fetchChats();
+    }
+  }, [loggedUser]);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
@@ -80,7 +86,7 @@ const SellerInbox = () => {
                           className="w-10 h-10"
                         />
                         <div className="flex w-full text-sm font-semibold truncate text-arfablack">
-                          {`${chat.shopperInfo.firstname} ${chat.shopperInfo.lastname}`}
+                          {`${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`}
                         </div>
                       </div>
                       <div className="text-sm text-gray-500">

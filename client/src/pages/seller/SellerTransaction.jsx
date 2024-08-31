@@ -17,6 +17,7 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const SellerTransaction = () => {
   const { rowTransactionsData, setRowTransactionsData } = useStore();
+  const { loggedUser } = useStore();
   const gridRef = useRef();
 
   const columnDefs = useMemo(
@@ -42,7 +43,7 @@ const SellerTransaction = () => {
         valueGetter: (params) => {
           const shopper = params.data.shopper;
           if (!params.data && !shopper) return "---";
-          return `${shopper.firstname} ${shopper.lastname}`;
+          return `${shopper.firstName} ${shopper.lastName}`;
         },
         cellRenderer: CustomHoverCopyCell,
       },
@@ -116,12 +117,15 @@ const SellerTransaction = () => {
           "Refunded",
           "Unknown",
         ]),
+        where("shopId", "==", loggedUser.userId),
       ];
       const orders = await fetchOrdersByShopId(filter);
       setRowTransactionsData(orders);
     };
-    fetchOrders();
-  }, []);
+    if (loggedUser) {
+      fetchOrders();
+    }
+  }, [loggedUser]);
 
   return (
     <>

@@ -14,6 +14,8 @@ import { db } from "./firebase";
 const storage = getStorage();
 
 export const getChatsByShopId = async (shopId) => {
+  if (!shopId) return [];
+
   try {
     const q = query(collection(db, "chats"), where("shopId", "==", shopId));
     const querySnapshot = await getDocs(q);
@@ -52,6 +54,7 @@ export const getChatsByShopId = async (shopId) => {
     return chats;
   } catch (error) {
     console.error("Error getting chats and user data: ", error);
+    return [];
   }
 };
 

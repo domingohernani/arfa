@@ -13,7 +13,7 @@ const DisplayChat = memo(({ chat }) => {
       setLoading(true);
       try {
         const fetchedMessages = await fetchMessages(chat.id);
-        setMessages(fetchedMessages);
+        setMessages(fetchedMessages);        
       } catch (error) {
         console.error("Error fetching messages ", error);
         setLoading(false);
@@ -37,7 +37,7 @@ const DisplayChat = memo(({ chat }) => {
             ></DisplayAvatar>
           )}
           <div className="font-semibold">
-            {`${shopper.firstname} ${shopper.lastname}`}
+            {`${shopper.firstName} ${shopper.lastName}`}
           </div>
         </div>
       </div>

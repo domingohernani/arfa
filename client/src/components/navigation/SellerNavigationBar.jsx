@@ -41,10 +41,12 @@ function SellerNavigationBar() {
         </div>
         <div className="flex items-center w-48 md:w-full">
           <DisplayAvatar
-            url={loggedUser && loggedUser.profileUrl ? loggedUser.profileUrl : null}
+            url={
+              loggedUser && loggedUser.profileUrl ? loggedUser.profileUrl : null
+            }
             className={"w-8 h-8 mr-2"}
           />
-          <span className="flex-1 text-sm font-semibold truncate">
+          <span className="flex-1 text-sm font-medium truncate">
             {loggedUser && loggedUser.name}
           </span>
         </div>
