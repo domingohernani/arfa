@@ -56,7 +56,7 @@ const UserProfile = () => {
     <>
       <section className="px-4 md:px-8">
         <div className="">
-          <div className="font-semibold">Profile Information</div>
+          <div className="font-medium">Profile Information</div>
         </div>
         <form className="w-full px-8 py-5 mx-auto mt-5 border">
           <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
