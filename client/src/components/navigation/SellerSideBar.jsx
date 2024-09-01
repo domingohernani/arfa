@@ -1,15 +1,10 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { doSignOut } from "../../firebase/auth";
+import { useStore } from "../../stores/useStore";
 
 export const SellerSideBar = () => {
-  const logout = () => {
-    try {
-      doSignOut();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { logoutUser } = useStore();
 
   return (
     <aside className="top-0 left-0 z-10 h-screen w-fit">
@@ -206,6 +201,17 @@ export const SellerSideBar = () => {
             </NavLink>
           </li>
         </ul>
+        <div className="mt-10">
+          <button
+            className="text-black"
+            onClick={async () => {
+              await doSignOut();
+              logoutUser();
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </aside>
   );

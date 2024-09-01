@@ -1,0 +1,133 @@
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+  orderBy,
+} from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { db } from "./firebase";
+
+// Initialize Firebase Storage
+const storage = getStorage();
+
+export const getChatsByShopId = async (shopId) => {
+  if (!shopId) return [];
+
+  try {
+    const q = query(collection(db, "chats"), where("shopId", "==", shopId));
+    const querySnapshot = await getDocs(q);
+    let chats = [];
+
+    for (let chatDoc of querySnapshot.docs) {
+      const chatData = { id: chatDoc.id, ...chatDoc.data() };
+
+      // Fetch user data based on shopperId
+      const shopperId = chatData.shopperId;
+      if (shopperId) {
+        const userRef = doc(db, "users", shopperId);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          chatData.shopperInfo = userData; // Add user data to the chat
+
+          // Get the profile URL from Storage if available
+          if (userData.profileUrl && userData.profileUrl.includes("profile")) {
+            const profileRef = ref(storage, userData.profileUrl);
+            try {
+              const profileUrl = await getDownloadURL(profileRef);
+              chatData.shopperInfo.profileUrl = profileUrl; // Add the full URL to shopperInfo
+            } catch (error) {
+              console.error("Error getting profile image URL: ", error);
+            }
+          }
+        } else {
+          console.log(`No such user for shopperId: ${shopperId}`);
+        }
+      }
+
+      chats.push(chatData);
+    }
+
+    return chats;
+  } catch (error) {
+    console.error("Error getting chats and user data: ", error);
+    return [];
+  }
+};
+
+export const getChatsByShopperId = async (shopperId) => {
+  if (!shopperId) return [];
+
+  try {
+    const q = query(
+      collection(db, "chats"),
+      where("shopperId", "==", shopperId)
+    );
+    const querySnapshot = await getDocs(q);
+    let chats = [];
+
+    for (let chatDoc of querySnapshot.docs) {
+      const chatData = { id: chatDoc.id, ...chatDoc.data() };
+
+      // Fetch shop data based on shopId
+      const shopId = chatData.shopId;
+
+      if (shopId) {
+        const shopRef = doc(db, "shops", shopId);
+        const shopDoc = await getDoc(shopRef);
+        if (shopDoc.exists()) {
+          const shopData = shopDoc.data();
+          chatData.shopInfo = shopData; // Add shop data to the chat
+
+          // Get the profile URL from Storage if available
+          if (shopData.profileUrl) {
+            const profileRef = ref(storage, shopData.profileUrl);
+            try {
+              const profileUrl = await getDownloadURL(profileRef);
+              chatData.shopInfo.profileUrl = profileUrl; // Add the full URL to shopInfo
+            } catch (error) {
+              console.error("Error getting profile image URL: ", error);
+            }
+          }
+        } else {
+          console.log(`No such shop for shopId: ${shopId}`);
+        }
+      }
+
+      chats.push(chatData);
+    }
+
+    return chats;
+  } catch (error) {
+    console.error("Error getting chats and shop data: ", error);
+    return [];
+  }
+};
+
+export const fetchMessages = async (chatId) => {
+  try {
+    const chatDocRef = doc(db, "chats", chatId);
+
+    const messagesCollectionRef = collection(chatDocRef, "messages");
+
+    const messagesQuery = query(
+      messagesCollectionRef,
+      orderBy("timestamp", "asc")
+    );
+
+    const messagesSnapshot = await getDocs(messagesQuery);
+
+    const messages = messagesSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return messages;
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    return [];
+  }
+};

@@ -17,6 +17,7 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const SellerProducts = () => {
   const gridRef = useRef();
+  const { loggedUser } = useStore();
   const { rowFurnituresData, setRowFurnituresData } = useStore();
 
   const columnDefs = useMemo(
@@ -151,29 +152,21 @@ const SellerProducts = () => {
   }, []);
 
   useEffect(() => {
-    const fetchFurniture = async (userId) => {
+    const fetchFurniture = async () => {
       try {
         let filter = [];
-        filter.push(where("ownerId", "==", userId));
+        filter.push(where("ownerId", "==", loggedUser.userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
-        setRowFurnituresData(furnitures);
-        console.log(furnitures);
+        setRowFurnituresData(furnitures)
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
     };
 
-    const auth = getAuth();
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        fetchFurniture(user.uid);
-      } else {
-        console.log("No user is logged in");
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+    if (loggedUser && loggedUser.userId) {
+      fetchFurniture();
+    }
+  }, [loggedUser]);
 
   return (
     <>

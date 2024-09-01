@@ -17,6 +17,7 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const SellerTransaction = () => {
   const { rowTransactionsData, setRowTransactionsData } = useStore();
+  const { loggedUser } = useStore();
   const gridRef = useRef();
 
   const columnDefs = useMemo(
@@ -31,7 +32,7 @@ const SellerTransaction = () => {
       {
         headerName: "Date",
         // field: "shopper",
-        flex: 1,
+        flex: 2,
         filter: "agDateColumnFilter",
       },
       {
@@ -39,8 +40,12 @@ const SellerTransaction = () => {
         field: "shopper",
         flex: 2,
         filter: "agTextColumnFilter",
-        valueGetter: (params) =>
-          params.data.shopper ? params.data.shopper.email : "--",
+        valueGetter: (params) => {
+          const shopper = params.data.shopper;
+          if (!params.data && !shopper) return "---";
+          return `${shopper.firstName} ${shopper.lastName}`;
+        },
+        cellRenderer: CustomHoverCopyCell,
       },
       {
         headerName: "Location",
@@ -112,12 +117,15 @@ const SellerTransaction = () => {
           "Refunded",
           "Unknown",
         ]),
+        where("shopId", "==", loggedUser.userId),
       ];
       const orders = await fetchOrdersByShopId(filter);
       setRowTransactionsData(orders);
     };
-    fetchOrders();
-  }, []);
+    if (loggedUser && loggedUser.userId) {
+      fetchOrders();
+    }
+  }, [loggedUser]);
 
   return (
     <>
@@ -134,6 +142,7 @@ const SellerTransaction = () => {
           suppressRowClickSelection={true}
           pagination={true}
           paginationPageSize={10}
+          paginationPageSizeSelector={[10, 25, 50]}
           domLayout="normal"
           quickFilterText=""
         />

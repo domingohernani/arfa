@@ -40,68 +40,74 @@ const OrdersOverTime = () => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart
-        data={data}
-        margin={{ top: 50, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="month"
-          tick={{
-            fontFamily: "Raleway, sans-serif",
-            fontSize: "0.875rem", // equivalent to 'font-sm'
-            fill: "#000000",
-          }}
-        />
-        <YAxis
-          tick={{
-            fontFamily: "Raleway, sans-serif",
-            fontSize: "0.875rem", // equivalent to 'font-sm'
-            fill: "#000000",
-          }}
-        />
-        <Tooltip
-          contentStyle={{
-            fontFamily: "Raleway, sans-serif",
-            fontSize: "0.875rem", // equivalent to 'font-sm'
-            color: "#000000",
-          }}
-          labelStyle={{
-            fontFamily: "Raleway, sans-serif",
-            fontSize: "0.875rem", // equivalent to 'font-sm'
-            color: "#000000",
-          }}
-        />
-        <Legend
-          onClick={handleLegendClick}
-          wrapperStyle={{
-            fontFamily: "Raleway, sans-serif",
-            fontSize: "0.875rem", // equivalent to 'font-sm'
-          }}
-          verticalAlign="top"
-          formatter={(value) => (lineStatus[value] ? value : "---")}
-        />
-        <Line
-          type="monotone"
-          dataKey="2023"
-          stroke="rgba(255, 99, 132, 1)"
-          strokeWidth={2}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6 }}
-          opacity={lineStatus["2023"] ? 1 : 0.2}
-        />
-        <Line
-          type="monotone"
-          dataKey="2024"
-          stroke="rgba(75, 192, 192, 1)"
-          strokeWidth={2}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6 }}
-          opacity={lineStatus["2024"] ? 1 : 0.2}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <>
+      <div className="absolute">
+        <h3 className="text-base font-semibold">Yearly Orders Comparison</h3>
+      </div>
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart
+          data={data}
+          margin={{ top: 50, right: 40, left: 0, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="month"
+            tick={{
+              fontFamily: "Raleway, sans-serif",
+              fontSize: "0.875rem",
+              fill: "#000000",
+            }}
+          />
+          <YAxis
+            tick={{
+              fontFamily: "Raleway, sans-serif",
+              fontSize: "0.875rem",
+              fill: "#000000",
+            }}
+          />
+          <Tooltip
+            contentStyle={{
+              fontFamily: "Raleway, sans-serif",
+              fontSize: "0.875rem",
+              color: "#000000",
+            }}
+            labelStyle={{
+              fontFamily: "Raleway, sans-serif",
+              fontSize: "0.875rem",
+              color: "#000000",
+            }}
+          />
+          <Legend
+            onClick={handleLegendClick}
+            wrapperStyle={{
+              fontFamily: "Raleway, sans-serif",
+              fontSize: "0.875rem",
+            }}
+            verticalAlign="top"
+            align="right"
+            formatter={(value) => (lineStatus[value] ? value : "---")}
+          />
+          <Line
+            type="monotone"
+            dataKey="2023"
+            stroke="rgba(255, 99, 132, 1)"
+            strokeWidth={2}
+            dot={{ r: 4 }}
+            activeDot={{ r: 6 }}
+            opacity={lineStatus["2023"] ? 1 : 0.2}
+          />
+          <Line
+            type="monotone"
+            dataKey="2024"
+            stroke="rgba(75, 192, 192, 1)"
+            strokeWidth={2}
+            dot={{ r: 4 }}
+            activeDot={{ r: 6 }}
+            opacity={lineStatus["2024"] ? 1 : 0.2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
   );
 };
 

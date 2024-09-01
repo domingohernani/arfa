@@ -33,3 +33,6 @@ Order status flow (?? on 8 and 9)
 8. Returned: The customer returned the order, and it is being processed by the seller. ??
 9. Refunded: The seller has received the returned order and refunded the customer. ??
 
+!!!! Important
+After makapag makapag order ni shopper kay seller, magkakaroon na siya ng document sa chats collection.
+In this way, makikita ni seller si shopper sa inbox. So that seller can contact shopper anytime
