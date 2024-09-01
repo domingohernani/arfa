@@ -1,4 +1,11 @@
 import React from "react";
+import { Tooltip } from "flowbite-react";
+import {
+  QuestionMarkCircleIcon,
+  PhoneIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/24/solid";
 
 const UserProfile = () => {
   return (
@@ -6,177 +13,342 @@ const UserProfile = () => {
       <section className="px-4 md:px-8">
         <div className="">
           <div className="font-semibold">Profile Information</div>
-          <div>
-            Update your personal details to keep your profile up to date
-          </div>
         </div>
-        <form className="w-full max-w-md px-8 py-5 mx-auto mt-5 border">
-          <div className="grid md:grid-cols-2 md:gap-6">
-            <div className="relative z-0 w-full mb-5 group">
+        <form className="w-full px-8 py-5 mx-auto mt-5 border">
+          <section className="flex items-end gap-3">
+            <div className="w-96 h-96">
+              <img
+                src="https://plus.unsplash.com/premium_photo-1673448391005-d65e815bd026?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGhvdG98ZW58MHx8MHx8fDA%3D"
+                alt="profile image"
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <section className="flex-1 gap-3 ">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="ownerid"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Upload Profile Picture
+                </label>
+                <Tooltip content="Accepted formats: JPG, PNG, or GIF Only">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <input
+                type="file"
+                id="ownerid"
+                className="block w-full pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen"
+                required
+              />
+            </section>
+          </section>
+          <section className="flex gap-3 mt-3">
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Firstname
+                </label>
+                <Tooltip content="Enter your first name as it appears on official documents">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="password"
+                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  required
+                />
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="confirmpassword"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Lastname
+                </label>
+                <Tooltip content="Enter your last name as it appears on official documents">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="confirmpassword"
+                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  required
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="grid items-center justify-center grid-cols-2 gap-3 mb-3 sm:grid-cols-3">
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="phonenumber"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Phone number
+                </label>
+                <Tooltip content="Provide a contact number where customers can reach you">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <div className="flex">
+                <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-gray-300 border-e-0 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                  <PhoneIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                </span>
+                <input
+                  type="text"
+                  id="phonenumber"
+                  // value={phoneNumber}
+                  // onChange={(e) => {
+                  //   const input = e.target.value;
+                  //   const numbers = "0123456789";
+                  //   if (
+                  //     input.split("").every((char) => numbers.includes(char))
+                  //   ) {
+                  //     setPhoneNumber(input);
+                  //   }
+                  // }}
+                  className="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                  placeholder="09123456789"
+                  required
+                  maxLength={11}
+                />
+              </div>
+            </div>
+
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="region"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Region
+                </label>
+                <Tooltip content="Enter your Region">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <select
+                name="region"
+                id="region"
+                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                // onChange={async (e) => {
+                //   const province = await provinces(e.target.value);
+                //   setProvince(province);
+                //   setSelectedRegion(
+                //     e.target.options[e.target.selectedIndex].text
+                //   );
+
+                //   setCityMunicipal([]);
+                //   setBarangay([]);
+                //   setStreetNumber("");
+                // }}
+              >
+                <option
+                  value=""
+                  // onClick={() => {
+                  //   setCityMunicipal([]);
+                  //   setBarangay([]);
+                  //   setStreetNumber("");
+                  // }}
+                >
+                  Select Region
+                </option>
+                {/* {region.map((reg) => {
+                    return (
+                      <option value={reg.region_code}>{reg.region_name}</option>
+                    );
+                  })} */}
+              </select>
+            </div>
+
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="province"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Province
+                </label>
+                <Tooltip content="Enter your Province">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <select
+                name="province"
+                id="province"
+                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                // onChange={async (e) => {
+                //   const cityMunicipal = await cities(e.target.value);
+                //   setCityMunicipal(cityMunicipal);
+                //   setSelectedProvince(
+                //     e.target.options[e.target.selectedIndex].text
+                //   );
+
+                //   setBarangay([]);
+                //   setStreetNumber("");
+                // }}
+              >
+                <option
+                // value=""
+                // onClick={() => {
+                //   setBarangay([]);
+                //   setStreetNumber("");
+                // }}
+                >
+                  Select Province
+                </option>
+                {/* {province.map((reg) => {
+                    return (
+                      <option value={reg.province_code}>
+                        {reg.province_name}
+                      </option>
+                    );
+                  })} */}
+              </select>
+            </div>
+
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="citymunicipal"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  City/Municipal
+                </label>
+                <Tooltip content="Enter your City or Municipal">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <select
+                name="citymunicipal"
+                id="citymunicipal"
+                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                // onChange={async (e) => {
+                //   const barangay = await barangays(e.target.value);
+                //   setBarangay(barangay);
+                //   setSelectedCityMunicipal(
+                //     e.target.options[e.target.selectedIndex].text
+                //   );
+
+                //   setStreetNumber("");
+                // }}
+              >
+                <option
+                  value=""
+                  // onClick={() => {
+                  //   setStreetNumber("");
+                  // }}
+                >
+                  Select City/Municipal
+                </option>
+                {/* {cityMunicipal.map((reg) => {
+                    return (
+                      <option value={reg.city_code}>{reg.city_name}</option>
+                    );
+                  })} */}
+              </select>
+            </div>
+
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="barangay"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Barangay
+                </label>
+                <Tooltip content="Enter your Barangay">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
+              <select
+                name="barangay"
+                id="barangay"
+                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                // onChange={async (e) => {
+                //   setSelectedBarangay(
+                //     e.target.options[e.target.selectedIndex].text
+                //   );
+                //   setStreetNumber("");
+                // }}
+              >
+                <option
+                  value=""
+                  // onClick={() => {
+                  //   setStreetNumber("");
+                  // }}
+                >
+                  Select Barangay
+                </option>
+                {/* {barangay.map((reg) => {
+                    return (
+                      <option value={reg.brgy_code}>{reg.brgy_name}</option>
+                    );
+                  })} */}
+              </select>
+            </div>
+
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="streetnumber"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Street
+                </label>
+                <Tooltip content="Enter your street number">
+                  <QuestionMarkCircleIcon
+                    className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </div>
               <input
                 type="text"
-                name="floating_first_name"
-                id="floating_first_name"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-                placeholder=" "
+                id="streetnumber"
+                // value={streetNumber}
+                // onChange={(e) => setStreetNumber(e.target.value)}
+                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                 required
               />
-              <label
-                htmlFor="floating_first_name"
-                className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                First name
-              </label>
             </div>
-            <div className="relative z-0 w-full mb-5 group">
-              <input
-                type="text"
-                name="floating_last_name"
-                id="floating_last_name"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="floating_last_name"
-                className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Last name
-              </label>
-            </div>
-          </div>
-          <div className="relative z-0 w-full mb-5 group">
-            <input
-              type="email"
-              name="floating_email"
-              id="floating_email"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-              placeholder=" "
-              required
-            />
-            <label
-              htmlFor="floating_email"
-              className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Email address
-            </label>
-          </div>
-          <div className="grid md:grid-cols-2 md:gap-6">
-            <div className="relative z-0 w-full mb-5 group">
-              <input
-                type="text"
-                name="floating_phone_number"
-                id="floating_phone_number"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="floating_phone_number"
-                className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Phone Number
-              </label>
-            </div>
-            <div className="relative z-0 w-full mb-5 group">
-              <input
-                type="date"
-                name="floating_date_of_birth"
-                id="floating_date_of_birth"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="floating_date_of_birth"
-                className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Date of Birth
-              </label>
-            </div>
-          </div>
-          <div className="relative z-0 w-full mb-5 group">
-            <input
-              type="password"
-              name="repeat_password"
-              id="floating_repeat_password"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-              placeholder=" "
-              required
-            />
-            <label
-              htmlFor="floating_repeat_password"
-              className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Confirm password
-            </label>
-          </div>
-          <div className="relative z-0 w-full mb-5 group">
-            <input
-              type="text"
-              name="floating_street"
-              id="floating_street"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-              placeholder=" "
-              required
-            />
-            <label
-              htmlFor="floating_street"
-              className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Street Address
-            </label>
-          </div>
-          <div className="grid md:grid-cols-2 md:gap-6">
-            <div className="relative z-0 w-full mb-5 group">
-              <input
-                type="text"
-                name="floating_city"
-                id="floating_city"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="floating_city"
-                className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                City
-              </label>
-            </div>
-            <div className="relative z-0 w-full mb-5 group">
-              <input
-                type="text"
-                name="floating_state"
-                id="floating_state"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="floating_state"
-                className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                State/Province
-              </label>
-            </div>
-          </div>
-          <div className="relative z-0 w-full mb-5 group">
-            <input
-              type="text"
-              name="floating_postal_code"
-              id="floating_postal_code"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-arfablack appearance-none dark:text-white dark:border-gray-600 dark:focus:border-arfagreen focus:outline-none focus:ring-0 focus:border-arfagreen peer"
-              placeholder=" "
-              required
-            />
-            <label
-              htmlFor="floating_postal_code"
-              className="peer-focus:font-medium focus:border-transparent peer-focus:text-arfagreen absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Postal Code
-            </label>
-          </div>
+          </section>
+
           <button
             type="submit"
             class="text-white bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
