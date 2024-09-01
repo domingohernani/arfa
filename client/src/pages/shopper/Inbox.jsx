@@ -27,7 +27,6 @@ const Inbox = () => {
         const fetchedChats = await getChatsByShopperId(user.id);
         setChats(fetchedChats);
         setSelectedChat(fetchedChats[0]);
-        
       } catch (error) {
         console.error("Error fetching chats:", error);
         setLoading(false);
@@ -46,7 +45,7 @@ const Inbox = () => {
   if (loading) return <div>loading...</div>;
 
   return (
-    <div className="flex flex-row m-5 bg-white border h-5/6">
+    <div className="flex flex-row m-5 border">
       <div className="flex flex-row flex-auto rounded-tl-xl">
         <div className="flex flex-col w-1/5">
           <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
@@ -90,7 +89,7 @@ const Inbox = () => {
                           className="w-10 h-10"
                           name={chat.shopInfo.name}
                         />
-                        <div className="flex w-full text-sm font-semibold truncate text-arfablack">
+                        <div className="flex w-full text-sm font-medium truncate text-arfablack">
                           {chat.shopInfo.name}
                         </div>
                       </div>

@@ -12,7 +12,7 @@ export const ProfileSideBar = () => {
   };
 
   return (
-    <aside class="top-0 left-0 z-10 w-fit h-screen">
+    <aside class="top-0 left-0 z-10 w-fit h-fit">
       <div class="h-full px-3 py-4 overflow-y-auto">
         <ul class="space-y-2 text-sm">
           <li>
