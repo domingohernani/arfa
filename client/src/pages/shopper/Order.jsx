@@ -8,7 +8,7 @@ const Order = () => {
   return (
     <section class="relative">
       <div class="w-full mx-auto px-4 md:px-8">
-        <div class="font-semibold lead-10 text-black mb-9">Order History</div>
+        <div class="font-medium lead-10 text-black mb-9">Order History</div>
         <div class="flex sm:flex-col lg:flex-row sm:items-center justify-between">
           <ul class="flex max-sm:flex-col sm:items-center gap-x-14 gap-y-3">
             <li class="text-sm leading-8 cursor-pointer text-arfagreen transition-all duration-500 hover:text-arfagreen">

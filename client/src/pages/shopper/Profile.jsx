@@ -12,7 +12,10 @@ const Profile = () => {
       </section>
       <section className="flex mb-10">
         <ProfileSideBar />
-        <section className="flex-1 mt-5 border-l">
+        <section
+          className="flex-1 mt-5 border-l h-min"
+          // style={{ height: "10%" }}
+        >
           <Outlet />
         </section>
       </section>

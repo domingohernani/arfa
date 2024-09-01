@@ -4,13 +4,21 @@ import { getDownloadURL, listAll, ref } from "firebase/storage";
 
 // ex; images/adf4j442342j42h/image.jpg
 export const getImageDownloadUrl = async (path) => {
-  try {
-    const storageRef = ref(storage, path);
-    const url = await getDownloadURL(storageRef);
-    return url;
-  } catch (error) {
-    console.error("Error getting download URL:", error);
-    return null;
+  if (
+    path.includes("images") ||
+    path.includes("profiles") ||
+    path.includes("files")
+  ) {
+    try {
+      const storageRef = ref(storage, path);
+      const url = await getDownloadURL(storageRef);
+      return url;
+    } catch (error) {
+      console.error("Error getting download URL:", error);
+      return null;
+    }
+  } else {
+    return path;
   }
 };
 

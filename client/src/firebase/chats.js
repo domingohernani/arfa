@@ -6,9 +6,11 @@ import {
   doc,
   getDoc,
   orderBy,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { db } from "./firebase";
+import { auth, db } from "./firebase";
 
 // Initialize Firebase Storage
 const storage = getStorage();
@@ -83,14 +85,16 @@ export const getChatsByShopperId = async (shopperId) => {
           chatData.shopInfo = shopData; // Add shop data to the chat
 
           // Get the profile URL from Storage if available
-          if (shopData.profileUrl) {
-            const profileRef = ref(storage, shopData.profileUrl);
+          if (shopData.logo) {
+            const logoRef = ref(storage, shopData.logo);
             try {
-              const profileUrl = await getDownloadURL(profileRef);
-              chatData.shopInfo.profileUrl = profileUrl; // Add the full URL to shopInfo
+              const logo = await getDownloadURL(logoRef);
+              chatData.shopInfo.logo = logo; // Add the full URL to shopInfo
             } catch (error) {
               console.error("Error getting profile image URL: ", error);
             }
+          } else {
+            chatData.shopInfo.logo = null;
           }
         } else {
           console.log(`No such shop for shopId: ${shopId}`);
@@ -129,5 +133,25 @@ export const fetchMessages = async (chatId) => {
   } catch (error) {
     console.error("Error fetching messages:", error);
     return [];
+  }
+};
+
+export const sendMessage = async (chatId, text) => {
+  try {
+    // Reference to the messages subcollection within a specific chat document
+    const subcollectionRef = collection(db, "chats", chatId, "messages");
+
+    // Adding a new message to the subcollection
+    const newMessageRef = await addDoc(subcollectionRef, {
+      text: text, // The message text
+      timestamp: serverTimestamp(), // Server timestamp
+      senderId: auth.currentUser.uid, // Sender's ID (from Firebase Auth)
+    });
+
+    console.log("Message added with ID:", newMessageRef.id);
+    return newMessageRef.id; // Returning the ID of the new document
+  } catch (error) {
+    console.error("Error adding message:", error);
+    throw error;
   }
 };
