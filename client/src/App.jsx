@@ -30,6 +30,9 @@ import NotFound from "./pages/NotFound";
 import SignupSeller from "./pages/auth/SignupSeller";
 import LoginSeller from "./pages/auth/LoginSeller";
 import ShowMultiModel from "./components/ShowMultiModel";
+import DisplayChat from "./components/dynamic/DisplayChat";
+import SelectChat from "./components/SelectChat";
+import SellerProtectedRoutes from "./utils/SellerProtectedRoutes";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -85,13 +88,15 @@ function App() {
           </Route>
 
           {/* Private routes: exclusive to seller */}
-          <Route element={<SellerLayout />} path="/seller-page">
-            <Route element={<SellerDashboard />} path="dashboard" />
-            <Route element={<SellerOrders />} path="order" />
-            <Route element={<SellerProducts />} path="product" />
-            <Route element={<SellerTransaction />} path="transaction" />
-            <Route element={<SellerReports />} path="report" />
-            <Route element={<SellerInbox />} path="inbox" />
+          <Route element={<SellerProtectedRoutes />}>
+            <Route element={<SellerLayout />} path="/seller-page">
+              <Route element={<SellerDashboard />} path="dashboard" />
+              <Route element={<SellerOrders />} path="order" />
+              <Route element={<SellerProducts />} path="product" />
+              <Route element={<SellerTransaction />} path="transaction" />
+              <Route element={<SellerReports />} path="report" />
+              <Route element={<SellerInbox />} path="inbox" />
+            </Route>
           </Route>
 
           {/* Catch-all route */}

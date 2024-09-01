@@ -57,23 +57,11 @@ export const SellerDashboard = () => {
           <ShoppingCartIcon className="w-10"></ShoppingCartIcon>
         </div>
       </section>
-      <section className="flex flex-col gap-5 pb-5 text-gray-500 md:flex-row ">
-        <div className="p-5 bg-white rounded-md shadow-sm basis-3/5">
+      <section className="flex flex-col gap-5 pb-5 md:flex-row ">
+        <div className="p-5 bg-white rounded-md shadow-sm basis-4/6">
           <OrdersOverTime />
         </div>
-        <div className="flex flex-col self-stretch w-full gap-2 px-5 py-3 bg-white rounded-md shadow-sm basis-2/5 justify-evenly">
-          <div className="flex flex-col gap-5 ">
-            <h3 className="text-base font-medium">Weekly Sales</h3>
-            <div className="flex flex-col">
-              <span className="text-xl font-semibold">1,259</span>
-              <span className="text-xs">Items Sold</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-semibold">₱12,546</span>
-              <span className="text-xs">Revenue</span>
-            </div>
-          </div>
-          <hr className="border-t border-dashed " />
+        <div className="flex flex-col self-stretch w-full gap-2 py-5 bg-white rounded-md shadow-sm basis-1/3 justify-evenly">
           <WeeklySale />
         </div>
       </section>
