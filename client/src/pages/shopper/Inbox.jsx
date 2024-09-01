@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import search from "../../assets/icons/search.svg";
-import { getChatsByShopId, getChatsByShopperId } from "../../firebase/chats";
+import {
+  getChatsByShopId,
+  getChatsByShopperId,
+  sendMessage,
+} from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
 import { Link } from "react-router-dom";
@@ -23,9 +27,8 @@ const Inbox = () => {
         const user = await getUserInfo();
         const fetchedChats = await getChatsByShopperId(user.id);
         setChats(fetchedChats);
-        console.log("Hello ", fetchedChats);
-        
         setSelectedChat(fetchedChats[0]);
+        
       } catch (error) {
         console.error("Error fetching chats:", error);
         setLoading(false);
@@ -68,8 +71,6 @@ const Inbox = () => {
           <div className="flex-auto mt-5 overflow-y-auto">
             {chats.map((chat, index) => {
               const isActive = chat.id === selectedChat.id;
-              console.log(chat);
-
               return (
                 <section
                   className="cursor-pointer"
@@ -113,7 +114,7 @@ const Inbox = () => {
 
         <div className="flex flex-col flex-1 w-3/5 border-l">
           {chats.length > 0 ? (
-            selectedChat && <DisplayShopperChats chat={selectedChat} />
+            selectedChat && <DisplayChat chat={selectedChat} />
           ) : (
             <div className="flex flex-col items-center gap-3 mt-28">
               <img src={noResult} alt="No Result" className="w-64 h-auto" />
