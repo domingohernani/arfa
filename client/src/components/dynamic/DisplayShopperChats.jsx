@@ -7,7 +7,7 @@ const DisplayShopperChats = memo(({ chat }) => {
   // 1.
   const seller = chat.shopInfo;
 
-  console.log(seller);
+  console.log("Seller ", seller);
 
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ const DisplayShopperChats = memo(({ chat }) => {
         <div className="flex flex-row items-center gap-3 space-y-1">
           {/* {seller.profileUrl && ( */}
           <DisplayAvatar
-            url={""}
+            url={seller.logo}
             className="w-10 h-10"
             name={seller.name}
           ></DisplayAvatar>
@@ -57,9 +57,9 @@ const DisplayShopperChats = memo(({ chat }) => {
             >
               {position && (
                 <DisplayAvatar
-                  url={""}
+                  url={seller.logo}
                   className={"w-8 h-8"}
-                  name={"Testing"}
+                  name={seller.name}
                 ></DisplayAvatar>
               )}
 

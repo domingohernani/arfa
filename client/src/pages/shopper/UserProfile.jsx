@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tooltip } from "flowbite-react";
 import {
   QuestionMarkCircleIcon,
@@ -6,8 +6,52 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/react/24/solid";
+import { getUserInfo } from "../../firebase/user";
+import { getImageDownloadUrl } from "../../firebase/photos";
 
 const UserProfile = () => {
+  const [loading, setLoading] = useState(false);
+
+  // States for form fields
+  const [profileUrl, setProfileUrl] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [streetNumber, setStreetNumber] = useState("");
+  const [barangay, setBarangay] = useState([]);
+  const [cityMunicipal, setCityMunicipal] = useState([]);
+  const [province, setProvince] = useState([]);
+  const [region, setRegion] = useState([]);
+
+  useEffect(() => {
+    const fetchShopper = async () => {
+      try {
+        setLoading(true);
+        const user = await getUserInfo();
+        console.log(user);
+        setFirstName(user.firstName);
+        setLastName(user.lastName);
+        setPhoneNumber(user.phoneNumber);
+        setStreetNumber(user.location.street);
+        setBarangay(user.location.barangay);
+        setCityMunicipal(user.location.city);
+        setProvince(user.location.province);
+        setRegion(user.location.region);
+
+        const profileUrl = await getImageDownloadUrl(user.profileUrl);
+        setProfileUrl(profileUrl);
+      } catch (error) {
+        console.error("Error fetching logged user ", error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchShopper();
+  }, []);
+
+  if (loading) return <div>Loadingg..</div>;
+
   return (
     <>
       <section className="px-4 md:px-8">
@@ -15,15 +59,15 @@ const UserProfile = () => {
           <div className="font-semibold">Profile Information</div>
         </div>
         <form className="w-full px-8 py-5 mx-auto mt-5 border">
-          <section className="flex items-end gap-3">
+          <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
             <div className="w-96 h-96">
               <img
-                src="https://plus.unsplash.com/premium_photo-1673448391005-d65e815bd026?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGhvdG98ZW58MHx8MHx8fDA%3D"
+                src={profileUrl}
                 alt="profile image"
                 className="object-cover w-full h-full"
               />
             </div>
-            <section className="flex-1 gap-3 ">
+            <section className="w-full gap-3 md:flex-1">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="ownerid"
@@ -68,6 +112,8 @@ const UserProfile = () => {
                   id="password"
                   className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                   required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                 />
               </div>
             </div>
@@ -92,6 +138,8 @@ const UserProfile = () => {
                   id="confirmpassword"
                   className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                   required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </div>
             </div>
@@ -120,16 +168,16 @@ const UserProfile = () => {
                 <input
                   type="text"
                   id="phonenumber"
-                  // value={phoneNumber}
-                  // onChange={(e) => {
-                  //   const input = e.target.value;
-                  //   const numbers = "0123456789";
-                  //   if (
-                  //     input.split("").every((char) => numbers.includes(char))
-                  //   ) {
-                  //     setPhoneNumber(input);
-                  //   }
-                  // }}
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    const numbers = "0123456789";
+                    if (
+                      input.split("").every((char) => numbers.includes(char))
+                    ) {
+                      setPhoneNumber(input);
+                    }
+                  }}
                   className="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                   placeholder="09123456789"
                   required
@@ -341,8 +389,8 @@ const UserProfile = () => {
               <input
                 type="text"
                 id="streetnumber"
-                // value={streetNumber}
-                // onChange={(e) => setStreetNumber(e.target.value)}
+                value={streetNumber}
+                onChange={(e) => setStreetNumber(e.target.value)}
                 className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                 required
               />
@@ -351,7 +399,7 @@ const UserProfile = () => {
 
           <button
             type="submit"
-            class="text-white bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+            className="text-white bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
           >
             Save
           </button>

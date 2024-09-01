@@ -6,14 +6,14 @@ const DisplayAvatar = ({ url, className, name }) => {
       {url === null || url === "" ? (
         <div>
           <div
-            className={`object-cover ${className} text-sm font-semibold rounded-full bg-gray-400 text-white flex justify-center items-center`}
+            className={`object-cover ${className} text-sm font-semibold border rounded-full bg-gray-400 text-white flex justify-center items-center`}
           >
             {name[0]}
           </div>
         </div>
       ) : (
         <img
-          className={`object-cover ${className} rounded-full `}
+          className={`object-cover ${className} rounded-full border`}
           src={url}
           alt="img"
         />
