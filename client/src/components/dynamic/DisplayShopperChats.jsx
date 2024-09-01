@@ -4,7 +4,11 @@ import DisplayAvatar from "./DisplayAvatar";
 import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 
 const DisplayShopperChats = memo(({ chat }) => {
-  const shopper = chat.shopperInfo;
+  // 1.
+  const seller = chat.shopInfo;
+
+  console.log(seller);
+
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -30,23 +34,20 @@ const DisplayShopperChats = memo(({ chat }) => {
     <>
       <div className="flex flex-row items-center justify-between flex-none p-5 border-b">
         <div className="flex flex-row items-center gap-3 space-y-1">
-          {/* {shopper.profileUrl && (
-            <DisplayAvatar
-              url={shopper.profileUrl}
-              className="w-10 h-10"
-              name={chat.shopperInfo.firstName}
-            ></DisplayAvatar>
-          )}
-          <div className="font-semibold">
-            {`${shopper.firstName} ${shopper.lastName}`}
-          </div> */}
+          {/* {seller.profileUrl && ( */}
+          <DisplayAvatar
+            url={""}
+            className="w-10 h-10"
+            name={seller.name}
+          ></DisplayAvatar>
+          {/* )} */}
+          <div className="font-semibold">{seller.name}</div>
         </div>
       </div>
 
       <div className="flex flex-col flex-auto gap-3 p-5 overflow-y-auto">
         {messages.map((message, index) => {
-          // const position = message.senderId === shopper.id;
-          const position = true;
+          const position = message.senderId === seller.userId;
           return (
             <div
               className={`flex ${
