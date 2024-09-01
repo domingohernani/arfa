@@ -34,7 +34,7 @@ export const getChatsByShopId = async (shopId) => {
           chatData.shopperInfo = userData; // Add user data to the chat
 
           // Get the profile URL from Storage if available
-          if (userData.profileUrl) {
+          if (userData.profileUrl && userData.profileUrl.includes("profile")) {
             const profileRef = ref(storage, userData.profileUrl);
             try {
               const profileUrl = await getDownloadURL(profileRef);
