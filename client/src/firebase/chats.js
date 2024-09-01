@@ -6,9 +6,11 @@ import {
   doc,
   getDoc,
   orderBy,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { db } from "./firebase";
+import { auth, db } from "./firebase";
 
 // Initialize Firebase Storage
 const storage = getStorage();
@@ -134,6 +136,22 @@ export const fetchMessages = async (chatId) => {
   }
 };
 
-export const sendMessage = async (id, text) => {
-  console.log("id", id);
+export const sendMessage = async (chatId, text) => {
+  try {
+    // Reference to the messages subcollection within a specific chat document
+    const subcollectionRef = collection(db, "chats", chatId, "messages");
+
+    // Adding a new message to the subcollection
+    const newMessageRef = await addDoc(subcollectionRef, {
+      text: text, // The message text
+      timestamp: serverTimestamp(), // Server timestamp
+      senderId: auth.currentUser.uid, // Sender's ID (from Firebase Auth)
+    });
+
+    console.log("Message added with ID:", newMessageRef.id);
+    return newMessageRef.id; // Returning the ID of the new document
+  } catch (error) {
+    console.error("Error adding message:", error);
+    throw error;
+  }
 };
