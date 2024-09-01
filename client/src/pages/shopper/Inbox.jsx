@@ -12,7 +12,6 @@ import DisplayChat from "../../components/dynamic/DisplayChat";
 import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
-import DisplayShopperChats from "../../components/dynamic/DisplayShopperChats";
 
 const Inbox = () => {
   const [chats, setChats] = useState([]);
