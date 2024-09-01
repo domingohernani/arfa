@@ -4,10 +4,13 @@ import DisplayAvatar from "./DisplayAvatar";
 import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 
 const DisplayShopperChats = memo(({ chat }) => {
-  // 1.
+  const [message, setMessage] = useState("");
   const seller = chat.shopInfo;
 
-  console.log("Seller ", seller);
+  const handleSendingMessage = async () => {
+    await sendMessage(message);
+    if (message.length == 0) return;
+  };
 
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);

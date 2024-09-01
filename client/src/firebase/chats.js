@@ -91,6 +91,8 @@ export const getChatsByShopperId = async (shopperId) => {
             } catch (error) {
               console.error("Error getting profile image URL: ", error);
             }
+          } else {
+            chatData.shopInfo.logo = null;
           }
         } else {
           console.log(`No such shop for shopId: ${shopId}`);
@@ -130,4 +132,8 @@ export const fetchMessages = async (chatId) => {
     console.error("Error fetching messages:", error);
     return [];
   }
+};
+
+export const sendMessage = async (id, text) => {
+  console.log("id", id);
 };

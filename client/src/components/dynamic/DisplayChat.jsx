@@ -4,14 +4,16 @@ import DisplayAvatar from "./DisplayAvatar";
 import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 
 const DisplayChat = memo(({ chat }) => {
-  const shopper = chat.shopperInfo;
+  const messenger = chat.shopperInfo || chat.shopInfo;
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  console.log(messenger);
+
   useEffect(() => {
     const getImages = async () => {
-      setLoading(true);
       try {
+        setLoading(true);
         const fetchedMessages = await fetchMessages(chat.id);
         setMessages(fetchedMessages);
       } catch (error) {
@@ -30,22 +32,28 @@ const DisplayChat = memo(({ chat }) => {
     <>
       <div className="flex flex-row items-center justify-between flex-none p-5 border-b">
         <div className="flex flex-row items-center gap-3 space-y-1">
-          {shopper.profileUrl && (
-            <DisplayAvatar
-              url={shopper.profileUrl}
-              className="w-10 h-10"
-              name={chat.shopperInfo.firstName}
-            ></DisplayAvatar>
-          )}
+          <DisplayAvatar
+            url={messenger.profileUrl || messenger.logo}
+            className="w-10 h-10"
+            name={messenger.firstName || messenger.name}
+          ></DisplayAvatar>
+
           <div className="font-semibold">
-            {`${shopper.firstName} ${shopper.lastName}`}
+            {messenger.firstName && messenger.lastName
+              ? messenger.firstName + " " + messenger.lastName
+              : messenger.name}
           </div>
         </div>
       </div>
 
+      {/* `${messenger.firstName} ${messenger.lastName}` */}
+
       <div className="flex flex-col flex-auto gap-3 p-5 overflow-y-auto">
         {messages.map((message, index) => {
-          const position = message.senderId === shopper.id;
+          const position =
+            message.senderId === messenger.userId ||
+            message.senderId === messenger.id;
+
           return (
             <div
               className={`flex ${
@@ -55,9 +63,9 @@ const DisplayChat = memo(({ chat }) => {
             >
               {position && (
                 <DisplayAvatar
-                  url={shopper.profileUrl}
+                  url={messenger.profileUrl || messenger.logo}
                   className={"w-8 h-8"}
-                  name={chat.shopperInfo.firstName}
+                  name={chat.firstName || chat.name}
                 ></DisplayAvatar>
               )}
 
