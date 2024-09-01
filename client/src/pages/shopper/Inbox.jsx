@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import search from "../../assets/icons/search.svg";
-import { getChatsByShopId, getChatsByShopperId } from "../../firebase/chats";
+import {
+  getChatsByShopId,
+  getChatsByShopperId,
+  sendMessage,
+} from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
 import { Link } from "react-router-dom";
@@ -8,7 +12,6 @@ import DisplayChat from "../../components/dynamic/DisplayChat";
 import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
-import DisplayShopperChats from "../../components/dynamic/DisplayShopperChats";
 
 const Inbox = () => {
   const [chats, setChats] = useState([]);
@@ -42,7 +45,7 @@ const Inbox = () => {
   if (loading) return <div>loading...</div>;
 
   return (
-    <div className="flex flex-row m-5 bg-white border h-5/6">
+    <div className="flex flex-row m-5 border">
       <div className="flex flex-row flex-auto rounded-tl-xl">
         <div className="flex flex-col w-1/5">
           <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
@@ -66,8 +69,6 @@ const Inbox = () => {
           <div className="flex-auto mt-5 overflow-y-auto">
             {chats.map((chat, index) => {
               const isActive = chat.id === selectedChat.id;
-              console.log(chat);
-
               return (
                 <section
                   className="cursor-pointer"
@@ -84,11 +85,11 @@ const Inbox = () => {
                     <div className="flex flex-row items-center space-x-2">
                       <div className="flex items-center flex-1 gap-2">
                         <DisplayAvatar
-                          url={""}
+                          url={chat.shopInfo.logo}
                           className="w-10 h-10"
                           name={chat.shopInfo.name}
                         />
-                        <div className="flex w-full text-sm font-semibold truncate text-arfablack">
+                        <div className="flex w-full text-sm font-medium truncate text-arfablack">
                           {chat.shopInfo.name}
                         </div>
                       </div>
@@ -111,7 +112,7 @@ const Inbox = () => {
 
         <div className="flex flex-col flex-1 w-3/5 border-l">
           {chats.length > 0 ? (
-            selectedChat && <DisplayShopperChats chat={selectedChat} />
+            selectedChat && <DisplayChat chat={selectedChat} />
           ) : (
             <div className="flex flex-col items-center gap-3 mt-28">
               <img src={noResult} alt="No Result" className="w-64 h-auto" />
