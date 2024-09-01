@@ -10,14 +10,18 @@ import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
 import DisplayAvatar from "../dynamic/DisplayAvatar";
 import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
+import { getImageDownloadUrl } from "../../firebase/photos";
 function SellerNavigationBar() {
   const { loggedUser, setLoggedUser } = useStore();
+  const [logoUrl, setLogoUrl] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const user = await getLoggedShopInfo();
         setLoggedUser(user);
+        const url = await getImageDownloadUrl(user.logo);
+        setLogoUrl(url);
       } catch (error) {
         console.error("Error fetching logged in user ", error);
       }
@@ -41,9 +45,7 @@ function SellerNavigationBar() {
         </div>
         <div className="flex items-center w-48 md:w-full">
           <DisplayAvatar
-            url={
-              loggedUser && loggedUser.profileUrl ? loggedUser.profileUrl : null
-            }
+            url={loggedUser && logoUrl ? logoUrl : null}
             className={"w-8 h-8 mr-2"}
             name={loggedUser && loggedUser.name ? loggedUser.name : "User"} // Fallback to "User" if name is null
           />

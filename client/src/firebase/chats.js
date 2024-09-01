@@ -83,11 +83,11 @@ export const getChatsByShopperId = async (shopperId) => {
           chatData.shopInfo = shopData; // Add shop data to the chat
 
           // Get the profile URL from Storage if available
-          if (shopData.profileUrl) {
-            const profileRef = ref(storage, shopData.profileUrl);
+          if (shopData.logo) {
+            const logoRef = ref(storage, shopData.logo);
             try {
-              const profileUrl = await getDownloadURL(profileRef);
-              chatData.shopInfo.profileUrl = profileUrl; // Add the full URL to shopInfo
+              const logo = await getDownloadURL(logoRef);
+              chatData.shopInfo.logo = logo; // Add the full URL to shopInfo
             } catch (error) {
               console.error("Error getting profile image URL: ", error);
             }

@@ -23,6 +23,8 @@ const Inbox = () => {
         const user = await getUserInfo();
         const fetchedChats = await getChatsByShopperId(user.id);
         setChats(fetchedChats);
+        console.log("Hello ", fetchedChats);
+        
         setSelectedChat(fetchedChats[0]);
       } catch (error) {
         console.error("Error fetching chats:", error);
@@ -84,7 +86,7 @@ const Inbox = () => {
                     <div className="flex flex-row items-center space-x-2">
                       <div className="flex items-center flex-1 gap-2">
                         <DisplayAvatar
-                          url={""}
+                          url={chat.shopInfo.logo}
                           className="w-10 h-10"
                           name={chat.shopInfo.name}
                         />
