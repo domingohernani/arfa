@@ -55,12 +55,10 @@ const UserProfile = () => {
   return (
     <>
       <section className="px-4 md:px-8">
-        <div className="">
-          <div className="font-medium">Profile Information</div>
-        </div>
-        <form className="w-full px-8 py-5 mx-auto mt-5 border">
+        <div className="font-medium">Profile Information</div>
+        <form className="w-full px-4 py-5 mx-auto mt-5 border md:px-8">
           <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
-            <div className="w-96 h-96">
+            <div className="w-auto h-96">
               <img
                 src={profileUrl}
                 alt="profile image"
