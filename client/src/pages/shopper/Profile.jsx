@@ -21,7 +21,7 @@ const Profile = () => {
       <section>
         <button
           type="button"
-          className="p-2 ml-4 -m-2 text-gray-400 bg-transparent bg-red-300 hover:border-transparent hover:text-gray-500 sm:ml-6 lg:hidden"
+          className="p-2 ml-4 -m-2 text-gray-400 bg-transparent bg-red-300 hover:border-transparent hover:text-gray-500 sm:ml-6 md:hidden"
           onClick={() => setIsOpen(true)}
         >
           <span className="sr-only">Filters</span>
