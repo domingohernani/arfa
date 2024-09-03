@@ -12,9 +12,9 @@ import { useStore } from "../../stores/useStore";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(false);
-
   const { loggedUser: user, setLoggedUser: setUser } = useStore();
   const { profileUrl, setProfileUrl } = useStore();
+  const [editForm, setEditForm] = useState(false);
 
   // States for form fields
 
@@ -91,6 +91,7 @@ const UserProfile = () => {
                 id="ownerid"
                 className="block w-full pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen"
                 required
+                disabled={editForm ? false : true}
               />
             </section>
           </section>
@@ -118,6 +119,7 @@ const UserProfile = () => {
                   required
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  disabled={editForm ? false : true}
                 />
               </div>
             </div>
@@ -144,6 +146,7 @@ const UserProfile = () => {
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  disabled={editForm ? false : true}
                 />
               </div>
             </div>
@@ -186,6 +189,7 @@ const UserProfile = () => {
                   placeholder="09123456789"
                   required
                   maxLength={11}
+                  disabled={editForm ? false : true}
                 />
               </div>
             </div>
@@ -397,16 +401,35 @@ const UserProfile = () => {
                 onChange={(e) => setStreetNumber(e.target.value)}
                 className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                 required
+                disabled={editForm ? false : true}
               />
             </div>
           </section>
 
-          <button
-            type="submit"
-            className="text-white bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
-          >
-            Save
-          </button>
+          {!editForm && (
+            <button
+              className="text-white flex-1 bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-7 py-2.5 text-center "
+              onClick={() => setEditForm(true)}
+            >
+              Edit
+            </button>
+          )}
+
+          {editForm && (
+            <>
+              <div className="flex gap-3 w-fit">
+                <button className="text-white flex-1 bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-7 py-2.5 text-center ">
+                  Save
+                </button>
+                <button
+                  className=" flex-1 border text-black border-gray-400 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+                  onClick={() => setEditForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </section>
     </>
