@@ -13,7 +13,9 @@ export const ProfileSideBar = ({ setVisibility }) => {
   };
 
   const handleVisibility = () => {
-    setVisibility(false);
+    if (setVisibility) {
+      setVisibility(false);
+    }
   };
 
   return (
