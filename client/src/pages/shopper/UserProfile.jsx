@@ -8,12 +8,16 @@ import {
 } from "@heroicons/react/24/solid";
 import { getUserInfo } from "../../firebase/user";
 import { getImageDownloadUrl } from "../../firebase/photos";
+import { useStore } from "../../stores/useStore";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(false);
 
+  const { loggedUser: user, setLoggedUser: setUser } = useStore();
+  const { profileUrl, setProfileUrl } = useStore();
+
   // States for form fields
-  const [profileUrl, setProfileUrl] = useState("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -25,32 +29,34 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchShopper = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const user = await getUserInfo();
-        console.log(user);
-        setFirstName(user.firstName);
-        setLastName(user.lastName);
-        setPhoneNumber(user.phoneNumber);
-        setStreetNumber(user.location.street);
-        setBarangay(user.location.barangay);
-        setCityMunicipal(user.location.city);
-        setProvince(user.location.province);
-        setRegion(user.location.region);
+        const result = await getUserInfo();
+        setUser(result);
 
-        const profileUrl = await getImageDownloadUrl(user.profileUrl);
-        setProfileUrl(profileUrl);
+        // Set form fields after fetching user data
+        setFirstName(result.firstName);
+        setLastName(result.lastName);
+        setPhoneNumber(result.phoneNumber);
+        setStreetNumber(result.location.street);
+        setBarangay(result.location.barangay);
+        setCityMunicipal(result.location.city);
+        setProvince(result.location.province);
+        setRegion(result.location.region);
+
+        const profileImageUrl = await getImageDownloadUrl(result.profileUrl);
+        setProfileUrl(profileImageUrl);
       } catch (error) {
-        console.error("Error fetching logged user ", error);
-        setLoading(false);
+        console.error("Error fetching logged user: ", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchShopper();
-  }, []);
 
-  if (loading) return <div>Loadingg..</div>;
+    fetchShopper();
+  }, [setUser, setProfileUrl]);
+
+  if (loading && !user) return <div>Loadingg..</div>;
 
   return (
     <>
