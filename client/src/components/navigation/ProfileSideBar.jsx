@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { doSignOut } from "../../firebase/auth";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Logout } from "../modals/Logout";
 
 export const ProfileSideBar = ({ setVisibility }) => {
+  const [logoutModal, setLogoutModal] = useState(false);
+
+  // function open() {
+  //   setIsOpen(true);
+  // }
+
+  function closeModal() {
+    setLogoutModal(false);
+  }
+
   const logout = () => {
-    try {
-      doSignOut();
-    } catch (error) {
-      console.log(error);
-    }
+    setLogoutModal(true);
   };
 
   const handleVisibility = () => {
@@ -20,6 +27,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
 
   return (
     <aside class="top-0 left-0 z-10 w-full h-fit">
+      <Logout isOpen={logoutModal} close={closeModal} />
       <div className="flex items-center justify-between md:hidden">
         <div class="font-medium lead-10 text-black">Profile</div>
         <hr />
