@@ -5,8 +5,9 @@ import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 import toast, { Toaster } from "react-hot-toast";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
+import { ChevronLeftIcon } from "@heroicons/react/16/solid";
 
-const DisplayChat = memo(({ chat }) => {
+const DisplayChat = memo(({ chat, setBackButton }) => {
   const messenger = chat.shopperInfo || chat.shopInfo;
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -68,21 +69,33 @@ const DisplayChat = memo(({ chat }) => {
     }
   };
 
+  const handleBackButton = () => {
+    setBackButton(false);
+  };
+
   return (
     <>
-      <div className="flex flex-row items-center justify-between flex-none px-5 py-3 border-b">
-        <div className="flex flex-row items-center gap-3 space-y-1">
-          <DisplayAvatar
-            url={messenger.profileUrl || messenger.logo}
-            className="w-10 h-10"
-            name={messenger.firstName || messenger.name}
-          ></DisplayAvatar>
+      <div className="flex flex-row items-center justify-between flex-none px-5 py-3 border-b bg-arfagray">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex flex-row items-center gap-3">
+            <DisplayAvatar
+              url={messenger.profileUrl || messenger.logo}
+              className="w-10 h-10"
+              name={messenger.firstName || messenger.name}
+            ></DisplayAvatar>
 
-          <div className="text-sm font-medium">
-            {messenger.firstName && messenger.lastName
-              ? messenger.firstName + " " + messenger.lastName
-              : messenger.name}
+            <div className="text-sm font-medium">
+              {messenger.firstName && messenger.lastName
+                ? messenger.firstName + " " + messenger.lastName
+                : messenger.name}
+            </div>
           </div>
+          {setBackButton ? (
+            <ChevronLeftIcon
+              className="w-5 h-5 cursor-pointer"
+              onClick={handleBackButton}
+            />
+          ) : null}
         </div>
       </div>
       <section className="flex flex-col items-stretch justify-around h-full">
@@ -112,7 +125,11 @@ const DisplayChat = memo(({ chat }) => {
                 )}
 
                 <div className="flex flex-col items-end">
-                  <div className="p-5 text-sm bg-gray-200 rounded">
+                  <div
+                    className={`p-3 text-sm ${
+                      position ? "bg-gray-200" : "bg-arfagray border"
+                    } rounded lg:p-5`}
+                  >
                     {message.text}
                   </div>
                   <div className="text-sm text-gray-600">

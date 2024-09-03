@@ -139,7 +139,6 @@ export const ProfileSideBar = ({ setVisibility }) => {
           </li>
           <li>
             <NavLink
-              onClick={() => handleVisibility()}
               to={"payment-method"}
               className={({ isActive }) =>
                 isActive
@@ -173,7 +172,6 @@ export const ProfileSideBar = ({ setVisibility }) => {
           </li>
           <li>
             <NavLink
-              onClick={() => handleVisibility()}
               to={"security"}
               className={({ isActive }) =>
                 isActive
