@@ -1,22 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 import search from "../../assets/icons/search.svg";
-import {
-  getChatsByShopId,
-  getChatsByShopperId,
-  sendMessage,
-} from "../../firebase/chats";
+import { getChatsByShopperId, sendMessage } from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
-import { Link } from "react-router-dom";
 import DisplayChat from "../../components/dynamic/DisplayChat";
-import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
+import { getUserInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
 
 const Inbox = () => {
-  const [chats, setChats] = useState([]);
+  const { chats, setChats } = useStore();
+  const { selectedChat, setSelectedChat } = useStore();
   const [loading, setLoading] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null);
   const [mobileViewChat, setMobileViewChat] = useState(false);
 
   useEffect(() => {
@@ -37,18 +32,19 @@ const Inbox = () => {
     };
 
     fetchChats();
-  }, []);
+  }, [setChats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
     setMobileViewChat(true);
   }, []);
 
-  if (loading) return <div>loading...</div>;
+  if (loading && chats.length < 1) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-      {/* {mobileViewChat && ( */}
       <div className="flex-row hidden m-5 border lg:flex">
         <div className="flex flex-row flex-auto rounded-tl-xl">
           <div className="flex flex-col w-1/5">
@@ -128,7 +124,6 @@ const Inbox = () => {
           </div>
         </div>
       </div>
-      {/* )} */}
 
       {!mobileViewChat && (
         <div className="flex flex-col w-full lg:hidden">

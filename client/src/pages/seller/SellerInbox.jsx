@@ -3,18 +3,18 @@ import search from "../../assets/icons/search.svg";
 import { getChatsByShopId } from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
-import { Link } from "react-router-dom";
 import DisplayChat from "../../components/dynamic/DisplayChat";
-import { getLoggedShopInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
 
 const SellerInbox = () => {
   const { loggedUser } = useStore();
-  const [chats, setChats] = useState([]);
+  const { chats, setChats } = useStore();
+  const { selectedChat, setSelectedChat } = useStore();
   const [loading, setLoading] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [mobileViewChat, setMobileViewChat] = useState(true);
+  const [mobileViewChat, setMobileViewChat] = useState(false);
+
+  console.log(typeof chats);
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -35,18 +35,19 @@ const SellerInbox = () => {
     if (loggedUser) {
       fetchChats();
     }
-  }, [loggedUser]);
+  }, [loggedUser, setChats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
     setMobileViewChat(true);
   }, []);
 
-  if (loading) return <div>loading...</div>;
+  if (loading && chats.length < 1) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-      {/* {mobileViewChat && ( */}
       <div className="flex-row hidden m-5 border lg:flex">
         <div className="flex flex-row flex-auto rounded-tl-xl">
           <div className="flex flex-col w-1/5 bg-white">
@@ -126,7 +127,6 @@ const SellerInbox = () => {
           </div>
         </div>
       </div>
-      {/* )} */}
 
       {!mobileViewChat && (
         <div className="flex flex-col w-full pt-3 bg-white lg:hidden">
