@@ -7,6 +7,7 @@ import DisplayChat from "../../components/dynamic/DisplayChat";
 import { getUserInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
+import ProductCard from "../../components/dynamic/ProductCard";
 
 const Inbox = () => {
   const { chats, setChats } = useStore();
@@ -45,6 +46,7 @@ const Inbox = () => {
 
   return (
     <>
+      {/* <ProductCard></ProductCard> */}
       <div className="flex-row hidden m-5 border lg:flex">
         <div className="flex flex-row flex-auto rounded-tl-xl">
           <div className="flex flex-col w-1/5">
