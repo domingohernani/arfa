@@ -36,3 +36,10 @@ Order status flow (?? on 8 and 9)
 !!!! Important
 After makapag makapag order ni shopper kay seller, magkakaroon na siya ng document sa chats collection.
 In this way, makikita ni seller si shopper sa inbox. So that seller can contact shopper anytime
+
+
+For Presentation:
+1. Client-side routing, which means it changes the URL and updates the 
+content without performing a full page reload.
+2. Skeleton; as mas modern UX/UI design practice.
+3. Infinit Scrolling over Pagination
