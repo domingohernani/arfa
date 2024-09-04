@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useRef } from "react";
+import React, { useState, useEffect, memo, useRef, useCallback } from "react";
 import { fetchMessages, sendMessage } from "../../firebase/chats";
 import DisplayAvatar from "./DisplayAvatar";
 import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
@@ -29,8 +29,6 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
           id: doc.id,
           ...doc.data(),
         }));
-        console.log(fetchedMessages);
-        
         setMessages(fetchedMessages);
       });
       return () => unsubscribe();
@@ -54,7 +52,7 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
     scrollToBottomSmooth();
   }, [messages]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     if (message.length === 0 && !imageFile) {
       toast.error(
         "Your message is empty. Please enter a message or select an image before sending."
@@ -87,13 +85,13 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
       console.error("Error sending message:", error);
       toast.error("Failed to send the message. Please try again.");
     }
-  };
+  }, [message, imageFile, chat.id]);
 
   const handleIconClick = () => {
     fileInputRef.current.click();
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = useCallback((e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -103,11 +101,11 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
       };
       reader.readAsDataURL(file);
     }
-  };
+  }, []);
 
-  const handleBackButton = () => {
+  const handleBackButton = useCallback(() => {
     setBackButton(false);
-  };
+  }, [setBackButton]);
 
   return (
     <>
@@ -199,7 +197,7 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
                 <img
                   src={imagePreview}
                   alt="Selected"
-                  className="object-cover w-auto h-40"
+                  className="object-cover w-auto h-24 border"
                 />
                 <XMarkIcon
                   className="absolute w-5 h-5 text-gray-600 cursor-pointer top-1 right-1"
@@ -219,26 +217,6 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
               Send
             </button>
             <div className="flex space-x-1 ps-0 rtl:space-x-reverse sm:ps-2">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
-              >
-                <svg
-                  className="w-4 h-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 12 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"
-                  />
-                </svg>
-                <span className="sr-only">Attach file</span>
-              </button>
               <button
                 type="button"
                 className="inline-flex items-center justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
