@@ -7,6 +7,7 @@ import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase"; // Ensure storage is imported from Firebase
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import required storage functions
 import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import Typing from "../Typing";
 
 const DisplayChat = memo(({ chat, setBackButton }) => {
   const messenger = chat.shopperInfo || chat.shopInfo;
@@ -109,7 +110,7 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
 
   return (
     <>
-      <div className="flex flex-row items-center justify-between flex-none px-5 py-3 border-b bg-arfagray">
+      <div className="flex flex-row items-center justify-between flex-none px-5 py-2 border-b bg-arfagray">
         <div className="flex items-center justify-between w-full">
           <div className="flex flex-row items-center gap-3">
             <DisplayAvatar
@@ -132,11 +133,11 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
           ) : null}
         </div>
       </div>
-      <section className="flex flex-col items-stretch justify-around h-full">
+      <section className="flex flex-col items-stretch justify-between h-full">
         <div
-          className="flex flex-col flex-auto gap-3 p-5 overflow-y-auto"
+          className="flex flex-col flex-auto gap-3 p-5 overflow-y-auto "
           ref={messagesEndRef}
-          style={{ minHeight: "45vh", maxHeight: "50vh" }}
+          style={{ height: "68vh" }}
         >
           {messages.map((message, index) => {
             const position =
@@ -180,6 +181,14 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
               </div>
             );
           })}
+          <div className="flex">
+            <DisplayAvatar
+              url={messenger.profileUrl || messenger.logo}
+              className={"w-8 h-8"}
+              name={chat.firstName || chat.name}
+            ></DisplayAvatar>
+            <Typing />
+          </div>
         </div>
         <div className="w-11/12 mx-auto mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
           <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
