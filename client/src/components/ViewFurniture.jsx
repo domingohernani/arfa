@@ -127,11 +127,13 @@ const ViewFurniture = () => {
                 {furniture.name}
               </h1>
               <p className="mt-2 text-sm ">
-                by{" "}
-                <span className="flex gap-2 underline">
-                  {furniture.shopData?.name || "No shop assigned"}
+                <span className="flex gap-1">
+                  <span>by</span>
+                  <span className="underline">
+                    {furniture.shopData?.name || "No shop assigned"}
+                  </span>
                   <Link to={"/profile/inbox"}>
-                    <ChatBubbleLeftEllipsisIcon className="w-5 h-5 cursor-pointer text-arfagreen" />
+                    <ChatBubbleLeftEllipsisIcon className="w-5 h-5 cursor-pointer text-arfablack" />
                   </Link>
                 </span>
               </p>
