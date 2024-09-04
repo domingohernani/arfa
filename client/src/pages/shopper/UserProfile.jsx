@@ -8,12 +8,16 @@ import {
 } from "@heroicons/react/24/solid";
 import { getUserInfo } from "../../firebase/user";
 import { getImageDownloadUrl } from "../../firebase/photos";
+import { useStore } from "../../stores/useStore";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(false);
+  const { loggedUser: user, setLoggedUser: setUser } = useStore();
+  const { profileUrl, setProfileUrl } = useStore();
+  const [editForm, setEditForm] = useState(false);
 
   // States for form fields
-  const [profileUrl, setProfileUrl] = useState("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -25,42 +29,42 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchShopper = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const user = await getUserInfo();
-        console.log(user);
-        setFirstName(user.firstName);
-        setLastName(user.lastName);
-        setPhoneNumber(user.phoneNumber);
-        setStreetNumber(user.location.street);
-        setBarangay(user.location.barangay);
-        setCityMunicipal(user.location.city);
-        setProvince(user.location.province);
-        setRegion(user.location.region);
+        const result = await getUserInfo();
+        setUser(result);
 
-        const profileUrl = await getImageDownloadUrl(user.profileUrl);
-        setProfileUrl(profileUrl);
+        // Set form fields after fetching user data
+        setFirstName(result.firstName);
+        setLastName(result.lastName);
+        setPhoneNumber(result.phoneNumber);
+        setStreetNumber(result.location.street);
+        setBarangay(result.location.barangay);
+        setCityMunicipal(result.location.city);
+        setProvince(result.location.province);
+        setRegion(result.location.region);
+
+        const profileImageUrl = await getImageDownloadUrl(result.profileUrl);
+        setProfileUrl(profileImageUrl);
       } catch (error) {
-        console.error("Error fetching logged user ", error);
-        setLoading(false);
+        console.error("Error fetching logged user: ", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchShopper();
-  }, []);
 
-  if (loading) return <div>Loadingg..</div>;
+    fetchShopper();
+  }, [setUser, setProfileUrl]);
+
+  if (loading && !user) return <div>Loadingg..</div>;
 
   return (
     <>
       <section className="px-4 md:px-8">
-        <div className="">
-          <div className="font-medium">Profile Information</div>
-        </div>
-        <form className="w-full px-8 py-5 mx-auto mt-5 border">
+        <div className="font-medium">Profile Information</div>
+        <form className="w-full px-4 py-5 mx-auto mt-5 border md:px-8">
           <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
-            <div className="w-96 h-96">
+            <div className="w-auto h-96">
               <img
                 src={profileUrl}
                 alt="profile image"
@@ -87,6 +91,7 @@ const UserProfile = () => {
                 id="ownerid"
                 className="block w-full pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen"
                 required
+                disabled={editForm ? false : true}
               />
             </section>
           </section>
@@ -114,6 +119,7 @@ const UserProfile = () => {
                   required
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  disabled={editForm ? false : true}
                 />
               </div>
             </div>
@@ -140,6 +146,7 @@ const UserProfile = () => {
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  disabled={editForm ? false : true}
                 />
               </div>
             </div>
@@ -182,6 +189,7 @@ const UserProfile = () => {
                   placeholder="09123456789"
                   required
                   maxLength={11}
+                  disabled={editForm ? false : true}
                 />
               </div>
             </div>
@@ -393,16 +401,35 @@ const UserProfile = () => {
                 onChange={(e) => setStreetNumber(e.target.value)}
                 className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
                 required
+                disabled={editForm ? false : true}
               />
             </div>
           </section>
 
-          <button
-            type="submit"
-            className="text-white bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
-          >
-            Save
-          </button>
+          {!editForm && (
+            <button
+              className="text-white flex-1 bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-7 py-2.5 text-center "
+              onClick={() => setEditForm(true)}
+            >
+              Edit
+            </button>
+          )}
+
+          {editForm && (
+            <>
+              <div className="flex gap-3 w-fit">
+                <button className="text-white flex-1 bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-7 py-2.5 text-center ">
+                  Save
+                </button>
+                <button
+                  className=" flex-1 border text-black border-gray-400 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+                  onClick={() => setEditForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
         </form>
       </section>
     </>
