@@ -136,7 +136,7 @@ export const fetchMessages = async (chatId) => {
   }
 };
 
-export const sendMessage = async (chatId, text) => {
+export const sendMessage = async (chatId, text, imageUrl) => {
   try {
     // Reference to the messages subcollection within a specific chat document
     const subcollectionRef = collection(db, "chats", chatId, "messages");
@@ -146,6 +146,8 @@ export const sendMessage = async (chatId, text) => {
       text: text, // The message text
       timestamp: serverTimestamp(), // Server timestamp
       senderId: auth.currentUser.uid, // Sender's ID (from Firebase Auth)
+      status: "sent",
+      imageUrl: imageUrl ? imageUrl : "",
     });
 
     console.log("Message added with ID:", newMessageRef.id);

@@ -4,14 +4,18 @@ import DisplayAvatar from "./DisplayAvatar";
 import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 import toast, { Toaster } from "react-hot-toast";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { db } from "../../firebase/firebase";
-import { ChevronLeftIcon } from "@heroicons/react/16/solid";
+import { db, storage } from "../../firebase/firebase"; // Ensure storage is imported from Firebase
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import required storage functions
+import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/16/solid";
 
 const DisplayChat = memo(({ chat, setBackButton }) => {
   const messenger = chat.shopperInfo || chat.shopInfo;
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null); // Store the image file
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const getMessagesRealtime = () => {
@@ -25,6 +29,8 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
           id: doc.id,
           ...doc.data(),
         }));
+        console.log(fetchedMessages);
+        
         setMessages(fetchedMessages);
       });
       return () => unsubscribe();
@@ -48,24 +54,54 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
     scrollToBottomSmooth();
   }, [messages]);
 
-  const handeSendMessage = async () => {
-    if (message.length === 0) {
+  const handleSendMessage = async () => {
+    if (message.length === 0 && !imageFile) {
       toast.error(
-        "Your message is empty. Please enter a message before sending."
+        "Your message is empty. Please enter a message or select an image before sending."
       );
       return;
     }
 
     try {
-      // Send the message
-      const result = await sendMessage(chat.id, message.trim());
+      let imageUrl = null;
+
+      // If there is an image file, upload it to Firebase Storage
+      if (imageFile) {
+        const imageRef = ref(
+          storage,
+          `chats/${chat.id}/${Date.now()}_${imageFile.name}`
+        );
+        const snapshot = await uploadBytes(imageRef, imageFile);
+        imageUrl = await getDownloadURL(snapshot.ref); // Get the download URL after uploading
+      }
+
+      // Send the message with text and image (if available)
+      const result = await sendMessage(chat.id, message.trim(), imageUrl);
       console.log("Message sent with ID:", result);
 
-      // Clear the input field
+      // Clear the input field and image preview
       setMessage("");
+      setImagePreview(null);
+      setImageFile(null);
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send the message. Please try again.");
+    }
+  };
+
+  const handleIconClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setImageFile(file); // Track the selected image file
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -131,6 +167,13 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
                     } rounded lg:p-5`}
                   >
                     {message.text}
+                    {message.imageUrl && (
+                      <img
+                        src={message.imageUrl}
+                        alt="Sent image"
+                        className="w-full h-auto mt-2 border rounded-lg"
+                      />
+                    )}
                   </div>
                   <div className="text-sm text-gray-600">
                     {formatTimeAgo(message.timestamp)}
@@ -150,11 +193,28 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
+            {/* Image preview */}
+            {imagePreview && (
+              <div className="relative w-fit">
+                <img
+                  src={imagePreview}
+                  alt="Selected"
+                  className="object-cover w-auto h-40"
+                />
+                <XMarkIcon
+                  className="absolute w-5 h-5 text-gray-600 cursor-pointer top-1 right-1"
+                  onClick={() => {
+                    setImagePreview(null);
+                    setImageFile(null);
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div className="flex flex-row-reverse items-center justify-between px-3 py-2 border-t dark:border-gray-600">
             <button
               className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-arfagreen rounded-lg"
-              onClick={handeSendMessage}
+              onClick={handleSendMessage}
             >
               Send
             </button>
@@ -182,6 +242,7 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
               <button
                 type="button"
                 className="inline-flex items-center justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
+                onClick={handleIconClick}
               >
                 <svg
                   className="w-4 h-4"
@@ -194,6 +255,13 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
                 </svg>
                 <span className="sr-only">Upload image</span>
               </button>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleImageChange}
+              />
             </div>
           </div>
         </div>
