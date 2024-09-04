@@ -5,7 +5,7 @@ import CustomerReview from "./dynamic/CustomerReview";
 import DisplayStars from "./dynamic/DisplayStars";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "../firebase/firebase";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchFurnitureById } from "../firebase/furniture";
 import { formatToPeso } from "../components/globalFunctions";
 import { getAllImageDownloadUrl } from "../firebase/photos";
@@ -18,6 +18,7 @@ import {
 import Show3D from "./dynamic/Show3D";
 import ViewFurnitureSkeleton from "./skeletons/ViewFurnitureSkeleton";
 import MaximizeImages from "./dynamic/MaximizeImages";
+import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -127,8 +128,11 @@ const ViewFurniture = () => {
               </h1>
               <p className="mt-2 text-sm ">
                 by{" "}
-                <span className="underline">
+                <span className="flex gap-2 underline">
                   {furniture.shopData?.name || "No shop assigned"}
+                  <Link to={"/profile/inbox"}>
+                    <ChatBubbleLeftEllipsisIcon className="w-5 h-5 cursor-pointer text-arfagreen" />
+                  </Link>
                 </span>
               </p>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
