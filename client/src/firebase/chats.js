@@ -9,6 +9,8 @@ import {
   addDoc,
   serverTimestamp,
   onSnapshot,
+  setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { auth, db } from "./firebase";
@@ -180,10 +182,24 @@ export const sendMessage = async (chatId, text, imageUrl) => {
       imageUrl: imageUrl ? imageUrl : "",
     });
 
-    console.log("Message added with ID:", newMessageRef.id);
     return newMessageRef.id; // Returning the ID of the new document
   } catch (error) {
     console.error("Error adding message:", error);
     throw error;
+  }
+};
+
+// Function to update typing status in Firestore
+export const updateTypingStatus = async (chatId, userType, isTyping) => {
+  const chatDocRef = doc(db, "chats", chatId);
+
+  try {
+    if (userType === "shopper") {
+      await updateDoc(chatDocRef, { isShopperTyping: isTyping });
+    } else if (userType === "seller") {
+      await updateDoc(chatDocRef, { isSellerTyping: isTyping });
+    }
+  } catch (error) {
+    console.error("Error updating typing status:", error);
   }
 };
