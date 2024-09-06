@@ -16,48 +16,64 @@ import { auth, db } from "./firebase";
 // Initialize Firebase Storage
 const storage = getStorage();
 
-export const getChatsByShopId = async (shopId) => {
-  if (!shopId) return [];
+export const getChatsByShopId = (shopId, callback) => {
+  if (!shopId) {
+    callback([]);
+    return;
+  }
 
   try {
     const q = query(collection(db, "chats"), where("shopId", "==", shopId));
-    const querySnapshot = await getDocs(q);
-    let chats = [];
 
-    for (let chatDoc of querySnapshot.docs) {
-      const chatData = { id: chatDoc.id, ...chatDoc.data() };
+    // Set up a Firestore real-time listener using onSnapshot
+    const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+      let chats = [];
 
-      // Fetch user data based on shopperId
-      const shopperId = chatData.shopperId;
-      if (shopperId) {
-        const userRef = doc(db, "users", shopperId);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          chatData.shopperInfo = userData; // Add user data to the chat
+      for (let chatDoc of querySnapshot.docs) {
+        const chatData = { id: chatDoc.id, ...chatDoc.data() };
 
-          // Get the profile URL from Storage if available
-          if (userData.profileUrl && userData.profileUrl.includes("profile")) {
-            const profileRef = ref(storage, userData.profileUrl);
-            try {
-              const profileUrl = await getDownloadURL(profileRef);
-              chatData.shopperInfo.profileUrl = profileUrl; // Add the full URL to shopperInfo
-            } catch (error) {
-              console.error("Error getting profile image URL: ", error);
+        // Fetch user data based on shopperId
+        const shopperId = chatData.shopperId;
+        if (shopperId) {
+          const userRef = doc(db, "users", shopperId);
+          const userDoc = await getDoc(userRef);
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            chatData.shopperInfo = userData; // Add user data to the chat
+
+            // Get the profile URL from Storage if available
+            if (
+              userData.profileUrl &&
+              userData.profileUrl.includes("profile")
+            ) {
+              const profileRef = ref(storage, userData.profileUrl);
+              try {
+                const profileUrl = await getDownloadURL(profileRef);
+                chatData.shopperInfo.profileUrl = profileUrl; // Add the full URL to shopperInfo
+              } catch (error) {
+                console.error("Error getting profile image URL: ", error);
+              }
             }
+          } else {
+            console.log(`No such user for shopperId: ${shopperId}`);
           }
-        } else {
-          console.log(`No such user for shopperId: ${shopperId}`);
         }
+
+        chats.push(chatData);
       }
 
-      chats.push(chatData);
-    }
+      // Call the callback with the updated chats
+      callback(chats);
+    });
 
-    return chats;
+    // Return the unsubscribe function so it can be called to stop listening
+    return unsubscribe;
   } catch (error) {
-    console.error("Error getting chats and user data: ", error);
-    return [];
+    console.error(
+      "Error setting up real-time listener for chats and user data: ",
+      error
+    );
+    callback([]);
   }
 };
 
@@ -124,6 +140,7 @@ export const getChatsByShopperId = (shopperId, callback) => {
     callback([]);
   }
 };
+
 export const fetchMessages = async (chatId) => {
   try {
     const chatDocRef = doc(db, "chats", chatId);
