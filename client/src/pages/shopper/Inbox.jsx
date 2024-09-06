@@ -9,6 +9,28 @@ import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
 import ProductCard from "../../components/dynamic/ProductCard";
 
+const PreviewChat = ({ text, image, video }) => {
+  if (text.length > 0) {
+    return (
+      <div className="flex-grow text-xs text-gray-500 truncate">{text}</div>
+    );
+  } else if (image) {
+    return (
+      <div className="flex-grow text-xs text-gray-500 truncate">
+        Sent an image
+      </div>
+    );
+  } else if (video) {
+    return (
+      <div className="flex-grow text-xs text-gray-500 truncate">
+        Sent a video
+      </div>
+    );
+  } else {
+    return <div className="flex-grow text-xs text-gray-500 truncate">---</div>;
+  }
+};
+
 const Inbox = () => {
   const { chats, setChats } = useStore();
   const { selectedChat, setSelectedChat } = useStore();
@@ -112,9 +134,15 @@ const Inbox = () => {
                       </div>
 
                       <div className="flex flex-row items-center space-x-1">
-                        <div className="flex-grow text-xs text-gray-500 truncate">
-                          {chat.lastMessage}
-                        </div>
+                        {(chat.lastMessage ||
+                          chat.imageUrl ||
+                          chat.videoUrl) && (
+                          <PreviewChat
+                            text={chat.lastMessage}
+                            image={chat.imageUrl}
+                            video={chat.videoUrl}
+                          />
+                        )}
                       </div>
                     </div>
                   </section>

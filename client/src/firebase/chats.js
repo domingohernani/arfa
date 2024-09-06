@@ -168,16 +168,20 @@ export const fetchMessages = async (chatId) => {
   }
 };
 
-const updatePeviewChat = async (chatId, text) => {
+const updatePeviewChat = async (chatId, text, imageUrl = "", videoUrl = "") => {
   const chatDocRef = doc(db, "chats", chatId);
   try {
-    await updateDoc(chatDocRef, { lastMessage: text });
+    await updateDoc(chatDocRef, {
+      lastMessage: text,
+      imageUrl: imageUrl,
+      videoUrl: videoUrl,
+    });
   } catch (error) {
     console.error("Error updating preview chat: ", error);
   }
 };
 
-export const sendMessage = async (chatId, text, imageUrl) => {
+export const sendMessage = async (chatId, text, imageUrl, videoUrl) => {
   try {
     // Reference to the messages subcollection within a specific chat document
     const subcollectionRef = collection(db, "chats", chatId, "messages");
@@ -189,9 +193,10 @@ export const sendMessage = async (chatId, text, imageUrl) => {
       senderId: auth.currentUser.uid, // Sender's ID (from Firebase Auth)
       status: "sent",
       imageUrl: imageUrl ? imageUrl : "",
+      videoUrl: videoUrl ? videoUrl : "",
     });
 
-    await updatePeviewChat(chatId, text);
+    await updatePeviewChat(chatId, text, imageUrl, videoUrl);
 
     return newMessageRef.id; // Returning the ID of the new document
   } catch (error) {
