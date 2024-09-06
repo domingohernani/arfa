@@ -21,18 +21,24 @@ const Inbox = () => {
         setLoading(true);
 
         const user = await getUserInfo();
-        const fetchedChats = await getChatsByShopperId(user.id);
-        setChats(fetchedChats);
-        setSelectedChat(fetchedChats[0]);
+
+        const unsubscribe = getChatsByShopperId(user.id, (chats) => {
+          setChats(chats); // Update the chats state
+          setSelectedChat(chats[0]);
+        });
+
+        return () => unsubscribe();
       } catch (error) {
         console.error("Error fetching chats:", error);
         setLoading(false);
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading after setting up the listener
       }
     };
 
     fetchChats();
+
+    // Cleanup function to unsubscribe on component unmount
   }, [setChats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
@@ -71,6 +77,7 @@ const Inbox = () => {
             <div className="flex-auto mt-5 overflow-y-auto">
               {chats.map((chat, index) => {
                 const isActive = chat.id === selectedChat.id;
+                const shopInfo = chat.shopInfo;
                 return (
                   <section
                     className="cursor-pointer"
@@ -87,12 +94,12 @@ const Inbox = () => {
                       <div className="flex flex-row items-center space-x-2">
                         <div className="flex items-center flex-1 gap-2">
                           <DisplayAvatar
-                            url={chat.shopInfo.logo}
+                            url={shopInfo.logo || ""}
                             className="w-10 h-10"
-                            name={chat.shopInfo.name}
+                            name={shopInfo.name || ""}
                           />
                           <div className="flex w-full text-sm font-medium truncate text-arfablack">
-                            {chat.shopInfo.name}
+                            {shopInfo.name || "Unknown Shop"}
                           </div>
                         </div>
                         <div className="text-sm text-gray-500">

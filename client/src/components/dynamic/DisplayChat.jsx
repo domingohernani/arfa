@@ -17,9 +17,11 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null); // Store the image file
   const fileInputRef = useRef(null);
+  console.log(chat.id);
 
   useEffect(() => {
     const getMessagesRealtime = () => {
+      
       const q = query(
         collection(db, "chats", chat.id, "messages"),
         orderBy("timestamp", "asc")
@@ -181,14 +183,16 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
               </div>
             );
           })}
-          <div className="flex">
-            <DisplayAvatar
-              url={messenger.profileUrl || messenger.logo}
-              className={"w-8 h-8"}
-              name={chat.firstName || chat.name}
-            ></DisplayAvatar>
-            <Typing />
-          </div>
+          {messages.length > 0 && (
+            <div className="flex">
+              <DisplayAvatar
+                url={messenger.profileUrl || messenger.logo}
+                className={"w-8 h-8"}
+                name={chat.firstName || chat.name}
+              ></DisplayAvatar>
+              <Typing />
+            </div>
+          )}
         </div>
         <div className="w-11/12 mx-auto mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
           <div className="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
