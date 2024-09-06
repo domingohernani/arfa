@@ -16,23 +16,33 @@ const Inbox = () => {
   const [mobileViewChat, setMobileViewChat] = useState(false);
 
   useEffect(() => {
+    let unsubscribe;
+
     const fetchChats = async () => {
       try {
         setLoading(true);
 
-        const user = await getUserInfo();
-        const fetchedChats = await getChatsByShopperId(user.id);
-        setChats(fetchedChats);
-        setSelectedChat(fetchedChats[0]);
+        const loggedUser = await getUserInfo();
+        unsubscribe = getChatsByShopperId(loggedUser.id, (chats) => {
+          setChats(chats);
+          if (chats.length > 0) {
+            setSelectedChat(chats[0]);
+          }
+          setLoading(false);
+        });
       } catch (error) {
         console.error("Error fetching chats:", error);
-        setLoading(false);
-      } finally {
         setLoading(false);
       }
     };
 
     fetchChats();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [setChats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
@@ -71,6 +81,7 @@ const Inbox = () => {
             <div className="flex-auto mt-5 overflow-y-auto">
               {chats.map((chat, index) => {
                 const isActive = chat.id === selectedChat.id;
+                const shopInfo = chat.shopInfo;
                 return (
                   <section
                     className="cursor-pointer"
@@ -87,12 +98,12 @@ const Inbox = () => {
                       <div className="flex flex-row items-center space-x-2">
                         <div className="flex items-center flex-1 gap-2">
                           <DisplayAvatar
-                            url={chat.shopInfo.logo}
+                            url={shopInfo.logo || ""}
                             className="w-10 h-10"
-                            name={chat.shopInfo.name}
+                            name={shopInfo.name || ""}
                           />
                           <div className="flex w-full text-sm font-medium truncate text-arfablack">
-                            {chat.shopInfo.name}
+                            {shopInfo.name || "Unknown Shop"}
                           </div>
                         </div>
                         <div className="text-sm text-gray-500">
@@ -114,7 +125,12 @@ const Inbox = () => {
 
           <div className="flex flex-col flex-1 w-3/5 border-l">
             {chats.length > 0 ? (
-              selectedChat && <DisplayChat chat={selectedChat} />
+              selectedChat && (
+                <DisplayChat
+                  chat={selectedChat}
+                  isSellerTyping={selectedChat.isSellerTyping}
+                />
+              )
             ) : (
               <div className="flex flex-col items-center gap-3 mt-28">
                 <img src={noResult} alt="No Result" className="w-64 h-auto" />
@@ -199,6 +215,7 @@ const Inbox = () => {
               <DisplayChat
                 chat={selectedChat}
                 setBackButton={setMobileViewChat}
+                isSellerTyping={selectedChat.isSellerTyping}
               />
             )
           ) : (

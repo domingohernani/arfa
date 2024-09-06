@@ -15,7 +15,6 @@ const DisplayAvatar = ({ url, className, name }) => {
         <img
           className={`object-cover ${className} rounded-full border`}
           src={url}
-          alt="img"
         />
       )}
     </>
