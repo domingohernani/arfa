@@ -1,5 +1,9 @@
 import React, { useState, useEffect, memo, useRef, useCallback } from "react";
-import { fetchMessages, sendMessage } from "../../firebase/chats";
+import {
+  fetchMessages,
+  sendMessage,
+  updateTypingStatus,
+} from "../../firebase/chats";
 import DisplayAvatar from "./DisplayAvatar";
 import { formatTimeAgo, formatTimestamp } from "../globalFunctions";
 import toast, { Toaster } from "react-hot-toast";
@@ -16,7 +20,7 @@ const DisplayChat = memo(
     const [message, setMessage] = useState("");
     const messagesEndRef = useRef(null);
     const [imagePreview, setImagePreview] = useState(null);
-    const [imageFile, setImageFile] = useState(null);  
+    const [imageFile, setImageFile] = useState(null);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -54,6 +58,35 @@ const DisplayChat = memo(
       scrollToBottomSmooth();
     }, [messages]);
 
+    useEffect(() => {
+      if (!chat?.id) return;
+
+      const handleBeforeUnload = (event) => {
+        // Use a quick fire-and-forget Firestore update
+        updateTypingStatus(
+          chat.id,
+          chat.shopperInfo ? "seller" : "shopper",
+          false
+        )
+          .then(() => {
+            // Optionally log the success
+            console.log("Successfully updated typing status.");
+          })
+          .catch((error) => {
+            console.error("Error updating typing status on unload:", error);
+          });
+
+        // This message is optional and mostly ignored by modern browsers
+        event.returnValue = "";
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }, [chat?.id]);
+
     const handleSendMessage = useCallback(async () => {
       if (message.length === 0 && !imageFile) {
         toast.error(
@@ -77,7 +110,6 @@ const DisplayChat = memo(
 
         // Send the message with text and image (if available)
         const result = await sendMessage(chat.id, message.trim(), imageUrl);
-        console.log("Message sent with ID:", result);
 
         // Clear the input field and image preview
         setMessage("");
@@ -202,6 +234,20 @@ const DisplayChat = memo(
                 placeholder="Write a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                onFocus={() => {
+                  updateTypingStatus(
+                    chat.id,
+                    chat.shopperInfo ? "seller" : "shopper",
+                    true
+                  );
+                }}
+                onBlur={() => {
+                  updateTypingStatus(
+                    chat.id,
+                    chat.shopperInfo ? "seller" : "shopper",
+                    false
+                  );
+                }}
               ></textarea>
               {/* Image preview */}
               {imagePreview && (

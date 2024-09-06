@@ -22,18 +22,17 @@ const Inbox = () => {
       try {
         setLoading(true);
 
-        const user = await getUserInfo();
-
-        unsubscribe = getChatsByShopperId(user.id, (chats) => {
-          setChats(chats);  
+        const loggedUser = await getUserInfo();
+        unsubscribe = getChatsByShopperId(loggedUser.id, (chats) => {
+          setChats(chats);
           if (chats.length > 0) {
-            setSelectedChat(chats[0]); 
+            setSelectedChat(chats[0]);
           }
           setLoading(false);
         });
       } catch (error) {
         console.error("Error fetching chats:", error);
-        setLoading(false);  
+        setLoading(false);
       }
     };
 
