@@ -168,10 +168,17 @@ export const fetchMessages = async (chatId) => {
   }
 };
 
-const updatePeviewChat = async (chatId, text, imageUrl = "", videoUrl = "") => {
+const updatePeviewChat = async (
+  chatId,
+  senderId,
+  text,
+  imageUrl = "",
+  videoUrl = ""
+) => {
   const chatDocRef = doc(db, "chats", chatId);
   try {
     await updateDoc(chatDocRef, {
+      senderId: senderId,
       lastMessage: text,
       imageUrl: imageUrl,
       videoUrl: videoUrl,
@@ -196,7 +203,13 @@ export const sendMessage = async (chatId, text, imageUrl, videoUrl) => {
       videoUrl: videoUrl ? videoUrl : "",
     });
 
-    await updatePeviewChat(chatId, text, imageUrl, videoUrl);
+    await updatePeviewChat(
+      chatId,
+      auth.currentUser.uid,
+      text,
+      imageUrl,
+      videoUrl
+    );
 
     return newMessageRef.id; // Returning the ID of the new document
   } catch (error) {
