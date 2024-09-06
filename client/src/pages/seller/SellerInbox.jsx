@@ -17,17 +17,21 @@ const SellerInbox = () => {
   console.log(typeof chats);
 
   useEffect(() => {
-    const fetchChats = async () => {
+    let unsubscribe;
+
+    const fetchChats = () => {
       try {
         setLoading(true);
-        const fetchedChats = await getChatsByShopId(loggedUser.userId);
-        setChats(fetchedChats);
 
-        setSelectedChat(fetchedChats[0]);
+        unsubscribe = getChatsByShopId(loggedUser.userId, (chats) => {
+          setChats(chats);
+          if (chats.length > 0) {
+            setSelectedChat(chats[0]);
+          }
+          setLoading(false);
+        });
       } catch (error) {
         console.error("Error fetching chats:", error);
-        setLoading(false);
-      } finally {
         setLoading(false);
       }
     };
@@ -35,6 +39,13 @@ const SellerInbox = () => {
     if (loggedUser) {
       fetchChats();
     }
+
+    // Clean up the listener on unmount or when loggedUser changes
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [loggedUser, setChats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
@@ -115,7 +126,12 @@ const SellerInbox = () => {
 
           <div className="flex flex-col flex-1 w-3/5 bg-white border-l">
             {chats.length > 0 ? (
-              selectedChat && <DisplayChat chat={selectedChat} />
+              selectedChat && (
+                <DisplayChat
+                  chat={selectedChat}
+                  isShopperTyping={selectedChat.isShopperTyping}
+                />
+              )
             ) : (
               <div className="flex flex-col items-center gap-3 mt-28">
                 <img src={noResult} alt="No Result" className="w-64 h-auto" />
@@ -200,6 +216,7 @@ const SellerInbox = () => {
               <DisplayChat
                 chat={selectedChat}
                 setBackButton={setMobileViewChat}
+                isShopperTyping={selectedChat.isShopperTyping}
               />
             )
           ) : (
