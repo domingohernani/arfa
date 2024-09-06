@@ -8,6 +8,7 @@ import {
   orderBy,
   addDoc,
   serverTimestamp,
+  onSnapshot,
 } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { auth, db } from "./firebase";
@@ -60,57 +61,69 @@ export const getChatsByShopId = async (shopId) => {
   }
 };
 
-export const getChatsByShopperId = async (shopperId) => {
-  if (!shopperId) return [];
+export const getChatsByShopperId = (shopperId, callback) => {
+  if (!shopperId) {
+    callback([]);
+    return;
+  }
 
   try {
     const q = query(
       collection(db, "chats"),
       where("shopperId", "==", shopperId)
     );
-    const querySnapshot = await getDocs(q);
-    let chats = [];
 
-    for (let chatDoc of querySnapshot.docs) {
-      const chatData = { id: chatDoc.id, ...chatDoc.data() };
+    // Set up a Firestore real-time listener using onSnapshot
+    const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+      let chats = [];
 
-      // Fetch shop data based on shopId
-      const shopId = chatData.shopId;
+      for (let chatDoc of querySnapshot.docs) {
+        const chatData = { id: chatDoc.id, ...chatDoc.data() };
 
-      if (shopId) {
-        const shopRef = doc(db, "shops", shopId);
-        const shopDoc = await getDoc(shopRef);
-        if (shopDoc.exists()) {
-          const shopData = shopDoc.data();
-          chatData.shopInfo = shopData; // Add shop data to the chat
+        // Fetch shop data based on shopId
+        const shopId = chatData.shopId;
 
-          // Get the profile URL from Storage if available
-          if (shopData.logo) {
-            const logoRef = ref(storage, shopData.logo);
-            try {
-              const logo = await getDownloadURL(logoRef);
-              chatData.shopInfo.logo = logo; // Add the full URL to shopInfo
-            } catch (error) {
-              console.error("Error getting profile image URL: ", error);
+        if (shopId) {
+          const shopRef = doc(db, "shops", shopId);
+          const shopDoc = await getDoc(shopRef);
+          if (shopDoc.exists()) {
+            const shopData = shopDoc.data();
+            chatData.shopInfo = shopData; // Add shop data to the chat
+
+            // Get the profile URL from Storage if available
+            if (shopData.logo) {
+              const logoRef = ref(storage, shopData.logo);
+              try {
+                const logo = await getDownloadURL(logoRef);
+                chatData.shopInfo.logo = logo; // Add the full URL to shopInfo
+              } catch (error) {
+                console.error("Error getting profile image URL: ", error);
+              }
+            } else {
+              chatData.shopInfo.logo = null;
             }
           } else {
-            chatData.shopInfo.logo = null;
+            console.log(`No such shop for shopId: ${shopId}`);
           }
-        } else {
-          console.log(`No such shop for shopId: ${shopId}`);
         }
+
+        chats.push(chatData);
       }
 
-      chats.push(chatData);
-    }
+      // Call the callback with the updated chats
+      callback(chats);
+    });
 
-    return chats;
+    // Return the unsubscribe function so it can be called to stop listening
+    return unsubscribe;
   } catch (error) {
-    console.error("Error getting chats and shop data: ", error);
-    return [];
+    console.error(
+      "Error setting up real-time listener for chats and shop data: ",
+      error
+    );
+    callback([]);
   }
 };
-
 export const fetchMessages = async (chatId) => {
   try {
     const chatDocRef = doc(db, "chats", chatId);
