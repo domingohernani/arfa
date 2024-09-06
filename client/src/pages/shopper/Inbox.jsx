@@ -16,29 +16,34 @@ const Inbox = () => {
   const [mobileViewChat, setMobileViewChat] = useState(false);
 
   useEffect(() => {
+    let unsubscribe;
+
     const fetchChats = async () => {
       try {
         setLoading(true);
 
         const user = await getUserInfo();
 
-        const unsubscribe = getChatsByShopperId(user.id, (chats) => {
-          setChats(chats); // Update the chats state
-          setSelectedChat(chats[0]);
+        unsubscribe = getChatsByShopperId(user.id, (chats) => {
+          setChats(chats);  
+          if (chats.length > 0) {
+            setSelectedChat(chats[0]); 
+          }
+          setLoading(false);
         });
-
-        return () => unsubscribe();
       } catch (error) {
         console.error("Error fetching chats:", error);
-        setLoading(false);
-      } finally {
-        setLoading(false); // Stop loading after setting up the listener
+        setLoading(false);  
       }
     };
 
     fetchChats();
 
-    // Cleanup function to unsubscribe on component unmount
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [setChats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
@@ -121,7 +126,12 @@ const Inbox = () => {
 
           <div className="flex flex-col flex-1 w-3/5 border-l">
             {chats.length > 0 ? (
-              selectedChat && <DisplayChat chat={selectedChat} />
+              selectedChat && (
+                <DisplayChat
+                  chat={selectedChat}
+                  isSellerTyping={selectedChat.isSellerTyping}
+                />
+              )
             ) : (
               <div className="flex flex-col items-center gap-3 mt-28">
                 <img src={noResult} alt="No Result" className="w-64 h-auto" />
@@ -206,6 +216,7 @@ const Inbox = () => {
               <DisplayChat
                 chat={selectedChat}
                 setBackButton={setMobileViewChat}
+                isSellerTyping={selectedChat.isSellerTyping}
               />
             )
           ) : (
