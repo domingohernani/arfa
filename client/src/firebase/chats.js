@@ -168,6 +168,15 @@ export const fetchMessages = async (chatId) => {
   }
 };
 
+const updatePeviewChat = async (chatId, text) => {
+  const chatDocRef = doc(db, "chats", chatId);
+  try {
+    await updateDoc(chatDocRef, { lastMessage: text });
+  } catch (error) {
+    console.error("Error updating preview chat: ", error);
+  }
+};
+
 export const sendMessage = async (chatId, text, imageUrl) => {
   try {
     // Reference to the messages subcollection within a specific chat document
@@ -181,6 +190,8 @@ export const sendMessage = async (chatId, text, imageUrl) => {
       status: "sent",
       imageUrl: imageUrl ? imageUrl : "",
     });
+
+    await updatePeviewChat(chatId, text);
 
     return newMessageRef.id; // Returning the ID of the new document
   } catch (error) {
