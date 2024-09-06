@@ -26,10 +26,10 @@ export const ProfileSideBar = ({ setVisibility }) => {
   };
 
   return (
-    <aside class="top-0 left-0 z-10 w-full h-fit">
+    <aside className="top-0 left-0 z-10 w-full h-fit">
       <Logout isOpen={logoutModal} close={closeModal} />
       <div className="flex items-center justify-between md:hidden">
-        <div class="font-medium lead-10 text-black">Profile</div>
+        <div className="font-medium text-black lead-10">Profile</div>
         <hr />
         <button
           type="button"
@@ -40,8 +40,8 @@ export const ProfileSideBar = ({ setVisibility }) => {
           <XMarkIcon className="w-6 h-6" aria-hidden="true" />
         </button>
       </div>
-      <div class="h-full md:px-3 py-4 overflow-y-auto">
-        <ul class="space-y-2 text-sm text-left">
+      <div className="h-full py-4 overflow-y-auto md:px-3">
+        <ul className="space-y-2 text-sm text-left">
           <li>
             <NavLink
               to={"user-profile"}
@@ -66,7 +66,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
                     <path d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z" />
                   </svg>
                   <span
-                    class="flex-1 ms-3 font-medium"
+                    className="flex-1 font-medium ms-3"
                     onClick={() => handleVisibility()}
                   >
                     Profile Information
@@ -97,7 +97,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
                     <path d="m22,9.184v-1.184C22,3.589,18.411,0,14,0h-4C5.589,0,2,3.589,2,8v1.184c-1.161.414-2,1.514-2,2.816v5.5c0,1.557.795,2.93,2,3.738v1.762c0,.552.448,1,1,1s1-.448,1-1v-1.051c.166.019.329.051.5.051h15c.171,0,.334-.032.5-.051v1.051c0,.552.448,1,1,1s1-.448,1-1v-1.762c1.205-.808,2-2.182,2-3.738v-5.5c0-1.302-.839-2.402-2-2.816ZM10,2h4c3.309,0,6,2.691,6,6v1.184c-1.161.414-2,1.514-2,2.816v2H6v-2c0-1.302-.839-2.402-2-2.816v-1.184c0-3.309,2.691-6,6-6Zm-6,17.95c-1.14-.232-2-1.242-2-2.45v-5.5c0-.551.449-1,1-1s1,.449,1,1v7.95Zm2,.05v-4h12v4H6Zm16-2.5c0,1.208-.86,2.217-2,2.45v-7.95c0-.551.449-1,1-1s1,.449,1,1v5.5Z" />
                   </svg>
                   <span
-                    class="flex-1 ms-3 whitespace-nowrap"
+                    className="flex-1 ms-3 whitespace-nowrap"
                     onClick={() => handleVisibility()}
                   >
                     Order
@@ -105,7 +105,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
                 </>
               )}
 
-              {/* <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
+              {/* <span className="inline-flex items-center justify-center px-2 text-sm font-medium text-gray-800 bg-gray-100 rounded-full ms-3 dark:bg-gray-700 dark:text-gray-300">
                 Pro
               </span> */}
             </NavLink>
@@ -135,12 +135,12 @@ export const ProfileSideBar = ({ setVisibility }) => {
                   </svg>
 
                   <span
-                    class="flex-1 ms-3 whitespace-nowrap"
+                    className="flex-1 ms-3 whitespace-nowrap"
                     onClick={() => handleVisibility()}
                   >
                     Inbox
                   </span>
-                  <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-xs font-medium text-white bg-arfagreen rounded-full ">
+                  <span className="inline-flex items-center justify-center w-3 h-3 p-3 text-xs font-medium text-white rounded-full ms-3 bg-arfagreen ">
                     3
                   </span>
                 </>
@@ -171,7 +171,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
                     <path d="M19,3H5A5.006,5.006,0,0,0,0,8v8a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V8A5.006,5.006,0,0,0,19,3ZM5,5H19a3,3,0,0,1,3,3H2A3,3,0,0,1,5,5ZM19,19H5a3,3,0,0,1-3-3V10H22v6A3,3,0,0,1,19,19Z" />
                   </svg>
                   <span
-                    class="flex-1 ms-3 whitespace-nowrap"
+                    className="flex-1 ms-3 whitespace-nowrap"
                     onClick={() => handleVisibility()}
                   >
                     Payment Methods
@@ -204,7 +204,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
                     <path d="M15.3,8.3,11.112,12.5,8.868,10.16a1,1,0,1,0-1.441,1.386l2.306,2.4a1.872,1.872,0,0,0,1.345.6h.033a1.873,1.873,0,0,0,1.335-.553l4.272-4.272A1,1,0,0,0,15.3,8.3Z" />
                   </svg>
                   <span
-                    class="flex-1 ms-3 whitespace-nowrap"
+                    className="flex-1 ms-3 whitespace-nowrap"
                     onClick={() => handleVisibility()}
                   >
                     Security
@@ -232,7 +232,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
                 <path d="M11.476,15a1,1,0,0,0-1,1v3a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H7.476a3,3,0,0,1,3,3V8a1,1,0,0,0,2,0V5a5.006,5.006,0,0,0-5-5H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H7.476a5.006,5.006,0,0,0,5-5V16A1,1,0,0,0,11.476,15Z" />
                 <path d="M22.867,9.879,18.281,5.293a1,1,0,1,0-1.414,1.414l4.262,4.263L6,11a1,1,0,0,0,0,2H6l15.188-.031-4.323,4.324a1,1,0,1,0,1.414,1.414l4.586-4.586A3,3,0,0,0,22.867,9.879Z" />
               </svg>
-              <span class="flex-1 font-medium ms-3 whitespace-nowrap">
+              <span className="flex-1 font-medium ms-3 whitespace-nowrap">
                 Logout
               </span>
             </div>
