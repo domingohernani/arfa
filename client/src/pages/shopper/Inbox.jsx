@@ -9,20 +9,24 @@ import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
 import ProductCard from "../../components/dynamic/ProductCard";
 
-const PreviewChat = ({ text, image, video }) => {
+const PreviewChat = ({ isYou, text, image, video }) => {
   if (text.length > 0) {
     return (
-      <div className="flex-grow text-xs text-gray-500 truncate">{text}</div>
+      <div className="flex-grow text-xs text-gray-500 truncate">
+        {isYou ? "You:" : ""} {text}
+      </div>
     );
   } else if (image) {
     return (
       <div className="flex-grow text-xs text-gray-500 truncate">
+        {isYou ? "You: " : ""}
         Sent an image
       </div>
     );
   } else if (video) {
     return (
       <div className="flex-grow text-xs text-gray-500 truncate">
+        {isYou ? "You: " : ""}
         Sent a video
       </div>
     );
@@ -138,6 +142,7 @@ const Inbox = () => {
                           chat.imageUrl ||
                           chat.videoUrl) && (
                           <PreviewChat
+                            isYou={chat.shopperId == chat.senderId}
                             text={chat.lastMessage}
                             image={chat.imageUrl}
                             video={chat.videoUrl}
@@ -224,9 +229,14 @@ const Inbox = () => {
                     </div>
 
                     <div className="flex flex-row items-center space-x-1">
-                      <div className="flex-grow text-xs text-gray-500 truncate">
-                        {chat.lastMessage}
-                      </div>
+                      {(chat.lastMessage || chat.imageUrl || chat.videoUrl) && (
+                        <PreviewChat
+                          isYou={chat.shopperId == chat.senderId}
+                          text={chat.lastMessage}
+                          image={chat.imageUrl}
+                          video={chat.videoUrl}
+                        />
+                      )}
                     </div>
                   </div>
                 </section>
