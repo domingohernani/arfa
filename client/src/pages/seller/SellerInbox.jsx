@@ -25,9 +25,6 @@ const SellerInbox = () => {
 
         unsubscribe = getChatsByShopId(loggedUser.userId, (chats) => {
           setChats(chats);
-          if (chats.length > 0) {
-            setSelectedChat(chats[0]);
-          }
           setLoading(false);
         });
       } catch (error) {
@@ -47,6 +44,12 @@ const SellerInbox = () => {
       }
     };
   }, [loggedUser, setChats, setSelectedChat]);
+
+  useEffect(() => {
+    if (chats.length > 0) {
+      setSelectedChat(chats[0]);
+    }
+  }, []);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
