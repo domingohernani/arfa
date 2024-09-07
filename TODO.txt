@@ -37,6 +37,9 @@ Order status flow (?? on 8 and 9)
 After makapag makapag order ni shopper kay seller, magkakaroon na siya ng document sa chats collection.
 In this way, makikita ni seller si shopper sa inbox. So that seller can contact shopper anytime
 
+!!! Important
+If every ipa implement a real time typing indicator, create a sub collection and use it in tracking
+
 
 For Presentation:
 1. Client-side routing, which means it changes the URL and updates the 
