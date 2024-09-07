@@ -196,16 +196,26 @@ const DisplayChat = memo(
                     <div
                       className={`p-3 text-sm ${
                         position ? "bg-gray-200" : "bg-arfagray border"
-                      } rounded lg:p-5`}
+                      } rounded lg:p-4 gap-3 flex flex-col`}
                     >
-                      {message.text}
+                      {message.text && <div>{message.text}</div>}
                       {message.imageUrl && (
-                        <img
-                          src={message.imageUrl}
-                          alt="Sent image"
-                          className="w-full h-auto mt-2 border rounded-lg"
-                        />
+                        <div className="relative group">
+                          <img
+                            src={message.imageUrl}
+                            alt="Sent image"
+                            className="w-full h-auto border rounded"
+                          />
+                          <ArrowsPointingOutIcon
+                            className="absolute hidden w-5 h-5 text-white cursor-pointer bottom-2 right-2 group-hover:block"
+                            onClick={() => {
+                              setFullScreenUrl(message.imageUrl);
+                              setFullScreen(true);
+                            }}
+                          />
+                        </div>
                       )}
+                      {!message.videoUrl && <VideoPlayer />}
                     </div>
                     <div className="text-sm text-gray-600">
                       {formatTimeAgo(message.timestamp)}
