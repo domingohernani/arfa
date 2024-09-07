@@ -10,8 +10,15 @@ import toast, { Toaster } from "react-hot-toast";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db, storage } from "../../firebase/firebase"; // Ensure storage is imported from Firebase
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import required storage functions
-import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/16/solid";
+import {
+  ChevronLeftIcon,
+  XMarkIcon,
+  ArrowsPointingOutIcon,
+  VideoCameraIcon,
+} from "@heroicons/react/16/solid";
 import Typing from "../Typing";
+import VideoPlayer from "./VideoPlayer";
+import PictureFullScreen from "./PictureFullScreen";
 
 const DisplayChat = memo(
   ({ chat, setBackButton, isSellerTyping, isShopperTyping }) => {
@@ -19,9 +26,18 @@ const DisplayChat = memo(
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const messagesEndRef = useRef(null);
+
+    // For image input
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
-    const fileInputRef = useRef(null);
+    const imageInputRef = useRef(null);
+    // For video input
+    const [videoPreview, setVideoPreview] = useState(null);
+    const [videoFile, setVideoFile] = useState(null);
+    const videoInputRef = useRef(null);
+
+    const [isFullScreen, setFullScreen] = useState(false);
+    const [fullScreenUrl, setFullScreenUrl] = useState("");
 
     useEffect(() => {
       const getMessagesRealtime = () => {
@@ -88,7 +104,7 @@ const DisplayChat = memo(
     }, [chat?.id]);
 
     const handleSendMessage = useCallback(async () => {
-      if (message.length === 0 && !imageFile) {
+      if (message.trim().length === 0 && !imageFile) {
         toast.error(
           "Your message is empty. Please enter a message or select an image before sending."
         );
@@ -97,32 +113,53 @@ const DisplayChat = memo(
 
       try {
         let imageUrl = null;
+        let videoUrl = null;
 
-        // If there is an image file, upload it to Firebase Storage
+        // If there is an image file
         if (imageFile) {
           const imageRef = ref(
             storage,
-            `chats/${chat.id}/${Date.now()}_${imageFile.name}`
+            `chats/images/${chat.id}/${Date.now()}_${imageFile.name}`
           );
           const snapshot = await uploadBytes(imageRef, imageFile);
           imageUrl = await getDownloadURL(snapshot.ref); // Get the download URL after uploading
         }
+        // If there is a video file
+        if (videoFile) {
+          const videoRef = ref(
+            storage,
+            `chats/videos/${chat.id}/${Date.now()}_${videoFile.name}`
+          );
+          const snapshot = await uploadBytes(videoRef, videoFile);
+          videoUrl = await getDownloadURL(snapshot.ref); // Get the download URL after uploading
+        }
 
-        // Send the message with text and image (if available)
-        const result = await sendMessage(chat.id, message.trim(), imageUrl);
+        // Send the message with text, image, and video (if available)
+        const result = await sendMessage(
+          chat.id,
+          message.trim(),
+          imageUrl,
+          videoUrl
+        );
 
-        // Clear the input field and image preview
+        // Clear the input field and image, video preview
         setMessage("");
         setImagePreview(null);
         setImageFile(null);
+        setVideoPreview(null);
+        setVideoFile(null);
       } catch (error) {
         console.error("Error sending message:", error);
         toast.error("Failed to send the message. Please try again.");
       }
     }, [message, imageFile, chat.id]);
 
-    const handleIconClick = () => {
-      fileInputRef.current.click();
+    const handleVideoIconClick = () => {
+      videoInputRef.current.click();
+    };
+
+    const handleImageIconClick = () => {
+      imageInputRef.current.click();
     };
 
     const handleImageChange = useCallback((e) => {
@@ -131,9 +168,18 @@ const DisplayChat = memo(
         const reader = new FileReader();
         reader.onloadend = () => {
           setImagePreview(reader.result);
-          setImageFile(file); // Track the selected image file
+          setImageFile(file);
         };
         reader.readAsDataURL(file);
+      }
+    }, []);
+
+    const handleVideoChange = useCallback((e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const videoURL = URL.createObjectURL(file);
+        setVideoPreview(videoURL); // Set the preview URL for the video element
+        setVideoFile(file); // Store the actual file if needed for upload
       }
     }, []);
 
@@ -215,7 +261,9 @@ const DisplayChat = memo(
                           />
                         </div>
                       )}
-                      {!message.videoUrl && <VideoPlayer />}
+                      {message.videoUrl && (
+                        <VideoPlayer url={message.videoUrl} />
+                      )}
                     </div>
                     <div className="text-sm text-gray-600">
                       {formatTimeAgo(message.timestamp)}
@@ -259,23 +307,39 @@ const DisplayChat = memo(
                   );
                 }}
               ></textarea>
-              {/* Image preview */}
-              {imagePreview && (
-                <div className="relative w-fit">
-                  <img
-                    src={imagePreview}
-                    alt="Selected"
-                    className="object-cover w-auto h-24 border"
-                  />
-                  <XMarkIcon
-                    className="absolute w-5 h-5 text-gray-600 cursor-pointer top-1 right-1"
-                    onClick={() => {
-                      setImagePreview(null);
-                      setImageFile(null);
-                    }}
-                  />
-                </div>
-              )}
+
+              <section className="flex items-end gap-3">
+                {/* Image preview */}
+                {imagePreview && (
+                  <div className="relative w-fit">
+                    <img
+                      src={imagePreview}
+                      alt="Selected"
+                      className="object-cover w-auto h-24 border"
+                    />
+                    <XMarkIcon
+                      className="absolute w-5 h-5 text-gray-600 cursor-pointer top-1 right-1"
+                      onClick={() => {
+                        setImagePreview(null);
+                        setImageFile(null);
+                      }}
+                    />
+                  </div>
+                )}
+                {/* Video preview */}
+                {videoPreview && (
+                  <div className="relative w-28">
+                    <VideoPlayer url={videoPreview} />
+                    <XMarkIcon
+                      className="absolute w-5 h-5 text-gray-600 cursor-pointer top-1 right-1"
+                      onClick={() => {
+                        setVideoFile(null);
+                        setVideoPreview(null);
+                      }}
+                    />
+                  </div>
+                )}
+              </section>
             </div>
             <div className="flex flex-row-reverse items-center justify-between px-3 py-2 border-t dark:border-gray-600">
               <button
@@ -288,7 +352,7 @@ const DisplayChat = memo(
                 <button
                   type="button"
                   className="inline-flex items-center justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
-                  onClick={handleIconClick}
+                  onClick={handleImageIconClick}
                 >
                   <svg
                     className="w-4 h-4"
@@ -301,12 +365,37 @@ const DisplayChat = memo(
                   </svg>
                   <span className="sr-only">Upload image</span>
                 </button>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100"
+                  onClick={handleVideoIconClick}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-5"
+                  >
+                    <path d="M4.5 4.5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h8.25a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3H4.5ZM19.94 18.75l-2.69-2.69V7.94l2.69-2.69c.944-.945 2.56-.276 2.56 1.06v11.38c0 1.336-1.616 2.005-2.56 1.06Z" />
+                  </svg>
+
+                  <span className="sr-only">Upload video</span>
+                </button>
+
                 <input
                   type="file"
                   accept="image/*"
-                  ref={fileInputRef}
+                  ref={imageInputRef}
                   className="hidden"
                   onChange={handleImageChange}
+                />
+
+                <input
+                  type="file"
+                  accept="video/*"
+                  ref={videoInputRef}
+                  className="hidden"
+                  onChange={handleVideoChange}
                 />
               </div>
             </div>
