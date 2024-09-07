@@ -314,6 +314,12 @@ const DisplayChat = memo(
         </section>
 
         <Toaster />
+        {isFullScreen && (
+          <PictureFullScreen
+            imageUrl={fullScreenUrl}
+            setState={setFullScreen}
+          />
+        )}
       </>
     );
   }
