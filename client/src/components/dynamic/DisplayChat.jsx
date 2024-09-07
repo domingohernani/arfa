@@ -292,20 +292,22 @@ const DisplayChat = memo(
                 placeholder="Write a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                onFocus={() => {
-                  updateTypingStatus(
-                    chat.id,
-                    chat.shopperInfo ? "seller" : "shopper",
-                    true
-                  );
-                }}
-                onBlur={() => {
-                  updateTypingStatus(
-                    chat.id,
-                    chat.shopperInfo ? "seller" : "shopper",
-                    false
-                  );
-                }}
+                // TODO; use a sub collection if ever 
+                // ipaimplement a real time typing indicator
+                // onFocus={() => {
+                //   updateTypingStatus(
+                //     chat.id,
+                //     chat.shopperInfo ? "seller" : "shopper",
+                //     true
+                //   );
+                // }}
+                // onBlur={() => {
+                //   updateTypingStatus(
+                //     chat.id,
+                //     chat.shopperInfo ? "seller" : "shopper",
+                //     false
+                //   );
+                // }}
               ></textarea>
 
               <section className="flex items-end gap-3">
