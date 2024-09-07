@@ -40,6 +40,9 @@ const DisplayChat = memo(
     const [fullScreenUrl, setFullScreenUrl] = useState("");
 
     useEffect(() => {
+      if (!chat.id) {
+        return;
+      }
       const getMessagesRealtime = () => {
         const q = query(
           collection(db, "chats", chat.id, "messages"),
@@ -187,23 +190,30 @@ const DisplayChat = memo(
       setBackButton(false);
     }, [setBackButton]);
 
+    if (!chat.id) {
+      return <div>Select an convo</div>;
+    }
+
     return (
       <>
         <div className="flex flex-row items-center justify-between flex-none px-5 py-2 border-b bg-arfagray">
           <div className="flex items-center justify-between w-full">
-            <div className="flex flex-row items-center gap-3">
-              <DisplayAvatar
-                url={messenger.profileUrl || messenger.logo}
-                className="w-10 h-10"
-                name={messenger.firstName || messenger.name}
-              ></DisplayAvatar>
+            {messenger && (
+              <div className="flex flex-row items-center gap-3">
+                <DisplayAvatar
+                  url={messenger.profileUrl || messenger.logo}
+                  className="w-10 h-10"
+                  name={messenger.firstName || messenger.name}
+                ></DisplayAvatar>
 
-              <div className="text-sm font-medium">
-                {messenger.firstName && messenger.lastName
-                  ? messenger.firstName + " " + messenger.lastName
-                  : messenger.name}
+                <div className="text-sm font-medium">
+                  {messenger.firstName && messenger.lastName
+                    ? messenger.firstName + " " + messenger.lastName
+                    : messenger.name}
+                </div>
               </div>
-            </div>
+            )}
+
             {setBackButton ? (
               <ChevronLeftIcon
                 className="w-5 h-5 cursor-pointer"
@@ -292,7 +302,7 @@ const DisplayChat = memo(
                 placeholder="Write a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                // TODO; use a sub collection if ever 
+                // TODO; use a sub collection if ever
                 // ipaimplement a real time typing indicator
                 // onFocus={() => {
                 //   updateTypingStatus(
