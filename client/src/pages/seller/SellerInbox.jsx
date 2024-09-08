@@ -41,7 +41,7 @@ const SellerInbox = () => {
         unsubscribe();
       }
     };
-  }, [loggedUser, setChats, setSelectedChat]);
+  }, [setChats, setSelectedChat]);
 
   useEffect(() => {
     if (chats.length > 0) {
@@ -127,11 +127,7 @@ const SellerInbox = () => {
 
           <div className="flex flex-col flex-1 w-3/5 bg-white border-l">
             {chats.length > 0 ? (
-              selectedChat && (
-                <DisplayChat
-                  chat={selectedChat}
-                />
-              )
+              selectedChat && <DisplayChat chat={selectedChat} />
             ) : (
               <div className="flex flex-col items-center gap-3 mt-28">
                 <img src={noResult} alt="No Result" className="w-64 h-auto" />
