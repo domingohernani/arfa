@@ -164,7 +164,6 @@ const Inbox = () => {
               selectedChat && (
                 <DisplayChat
                   chat={selectedChat}
-                  isSellerTyping={selectedChat.isSellerTyping}
                 />
               )
             ) : (
@@ -256,7 +255,6 @@ const Inbox = () => {
               <DisplayChat
                 chat={selectedChat}
                 setBackButton={setMobileViewChat}
-                isSellerTyping={selectedChat.isSellerTyping}
               />
             )
           ) : (

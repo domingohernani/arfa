@@ -14,8 +14,6 @@ const SellerInbox = () => {
   const [loading, setLoading] = useState(false);
   const [mobileViewChat, setMobileViewChat] = useState(false);
 
-  console.log(typeof chats);
-
   useEffect(() => {
     let unsubscribe;
 
@@ -132,7 +130,6 @@ const SellerInbox = () => {
               selectedChat && (
                 <DisplayChat
                   chat={selectedChat}
-                  isShopperTyping={selectedChat.isShopperTyping}
                 />
               )
             ) : (
@@ -219,7 +216,6 @@ const SellerInbox = () => {
               <DisplayChat
                 chat={selectedChat}
                 setBackButton={setMobileViewChat}
-                isShopperTyping={selectedChat.isShopperTyping}
               />
             )
           ) : (
