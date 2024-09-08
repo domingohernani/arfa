@@ -51,9 +51,6 @@ const Inbox = () => {
         const loggedUser = await getUserInfo();
         unsubscribe = getChatsByShopperId(loggedUser.id, (chats) => {
           setChats(chats);
-          if (chats.length > 0) {
-            setSelectedChat(chats[0]);
-          }
           setLoading(false);
         });
       } catch (error) {
@@ -70,6 +67,12 @@ const Inbox = () => {
       }
     };
   }, [setChats, setSelectedChat]);
+
+  useEffect(() => {
+    if (chats.length > 0) {
+      setSelectedChat(chats[0]);
+    }
+  }, []);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
@@ -161,7 +164,6 @@ const Inbox = () => {
               selectedChat && (
                 <DisplayChat
                   chat={selectedChat}
-                  isSellerTyping={selectedChat.isSellerTyping}
                 />
               )
             ) : (
@@ -253,7 +255,6 @@ const Inbox = () => {
               <DisplayChat
                 chat={selectedChat}
                 setBackButton={setMobileViewChat}
-                isSellerTyping={selectedChat.isSellerTyping}
               />
             )
           ) : (

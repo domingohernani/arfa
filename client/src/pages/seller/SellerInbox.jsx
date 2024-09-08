@@ -14,8 +14,6 @@ const SellerInbox = () => {
   const [loading, setLoading] = useState(false);
   const [mobileViewChat, setMobileViewChat] = useState(false);
 
-  console.log(typeof chats);
-
   useEffect(() => {
     let unsubscribe;
 
@@ -25,9 +23,6 @@ const SellerInbox = () => {
 
         unsubscribe = getChatsByShopId(loggedUser.userId, (chats) => {
           setChats(chats);
-          if (chats.length > 0) {
-            setSelectedChat(chats[0]);
-          }
           setLoading(false);
         });
       } catch (error) {
@@ -46,7 +41,13 @@ const SellerInbox = () => {
         unsubscribe();
       }
     };
-  }, [loggedUser, setChats, setSelectedChat]);
+  }, [setChats, setSelectedChat]);
+
+  useEffect(() => {
+    if (chats.length > 0) {
+      setSelectedChat(chats[0]);
+    }
+  }, []);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
@@ -126,12 +127,7 @@ const SellerInbox = () => {
 
           <div className="flex flex-col flex-1 w-3/5 bg-white border-l">
             {chats.length > 0 ? (
-              selectedChat && (
-                <DisplayChat
-                  chat={selectedChat}
-                  isShopperTyping={selectedChat.isShopperTyping}
-                />
-              )
+              selectedChat && <DisplayChat chat={selectedChat} />
             ) : (
               <div className="flex flex-col items-center gap-3 mt-28">
                 <img src={noResult} alt="No Result" className="w-64 h-auto" />
@@ -216,7 +212,6 @@ const SellerInbox = () => {
               <DisplayChat
                 chat={selectedChat}
                 setBackButton={setMobileViewChat}
-                isShopperTyping={selectedChat.isShopperTyping}
               />
             )
           ) : (
