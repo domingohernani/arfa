@@ -22,10 +22,12 @@ const UserProfile = () => {
   const { loggedUser: user, setLoggedUser: setUser } = useStore();
   const { profileUrl, setProfileUrl } = useStore();
   const [editForm, setEditForm] = useState(false);
-  const regionRef = useRef(null); // Create a ref for the select element
+  const regionRef = useRef(null);
+  const profileRef = useRef(null);
 
   // States for form fields
 
+  const [profile, setProfile] = useState();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -95,6 +97,7 @@ const UserProfile = () => {
 
   const handleCancelBtn = async () => {
     setEditForm(false);
+    profileRef.current.value = "";
     await fetchUserInfo();
 
     // select the first option
@@ -137,12 +140,19 @@ const UserProfile = () => {
                 </Tooltip>
               </div>
               <input
+                ref={profileRef}
                 type="file"
                 id="ownerid"
                 className={`block w-full pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen ${
                   !editForm ? "cursor-not-allowed" : ""
                 }`}
                 disabled={editForm ? false : true}
+                value={profile}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  console.log(file);
+                }}
+                accept="image/*"
               />
             </section>
           </section>
