@@ -9,6 +9,12 @@ import {
 import { getUserInfo } from "../../firebase/user";
 import { getImageDownloadUrl } from "../../firebase/photos";
 import { useStore } from "../../stores/useStore";
+import {
+  regions,
+  provinces,
+  cities,
+  barangays,
+} from "select-philippines-address";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(false);
@@ -27,6 +33,12 @@ const UserProfile = () => {
   const [province, setProvince] = useState([]);
   const [region, setRegion] = useState([]);
 
+  // State to hold the selected value for each dropdown
+  const [selectedBarangay, setSelectedBarangay] = useState("");
+  const [selectedCityMunicipal, setSelectedCityMunicipal] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
+
   useEffect(() => {
     const fetchShopper = async () => {
       setLoading(true);
@@ -42,7 +54,17 @@ const UserProfile = () => {
         setBarangay(result.location.barangay);
         setCityMunicipal(result.location.city);
         setProvince(result.location.province);
-        setRegion(result.location.region);
+        if (result.location.region) {
+          setRegion(result.location.region);
+        } else {
+          const fetchAddress = async () => {
+            const reg = await regions();
+            setRegion(reg);
+            console.log(reg);
+          };
+
+          fetchAddress();
+        }
 
         const profileImageUrl = await getImageDownloadUrl(result.profileUrl);
         setProfileUrl(profileImageUrl);
@@ -56,13 +78,21 @@ const UserProfile = () => {
     fetchShopper();
   }, [setUser, setProfileUrl]);
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    console.log(selectedRegion);
+  };
+
   if (loading && !user) return <div>Loadingg..</div>;
 
   return (
     <>
       <section className="px-4 md:px-8">
         <div className="font-medium">Profile Information</div>
-        <form className="w-full px-4 py-5 mx-auto mt-5 border md:px-8">
+        <form
+          className="w-full px-4 py-5 mx-auto mt-5 border md:px-8"
+          onSubmit={handleFormSubmit}
+        >
           <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
             <div className="w-auto h-96">
               <img
@@ -89,8 +119,9 @@ const UserProfile = () => {
               <input
                 type="file"
                 id="ownerid"
-                className="block w-full pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen"
-                required
+                className={`block w-full pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen ${
+                  !editForm ? "cursor-not-allowed" : ""
+                }`}
                 disabled={editForm ? false : true}
               />
             </section>
@@ -115,7 +146,9 @@ const UserProfile = () => {
                 <input
                   type="text"
                   id="password"
-                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
                   required
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
@@ -142,7 +175,9 @@ const UserProfile = () => {
                 <input
                   type="text"
                   id="confirmpassword"
-                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
@@ -152,7 +187,7 @@ const UserProfile = () => {
             </div>
           </section>
 
-          <section className="grid items-center justify-center grid-cols-2 gap-3 mb-3 sm:grid-cols-3">
+          <section className="grid items-center justify-center grid-cols-2 gap-3 mt-3 mb-3 sm:grid-cols-3">
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <label
@@ -185,7 +220,9 @@ const UserProfile = () => {
                       setPhoneNumber(input);
                     }
                   }}
-                  className="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                  className={`rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
                   placeholder="09123456789"
                   required
                   maxLength={11}
@@ -209,38 +246,51 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              <select
-                name="region"
-                id="region"
-                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
-                // onChange={async (e) => {
-                //   const province = await provinces(e.target.value);
-                //   setProvince(province);
-                //   setSelectedRegion(
-                //     e.target.options[e.target.selectedIndex].text
-                //   );
+              {Array.isArray(region) ? (
+                <select
+                  name="region"
+                  id="region"
+                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
+                  onChange={async (e) => {
+                    const province = await provinces(e.target.value);
+                    setProvince(province);
+                    setSelectedRegion(
+                      e.target.options[e.target.selectedIndex].text
+                    );
 
-                //   setCityMunicipal([]);
-                //   setBarangay([]);
-                //   setStreetNumber("");
-                // }}
-              >
-                <option
-                  value=""
-                  // onClick={() => {
-                  //   setCityMunicipal([]);
-                  //   setBarangay([]);
-                  //   setStreetNumber("");
-                  // }}
+                    setCityMunicipal([]);
+                    setBarangay([]);
+                    setStreetNumber("");
+                  }}
+                  disabled={editForm ? false : true}
                 >
-                  Select Region
-                </option>
-                {/* {region.map((reg) => {
+                  <option
+                    value=""
+                    onClick={() => {
+                      setCityMunicipal([]);
+                      setBarangay([]);
+                      setStreetNumber("");
+                    }}
+                  >
+                    Select Region
+                  </option>
+                  {region.map((reg) => {
                     return (
                       <option value={reg.region_code}>{reg.region_name}</option>
                     );
-                  })} */}
-              </select>
+                  })}
+                </select>
+              ) : (
+                <section
+                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  <option value="">{region}</option>
+                </section>
+              )}
             </div>
 
             <div className="flex-1">
@@ -258,38 +308,49 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              <select
-                name="province"
-                id="province"
-                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
-                // onChange={async (e) => {
-                //   const cityMunicipal = await cities(e.target.value);
-                //   setCityMunicipal(cityMunicipal);
-                //   setSelectedProvince(
-                //     e.target.options[e.target.selectedIndex].text
-                //   );
+              {Array.isArray(province) ? (
+                <select
+                  name="province"
+                  id="province"
+                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  onChange={async (e) => {
+                    const cityMunicipal = await cities(e.target.value);
+                    setCityMunicipal(cityMunicipal);
+                    setSelectedProvince(
+                      e.target.options[e.target.selectedIndex].text
+                    );
 
-                //   setBarangay([]);
-                //   setStreetNumber("");
-                // }}
-              >
-                <option
-                // value=""
-                // onClick={() => {
-                //   setBarangay([]);
-                //   setStreetNumber("");
-                // }}
+                    setBarangay([]);
+                    setStreetNumber("");
+                  }}
+                  disabled={editForm ? false : true}
                 >
-                  Select Province
-                </option>
-                {/* {province.map((reg) => {
+                  <option
+                    value=""
+                    onClick={() => {
+                      setBarangay([]);
+                      setStreetNumber("");
+                    }}
+                  >
+                    Select Province
+                  </option>
+                  {province.map((reg) => {
                     return (
                       <option value={reg.province_code}>
                         {reg.province_name}
                       </option>
                     );
-                  })} */}
-              </select>
+                  })}
+                </select>
+              ) : (
+                <section
+                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  <option value="">{province || "Select Province"}</option>
+                </section>
+              )}
             </div>
 
             <div className="flex-1">
@@ -307,34 +368,47 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              <select
-                name="citymunicipal"
-                id="citymunicipal"
-                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
-                // onChange={async (e) => {
-                //   const barangay = await barangays(e.target.value);
-                //   setBarangay(barangay);
-                //   setSelectedCityMunicipal(
-                //     e.target.options[e.target.selectedIndex].text
-                //   );
+              {Array.isArray(cityMunicipal) ? (
+                <select
+                  name="citymunicipal"
+                  id="citymunicipal"
+                  className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  onChange={async (e) => {
+                    const barangay = await barangays(e.target.value);
+                    setBarangay(barangay);
+                    setSelectedCityMunicipal(
+                      e.target.options[e.target.selectedIndex].text
+                    );
 
-                //   setStreetNumber("");
-                // }}
-              >
-                <option
-                  value=""
-                  // onClick={() => {
-                  //   setStreetNumber("");
-                  // }}
+                    setStreetNumber("");
+                  }}
+                  disabled={editForm ? false : true}
                 >
-                  Select City/Municipal
-                </option>
-                {/* {cityMunicipal.map((reg) => {
+                  <option
+                    value=""
+                    onClick={() => {
+                      setStreetNumber("");
+                    }}
+                  >
+                    Select City/Municipal
+                  </option>
+                  {cityMunicipal.map((reg) => {
                     return (
                       <option value={reg.city_code}>{reg.city_name}</option>
                     );
-                  })} */}
-              </select>
+                  })}
+                </select>
+              ) : (
+                <section
+                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  <option value="">
+                    {cityMunicipal || "Select City/Municipal"}
+                  </option>
+                </section>
+              )}
             </div>
 
             <div className="flex-1">
@@ -352,31 +426,42 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              <select
-                name="barangay"
-                id="barangay"
-                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
-                // onChange={async (e) => {
-                //   setSelectedBarangay(
-                //     e.target.options[e.target.selectedIndex].text
-                //   );
-                //   setStreetNumber("");
-                // }}
-              >
-                <option
-                  value=""
-                  // onClick={() => {
-                  //   setStreetNumber("");
-                  // }}
+              {Array.isArray(barangay) ? (
+                <select
+                  name="barangay"
+                  id="barangay"
+                  className="border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                  onChange={async (e) => {
+                    setSelectedBarangay(
+                      e.target.options[e.target.selectedIndex].text
+                    );
+                    setStreetNumber("");
+                  }}
+                  disabled={editForm ? false : true}
                 >
-                  Select Barangay
-                </option>
-                {/* {barangay.map((reg) => {
+                  <option
+                    value=""
+                    onClick={() => {
+                      setStreetNumber("");
+                    }}
+                  >
+                    Select Barangay
+                  </option>
+                  {barangay.map((reg) => {
                     return (
                       <option value={reg.brgy_code}>{reg.brgy_name}</option>
                     );
-                  })} */}
-              </select>
+                  })}
+                </select>
+              ) : (
+                <section
+                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                    !editForm ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  <option value="">{barangay || "Select Barangay"}</option>
+                </section>
+              )}
             </div>
 
             <div className="flex-1">
@@ -397,9 +482,11 @@ const UserProfile = () => {
               <input
                 type="text"
                 id="streetnumber"
-                value={streetNumber}
+                value={streetNumber || ""}
                 onChange={(e) => setStreetNumber(e.target.value)}
-                className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+                className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                  !editForm ? "cursor-not-allowed" : ""
+                }`}
                 required
                 disabled={editForm ? false : true}
               />
@@ -418,7 +505,10 @@ const UserProfile = () => {
           {editForm && (
             <>
               <div className="flex gap-3 w-fit">
-                <button className="text-white flex-1 bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-7 py-2.5 text-center ">
+                <button
+                  className="text-white flex-1 bg-arfagreen font-medium rounded-md text-sm w-full sm:w-auto px-7 py-2.5 text-center "
+                  type="submit"
+                >
                   Save
                 </button>
                 <button
