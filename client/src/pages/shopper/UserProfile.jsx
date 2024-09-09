@@ -15,6 +15,7 @@ import {
   cities,
   barangays,
 } from "select-philippines-address";
+import { useCallback } from "react";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(false);
@@ -39,48 +40,53 @@ const UserProfile = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
 
-  useEffect(() => {
-    const fetchShopper = async () => {
-      setLoading(true);
-      try {
-        const result = await getUserInfo();
-        setUser(result);
+  const fetchUserInfo = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await getUserInfo();
+      setUser(result);
 
-        // Set form fields after fetching user data
-        setFirstName(result.firstName);
-        setLastName(result.lastName);
-        setPhoneNumber(result.phoneNumber);
-        setStreetNumber(result.location.street);
-        setBarangay(result.location.barangay);
-        setCityMunicipal(result.location.city);
-        setProvince(result.location.province);
-        if (result.location.region) {
-          setRegion(result.location.region);
-        } else {
-          const fetchAddress = async () => {
-            const reg = await regions();
-            setRegion(reg);
-            console.log(reg);
-          };
+      // Set form fields after fetching user data
+      setFirstName(result.firstName);
+      setLastName(result.lastName);
+      setPhoneNumber(result.phoneNumber);
+      setStreetNumber(result.location.street);
+      setBarangay(result.location.barangay);
+      setCityMunicipal(result.location.city);
+      setProvince(result.location.province);
+      if (result.location.region) {
+        setRegion(result.location.region);
+      } else {
+        const fetchAddress = async () => {
+          const reg = await regions();
+          setRegion(reg);
+          console.log(reg);
+        };
 
-          fetchAddress();
-        }
-
-        const profileImageUrl = await getImageDownloadUrl(result.profileUrl);
-        setProfileUrl(profileImageUrl);
-      } catch (error) {
-        console.error("Error fetching logged user: ", error);
-      } finally {
-        setLoading(false);
+        fetchAddress();
       }
-    };
 
-    fetchShopper();
+      const profileImageUrl = await getImageDownloadUrl(result.profileUrl);
+      setProfileUrl(profileImageUrl);
+    } catch (error) {
+      console.error("Error fetching logged user: ", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUserInfo();
   }, [setUser, setProfileUrl]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     console.log(selectedRegion);
+  };
+
+  const handleCancelBtn = async () => {
+    setEditForm(false);
+    fetchUserInfo();
   };
 
   if (loading && !user) return <div>Loadingg..</div>;
@@ -513,7 +519,7 @@ const UserProfile = () => {
                 </button>
                 <button
                   className=" flex-1 border text-black border-gray-400 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center "
-                  onClick={() => setEditForm(false)}
+                  onClick={handleCancelBtn}
                 >
                   Cancel
                 </button>
