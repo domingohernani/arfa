@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Tooltip } from "flowbite-react";
 import {
   QuestionMarkCircleIcon,
@@ -22,6 +22,7 @@ const UserProfile = () => {
   const { loggedUser: user, setLoggedUser: setUser } = useStore();
   const { profileUrl, setProfileUrl } = useStore();
   const [editForm, setEditForm] = useState(false);
+  const regionRef = useRef(null); // Create a ref for the select element
 
   // States for form fields
 
@@ -60,7 +61,6 @@ const UserProfile = () => {
         const fetchAddress = async () => {
           const reg = await regions();
           setRegion(reg);
-          console.log(reg);
         };
 
         fetchAddress();
@@ -81,12 +81,26 @@ const UserProfile = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log(selectedRegion);
+
+    // Log all values
+    console.log("First Name: ", firstName);
+    console.log("Last Name: ", lastName);
+    console.log("Phone Number: ", phoneNumber);
+    console.log("Street Number: ", streetNumber);
+    console.log("Selected Barangay: ", selectedBarangay);
+    console.log("Selected City/Municipal: ", selectedCityMunicipal);
+    console.log("Selected Province: ", selectedProvince);
+    console.log("Selected Region: ", selectedRegion);
   };
 
   const handleCancelBtn = async () => {
     setEditForm(false);
-    fetchUserInfo();
+    await fetchUserInfo();
+
+    // select the first option
+    if (regionRef.current) {
+      regionRef.current.selectedIndex = 0;
+    }
   };
 
   if (loading && !user) return <div>Loadingg..</div>;
@@ -254,6 +268,7 @@ const UserProfile = () => {
               </div>
               {Array.isArray(region) ? (
                 <select
+                  ref={regionRef}
                   name="region"
                   id="region"
                   className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
