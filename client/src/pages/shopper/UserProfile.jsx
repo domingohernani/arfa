@@ -27,7 +27,7 @@ const UserProfile = () => {
 
   // States for form fields
 
-  const [profile, setProfile] = useState();
+  const [profile, setProfile] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -85,6 +85,7 @@ const UserProfile = () => {
     e.preventDefault();
 
     // Log all values
+    console.log("Profile: ", profile);
     console.log("First Name: ", firstName);
     console.log("Last Name: ", lastName);
     console.log("Phone Number: ", phoneNumber);
@@ -147,11 +148,8 @@ const UserProfile = () => {
                   !editForm ? "cursor-not-allowed" : ""
                 }`}
                 disabled={editForm ? false : true}
-                value={profile}
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  console.log(file);
-                }}
+                // value={profile}
+                onChange={(e) => setProfile(e.target.files[0])}
                 accept="image/*"
               />
             </section>
