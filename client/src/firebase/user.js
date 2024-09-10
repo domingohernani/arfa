@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { updatePhoto } from "./photos";
 
 export const getUserInfo = async () => {
   return new Promise((resolve, reject) => {
@@ -42,6 +43,14 @@ export const getUserInfo = async () => {
       }
     });
   });
+};
+
+// parameter should be an object = Object
+export const updateUserInfo = async (data) => {
+  if (data.profile) {
+    const result = await updatePhoto("profiles", data.profile, data.profileUrl);
+    console.log(result);
+  }
 };
 
 export const getLoggedShopInfo = async () => {
