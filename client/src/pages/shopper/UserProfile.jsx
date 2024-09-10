@@ -6,7 +6,7 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/react/24/solid";
-import { getUserInfo } from "../../firebase/user";
+import { getUserInfo, updateUserInfo } from "../../firebase/user";
 import { getImageDownloadUrl } from "../../firebase/photos";
 import { useStore } from "../../stores/useStore";
 import {
@@ -81,19 +81,23 @@ const UserProfile = () => {
     fetchUserInfo();
   }, [setUser, setProfileUrl]);
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    // Log all values
-    console.log("Profile: ", profile);
-    console.log("First Name: ", firstName);
-    console.log("Last Name: ", lastName);
-    console.log("Phone Number: ", phoneNumber);
-    console.log("Street Number: ", streetNumber);
-    console.log("Selected Barangay: ", selectedBarangay);
-    console.log("Selected City/Municipal: ", selectedCityMunicipal);
-    console.log("Selected Province: ", selectedProvince);
-    console.log("Selected Region: ", selectedRegion);
+    const formData = {
+      profile: profile,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      streetNumber: streetNumber,
+      selectedBarangay: selectedBarangay,
+      selectedCityMunicipal: selectedCityMunicipal,
+      selectedProvince: selectedProvince,
+      selectedRegion: selectedRegion,
+      profileUrl: user.profileUrl,
+    };
+
+    const result = await updateUserInfo(formData);
   };
 
   const handleCancelBtn = async () => {

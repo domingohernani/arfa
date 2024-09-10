@@ -1,6 +1,6 @@
 import { doc, getDoc } from "firebase/firestore";
 import { storage } from "./firebase";
-import { getDownloadURL, listAll, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 
 // ex; images/adf4j442342j42h/image.jpg
 export const getImageDownloadUrl = async (path) => {
@@ -38,5 +38,28 @@ export const getAllImageDownloadUrl = async (path) => {
   } catch (error) {
     console.error("Error getting download URL:", error);
     return null;
+  }
+};
+
+export const updatePhoto = async (path, file, oldPhotoPath = null) => {
+  try {
+    const uniqueFileName = `${Date.now()}_${file.name}`;
+    const photoPath = `${path}/${uniqueFileName}`;
+    const photoRef = ref(storage, photoPath);
+
+    if (oldPhotoPath) {
+      const oldPhotoRef = ref(storage, oldPhotoPath);
+      await deleteObject(oldPhotoRef);
+    }
+
+
+    await uploadBytes(photoRef, file);
+
+    const downloadUrl = await getDownloadURL(photoRef);
+
+    return { path: photoPath, url: downloadUrl };
+  } catch (error) {
+    console.error("Error updating photo:", error);
+    throw error;
   }
 };
