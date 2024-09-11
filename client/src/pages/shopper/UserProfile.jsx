@@ -16,6 +16,7 @@ import {
   barangays,
 } from "select-philippines-address";
 import { useCallback } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const UserProfile = () => {
   const [loading, setLoading] = useState(false);
@@ -85,7 +86,6 @@ const UserProfile = () => {
     e.preventDefault();
 
     const formData = {
-      profile: profile,
       firstName: firstName,
       lastName: lastName,
       phoneNumber: phoneNumber,
@@ -97,7 +97,24 @@ const UserProfile = () => {
       profileUrl: user.profileUrl,
     };
 
-    const result = await updateUserInfo(formData);
+    console.log("form data", formData);
+
+    const { success, url, location } = await updateUserInfo(
+      user.id,
+      formData,
+      profile
+    );
+
+    if (success) {
+      toast.success("User information has been successfully updated!");
+      if (url) {
+        setProfileUrl(url);
+      }
+    } else {
+      toast.error(
+        "Something went wrong. User information could not be updated."
+      );
+    }
   };
 
   const handleCancelBtn = async () => {
@@ -115,6 +132,7 @@ const UserProfile = () => {
 
   return (
     <>
+      <Toaster />
       <section className="px-4 md:px-8">
         <div className="font-medium">Profile Information</div>
         <form
@@ -123,11 +141,22 @@ const UserProfile = () => {
         >
           <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
             <div className="w-auto h-96">
-              <img
-                src={profileUrl}
-                alt="profile image"
-                className="object-cover w-full h-full"
-              />
+              {profileUrl ? (
+                <img
+                  key={profileUrl}
+                  src={profileUrl}
+                  alt="profile image"
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div
+                  className={
+                    "min-w-96 w-full h-full text-gray-600 text-8xl bg-arfagray flex justify-center items-center "
+                  }
+                >
+                  {firstName && lastName ? `${firstName[0]}${lastName[0]}` : ""}
+                </div>
+              )}
             </div>
             <section className="w-full gap-3 md:flex-1">
               <div className="flex items-center justify-between">
