@@ -6,9 +6,11 @@ import {
   query,
   where,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { updatePhoto } from "./photos";
 
 export const getUserInfo = async () => {
   return new Promise((resolve, reject) => {
@@ -42,6 +44,50 @@ export const getUserInfo = async () => {
       }
     });
   });
+};
+
+// parameter should be an object = Object
+export const updateUserInfo = async (id, data, profile) => {
+  let url = "";
+  if (profile) {
+    const result = await updatePhoto("profiles", profile, data.profileUrl);
+    data.profileUrl = result.path;
+    url = result.url;
+  }
+
+  const location = {
+    barangay: data.selectedBarangay,
+    city: data.selectedCityMunicipal,
+    province: data.selectedProvince,
+    region: data.selectedRegion,
+    street: data.streetNumber,
+  };
+
+  // check if all properties of the location object are non-empty
+  const isValidLocation = Object.values(location).every(
+    (value) => value !== ""
+  );
+
+  const updateData = {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    phoneNumber: data.phoneNumber,
+    profileUrl: data.profileUrl,
+  };
+
+  if (isValidLocation) {
+    updateData.location = location;
+  }
+
+  const userDocRef = doc(db, "users", id);
+
+  try {
+    await updateDoc(userDocRef, updateData);
+    return { success: true, url: url, location: location };
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    return false;
+  }
 };
 
 export const getLoggedShopInfo = async () => {
