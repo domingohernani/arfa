@@ -44,6 +44,13 @@ const UserProfile = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
 
+  // State to hold the old value for each dropdown; when canceling
+  const [origSelectedBarangay, setOrigSelectedBarangay] = useState("");
+  const [origSelectedCityMunicipal, setOrigSelectedCityMunicipal] =
+    useState("");
+  const [origSelectedProvince, setOrigSelectedProvince] = useState("");
+  const [origSelectedRegion, setOrigSelectedRegion] = useState("");
+
   const fetchUserInfo = useCallback(async () => {
     setLoading(true);
     try {
@@ -55,19 +62,30 @@ const UserProfile = () => {
       setLastName(result.lastName);
       setPhoneNumber(result.phoneNumber);
       setStreetNumber(result.location.street);
-      setBarangay(result.location.barangay);
-      setCityMunicipal(result.location.city);
-      setProvince(result.location.province);
+
       if (result.location.region) {
-        setRegion(result.location.region);
+        const fetchRegion = async () => {
+          const fetchedReg = await regions();
+          setRegion(fetchedReg);
+          setSelectedRegion(result.location.region);
+          setSelectedBarangay(result.location.barangay);
+          setSelectedCityMunicipal(result.location.city);
+          setSelectedProvince(result.location.province);
+        };
+
+        fetchRegion();
       } else {
-        const fetchAddress = async () => {
+        const fetchRegion = async () => {
           const reg = await regions();
           setRegion(reg);
         };
-
-        fetchAddress();
+        fetchRegion();
       }
+
+      setOrigSelectedRegion(result.location.region);
+      setOrigSelectedProvince(result.location.province);
+      setOrigSelectedCityMunicipal(result.location.city);
+      setOrigSelectedBarangay(result.location.barangay);
 
       const profileImageUrl = await getImageDownloadUrl(result.profileUrl);
       setProfileUrl(profileImageUrl);
@@ -86,10 +104,10 @@ const UserProfile = () => {
     e.preventDefault();
 
     const formData = {
-      firstName: firstName,
-      lastName: lastName,
-      phoneNumber: phoneNumber,
-      streetNumber: streetNumber,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      phoneNumber: phoneNumber.trim(),
+      streetNumber: streetNumber.trim(),
       selectedBarangay: selectedBarangay,
       selectedCityMunicipal: selectedCityMunicipal,
       selectedProvince: selectedProvince,
@@ -97,19 +115,13 @@ const UserProfile = () => {
       profileUrl: user.profileUrl,
     };
 
-    console.log("form data", formData);
-
-    const { success, url, location } = await updateUserInfo(
-      user.id,
-      formData,
-      profile
-    );
+    const { success } = await updateUserInfo(user.id, formData, profile);
 
     if (success) {
       toast.success("User information has been successfully updated!");
-      if (url) {
-        setProfileUrl(url);
-      }
+      fetchUserInfo();
+      setProfile("");
+      setEditForm(false);
     } else {
       toast.error(
         "Something went wrong. User information could not be updated."
@@ -122,10 +134,10 @@ const UserProfile = () => {
     profileRef.current.value = "";
     await fetchUserInfo();
 
-    // select the first option
-    if (regionRef.current) {
-      regionRef.current.selectedIndex = 0;
-    }
+    setSelectedRegion(origSelectedRegion);
+    setSelectedProvince(origSelectedProvince);
+    setSelectedCityMunicipal(origSelectedCityMunicipal);
+    setSelectedBarangay(origSelectedBarangay);
   };
 
   if (loading && !user) return <div>Loadingg..</div>;
@@ -140,7 +152,7 @@ const UserProfile = () => {
           onSubmit={handleFormSubmit}
         >
           <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
-            <div className="w-auto h-96">
+            <div className="w-full max-w-96 h-96">
               {profileUrl ? (
                 <img
                   key={profileUrl}
@@ -292,6 +304,8 @@ const UserProfile = () => {
               </div>
             </div>
 
+            {/* {!editForm ? (
+              <> */}
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <label
@@ -307,44 +321,48 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              {Array.isArray(region) ? (
-                <select
-                  ref={regionRef}
-                  name="region"
-                  id="region"
-                  className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
-                    !editForm ? "cursor-not-allowed" : ""
-                  }`}
-                  onChange={async (e) => {
-                    const province = await provinces(e.target.value);
-                    setProvince(province);
-                    setSelectedRegion(
-                      e.target.options[e.target.selectedIndex].text
-                    );
+              <select
+                ref={regionRef}
+                name="region"
+                id="region"
+                className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+                  !editForm ? "cursor-not-allowed" : ""
+                }`}
+                onChange={async (e) => {
+                  const province = await provinces(e.target.value);
+                  setProvince(province);
+                  setSelectedRegion(
+                    e.target.options[e.target.selectedIndex].text
+                  );
 
+                  setCityMunicipal([]);
+                  setBarangay([]);
+                  setStreetNumber("");
+                }}
+                disabled={editForm ? false : true}
+              >
+                <option
+                  value=""
+                  onClick={() => {
                     setCityMunicipal([]);
                     setBarangay([]);
                     setStreetNumber("");
                   }}
-                  disabled={editForm ? false : true}
                 >
-                  <option
-                    value=""
-                    onClick={() => {
-                      setCityMunicipal([]);
-                      setBarangay([]);
-                      setStreetNumber("");
-                    }}
-                  >
-                    Select Region
-                  </option>
-                  {region.map((reg) => {
-                    return (
-                      <option value={reg.region_code}>{reg.region_name}</option>
-                    );
-                  })}
-                </select>
-              ) : (
+                  Select Region
+                </option>
+                {region.map((reg) => {
+                  return (
+                    <option
+                      value={reg.region_code}
+                      selected={reg.region_name === selectedRegion}
+                    >
+                      {reg.region_name}
+                    </option>
+                  );
+                })}
+              </select>
+              {/* ) : (
                 <section
                   className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
                     !editForm ? "cursor-not-allowed" : ""
@@ -352,7 +370,7 @@ const UserProfile = () => {
                 >
                   <option value="">{region}</option>
                 </section>
-              )}
+              )} */}
             </div>
 
             <div className="flex-1">
@@ -370,7 +388,7 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              {Array.isArray(province) ? (
+              {!selectedProvince || editForm ? (
                 <select
                   name="province"
                   id="province"
@@ -410,7 +428,9 @@ const UserProfile = () => {
                     !editForm ? "cursor-not-allowed" : ""
                   }`}
                 >
-                  <option value="">{province || "Select Province"}</option>
+                  <option value="">
+                    {selectedProvince || "Select Province"}
+                  </option>
                 </section>
               )}
             </div>
@@ -430,7 +450,7 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              {Array.isArray(cityMunicipal) ? (
+              {!selectedCityMunicipal || editForm ? (
                 <select
                   name="citymunicipal"
                   id="citymunicipal"
@@ -467,7 +487,7 @@ const UserProfile = () => {
                   }`}
                 >
                   <option value="">
-                    {cityMunicipal || "Select City/Municipal"}
+                    {selectedCityMunicipal || "Select City/Municipal"}
                   </option>
                 </section>
               )}
@@ -488,7 +508,7 @@ const UserProfile = () => {
                   />
                 </Tooltip>
               </div>
-              {Array.isArray(barangay) ? (
+              {!selectedBarangay || editForm ? (
                 <select
                   name="barangay"
                   id="barangay"
@@ -521,7 +541,9 @@ const UserProfile = () => {
                     !editForm ? "cursor-not-allowed" : ""
                   }`}
                 >
-                  <option value="">{barangay || "Select Barangay"}</option>
+                  <option value="">
+                    {selectedBarangay || "Select Barangay"}
+                  </option>
                 </section>
               )}
             </div>
