@@ -11,12 +11,15 @@ import {
 } from "../../firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { Toast } from "flowbite-react";
+import { ForgotPassword } from "../../components/modals/ForgotPassword";
 
 const LoginSeller = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [forgotPassModal, setForgotPassModal] = useState(false);
+
 
   const loginEmailAndPassword = async (event) => {
     event.preventDefault();
@@ -25,7 +28,6 @@ const LoginSeller = () => {
         email,
         password
       );
-      console.log(userCredential);
 
       if (userCredential.role == "seller") {
         toast.success(`Welcome back!`);
@@ -75,13 +77,20 @@ const LoginSeller = () => {
     }
   };
 
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const modalClose = () => {
+    setForgotPassModal(false);
+  };
+  const modalOpen = () => {
+    setForgotPassModal(true);
+  };
+
   return (
     <>
+      <ForgotPassword isOpen={forgotPassModal} close={modalClose} />
       <section className="px-5 pt-4 pb-10 sm:px-8 lg:px-0 lg:pb-0 lg:pt-0 lg:flex min-h-svh">
         <div className="lg:bg-gray-100 lg:px-8 lg:pb-8 lg:pt-4 basis-3/4">
           <section className="lg:mt-5 lg:px-8 lg:py-8 xl:mx-24 lg:bg-white lg:shadow-lg">
@@ -97,7 +106,11 @@ const LoginSeller = () => {
               </div>
               <hr className="my-4 border-t border-gray-300 border-dashed" />
 
-              <img src={signupImg} alt="man image" className="lg:hidden" />
+              <img
+                src={signupImg}
+                alt="man image"
+                className="lg:hidden sm:w-96 sm:mx-auto"
+              />
 
               <div className="flex-1">
                 <div className="flex items-center justify-between">
@@ -165,11 +178,17 @@ const LoginSeller = () => {
               </section>
             </form>
 
-            <p className="my-5 text-xs ">
+            <div className="flex justify-between mt-6 text-sm">
               <Link to={"/signup-seller"} className="underline text-arfagreen">
                 Register your shop?
               </Link>
-            </p>
+              <div
+                className="text-sm text-blue-600 underline cursor-pointer hover:text-blue-800"
+                onClick={modalOpen}
+              >
+                Forgot Password?
+              </div>
+            </div>
 
             {/* <hr className="my-4 border-t border-gray-300 border-dashed" />
 
