@@ -245,10 +245,17 @@ export const doPasswordReset = async (email, provider) => {
     }
 
     // Send a password reset email to the user
+    let message = "";
+    if (provider) {
+      message = `Your account is registered with ${provider}. A password reset email has been sent to ${email}.`;
+    } else {
+      message = `A password reset email has been sent to ${email}.`;
+    }
+
     await sendPasswordResetEmail(auth, email);
     return {
       success: true,
-      message: `Your account is registered with ${provider}. A password reset email has been sent to ${email}.`,
+      message: message,
     };
   } catch (error) {
     console.error("Error sending password reset email:", error.message);
