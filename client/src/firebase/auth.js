@@ -12,6 +12,7 @@ import {
   sendEmailVerification,
   setPersistence,
   browserLocalPersistence,
+  getAuth,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
@@ -234,13 +235,55 @@ export const doSignOut = async () => {
   await firebaseSignOut(auth);
 };
 
-// export const doPasswordReset = (email) => {
-//   return sendPasswordResetEmail(auth, email);
-// };
+export const doPasswordReset = async (email, provider) => {
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
 
-// export const doPasswordChange = (password) => {
-//   return updatePassword(auth.currentUser, password);
-// };
+    if (!user) {
+      throw new Error("No user is currently logged in.");
+    }
+
+    // Send a password reset email to the user
+    await sendPasswordResetEmail(auth, email);
+    return {
+      success: true,
+      message: `Your account is registered with ${provider}. A password reset email has been sent to ${email}.`,
+    };
+  } catch (error) {
+    console.error("Error sending password reset email:", error.message);
+    return { success: false, message: error.message };
+  }
+};
+
+export const doPasswordChange = async (currentPassword, newPassword) => {
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+      throw new Error("No user is currently logged in.");
+    }
+
+    // Re-authenticate the user with their current password
+    const email = user.email;
+    const credential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      currentPassword
+    );
+
+    if (credential) {
+      // If re-authentication is successful, update the password
+      await updatePassword(user, newPassword);
+      console.log("Password updated successfully!");
+      return { success: true, message: "Password updated successfully." };
+    }
+  } catch (error) {
+    console.error("Error updating password:", error.code);
+    return { success: false, message: error.message, errorCode: error.code };
+  }
+};
 
 // export const doSendEmailVerification = () => {
 //   return sendEmailVerification(auth.currentUser, {
