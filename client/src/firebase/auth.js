@@ -240,10 +240,6 @@ export const doPasswordReset = async (email, provider) => {
     const auth = getAuth();
     const user = auth.currentUser;
 
-    if (!user) {
-      throw new Error("No user is currently logged in.");
-    }
-
     // Send a password reset email to the user
     let message = "";
     if (provider) {
