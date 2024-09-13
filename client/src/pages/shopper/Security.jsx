@@ -75,6 +75,22 @@ const Security = () => {
     }
   };
 
+  const forgotPassword = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    const result = await doPasswordReset(
+      user.email,
+      user.providerData.providerId
+    );
+
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
+
   useEffect(() => {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -250,7 +266,10 @@ const Security = () => {
                 >
                   Change Password
                 </button>
-                <p className="text-sm text-blue-600 underline cursor-pointer hover:text-blue-800">
+                <p
+                  className="text-sm text-blue-600 underline cursor-pointer hover:text-blue-800"
+                  onClick={forgotPassword}
+                >
                   Forgot Password?
                 </p>
               </div>
