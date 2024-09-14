@@ -4,7 +4,7 @@ import { Carousel } from "flowbite-react";
 import CustomerReview from "./dynamic/CustomerReview";
 import DisplayStars from "./dynamic/DisplayStars";
 import { getDownloadURL, ref } from "firebase/storage";
-import { storage } from "../firebase/firebase";
+import { auth, storage } from "../firebase/firebase";
 import { Link, useParams } from "react-router-dom";
 import { fetchFurnitureById } from "../firebase/furniture";
 import { formatToPeso } from "../components/globalFunctions";
@@ -19,6 +19,8 @@ import Show3D from "./dynamic/Show3D";
 import ViewFurnitureSkeleton from "./skeletons/ViewFurnitureSkeleton";
 import MaximizeImages from "./dynamic/MaximizeImages";
 import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
+import { addToWishlist } from "../firebase/wishlist";
+import toast, { Toaster } from "react-hot-toast";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -73,6 +75,30 @@ const ViewFurniture = () => {
     fetchFurniture();
   }, []);
 
+  const handleAddWishlistBtn = async () => {
+    try {
+      const userId = auth.currentUser?.uid;
+      if (!userId) {
+        toast.error("You must be logged in to add items to your wishlist.");
+        return;
+      }
+      const result = await addToWishlist(userId, id);
+
+      if (result.success) {
+        if (result.isDuplicate) {
+          toast.error("This item is already in your wishlist.");
+        } else {
+          toast.success("Item successfully added to your wishlist!");
+        }
+      } else {
+        toast.error("Failed to add item to your wishlist.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while adding the item to your wishlist.");
+      console.error("Error adding item to wishlist:", error);
+    }
+  };
+
   if (loading) {
     return <ViewFurnitureSkeleton></ViewFurnitureSkeleton>;
   }
@@ -83,6 +109,7 @@ const ViewFurniture = () => {
 
   return (
     <section>
+      <Toaster />
       <section className="box-border pt-5 antialiased lg:pl-8 md:pl-4 dark:bg-gray-900">
         <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
@@ -161,11 +188,12 @@ const ViewFurniture = () => {
               </div>
 
               <div className="mt-6 sm:gap-4 sm:items-center sm:flex">
-                <a
+                <span
                   href="#"
                   title=""
                   className="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   role="button"
+                  onClick={handleAddWishlistBtn}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -178,7 +206,7 @@ const ViewFurniture = () => {
                     <path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z" />
                   </svg>
                   Add to wishlist
-                </a>
+                </span>
 
                 <a
                   href="#"
