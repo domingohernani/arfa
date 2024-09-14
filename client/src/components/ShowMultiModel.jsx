@@ -184,8 +184,6 @@ function ShowMultiModel({ data }) {
         setModelUrls(results);
         modelViewerRef.current.src = results[0];
         setSelectedItem(data[0]);
-
-        console.log(data[0].name);
       } catch (error) {
         console.error("Error fetching model URLs:", error);
       }
