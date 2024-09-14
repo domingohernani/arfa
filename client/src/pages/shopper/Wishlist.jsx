@@ -10,8 +10,11 @@ import { fetchFurnitureById } from "../../firebase/furniture";
 import noWishlist from "../../assets/images/no-review.jpg";
 import { formatToPeso, toSlug } from "../../components/globalFunctions";
 import { getImageDownloadUrl } from "../../firebase/photos";
+import { removeFromWishlist } from "../../firebase/wishlist";
+import toast, { Toaster } from "react-hot-toast";
+import { auth } from "../../firebase/firebase";
 
-const displayFurnituresOnWishlist = (items, images) => {
+const displayFurnituresOnWishlist = (items, images, handleRemoveItem) => {
   if (!items || items.length === 0) {
     return (
       <div className="flex flex-col items-center my-10">
@@ -63,7 +66,7 @@ const displayFurnituresOnWishlist = (items, images) => {
             <div className="flex items-center gap-4">
               <button
                 type="button"
-                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
+                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +86,8 @@ const displayFurnituresOnWishlist = (items, images) => {
 
               <button
                 type="button"
-                className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
+                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900"
+                onClick={() => handleRemoveItem(items, item.id, index)}
               >
                 <svg
                   className="me-1.5 h-5 w-5"
@@ -148,8 +152,29 @@ const Wishlist = () => {
     fetchWishlist();
   }, []);
 
+  const handleRemoveItem = async (furnitures, furnitureId, index) => {
+    const userId = auth.currentUser?.uid;
+    try {
+      const result = await removeFromWishlist(userId, furnitureId);
+
+      if (result.success && result.isRemoved) {
+        const newWishlist = furnitures.filter((_, i) => i !== index);
+        const newPreviewUrls = previewUrlImg.filter((_, i) => i !== index);
+        setWishlist(newWishlist);
+        setPreviewUrlImg(newPreviewUrls);
+        toast.success("Item removed from wishlist!");
+      } else if (!result.isRemoved) {
+        toast.error("Item was not in the wishlist.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while removing the item from wishlist.");
+      console.error("Error in handleRemoveItem:", error);
+    }
+  };
+
   return (
     <section className="antialiased dark:bg-gray-900">
+      <Toaster />
       <section className="mx-6 my-3">
         <NavigationBar />
       </section>
@@ -184,7 +209,11 @@ const Wishlist = () => {
             <div className=" mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
               <div className="flex-none w-full">
                 <div className="space-y-6">
-                  {displayFurnituresOnWishlist(wishlist, previewUrlImg)}
+                  {displayFurnituresOnWishlist(
+                    wishlist,
+                    previewUrlImg,
+                    handleRemoveItem
+                  )}
                 </div>
               </div>
             </div>

@@ -1,12 +1,14 @@
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import { db } from "./firebase";
 
 export const addToWishlist = async (userId, furnitureId) => {
   const userRef = doc(db, "users", userId);
-
-  console.log("user ID", userId);
-  console.log("furnitureId ID", furnitureId);
-  
 
   try {
     const userDoc = await getDoc(userRef);
@@ -31,5 +33,38 @@ export const addToWishlist = async (userId, furnitureId) => {
   } catch (error) {
     console.error("Error adding to wishlist:", error);
     return { success: false, isDuplicate: false };
+  }
+};
+
+export const removeFromWishlist = async (userId, furnitureId) => {
+  const userRef = doc(db, "users", userId);
+
+  try {
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const wishlist = userData.wishlist || [];
+      const isInWishlist = wishlist.includes(furnitureId);
+
+      if (isInWishlist) {
+        await updateDoc(userRef, {
+          wishlist: arrayRemove(furnitureId),
+        });
+        return { success: true, isRemoved: true };
+      } else {
+        return {
+          success: true,
+          isRemoved: false,
+          message: "Item not in wishlist.",
+        };
+      }
+    } else {
+      console.error("User document does not exist.");
+      return { success: false, isRemoved: false };
+    }
+  } catch (error) {
+    console.error("Error removing item from wishlist:", error);
+    return { success: false, isRemoved: false };
   }
 };
