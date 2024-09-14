@@ -8,11 +8,11 @@ import ShowMultiModel from "../../components/ShowMultiModel";
 import { getUserInfo } from "../../firebase/user";
 import { fetchFurnitureById } from "../../firebase/furniture";
 import noWishlist from "../../assets/images/no-review.jpg";
+import { formatToPeso, toSlug } from "../../components/globalFunctions";
+import { getImageDownloadUrl } from "../../firebase/photos";
 
-const displayFurnituresOnWishlist = (items) => {
-  let onCart = Array(5).fill(null);
-
-  if (!items) {
+const displayFurnituresOnWishlist = (items, images) => {
+  if (!items || items.length === 0) {
     return (
       <div className="flex flex-col items-center my-10">
         <img src={noWishlist} className="w-64 h-auto" />
@@ -24,86 +24,92 @@ const displayFurnituresOnWishlist = (items) => {
     );
   }
 
-  return onCart.map((e, index) => (
-    <div
-      className="p-4 bg-white border border-gray-200 rounded-lg md:p-6"
-      key={index}
-    >
-      <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-        <a href="#" className="shrink-0 md:order-1">
-          <img
-            className="w-auto h-40 rounded-lg"
-            src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="image"
-          />
-        </a>
-
-        <div className="flex items-center justify-between md:order-3 md:justify-end">
-          <div className="text-end md:order-4 md:w-32">
-            <p className="text-sm font-semibold text-gray-900 dark:text-white">
-              ₱19,999
-            </p>
-          </div>
-        </div>
-
-        <div className="flex-1 w-full min-w-0 space-y-4 md:order-2">
-          <a
-            href="#"
-            className="text-sm font-medium text-gray-900 hover:underline dark:text-white"
-          >
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ex,
-            tenetur.
+  return items.map((item, index) => {
+    return (
+      <div
+        className="p-4 bg-white border border-gray-200 rounded-lg md:p-6"
+        key={index}
+      >
+        <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+          <a href="#" className="shrink-0 md:order-1">
+            <img
+              className="object-cover w-64 h-48 border rounded-lg"
+              src={images[index]}
+              alt="image"
+            />
           </a>
 
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#64748b"
-                id="Outline"
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                className="me-1.5 h-4 w-4 "
-              >
-                <path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z" />
-                <circle cx="7" cy="22" r="2" />
-                <circle cx="17" cy="22" r="2" />
-              </svg>
-              Add to Cart
-            </button>
+          <div className="flex items-center justify-between md:order-3 md:justify-end">
+            <div className="text-end md:order-4 md:w-32">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {formatToPeso(item.price)}
+              </p>
+            </div>
+          </div>
 
-            <button
-              type="button"
-              className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
+          <div className="flex-1 w-full min-w-0 space-y-4 md:order-2">
+            <Link
+              to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
+              className="text-sm font-medium text-gray-900 hover:underline dark:text-white"
             >
-              <svg
-                className="me-1.5 h-5 w-5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
+              {item.name}
+            </Link>
+            <p className="text-sm text-gray-600">
+              {item.description?.length > 20
+                ? item.description.slice(0, 200) + "..."
+                : item.description}
+            </p>
+
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18 17.94 6M18 18 6.06 6"
-                />
-              </svg>
-              Remove
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#64748b"
+                  id="Outline"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  className="me-1.5 h-4 w-4 "
+                >
+                  <path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z" />
+                  <circle cx="7" cy="22" r="2" />
+                  <circle cx="17" cy="22" r="2" />
+                </svg>
+                Add to Cart
+              </button>
+
+              <button
+                type="button"
+                className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
+              >
+                <svg
+                  className="me-1.5 h-5 w-5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18 17.94 6M18 18 6.06 6"
+                  />
+                </svg>
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  ));
+    );
+  });
 };
 
 const Wishlist = () => {
@@ -113,6 +119,7 @@ const Wishlist = () => {
     tab == 0 ? navigate("/wishlist") : navigate("/cart");
   };
   const [wishlist, setWishlist] = useState([]);
+  const [previewUrlImg, setPreviewUrlImg] = useState([]);
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -122,10 +129,18 @@ const Wishlist = () => {
           return await fetchFurnitureById("furnitures", id);
         });
 
-        const results = await Promise.all(fetchPromises);
-        console.log("result", results);
-
+        const results = (await Promise.all(fetchPromises)).reverse();
         setWishlist(results);
+
+        const urls = await Promise.all(
+          results.map(async (item) => {
+            const url = await getImageDownloadUrl(
+              `${item.imagesUrl}/${item.imgPreviewFilename}`
+            );
+            return url;
+          })
+        );
+        setPreviewUrlImg(urls);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -169,7 +184,7 @@ const Wishlist = () => {
             <div className=" mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
               <div className="flex-none w-full">
                 <div className="space-y-6">
-                  {displayFurnituresOnWishlist(wishlist)}
+                  {displayFurnituresOnWishlist(wishlist, previewUrlImg)}
                 </div>
               </div>
             </div>
