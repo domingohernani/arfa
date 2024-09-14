@@ -7,9 +7,22 @@ import { FooterSection } from "../../components/navigation/FooterSection";
 import ShowMultiModel from "../../components/ShowMultiModel";
 import { getUserInfo } from "../../firebase/user";
 import { fetchFurnitureById } from "../../firebase/furniture";
+import noWishlist from "../../assets/images/no-review.jpg";
 
-const displayFurnituresOnWishlist = () => {
+const displayFurnituresOnWishlist = (items) => {
   let onCart = Array(5).fill(null);
+
+  if (!items) {
+    return (
+      <div className="flex flex-col items-center my-10">
+        <img src={noWishlist} className="w-64 h-auto" />
+        <p className="text-sm text-center">
+          Your wishlist is currently empty. Start adding your favorite
+          furnitures now!
+        </p>
+      </div>
+    );
+  }
 
   return onCart.map((e, index) => (
     <div
@@ -99,23 +112,25 @@ const Wishlist = () => {
   const changeTab = (tab) => {
     tab == 0 ? navigate("/wishlist") : navigate("/cart");
   };
-  const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchWishlist = async () => {
       try {
-        const { cart } = await getUserInfo();
-        const fetchPromises = cart.map(async (id) => {
+        const { wishlist } = await getUserInfo();
+        const fetchPromises = wishlist.map(async (id) => {
           return await fetchFurnitureById("furnitures", id);
         });
 
         const results = await Promise.all(fetchPromises);
-        setCart(results);
+        console.log("result", results);
+
+        setWishlist(results);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
-    fetchUser();
+    fetchWishlist();
   }, []);
 
   return (
@@ -132,8 +147,13 @@ const Wishlist = () => {
           className="cartWishlistTab"
         >
           <Tabs.Item active title="Wishlist">
-            <div className="flex items-center gap-2 py-5 text-sm text-arfablack">
-              <span className="cursor-pointer hover:text-arfagreen">Home</span>
+            <div className="flex items-center gap-2 py-5 text-sm ">
+              <Link
+                to={"/catalog"}
+                className="font-normal text-black cursor-pointer hover:text-arfagreen"
+              >
+                Catalog
+              </Link>
               <img src={greaterthan} alt=">" className="w-2 h-2" />
               <span className="cursor-pointer hover:text-arfagreen">
                 Wishlist
@@ -142,47 +162,53 @@ const Wishlist = () => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white sm:text-2xl">
               Wishlist
             </h2>
-            <ShowMultiModel data={cart}></ShowMultiModel>
+            {wishlist.length > 0 ? (
+              <ShowMultiModel data={wishlist}></ShowMultiModel>
+            ) : null}
 
-            <div className="mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
+            <div className=" mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
               <div className="flex-none w-full">
-                <div className="space-y-6">{displayFurnituresOnWishlist()}</div>
+                <div className="space-y-6">
+                  {displayFurnituresOnWishlist(wishlist)}
+                </div>
               </div>
             </div>
-            <div className="w-full max-w-md mt-8 ml-auto">
-              <a
-                href="#"
-                className="flex w-full bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-3 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
-              >
-                Add all to Cart
-              </a>
-              <div className="flex items-center justify-center gap-2 mt-4">
-                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  or
-                </span>
-                <Link
-                  to={"/catalog"}
-                  className="inline-flex items-center gap-2 text-sm font-medium underline text-primary-700 hover:no-underline dark:text-primary-500"
+            {wishlist.length > 0 ? (
+              <div className="w-full max-w-md mt-8 ml-auto">
+                <a
+                  href="#"
+                  className="flex w-full bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-3 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
                 >
-                  Continue Shopping
-                  <svg
-                    className="w-5 h-5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
+                  Add all to Cart
+                </a>
+                <div className="flex items-center justify-center gap-2 mt-4">
+                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    or
+                  </span>
+                  <Link
+                    to={"/catalog"}
+                    className="inline-flex items-center gap-2 text-sm font-medium underline text-primary-700 hover:no-underline dark:text-primary-500"
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 12H5m14 0-4 4m4-4-4-4"
-                    />
-                  </svg>
-                </Link>
+                    Continue Shopping
+                    <svg
+                      className="w-5 h-5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 12H5m14 0-4 4m4-4-4-4"
+                      />
+                    </svg>
+                  </Link>
+                </div>
               </div>
-            </div>
+            ) : null}
           </Tabs.Item>
           <Tabs.Item title="Cart"></Tabs.Item>
         </Tabs>
