@@ -7,6 +7,32 @@ import DisplayChat from "../../components/dynamic/DisplayChat";
 import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
 
+const PreviewChat = ({ isYou, text, image, video }) => {
+  if (text.length > 0) {
+    return (
+      <div className="flex-grow text-xs text-gray-500 truncate">
+        {isYou ? "You:" : ""} {text}
+      </div>
+    );
+  } else if (image) {
+    return (
+      <div className="flex-grow text-xs text-gray-500 truncate">
+        {isYou ? "You: " : ""}
+        Sent an image
+      </div>
+    );
+  } else if (video) {
+    return (
+      <div className="flex-grow text-xs text-gray-500 truncate">
+        {isYou ? "You: " : ""}
+        Sent a video
+      </div>
+    );
+  } else {
+    return <div className="flex-grow text-xs text-gray-500 truncate">---</div>;
+  }
+};
+
 const SellerInbox = () => {
   const { loggedUser } = useStore();
   const { chats, setChats } = useStore();
@@ -114,9 +140,16 @@ const SellerInbox = () => {
                       </div>
 
                       <div className="flex flex-row items-center space-x-1">
-                        <div className="flex-grow text-xs text-gray-500 truncate">
-                          {chat.lastMessage}
-                        </div>
+                        {(chat.lastMessage ||
+                          chat.imageUrl ||
+                          chat.videoUrl) && (
+                          <PreviewChat
+                            isYou={chat.shopId == chat.senderId}
+                            text={chat.lastMessage}
+                            image={chat.imageUrl}
+                            video={chat.videoUrl}
+                          />
+                        )}
                       </div>
                     </div>
                   </section>
@@ -193,9 +226,14 @@ const SellerInbox = () => {
                     </div>
 
                     <div className="flex flex-row items-center space-x-1">
-                      <div className="flex-grow text-xs text-gray-500 truncate">
-                        {chat.lastMessage}
-                      </div>
+                      {(chat.lastMessage || chat.imageUrl || chat.videoUrl) && (
+                        <PreviewChat
+                          isYou={chat.shopId == chat.senderId}
+                          text={chat.lastMessage}
+                          image={chat.imageUrl}
+                          video={chat.videoUrl}
+                        />
+                      )}
                     </div>
                   </div>
                 </section>
