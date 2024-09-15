@@ -4,6 +4,7 @@ import { useStore } from "../../stores/useStore";
 import ShowModel from "../ShowModel";
 import { formatToPeso } from "../globalFunctions";
 import { useEffect } from "react";
+import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
 
 const Show3D = ({ path, furniture }) => {
   const isOpen = useStore((state) => state.is3dOpen);
@@ -16,8 +17,12 @@ const Show3D = ({ path, furniture }) => {
       open={isOpen}
       onClose={handleClose}
       position="bottom"
-      className="h-3/4 rounded-t-xl"
+      className="h-full bg-white"
     >
+      <ArrowsPointingInIcon
+        className="absolute z-10 w-6 h-6 cursor-pointer text-arfablack top-3 right-3"
+        onClick={handleClose}
+      />
       <div className="absolute">
         <h1 className="text-base font-semibold text-gray-900 sm:text-lg dark:text-white">
           {furniture.name}
