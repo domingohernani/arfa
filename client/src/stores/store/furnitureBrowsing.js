@@ -22,4 +22,7 @@ export const furnitureBrowsing = (set) => ({
 
   isQRCodeOpen: false,
   updateIsQRCodeOpen: (value) => set(() => ({ isQRCodeOpen: value })),
+
+  isAddToCartOpen: false,
+  updateIsAddToCartOpen: (value) => set(() => ({ isAddToCartOpen: value })),
 });
