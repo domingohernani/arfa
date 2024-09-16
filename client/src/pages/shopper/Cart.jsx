@@ -13,11 +13,11 @@ import { fetchFurnitureById } from "../../firebase/furniture";
 import { getImageDownloadUrl } from "../../firebase/photos";
 import ShowMultiModel from "../../components/ShowMultiModel";
 import { formatToPeso, toSlug } from "../../components/globalFunctions";
-import { removeFromCart } from "../../firebase/wishlist";
+import { removeFromCart } from "../../firebase/cart";
 import toast, { Toaster } from "react-hot-toast";
+import { auth } from "../../firebase/firebase";
 
 const displayFurnituresOnCart = (items, images, handleRemoveItem) => {
-  console.log(items);
 
   return items.map((item, index) => (
     <div
@@ -114,13 +114,16 @@ const displayFurnituresOnCart = (items, images, handleRemoveItem) => {
               ? item.description.slice(0, 100) + "..."
               : item.description}
           </p>
-          <p className="text-sm text-gray-600">Variant: {item.selectedVariant}</p>
-
+          <p className="text-sm text-gray-600">
+            {item.selectedVariant ? `Variant: ${item.selectedVariant}` : ""}
+          </p>
           <div className="flex items-center gap-4">
             <button
               type="button"
               className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900"
-              // onClick={()=> handleRemoveItem(items, item.id)}
+              onClick={() =>
+                handleRemoveItem(items, item.id, item.selectedVariant, index)
+              }
             >
               <svg
                 className="me-1.5 h-5 w-5"
@@ -228,7 +231,12 @@ const Cart = () => {
           <Tabs.Item title="Wishlist"></Tabs.Item>
           <Tabs.Item active title="Cart">
             <div className="flex items-center gap-2 py-5 text-sm text-arfablack">
-              <span className="cursor-pointer hover:text-arfagreen">Home</span>
+              <Link
+                to={"/catalog"}
+                className="font-normal text-black cursor-pointer hover:text-arfagreen"
+              >
+                Catalog
+              </Link>
               <img src={greaterthan} alt=">" className="w-2 h-2" />
               <span className="cursor-pointer hover:text-arfagreen">Cart</span>
             </div>
