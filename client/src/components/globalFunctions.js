@@ -33,9 +33,6 @@ export const formatTimestamp = (timestamp) => {
   };
 
   const formattedDate = new Intl.DateTimeFormat("en-US", options).format(date);
-
-  console.log(formattedDate);
-
   return formattedDate;
 };
 
