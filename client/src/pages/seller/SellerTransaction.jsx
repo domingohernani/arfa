@@ -131,7 +131,7 @@ const SellerTransaction = () => {
     <>
       <div
         className="p-5 ag-theme-quartz"
-        style={{ height: "90%", width: "100%" }}
+        style={{ height: "max(600px, 90%)", width: "100%" }}
       >
         <AgGridReact
           rowData={rowTransactionsData}

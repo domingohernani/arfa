@@ -157,7 +157,7 @@ const SellerProducts = () => {
         let filter = [];
         filter.push(where("ownerId", "==", loggedUser.userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
-        setRowFurnituresData(furnitures)
+        setRowFurnituresData(furnitures);
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
@@ -172,7 +172,7 @@ const SellerProducts = () => {
     <>
       <div
         className="p-5 ag-theme-quartz"
-        style={{ height: "90%", width: "100%" }}
+        style={{ height: "max(600px, 90%)", width: "100%" }}
       >
         <AgGridReact
           rowData={rowFurnituresData}

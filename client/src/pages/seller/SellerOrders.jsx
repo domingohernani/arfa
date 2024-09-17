@@ -117,7 +117,7 @@ const SellerOrders = () => {
 
   return (
     <>
-      <div className={"ag-theme-quartz p-5"} style={{ height: "90%" }}>
+      <div className={"ag-theme-quartz p-5"} style={{ height: "max(600px, 90%)" }}>
         <AgGridReact
           rowData={rowOrdersData}
           ref={gridRef}
