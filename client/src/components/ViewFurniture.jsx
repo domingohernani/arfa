@@ -21,6 +21,7 @@ import MaximizeImages from "./dynamic/MaximizeImages";
 import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { addToWishlist } from "../firebase/wishlist";
 import toast, { Toaster } from "react-hot-toast";
+import AddToCartSelection from "./dynamic/AddToCartSelection";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -31,6 +32,9 @@ const ViewFurniture = () => {
   const [aveReview, setAveReview] = useState(0);
   const updateIs3dOpen = useStore((state) => state.updateIs3dOpen);
   const updateIsImgsOpen = useStore((state) => state.updateIsImgsOpen);
+  const updateIsAddToCartOpen = useStore(
+    (state) => state.updateIsAddToCartOpen
+  );
 
   const showAverageOfReview = (number) => {
     setAveReview(number);
@@ -208,11 +212,12 @@ const ViewFurniture = () => {
                   Add to wishlist
                 </span>
 
-                <a
+                <span
                   href="#"
                   title=""
                   className="text-white bg-arfagreen mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 flex items-center justify-center"
                   role="button"
+                  onClick={() => updateIsAddToCartOpen(true)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +233,7 @@ const ViewFurniture = () => {
                     <circle cx="17" cy="22" r="2" />
                   </svg>
                   Add to cart
-                </a>
+                </span>
               </div>
 
               <p className="mt-6 text-sm leading-relaxed text-arfablack">
@@ -246,6 +251,10 @@ const ViewFurniture = () => {
         </section>
         <MaximizeImages furnitureImgUrls={furnitureImgUrls}></MaximizeImages>
         <Show3D path={modelURL} furniture={furniture}></Show3D>
+        <AddToCartSelection
+          path={modelURL}
+          furniture={furniture}
+        ></AddToCartSelection>
       </section>
     </section>
   );
