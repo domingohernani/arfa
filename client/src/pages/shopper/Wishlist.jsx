@@ -34,13 +34,16 @@ const displayFurnituresOnWishlist = (items, images, handleRemoveItem) => {
         key={index}
       >
         <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-          <a href="#" className="shrink-0 md:order-1">
+          <Link
+            to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
+            className="shrink-0 md:order-1"
+          >
             <img
               className="object-cover w-64 h-48 border rounded-lg"
               src={images[index]}
-              alt="image"
+              alt={item.name}
             />
-          </a>
+          </Link>
 
           <div className="flex items-center justify-between md:order-3 md:justify-end">
             <div className="text-end md:order-4 md:w-32">

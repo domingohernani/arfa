@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-export const addToWishlist = async (userId, furnitureId) => {
+export const addToCart = async (userId, furnitureId, variant, sellerId) => {
   const userRef = doc(db, "users", userId);
 
   try {
@@ -15,14 +15,20 @@ export const addToWishlist = async (userId, furnitureId) => {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      const wishlist = userData.wishlist || [];
-      const isDuplicate = wishlist.includes(furnitureId);
+      const cart = userData.cart || [];
+
+      const isDuplicate = cart.some(
+        (item) =>
+          item.furnitureId === furnitureId &&
+          item.variant === variant &&
+          item.sellerId === sellerId
+      );
 
       if (isDuplicate) {
         return { success: true, isDuplicate: true };
       } else {
         await updateDoc(userRef, {
-          wishlist: arrayUnion(furnitureId),
+          cart: arrayUnion({ furnitureId, variant, sellerId }),
         });
         return { success: true, isDuplicate: false };
       }
@@ -31,12 +37,17 @@ export const addToWishlist = async (userId, furnitureId) => {
       return { success: false, isDuplicate: false };
     }
   } catch (error) {
-    console.error("Error adding to wishlist:", error);
+    console.error("Error adding to cart:", error);
     return { success: false, isDuplicate: false };
   }
 };
 
-export const removeFromWishlist = async (userId, furnitureId) => {
+export const removeFromCart = async (
+  userId,
+  furnitureId,
+  variant,
+  sellerId
+) => {
   const userRef = doc(db, "users", userId);
 
   try {
@@ -44,19 +55,25 @@ export const removeFromWishlist = async (userId, furnitureId) => {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      const wishlist = userData.wishlist || [];
-      const isInWishlist = wishlist.includes(furnitureId);
+      const cart = userData.cart || [];
 
-      if (isInWishlist) {
+      const isInCart = cart.some(
+        (item) =>
+          item.furnitureId === furnitureId &&
+          item.variant === variant &&
+          item.sellerId === sellerId
+      );
+
+      if (isInCart) {
         await updateDoc(userRef, {
-          wishlist: arrayRemove(furnitureId),
+          cart: arrayRemove({ furnitureId, variant, sellerId }),
         });
         return { success: true, isRemoved: true };
       } else {
         return {
           success: true,
           isRemoved: false,
-          message: "Item not in wishlist.",
+          message: "Item not in cart.",
         };
       }
     } else {
@@ -64,8 +81,7 @@ export const removeFromWishlist = async (userId, furnitureId) => {
       return { success: false, isRemoved: false };
     }
   } catch (error) {
-    console.error("Error removing item from wishlist:", error);
+    console.error("Error removing item from cart:", error);
     return { success: false, isRemoved: false };
   }
 };
-

@@ -6,7 +6,7 @@ import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
 import { CubeTransparentIcon } from "@heroicons/react/20/solid";
 
-function ShowModel({ path }) {
+function ShowModel({ path, addToCartBtn = false, handleAddToCart }) {
   const modelViewerRef = useRef(null);
   const [variants, setVariants] = useState([]);
   const [initialVariant, setInitialVariant] = useState("");
@@ -216,6 +216,12 @@ function ShowModel({ path }) {
     }
   };
 
+  const handleBtnClick = () => {
+    if (handleAddToCart) {
+      handleAddToCart(initialVariant);
+    }
+  };
+
   return (
     <>
       <model-viewer
@@ -357,14 +363,37 @@ function ShowModel({ path }) {
           ></input>
         </div>
       </div>
-      <button
-        className="absolute flex items-center justify-center p-2 transform -translate-x-1/2 border border-gray-300 rounded-full shadow-sm bottom-4 left-1/2"
-        onClick={() => {
-          handleArClick();
-        }}
-      >
-        <CubeTransparentIcon className="w-5 h-5 text-black"></CubeTransparentIcon>
-      </button>
+      {!addToCartBtn ? (
+        <button
+          className="absolute flex items-center justify-center p-2 transform -translate-x-1/2 border border-gray-300 rounded-full shadow-sm bottom-4 left-1/2"
+          onClick={() => {
+            handleArClick();
+          }}
+        >
+          <CubeTransparentIcon className="w-5 h-5 text-black"></CubeTransparentIcon>
+        </button>
+      ) : (
+        <div
+          className="text-white cursor-pointer bg-arfagreen mt-4 w-fit mx-auto sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 flex items-center justify-center"
+          onClick={handleBtnClick}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#ffffff"
+            className="w-4 h-4 -ms-2 me-2"
+            id="Outline"
+            viewBox="0 0 24 24"
+            width="512"
+            height="512"
+          >
+            <path d="M22.713,4.077A2.993,2.993,0,0,0,20.41,3H4.242L4.2,2.649A3,3,0,0,0,1.222,0H1A1,1,0,0,0,1,2h.222a1,1,0,0,1,.993.883l1.376,11.7A5,5,0,0,0,8.557,19H19a1,1,0,0,0,0-2H8.557a3,3,0,0,1-2.82-2h11.92a5,5,0,0,0,4.921-4.113l.785-4.354A2.994,2.994,0,0,0,22.713,4.077ZM21.4,6.178l-.786,4.354A3,3,0,0,1,17.657,13H5.419L4.478,5H20.41A1,1,0,0,1,21.4,6.178Z" />
+            <circle cx="7" cy="22" r="2" />
+            <circle cx="17" cy="22" r="2" />
+          </svg>
+          Add to cart
+        </div>
+      )}
+
       <QRCodeModal></QRCodeModal>
     </>
   );
