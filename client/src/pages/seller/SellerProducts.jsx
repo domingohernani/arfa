@@ -138,6 +138,14 @@ const SellerProducts = () => {
         filter: false,
         flex: 1,
         cellRenderer: CustomRowActions,
+        cellRendererParams: (params) => {
+          return {
+            data: params.data,
+            viewAction: true,
+            editAction: true,
+            deleteAction: true,
+          };
+        },
       },
     ],
     []

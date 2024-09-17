@@ -91,6 +91,14 @@ const SellerTransaction = () => {
         field: "action",
         flex: 1,
         cellRenderer: CustomRowActions,
+        cellRendererParams: (params) => {
+          return {
+            data: params.data,
+            viewAction: true,
+            editAction: false,
+            deleteAction: true,
+          };
+        },
         filter: false,
       },
     ],
