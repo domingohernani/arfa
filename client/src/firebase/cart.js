@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-export const addToCart = async (userId, furnitureId, variant) => {
+export const addToCart = async (userId, furnitureId, variant, sellerId) => {
   const userRef = doc(db, "users", userId);
 
   try {
@@ -18,14 +18,17 @@ export const addToCart = async (userId, furnitureId, variant) => {
       const cart = userData.cart || [];
 
       const isDuplicate = cart.some(
-        (item) => item.furnitureId === furnitureId && item.variant === variant
+        (item) =>
+          item.furnitureId === furnitureId &&
+          item.variant === variant &&
+          item.sellerId === sellerId
       );
 
       if (isDuplicate) {
         return { success: true, isDuplicate: true };
       } else {
         await updateDoc(userRef, {
-          cart: arrayUnion({ furnitureId, variant }),
+          cart: arrayUnion({ furnitureId, variant, sellerId }),
         });
         return { success: true, isDuplicate: false };
       }
@@ -39,7 +42,12 @@ export const addToCart = async (userId, furnitureId, variant) => {
   }
 };
 
-export const removeFromCart = async (userId, furnitureId, variant) => {
+export const removeFromCart = async (
+  userId,
+  furnitureId,
+  variant,
+  sellerId
+) => {
   const userRef = doc(db, "users", userId);
 
   try {
@@ -50,12 +58,15 @@ export const removeFromCart = async (userId, furnitureId, variant) => {
       const cart = userData.cart || [];
 
       const isInCart = cart.some(
-        (item) => item.furnitureId === furnitureId && item.variant === variant
+        (item) =>
+          item.furnitureId === furnitureId &&
+          item.variant === variant &&
+          item.sellerId === sellerId
       );
 
       if (isInCart) {
         await updateDoc(userRef, {
-          cart: arrayRemove({ furnitureId, variant }),
+          cart: arrayRemove({ furnitureId, variant, sellerId }),
         });
         return { success: true, isRemoved: true };
       } else {

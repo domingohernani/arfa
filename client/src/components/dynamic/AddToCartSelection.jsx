@@ -14,6 +14,7 @@ const AddToCartSelection = ({ path, furniture }) => {
   const updateIsAddToCartOpen = useStore(
     (state) => state.updateIsAddToCartOpen
   );
+  const sellerId = furniture.shopData.userId
 
   const handleAddToCart = async (variantName) => {
     try {
@@ -23,7 +24,15 @@ const AddToCartSelection = ({ path, furniture }) => {
         return;
       }
 
-      const result = await addToCart(userId, furniture.id, variantName);
+      console.log(sellerId);
+      
+
+      const result = await addToCart(
+        userId,
+        furniture.id,
+        variantName,
+        sellerId
+      );
 
       if (result.success) {
         if (result.isDuplicate) {

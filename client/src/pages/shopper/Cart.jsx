@@ -18,7 +18,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { auth } from "../../firebase/firebase";
 
 const displayFurnituresOnCart = (items, images, handleRemoveItem) => {
-
   return items.map((item, index) => (
     <div
       className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6"
@@ -122,7 +121,13 @@ const displayFurnituresOnCart = (items, images, handleRemoveItem) => {
               type="button"
               className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900"
               onClick={() =>
-                handleRemoveItem(items, item.id, item.selectedVariant, index)
+                handleRemoveItem(
+                  items,
+                  item.id,
+                  item.selectedVariant,
+                  index,
+                  item.shopData.userId
+                )
               }
             >
               <svg
@@ -176,8 +181,6 @@ const Cart = () => {
         const results = (await Promise.all(fetchPromises)).reverse();
         setCart(results);
 
-        console.log(results);
-
         const urls = await Promise.all(
           results.map(async (item) => {
             const url = await getImageDownloadUrl(
@@ -194,10 +197,21 @@ const Cart = () => {
     fetchCart();
   }, []);
 
-  const handleRemoveItem = async (furnitures, furnitureId, variant, index) => {
+  const handleRemoveItem = async (
+    furnitures,
+    furnitureId,
+    variant,
+    index,
+    sellerId
+  ) => {
     const userId = auth.currentUser?.uid;
     try {
-      const result = await removeFromCart(userId, furnitureId, variant);
+      const result = await removeFromCart(
+        userId,
+        furnitureId,
+        variant,
+        sellerId
+      );
 
       if (result.success && result.isRemoved) {
         const newCart = furnitures.filter((_, i) => i !== index);
