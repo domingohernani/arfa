@@ -10,150 +10,155 @@ import { FooterSection } from "../../components/navigation/FooterSection";
 import noWishlist from "../../assets/images/no-review.jpg";
 import { getUserInfo } from "../../firebase/user";
 import { fetchFurnitureById } from "../../firebase/furniture";
-import { getImageDownloadUrl } from "../../firebase/photos";
+import {
+  getAllImageDownloadUrl,
+  getImageDownloadUrl,
+} from "../../firebase/photos";
 import ShowMultiModel from "../../components/ShowMultiModel";
 import { formatToPeso, toSlug } from "../../components/globalFunctions";
 import { removeFromCart } from "../../firebase/cart";
 import toast, { Toaster } from "react-hot-toast";
 import { auth } from "../../firebase/firebase";
 
-const displayFurnituresOnCart = (items, images, handleRemoveItem) => {
-  return items.map((item, index) => (
-    <div
-      className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6"
-      key={index}
-    >
-      <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-        <Link
-          to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
-          className="shrink-0 md:order-1"
-        >
-          <img
-            className="object-cover w-64 h-48 border rounded-lg"
-            src={images[index]}
-            alt={item.name}
-          />
-        </Link>
-
-        <label htmlFor="counter-input" className="sr-only">
-          Choose quantity:
-        </label>
-        <div className="flex items-center justify-between md:order-3 md:justify-end">
-          <div className="flex items-center">
-            <button
-              type="button"
-              id="decrement-button"
-              data-input-counter-decrement="counter-input"
-              className="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-            >
-              <svg
-                className="h-2.5 w-2.5 text-gray-900 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 2"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 1h16"
-                />
-              </svg>
-            </button>
-            <input
-              type="text"
-              id="counter-input"
-              data-input-counter
-              className="w-10 text-sm font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white"
-              placeholder=""
-              value="2"
-              required
-            />
-            <button
-              type="button"
-              id="increment-button"
-              data-input-counter-increment="counter-input"
-              className="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-            >
-              <svg
-                className="h-2.5 w-2.5 text-gray-900 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 18"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 1v16M1 9h16"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="text-end md:order-4 md:w-32">
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
-              {formatToPeso(item.price)}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex-1 w-full min-w-0 space-y-4 md:order-2 md:max-w-md">
+const displayFurnituresOnCart = (items, handleRemoveItem) => {
+  return items.map((item, index) => {
+    return (
+      <div
+        className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6"
+        key={index}
+      >
+        <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
           <Link
             to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
-            className="text-sm font-medium text-gray-900 hover:underline dark:text-white"
+            className="shrink-0 md:order-1"
           >
-            {item.name}
+            <img
+              className="object-cover w-64 h-48 border rounded-lg"
+              src={item.variantImgUrls.imagePaths[0]}
+              alt={item.name}
+            />
           </Link>
-          <p className="text-sm text-gray-600">
-            {item.description?.length > 20
-              ? item.description.slice(0, 100) + "..."
-              : item.description}
-          </p>
-          <p className="text-sm text-gray-600">
-            {item.selectedVariant ? `Variant: ${item.selectedVariant}` : ""}
-          </p>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900"
-              onClick={() =>
-                handleRemoveItem(
-                  items,
-                  item.id,
-                  item.selectedVariant,
-                  index,
-                  item.shopData.userId
-                )
-              }
-            >
-              <svg
-                className="me-1.5 h-5 w-5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
+
+          <label htmlFor="counter-input" className="sr-only">
+            Choose quantity:
+          </label>
+          <div className="flex items-center justify-between md:order-3 md:justify-end">
+            <div className="flex items-center">
+              <button
+                type="button"
+                id="decrement-button"
+                data-input-counter-decrement="counter-input"
+                className="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18 17.94 6M18 18 6.06 6"
-                />
-              </svg>
-              Remove
-            </button>
+                <svg
+                  className="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 18 2"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 1h16"
+                  />
+                </svg>
+              </button>
+              <input
+                type="text"
+                id="counter-input"
+                data-input-counter
+                className="w-10 text-sm font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white"
+                placeholder=""
+                value="2"
+                required
+              />
+              <button
+                type="button"
+                id="increment-button"
+                data-input-counter-increment="counter-input"
+                className="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+              >
+                <svg
+                  className="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 18 18"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 1v16M1 9h16"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="text-end md:order-4 md:w-32">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {formatToPeso(item.price)}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex-1 w-full min-w-0 space-y-4 md:order-2 md:max-w-md">
+            <Link
+              to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
+              className="text-sm font-medium text-gray-900 hover:underline dark:text-white"
+            >
+              {item.name}
+            </Link>
+            <p className="text-sm text-gray-600">
+              {item.description?.length > 20
+                ? item.description.slice(0, 100) + "..."
+                : item.description}
+            </p>
+            <p className="text-sm text-gray-600">
+              {item.selectedVariant ? `Variant: ${item.selectedVariant}` : ""}
+            </p>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900"
+                onClick={() =>
+                  handleRemoveItem(
+                    items,
+                    item.id,
+                    item.selectedVariant,
+                    index,
+                    item.shopData.userId
+                  )
+                }
+              >
+                <svg
+                  className="me-1.5 h-5 w-5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18 17.94 6M18 18 6.06 6"
+                  />
+                </svg>
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  ));
+    );
+  });
 };
 
 const Cart = () => {
@@ -163,8 +168,6 @@ const Cart = () => {
     tab == 0 ? navigate("/wishlist") : navigate("/cart");
   };
   const [cart, setCart] = useState([]);
-  const [previewUrlImg, setPreviewUrlImg] = useState([]);
-
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -175,21 +178,30 @@ const Cart = () => {
             "furnitures",
             item.furnitureId
           );
-          return { ...furniture, selectedVariant: item.variant }; // Include the variant in the result
+          // grabbing lahat ng variants
+          let variantImgUrls = "";
+          if (furniture.variants.length === 0) {
+            const urls = await getAllImageDownloadUrl(furniture.imagesUrl);
+            const placeholder = {
+              imagePaths: urls,
+              name: "",
+            };
+            variantImgUrls = placeholder;
+          } else {
+            variantImgUrls = furniture.variants.find((variant) => {
+              return variant.name === item.variant;
+            });
+          }
+
+          return {
+            ...furniture,
+            selectedVariant: item.variant,
+            variantImgUrls: variantImgUrls,
+          };
         });
 
         const results = (await Promise.all(fetchPromises)).reverse();
         setCart(results);
-
-        const urls = await Promise.all(
-          results.map(async (item) => {
-            const url = await getImageDownloadUrl(
-              `${item.imagesUrl}/${item.imgPreviewFilename}`
-            );
-            return url;
-          })
-        );
-        setPreviewUrlImg(urls);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -215,9 +227,7 @@ const Cart = () => {
 
       if (result.success && result.isRemoved) {
         const newCart = furnitures.filter((_, i) => i !== index);
-        const newPreviewUrls = previewUrlImg.filter((_, i) => i !== index);
-        setCart(newCart); // Update the cart state
-        setPreviewUrlImg(newPreviewUrls);
+        setCart(newCart);
         toast.success("Item removed from cart!");
       } else if (!result.isRemoved) {
         toast.error("Item was not in the cart.");
@@ -273,11 +283,7 @@ const Cart = () => {
                 <div className=" mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
                   <div className="flex-none w-full mx-auto lg:max-w-2xl xl:max-w-4xl">
                     <div className="space-y-6">
-                      {displayFurnituresOnCart(
-                        cart,
-                        previewUrlImg,
-                        handleRemoveItem
-                      )}
+                      {displayFurnituresOnCart(cart, handleRemoveItem)}
                     </div>
                   </div>
 
