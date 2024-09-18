@@ -9,9 +9,16 @@ import {
 export const CustomRowActions = ({
   data,
   viewAction,
+  viewFunc,
   editAction,
   deleteAction,
 }) => {
+  const viewBtnClick = () => {
+    if (viewFunc) {
+      viewFunc(data.id);
+    }
+  };
+
   return (
     <Menu as="div" className="relative inline-block w-full text-center ">
       <MenuButton className="inline-flex justify-center text-sm font-medium text-gray-700 bg-transparent hover:border-transparent group hover:text-gray-900">
@@ -25,9 +32,7 @@ export const CustomRowActions = ({
           <MenuItem
             as="div"
             className="flex items-center"
-            onClick={() => {
-              alert(data.id);
-            }}
+            onClick={viewBtnClick}
           >
             <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
               <div className="flex items-center gap-2">

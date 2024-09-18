@@ -12,10 +12,13 @@ import { where } from "firebase/firestore";
 import { getOrderStatusStyles } from "../../components/globalFunctions";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const SellerOrders = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { loggedUser } = useStore();
   const { rowOrdersData, setRowOrdersData } = useStore();
   const gridRef = useRef();
@@ -92,6 +95,7 @@ const SellerOrders = () => {
         return {
           data: params.data,
           viewAction: true,
+          viewFunc: handleViewOrder,
           editAction: false,
           deleteAction: true,
         };
@@ -123,26 +127,38 @@ const SellerOrders = () => {
     }
   }, [loggedUser]);
 
+  const handleViewOrder = (value) => {
+    navigate(`details/${value}`);
+  };
+
+  const isOutletPage = location.pathname.includes("/order/details/");
+
   return (
     <>
-      <div
-        className={"ag-theme-quartz p-5"}
-        style={{ height: "max(600px, 90%)" }}
-      >
-        <AgGridReact
-          rowData={rowOrdersData}
-          ref={gridRef}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          rowSelection="multiple"
-          suppressRowClickSelection={true}
-          pagination={true}
-          paginationPageSize={10}
-          paginationPageSizeSelector={[10, 25, 50]}
-          domLayout="normal"
-        />
-      </div>
-      <Toaster />
+      {!isOutletPage ? (
+        <>
+          <div
+            className={"ag-theme-quartz p-5"}
+            style={{ height: "max(600px, 90%)" }}
+          >
+            <AgGridReact
+              rowData={rowOrdersData}
+              ref={gridRef}
+              columnDefs={columnDefs}
+              defaultColDef={defaultColDef}
+              rowSelection="multiple"
+              suppressRowClickSelection={true}
+              pagination={true}
+              paginationPageSize={10}
+              paginationPageSizeSelector={[10, 25, 50]}
+              domLayout="normal"
+            />
+          </div>
+          <Toaster />
+        </>
+      ) : (
+        <Outlet />
+      )}
     </>
   );
 };
