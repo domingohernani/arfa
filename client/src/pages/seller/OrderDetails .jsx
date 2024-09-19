@@ -1,6 +1,12 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeftIcon, FolderIcon } from "@heroicons/react/20/solid";
+import {
+  ArrowLeftIcon,
+  FolderIcon,
+  PencilIcon,
+} from "@heroicons/react/20/solid";
+import ItemsOrdered from "../../components/tables/ItemsOrdered";
+import OrderInvoice from "../../components/tables/OrderInvoice";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -21,7 +27,7 @@ const OrderDetails = () => {
         </div>
       </nav>
       <header className="p-4 mt-4 border rounded-sm">
-        <section className="flex items-center justify-between">
+        <section className="flex flex-wrap items-center justify-between">
           <div className="flex flex-col">
             <h6 className="font-medium">Order #{id}</h6>
             <div className="flex gap-2">
@@ -33,13 +39,13 @@ const OrderDetails = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-2 sm:mb-0">
             <button className="flex items-center gap-2 px-2 py-1 text-sm font-medium border border-gray-300 rounded-sm text-arfablack">
               <FolderIcon className="w-4 h-4 text-gray-400" />
               Export
             </button>
             <button className="px-2 py-1 text-sm font-medium bg-blue-500 rounded-sm">
-              Update status
+              Update Status
             </button>
           </div>
         </section>
@@ -58,7 +64,7 @@ const OrderDetails = () => {
           </div>
         </section>
       </header>
-      <main className="flex gap-4 mt-4 text-sm">
+      <main className="flex flex-col gap-4 my-4 text-sm sm:flex-row">
         <section className="flex-1 border rounded-sm">
           <section className="px-3 py-4 bg-arfagray">
             <span className="font-medium">Customer Details</span>
@@ -79,11 +85,12 @@ const OrderDetails = () => {
           </section>
         </section>
         <section className="flex-1 border rounded-sm">
-          <section className="flex items-center justify-between p-3 bg-arfagray">
+          <section className="flex items-center justify-between p-3 py-4 bg-arfagray">
             <span className="font-medium">Shipping Address</span>
-            <button className="flex items-center gap-2 px-4 py-1 text-sm font-medium border border-gray-300 rounded-sm text-arfablack">
+            {/* <button className="flex items-center gap-2 px-4 py-1 text-sm font-medium border border-gray-300 rounded-sm text-arfablack">
+              <PencilIcon className="w-4 h-4 text-gray-400" />
               Edit
-            </button>
+            </button> */}
           </section>
           <section className="flex flex-col gap-1 p-4 ">
             <p className="text-sm text-gray-600">
@@ -91,6 +98,12 @@ const OrderDetails = () => {
             </p>
           </section>
         </section>
+      </main>
+      <main>
+        <ItemsOrdered />
+      </main>
+      <main className="mt-4">
+        <OrderInvoice />
       </main>
     </section>
   );
