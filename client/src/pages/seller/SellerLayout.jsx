@@ -14,7 +14,7 @@ const SellerLayout = () => {
   const handleClose = () => setIsOpen(false);
 
   return (
-    <section className="bg-gray-50">
+    <section className="bg-white">
       <section className="bg-white border-b border-gray-300">
         <SellerNavigationBar />
       </section>
