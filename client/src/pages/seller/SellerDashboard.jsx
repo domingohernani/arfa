@@ -26,7 +26,7 @@ export const SellerDashboard = () => {
   return (
     <section className="p-5">
       <section className="grid grid-cols-1 gap-5 pb-5 md:grid-cols-3">
-        <div className="flex justify-between px-5 py-5 text-white bg-green-500 rounded-md shadow-sm ">
+        <div className="flex justify-between px-5 py-5 text-white bg-green-500 rounded-md">
           <div className="flex items-center gap-5">
             <div className="">
               <h3 className="text-base">₱10.540</h3>
@@ -36,7 +36,7 @@ export const SellerDashboard = () => {
           </div>
           <CurrencyDollarIcon className="w-10"></CurrencyDollarIcon>
         </div>
-        <div className="flex justify-between px-5 py-5 text-white bg-green-400 rounded-md shadow-sm ">
+        <div className="flex justify-between px-5 py-5 text-white bg-green-400 rounded-md">
           <div className="flex items-center gap-5">
             <div className="">
               <h3 className="text-base">56</h3>
@@ -46,7 +46,7 @@ export const SellerDashboard = () => {
           </div>
           <ShoppingBagIcon className="w-10"></ShoppingBagIcon>
         </div>
-        <div className="flex justify-between px-5 py-5 text-white bg-green-600 rounded-md shadow-sm ">
+        <div className="flex justify-between px-5 py-5 text-white bg-green-600 rounded-md">
           <div className="flex items-center gap-5">
             <div className="">
               <h3 className="text-base">1,056</h3>
@@ -58,22 +58,22 @@ export const SellerDashboard = () => {
         </div>
       </section>
       <section className="flex flex-col gap-5 pb-5 md:flex-row ">
-        <div className="p-5 bg-white rounded-md shadow-sm basis-4/6">
+        <div className="p-5 bg-white border basis-4/6">
           <OrdersOverTime />
         </div>
-        <div className="flex flex-col self-stretch w-full gap-2 py-5 bg-white rounded-md shadow-sm basis-1/3 justify-evenly">
+        <div className="flex flex-col self-stretch w-full gap-2 py-5 bg-white border basis-1/3 justify-evenly">
           <WeeklySale />
         </div>
       </section>
       <section className="flex flex-col gap-5 lg:flex-row">
-        <div className="py-5 bg-white rounded-md shadow-sm basis-1/2">
+        <div className="py-5 bg-white border basis-1/2">
           <BasicTable
             rowData={rowData}
             columnDefs={columnDefs}
             title="Recent Transactions"
           ></BasicTable>
         </div>
-        <div className="py-5 bg-white rounded-md shadow-sm basis-1/2">
+        <div className="py-5 bg-white border basis-1/2">
           <BasicTable
             rowData={rowData}
             columnDefs={columnDefs}

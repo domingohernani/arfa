@@ -37,6 +37,7 @@ import SellerProtectedRoutes from "./utils/SellerProtectedRoutes";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
+import OrderDetails from "./pages/seller/OrderDetails ";
 
 function App() {
   useEffect(() => {
@@ -91,7 +92,10 @@ function App() {
           <Route element={<SellerProtectedRoutes />}>
             <Route element={<SellerLayout />} path="/seller-page">
               <Route element={<SellerDashboard />} path="dashboard" />
-              <Route element={<SellerOrders />} path="order" />
+              <Route path="order" element={<SellerOrders />}>
+                {/* Child Route */}
+                <Route path="details/:id" element={<OrderDetails />} />
+              </Route>
               <Route element={<SellerProducts />} path="product" />
               <Route element={<SellerTransaction />} path="transaction" />
               <Route element={<SellerReports />} path="report" />
