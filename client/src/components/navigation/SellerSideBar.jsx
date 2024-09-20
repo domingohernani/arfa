@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { doSignOut } from "../../firebase/auth";
 import { useStore } from "../../stores/useStore";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import { Sidebar } from "flowbite-react";
 
 export const SellerSideBar = ({ setIsOpen }) => {
   const { logoutUser } = useStore();
+  const [productNavClick, setProductNavClick] = useState(false);
 
   const handleClose = () => {
     if (setIsOpen) {
@@ -85,10 +88,10 @@ export const SellerSideBar = ({ setIsOpen }) => {
           </li>
           <li>
             <NavLink
-              to={"product"}
+              onClick={() => setProductNavClick(!productNavClick)}
               className={({ isActive }) =>
                 isActive
-                  ? "text-white flex items-center justify-center p-2 md:pr-6 rounded-lg bg-arfagreen"
+                  ? "text-arfablack flex items-center justify-center p-2 md:pr-6 rounded-lg"
                   : "text-arfablack flex items-center justify-center p-2 md:pr-6 rounded-lg"
               }
             >
@@ -100,19 +103,59 @@ export const SellerSideBar = ({ setIsOpen }) => {
                     data-name="Layer 1"
                     viewBox="0 0 24 24"
                     className="w-4 h-4 text-arfagreen"
-                    fill={`${isActive ? "white" : "#111827"}`}
+                    fill={`${isActive ? "#111827" : "#111827"}`}
                   >
                     <path d="m22,9.184v-1.184C22,3.589,18.411,0,14,0h-4C5.589,0,2,3.589,2,8v1.184c-1.161.414-2,1.514-2,2.816v5.5c0,1.557.795,2.93,2,3.738v1.762c0,.552.448,1,1,1s1-.448,1-1v-1.051c.166.019.329.051.5.051h15c.171,0,.334-.032.5-.051v1.051c0,.552.448,1,1,1s1-.448,1-1v-1.762c1.205-.808,2-2.182,2-3.738v-5.5c0-1.302-.839-2.402-2-2.816ZM10,2h4c3.309,0,6,2.691,6,6v1.184c-1.161.414-2,1.514-2,2.816v2H6v-2c0-1.302-.839-2.402-2-2.816v-1.184c0-3.309,2.691-6,6-6Zm-6,17.95c-1.14-.232-2-1.242-2-2.45v-5.5c0-.551.449-1,1-1s1,.449,1,1v7.95Zm2,.05v-4h12v4H6Zm16-2.5c0,1.208-.86,2.217-2,2.45v-7.95c0-.551.449-1,1-1s1,.449,1,1v5.5Z" />
                   </svg>
-                  <span
-                    className="flex-1 ms-3 whitespace-nowrap md:inline"
-                    onClick={handleClose}
-                  >
+                  <span className="flex-1 ms-3 whitespace-nowrap md:inline">
                     Product
                   </span>
+                  {productNavClick ? (
+                    <ChevronDownIcon className="w-4 h-4" />
+                  ) : (
+                    <ChevronUpIcon className="w-4 h-4" />
+                  )}
                 </>
               )}
             </NavLink>
+
+            {productNavClick && (
+              <section className="flex flex-col mt-2">
+                <NavLink
+                  onClick={handleClose}
+                  to={"product-info"}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-white flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg bg-arfagreen"
+                      : "text-arfablack flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg"
+                  }
+                >
+                  Information
+                </NavLink>
+                <NavLink
+                  onClick={handleClose}
+                  to={"product-inventory"}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-white flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg bg-arfagreen"
+                      : "text-arfablack flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg"
+                  }
+                >
+                  Inventory
+                </NavLink>
+                <NavLink
+                  onClick={handleClose}
+                  to={"product-reviews"}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-white flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg bg-arfagreen"
+                      : "text-arfablack flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg"
+                  }
+                >
+                  Reviews
+                </NavLink>
+              </section>
+            )}
           </li>
           <li>
             <NavLink
