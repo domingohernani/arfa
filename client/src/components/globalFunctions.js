@@ -78,7 +78,7 @@ export const getOrderStatusStyles = (orderStatus) => {
   switch (orderStatus) {
     case "Placed":
       statusText = "Placed";
-      colorClass = "text-blue-400"; // Blue for "Placed"
+      colorClass = "text-blue-600"; // Blue for "Placed"
       bgColorClass = "bg-blue-400";
       break;
     case "Confirmed":
@@ -88,7 +88,7 @@ export const getOrderStatusStyles = (orderStatus) => {
       break;
     case "Preparing":
       statusText = "Preparing";
-      colorClass = "text-orange-400"; // Orange for "Preparing"
+      colorClass = "text-orange-500"; // Orange for "Preparing"
       bgColorClass = "bg-orange-400";
       break;
     case "Ready":

@@ -2,18 +2,36 @@ import React from "react";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import { getOrderStatusStyles } from "../globalFunctions";
 
-const OrderInvoice = () => {
+const OrderReceipt = () => {
   const columnDefs = [
     { headerName: "No", field: "no", flex: 1 },
     {
-      headerName: "Amount",
+      headerName: "Total Amount (₱)",
       field: "amount",
       flex: 1,
       //   valueFormatter: currencyFormatter,
     },
-    { headerName: "Customer", field: "customer", flex: 1 },
-    { headerName: "Status", field: "status", flex: 1 },
+    { headerName: "Customer", field: "customer", flex: 2 },
+    { headerName: "No. of Items", field: "numberOfItems" },
+    {
+      headerName: "Status",
+      field: "status",
+      flex: 1,
+      cellRenderer: (params) => {
+        const { statusText, colorClass, bgColorClass } =
+          getOrderStatusStyles("Ready");
+        return (
+          <div className="flex items-center justify-between">
+            <span className={`font-bold ${colorClass} font-normal`}>
+              {statusText}
+            </span>
+            <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+          </div>
+        );
+      },
+    },
     {
       headerName: "Date",
       field: "date",
@@ -31,21 +49,6 @@ const OrderInvoice = () => {
       date: "2024-02-21",
     },
   ];
-
-  //   // Format currency for the Amount column
-  //   const currencyFormatter = (params) => {
-  //     return `$${params.value.toFixed(2)}`;
-  //   };
-
-  //   // Format date to 'DD MMM YYYY'
-  //   const dateFormatter = (params) => {
-  //     const date = new Date(params.value);
-  //     return date.toLocaleDateString("en-GB", {
-  //       day: "2-digit",
-  //       month: "short",
-  //       year: "numeric",
-  //     });
-  //   };
 
   return (
     <div className="ag-theme-quartz" style={{ height: 100, width: "100%" }}>
@@ -65,4 +68,4 @@ const OrderInvoice = () => {
   );
 };
 
-export default OrderInvoice;
+export default OrderReceipt;
