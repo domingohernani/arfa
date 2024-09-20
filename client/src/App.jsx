@@ -96,7 +96,11 @@ function App() {
                 {/* Child Route */}
                 <Route path="details/:id" element={<OrderDetails />} />
               </Route>
-              <Route element={<SellerProducts />} path="product" />
+              
+              <Route element={<SellerProducts />} path="product-info" />
+              <Route element={<SellerProducts />} path="product-inventory" />
+              <Route element={<SellerProducts />} path="product-reviews" />
+
               <Route element={<SellerTransaction />} path="transaction" />
               <Route element={<SellerReports />} path="report" />
               <Route element={<SellerInbox />} path="inbox" />
