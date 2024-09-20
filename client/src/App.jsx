@@ -43,6 +43,7 @@ import SellerProductInventory from "./pages/seller/SellerProductInventory";
 import SellerProductReviews from "./pages/seller/SellerProductReviews";
 import ProductDetails from "./pages/seller/sub/ProductDetails";
 import ProductReviews from "./pages/seller/sub/ProductReviews";
+import SellerAddProduct from "./pages/seller/SellerAddProduct";
 
 function App() {
   useEffect(() => {
@@ -102,6 +103,7 @@ function App() {
                 <Route path="details/:id" element={<OrderDetails />} />
               </Route>
 
+              <Route path="add-new-product" element={<SellerAddProduct />} />
               <Route path="product-info" element={<SellerProductsInfo />}>
                 <Route path="details/:id" element={<ProductDetails />} />
               </Route>
