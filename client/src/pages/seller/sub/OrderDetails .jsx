@@ -5,11 +5,11 @@ import {
   FolderIcon,
   PencilIcon,
 } from "@heroicons/react/20/solid";
-import ItemsOrdered from "../../components/tables/ItemsOrdered";
-import OrderReceipt from "../../components/tables/OrderReceipt";
-import { getOrderById } from "../../firebase/orders";
-import { getUserById } from "../../firebase/user";
-import { getOrderStatusStyles } from "../../components/globalFunctions";
+import ItemsOrdered from "../../../components/tables/ItemsOrdered";
+import OrderReceipt from "../../../components/tables/OrderReceipt";
+import { getOrderById } from "../../../firebase/orders";
+import { getUserById } from "../../../firebase/user";
+import { getOrderStatusStyles } from "../../../components/globalFunctions";
 
 const OrderDetails = () => {
   const { id } = useParams();
