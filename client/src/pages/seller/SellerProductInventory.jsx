@@ -30,7 +30,7 @@ const SellerProductInventory = () => {
   const columnDefs = useMemo(
     () => [
       {
-        headerName: "SKU",
+        headerName: "Product ID",
         field: "id",
         flex: 1,
         filter: "agTextColumnFilter",
@@ -92,21 +92,6 @@ const SellerProductInventory = () => {
         filter: "agDateColumnFilter",
         sort: "desc",
         sortIndex: 0,
-        valueFormatter: (params) => {
-          if (params.value) {
-            // Format the date to include both date and time
-            const date = new Date(params.value);
-            return date.toLocaleString("en-US", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            });
-          }
-          return "";
-        },
       },
       {
         headerName: "Action",
