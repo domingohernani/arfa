@@ -123,6 +123,17 @@ export const SellerSideBar = ({ setIsOpen }) => {
               <section className="flex flex-col mt-2">
                 <NavLink
                   onClick={handleClose}
+                  to={"add-new-product"}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-white flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg bg-arfagreen"
+                      : "text-arfablack flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg"
+                  }
+                >
+                  New Product
+                </NavLink>
+                <NavLink
+                  onClick={handleClose}
                   to={"product-info"}
                   className={({ isActive }) =>
                     isActive
