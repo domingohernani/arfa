@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/logos/logo_black.svg";
-import profile from "../../assets/icons/profile-black.svg";
-import cart from "../../assets/icons/cart.svg";
-import search from "../../assets/icons/search.svg";
-import heart from "../../assets/icons/heart-black.svg";
 import { Link } from "react-router-dom";
 import { NotificationDrawer } from "../dynamic/NotificationDrawer";
-import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
+import {
+  ChatBubbleBottomCenterIcon,
+  EllipsisVerticalIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import DisplayAvatar from "../dynamic/DisplayAvatar";
 import { getLoggedShopInfo, getUserInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
@@ -14,6 +14,7 @@ import { getImageDownloadUrl } from "../../firebase/photos";
 function SellerNavigationBar() {
   const { loggedUser, setLoggedUser } = useStore();
   const [logoUrl, setLogoUrl] = useState("");
+  const [mobileNav, setMobileNav] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -30,10 +31,10 @@ function SellerNavigationBar() {
   }, []);
 
   return (
-    <div className="flex justify-between px-6 py-3">
+    <div className="relative flex items-center justify-between px-6 py-3">
       <img src={logo} alt="ARFA" className="w-20 h-auto" />
 
-      <div className="flex items-center justify-end col-start-11 gap-5">
+      <div className="items-center justify-end hidden col-start-11 gap-5 sm:flex">
         <div className="flex gap-2">
           <Link to={"inbox"} className="">
             <ChatBubbleBottomCenterIcon
@@ -53,6 +54,38 @@ function SellerNavigationBar() {
             {loggedUser && loggedUser.name}
           </span>
         </div>
+      </div>
+      <div className="flex items-center gap-2 sm:hidden">
+        <EllipsisVerticalIcon
+          className="w-5 h-5 cursor-pointer"
+          onClick={() => setMobileNav(!mobileNav)}
+        />
+        <DisplayAvatar
+          url={loggedUser && logoUrl ? logoUrl : null}
+          className={"w-8 h-8 mr-2"}
+          name={loggedUser && loggedUser.name ? loggedUser.name : "User"} // Fallback to "User" if name is null
+        />
+
+        {mobileNav && (
+          <div className="absolute right-0 flex w-full p-3 bg-white border -bottom-10">
+            <span className="flex-1 text-sm font-medium truncate">
+              {loggedUser && loggedUser.name}
+            </span>
+            <div className="flex justify-end">
+              <Link to={"inbox"} className="">
+                <ChatBubbleBottomCenterIcon
+                  className="w-5 h-5 cursor-pointer text-arfablack "
+                  aria-hidden="true"
+                />
+              </Link>
+              <NotificationDrawer />
+            </div>
+            <XMarkIcon
+              className="w-5 h-5 cursor-pointer"
+              onClick={() => setMobileNav(false)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
