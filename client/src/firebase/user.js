@@ -152,3 +152,23 @@ export const createShopDocument = async (shopData) => {
     return false;
   }
 };
+
+export const getUserById = async (userId) => {
+  try {
+    // Reference to the specific user document by ID
+    const userRef = doc(db, "users", userId);
+
+    // Fetch the document
+    const userSnapshot = await getDoc(userRef);
+
+    if (userSnapshot.exists()) {
+      // Document data found
+      const userData = userSnapshot.data();
+      return { ...userData, id: userId };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+};
