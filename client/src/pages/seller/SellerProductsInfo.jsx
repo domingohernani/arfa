@@ -12,10 +12,13 @@ import { useStore } from "../../stores/useStore";
 import { Toaster } from "react-hot-toast";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-const SellerProducts = () => {
+const SellerProductsInfo = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const gridRef = useRef();
   const { loggedUser } = useStore();
   const { rowFurnituresData, setRowFurnituresData } = useStore();
@@ -142,6 +145,7 @@ const SellerProducts = () => {
           return {
             data: params.data,
             viewAction: true,
+            viewFunc: handleViewOrder,
             editAction: true,
             deleteAction: true,
           };
@@ -176,28 +180,40 @@ const SellerProducts = () => {
     }
   }, [loggedUser]);
 
+  const handleViewOrder = (value) => {
+    navigate(`details/${value}`);
+  };
+
+  const isOutletPage = location.pathname.includes("/product-info/details/");
+
   return (
     <>
-      <div
-        className="p-5 ag-theme-quartz"
-        style={{ height: "max(600px, 90%)", width: "100%" }}
-      >
-        <AgGridReact
-          rowData={rowFurnituresData}
-          ref={gridRef}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          rowSelection="multiple"
-          suppressRowClickSelection={true}
-          pagination={true}
-          paginationPageSize={10}
-          paginationPageSizeSelector={[10, 25, 50]}
-          domLayout="normal"
-        />
-      </div>
-      <Toaster />
+      {!isOutletPage ? (
+        <>
+          <div
+            className="p-5 ag-theme-quartz"
+            style={{ height: "max(600px, 90%)", width: "100%" }}
+          >
+            <AgGridReact
+              rowData={rowFurnituresData}
+              ref={gridRef}
+              columnDefs={columnDefs}
+              defaultColDef={defaultColDef}
+              rowSelection="multiple"
+              suppressRowClickSelection={true}
+              pagination={true}
+              paginationPageSize={10}
+              paginationPageSizeSelector={[10, 25, 50]}
+              domLayout="normal"
+            />
+          </div>
+          <Toaster />
+        </>
+      ) : (
+        <Outlet />
+      )}
     </>
   );
 };
 
-export default SellerProducts;
+export default SellerProductsInfo;
