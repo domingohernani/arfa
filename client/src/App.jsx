@@ -19,7 +19,7 @@ import { SellerDashboard } from "./pages/seller/SellerDashboard";
 import ShopperProtectedRoutes from "./utils/ShopperProtectedRoutes";
 import SellerLayout from "./pages/seller/SellerLayout";
 import SellerOrders from "./pages/seller/SellerOrders";
-import SellerProducts from "./pages/seller/SellerProducts";
+import SellerProducts from "./pages/seller/SellerProductsInfo";
 import SellerTransaction from "./pages/seller/SellerTransaction";
 import SellerCustomers from "./pages/seller/SellerCustomers";
 import SellerReports from "./pages/seller/SellerReports";
@@ -33,11 +33,16 @@ import ShowMultiModel from "./components/ShowMultiModel";
 import DisplayChat from "./components/dynamic/DisplayChat";
 import SelectChat from "./components/SelectChat";
 import SellerProtectedRoutes from "./utils/SellerProtectedRoutes";
+import SellerProductsInfo from "./pages/seller/SellerProductsInfo";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
-import OrderDetails from "./pages/seller/OrderDetails ";
+import OrderDetails from "./pages/seller/sub/OrderDetails ";
+import SellerProductInventory from "./pages/seller/SellerProductInventory";
+import SellerProductReviews from "./pages/seller/SellerProductReviews";
+import ProductDetails from "./pages/seller/sub/ProductDetails";
+import ProductReviews from "./pages/seller/sub/ProductReviews";
 
 function App() {
   useEffect(() => {
@@ -96,10 +101,17 @@ function App() {
                 {/* Child Route */}
                 <Route path="details/:id" element={<OrderDetails />} />
               </Route>
-              
-              <Route element={<SellerProducts />} path="product-info" />
-              <Route element={<SellerProducts />} path="product-inventory" />
-              <Route element={<SellerProducts />} path="product-reviews" />
+
+              <Route path="product-info" element={<SellerProductsInfo />}>
+                <Route path="details/:id" element={<ProductDetails />} />
+              </Route>
+              <Route
+                element={<SellerProductInventory />}
+                path="product-inventory"
+              ></Route>
+              <Route element={<SellerProductReviews />} path="product-reviews">
+                <Route path="details/:id" element={<ProductReviews />} />
+              </Route>
 
               <Route element={<SellerTransaction />} path="transaction" />
               <Route element={<SellerReports />} path="report" />
