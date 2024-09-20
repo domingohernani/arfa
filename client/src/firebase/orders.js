@@ -60,3 +60,23 @@ export const fetchOrdersByShopId = async (filters = []) => {
     console.error("Error fetching orders:", error);
   }
 };
+
+export const getOrderById = async (orderId) => {
+  try {
+    // Reference to the specific order document by ID
+    const orderRef = doc(db, "orders", orderId);
+
+    // Fetch the document
+    const orderSnapshot = await getDoc(orderRef);
+
+    if (orderSnapshot.exists()) {
+      // Document data found
+      const orderData = orderSnapshot.data();
+      return { ...orderData, id: orderId };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching order:", error);
+  }
+};
