@@ -19,7 +19,10 @@ export const UpdateStock = ({
   const [stock, setStock] = useState(currentStock);
 
   const handleConfirmBtn = async () => {
-    const result = await updateStock(id, stock);
+    let result = "";
+    if (stock) {
+      result = await updateStock(id, stock);
+    }
     if (updateResultMessage && stock) {
       if (result) {
         updateResultMessage("Stock updated successfully", true);
