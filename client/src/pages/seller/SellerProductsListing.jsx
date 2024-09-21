@@ -63,10 +63,16 @@ const SellerProductsListing = () => {
         filter: "agDateColumnFilter",
         sort: "desc",
         sortIndex: 0,
-        valueFormatter: (params) => {
-          const createdAt = params.value;
+        valueGetter: (params) => {
+          const createdAt = params.data.createdAt;
           if (createdAt && createdAt.seconds) {
-            const date = new Date(createdAt.seconds * 1000);
+            return new Date(createdAt.seconds * 1000);
+          }
+          return null;
+        },
+        valueFormatter: (params) => {
+          const date = params.value;
+          if (date instanceof Date) {
             return date.toLocaleDateString() + " " + date.toLocaleTimeString();
           }
           return "";
