@@ -70,7 +70,7 @@ const ProductReviews = () => {
   return (
     <section className="m-5">
       <nav className="flex items-center gap-2 mb-5">
-        <div className="p-1 border rounded-sm w-fit">
+        <div className="p-1 w-fit">
           <ArrowLeftIcon
             className="w-5 h-5 cursor-pointer"
             onClick={() => navigate("/seller-page/product-reviews")}
