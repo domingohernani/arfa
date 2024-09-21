@@ -19,7 +19,6 @@ import { SellerDashboard } from "./pages/seller/SellerDashboard";
 import ShopperProtectedRoutes from "./utils/ShopperProtectedRoutes";
 import SellerLayout from "./pages/seller/SellerLayout";
 import SellerOrders from "./pages/seller/SellerOrders";
-import SellerProducts from "./pages/seller/SellerProductsInfo";
 import SellerTransaction from "./pages/seller/SellerTransaction";
 import SellerCustomers from "./pages/seller/SellerCustomers";
 import SellerReports from "./pages/seller/SellerReports";
@@ -33,7 +32,7 @@ import ShowMultiModel from "./components/ShowMultiModel";
 import DisplayChat from "./components/dynamic/DisplayChat";
 import SelectChat from "./components/SelectChat";
 import SellerProtectedRoutes from "./utils/SellerProtectedRoutes";
-import SellerProductsInfo from "./pages/seller/SellerProductsInfo";
+import SellerProductsListing from "./pages/seller/SellerProductsListing";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -104,7 +103,7 @@ function App() {
               </Route>
 
               <Route path="add-new-product" element={<SellerAddProduct />} />
-              <Route path="product-info" element={<SellerProductsInfo />}>
+              <Route path="product-info" element={<SellerProductsListing />}>
                 <Route path="details/:id" element={<ProductDetails />} />
               </Route>
               <Route
