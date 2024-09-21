@@ -16,7 +16,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-const SellerProductsInfo = () => {
+const SellerProductsListing = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const gridRef = useRef();
@@ -30,7 +30,6 @@ const SellerProductsInfo = () => {
         field: "id",
         flex: 1,
         filter: "agTextColumnFilter",
-        checkboxSelection: true,
         cellRenderer: CustomHoverCopyCell,
       },
       {
@@ -52,43 +51,6 @@ const SellerProductsInfo = () => {
         filter: "agTextColumnFilter",
       },
       {
-        headerName: "Inventory",
-        field: "inventory",
-        flex: 1,
-        filter: "agTextColumnFilter",
-        cellRenderer: (params) => {
-          const inventory = params.value;
-
-          let statusText;
-          let colorClass;
-          let bgColorClass;
-
-          // Determine inventory status and corresponding color
-          if (inventory <= 5) {
-            statusText = "Few";
-            colorClass = "text-red-600"; // Red for "Few"
-            bgColorClass = "bg-red-600";
-          } else if (inventory <= 20) {
-            statusText = "Normal";
-            colorClass = "text-yellow-300"; // Yellow for "Normal"
-            bgColorClass = "bg-yellow-300";
-          } else {
-            statusText = "High";
-            colorClass = "text-green-600"; // Green for "High"
-            bgColorClass = "bg-green-600";
-          }
-
-          return (
-            <div className="flex items-center justify-between">
-              <span className={`font-bold ${colorClass} font-normal`}>
-                ({inventory}) {statusText}
-              </span>
-              <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
-            </div>
-          );
-        },
-      },
-      {
         headerName: "Price (₱)",
         field: "price",
         flex: 1,
@@ -96,11 +58,19 @@ const SellerProductsInfo = () => {
       },
       {
         headerName: "Created At",
-        field: "createdAtDate",
+        field: "createdAt",
         flex: 1,
         filter: "agDateColumnFilter",
         sort: "desc",
         sortIndex: 0,
+        valueFormatter: (params) => {
+          const createdAt = params.value;
+          if (createdAt && createdAt.seconds) {
+            const date = new Date(createdAt.seconds * 1000);
+            return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+          }
+          return "";
+        },
       },
       {
         headerName: "Status",
@@ -169,6 +139,8 @@ const SellerProductsInfo = () => {
         let filter = [];
         filter.push(where("ownerId", "==", loggedUser.userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
+        console.log(furnitures);
+
         setRowFurnituresData(furnitures);
       } catch (error) {
         console.error("Error fetching furniture:", error);
@@ -216,4 +188,4 @@ const SellerProductsInfo = () => {
   );
 };
 
-export default SellerProductsInfo;
+export default SellerProductsListing;
