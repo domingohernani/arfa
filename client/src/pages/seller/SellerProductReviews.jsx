@@ -26,7 +26,7 @@ const SellerProductReviews = () => {
   const { rowFurnituresData, setRowFurnituresData } = useStore();
 
   const handleMoreAction = (rowData) => {
-    navigate(`details/${rowData.id}`);
+    navigate(`furniture/${rowData.id}`);
   };
 
   const columnDefs = useMemo(
@@ -75,7 +75,6 @@ const SellerProductReviews = () => {
         field: "action",
         filter: false,
         flex: 1,
-        cellRenderer: CustomRowActions,
         cellRenderer: (params) => {
           return (
             <button
@@ -122,7 +121,7 @@ const SellerProductReviews = () => {
     navigate(`details/${value}`);
   };
 
-  const isOutletPage = location.pathname.includes("/product-reviews/details/");
+  const isOutletPage = location.pathname.includes("/product-reviews/furniture/");
 
   return (
     <>

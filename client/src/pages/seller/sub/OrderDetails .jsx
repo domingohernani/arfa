@@ -60,7 +60,12 @@ const OrderDetails = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          <h6 className="cursor-pointer hover:text-arfagreen">Order</h6>
+          <h6
+            className="cursor-pointer hover:text-arfagreen"
+            onClick={() => navigate("/seller-page/order")}
+          >
+            Order
+          </h6>
           <h6 className="cursor-pointer">/</h6>
           <h6 className="cursor-pointer hover:text-arfagreen">Details</h6>
         </div>
