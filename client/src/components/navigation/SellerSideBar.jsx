@@ -141,7 +141,7 @@ export const SellerSideBar = ({ setIsOpen }) => {
                       : "text-arfablack flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg"
                   }
                 >
-                  Information
+                  Listing
                 </NavLink>
                 <NavLink
                   onClick={handleClose}
