@@ -14,6 +14,7 @@ import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { calculateRatingSummary } from "../../components/globalFunctions";
+import { EyeIcon } from "@heroicons/react/20/solid";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -23,6 +24,10 @@ const SellerProductReviews = () => {
   const gridRef = useRef();
   const { loggedUser } = useStore();
   const { rowFurnituresData, setRowFurnituresData } = useStore();
+
+  const handleMoreAction = (rowData) => {
+    navigate(`details/${rowData.id}`);
+  };
 
   const columnDefs = useMemo(
     () => [
@@ -65,110 +70,23 @@ const SellerProductReviews = () => {
           return rating.average + " star(s)";
         },
       },
-      // {
-      //   headerName: "Description",
-      //   field: "description",
-      //   flex: 2,
-      //   filter: "agTextColumnFilter",
-      // },
-      // {
-      //   headerName: "Inventory",
-      //   field: "inventory",
-      //   flex: 1,
-      //   filter: "agTextColumnFilter",
-      //   cellRenderer: (params) => {
-      //     const inventory = params.value;
-
-      //     let statusText;
-      //     let colorClass;
-      //     let bgColorClass;
-
-      //     // Determine inventory status and corresponding color
-      //     if (inventory <= 5) {
-      //       statusText = "Few";
-      //       colorClass = "text-red-600"; // Red for "Few"
-      //       bgColorClass = "bg-red-600";
-      //     } else if (inventory <= 20) {
-      //       statusText = "Normal";
-      //       colorClass = "text-yellow-300"; // Yellow for "Normal"
-      //       bgColorClass = "bg-yellow-300";
-      //     } else {
-      //       statusText = "High";
-      //       colorClass = "text-green-600"; // Green for "High"
-      //       bgColorClass = "bg-green-600";
-      //     }
-
-      //     return (
-      //       <div className="flex items-center justify-between">
-      //         <span className={`font-bold ${colorClass} font-normal`}>
-      //           ({inventory}) {statusText}
-      //         </span>
-      //         <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
-      //       </div>
-      //     );
-      //   },
-      // },
-      // {
-      //   headerName: "Price (₱)",
-      //   field: "price",
-      //   flex: 1,
-      //   filter: "agNumberColumnFilter",
-      // },
-      // {
-      //   headerName: "Created At",
-      //   field: "createdAtDate",
-      //   flex: 1,
-      //   filter: "agDateColumnFilter",
-      //   sort: "desc",
-      //   sortIndex: 0,
-      // },
-      // {
-      //   headerName: "Status",
-      //   field: "isSale",
-      //   flex: 1,
-      //   filter: "agTextColumnFilter",
-      //   cellRenderer: (params) => {
-      //     const isOnSale = params.value;
-
-      //     let statusText;
-      //     let colorClass;
-      //     let bgColorClass;
-
-      //     // Determine status and corresponding colors
-      //     if (isOnSale) {
-      //       statusText = "On Sale";
-      //       colorClass = "text-blue-600"; // Blue for "On Sale"
-      //       bgColorClass = "bg-blue-600"; // Blue background for the indicator
-      //     } else {
-      //       statusText = "Not On Sale";
-      //       colorClass = "text-green-500"; // Green for "Not On Sale"
-      //       bgColorClass = "bg-green-500"; // Green background for the indicator
-      //     }
-
-      //     return (
-      //       <div className="flex items-center justify-between">
-      //         <span className={`font-bold ${colorClass} font-normal`}>
-      //           {statusText}
-      //         </span>
-      //         <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
-      //       </div>
-      //     );
-      //   },
-      // },
       {
         headerName: "Action",
         field: "action",
         filter: false,
         flex: 1,
         cellRenderer: CustomRowActions,
-        cellRendererParams: (params) => {
-          return {
-            data: params.data,
-            viewAction: true,
-            viewFunc: handleViewOrder,
-            editAction: true,
-            deleteAction: true,
-          };
+        cellRenderer: (params) => {
+          return (
+            <button
+              className="px-3 py-1 text-sm bg-blue-500 rounded-sm btn-update"
+              data-id={params.data.id}
+              onClick={() => handleMoreAction(params.data)}
+            >
+              <EyeIcon className="inline-block w-4 h-4 mr-1" />
+              <span className="text-sm">More</span>
+            </button>
+          );
         },
       },
     ],
@@ -189,8 +107,6 @@ const SellerProductReviews = () => {
         let filter = [];
         filter.push(where("ownerId", "==", loggedUser.userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
-        console.log(furnitures);
-
         setRowFurnituresData(furnitures);
       } catch (error) {
         console.error("Error fetching furniture:", error);
