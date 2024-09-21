@@ -13,11 +13,24 @@ const ReviewsTable = ({ reviews }) => {
         field: "description",
         flex: 2,
       },
-      { headerName: "Rating", field: "rating", flex: 1 },
+      {
+        headerName: "Rating",
+        field: "rating",
+        flex: 1,
+        valueGetter: (params) => {
+          const rating = params.data.rating;
+          return `${rating} star(s)`;
+        },
+      },
       {
         headerName: "Reviewer Name",
         field: "userData.firstName",
         flex: 2,
+        valueGetter: (params) => {
+          const firstName = params.data.userData?.firstName || "";
+          const lastName = params.data.userData?.lastName || "";
+          return `${firstName} ${lastName}`.trim();
+        },
       },
       {
         headerName: "Date",
