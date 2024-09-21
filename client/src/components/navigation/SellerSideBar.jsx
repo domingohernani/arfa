@@ -145,14 +145,14 @@ export const SellerSideBar = ({ setIsOpen }) => {
                 </NavLink>
                 <NavLink
                   onClick={handleClose}
-                  to={"product-inventory"}
+                  to={"product-stock"}
                   className={({ isActive }) =>
                     isActive
                       ? "text-white flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg bg-arfagreen"
                       : "text-arfablack flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg"
                   }
                 >
-                  Inventory
+                  Stock
                 </NavLink>
                 <NavLink
                   onClick={handleClose}
