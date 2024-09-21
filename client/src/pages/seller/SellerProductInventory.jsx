@@ -87,11 +87,19 @@ const SellerProductInventory = () => {
       },
       {
         headerName: "Updated At",
-        field: "createdAtDate",
+        field: "inventoryUpdatedAt",
         flex: 2,
         filter: "agDateColumnFilter",
         sort: "desc",
         sortIndex: 0,
+        valueFormatter: (params) => {
+          const createdAt = params.value;
+          if (createdAt && createdAt.seconds) {
+            const date = new Date(createdAt.seconds * 1000);
+            return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+          }
+          return "";
+        },
       },
       {
         headerName: "Action",
