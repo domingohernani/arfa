@@ -14,7 +14,7 @@ import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { calculateRatingSummary } from "../../components/globalFunctions";
-import { EyeIcon } from "@heroicons/react/20/solid";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -78,7 +78,7 @@ const SellerProductReviews = () => {
         cellRenderer: (params) => {
           return (
             <button
-              className="px-3 py-1 text-sm bg-blue-500 rounded-sm btn-update"
+              className="px-3 py-1 text-sm bg-arfagray text-arfablack font-normal border border-gray-300 rounded-sm btn-update"
               data-id={params.data.id}
               onClick={() => handleMoreAction(params.data)}
             >
@@ -117,11 +117,9 @@ const SellerProductReviews = () => {
     }
   }, [loggedUser]);
 
-  const handleViewOrder = (value) => {
-    navigate(`details/${value}`);
-  };
-
-  const isOutletPage = location.pathname.includes("/product-reviews/furniture/");
+  const isOutletPage = location.pathname.includes(
+    "/product-reviews/furniture/"
+  );
 
   return (
     <>
