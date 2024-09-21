@@ -53,19 +53,24 @@ const OrderDetails = () => {
   return (
     <section className="m-5">
       <nav className="flex items-center gap-2">
-        <div className="p-1 border rounded-sm w-fit">
+        <div className="p-1 w-fit">
           <ArrowLeftIcon
             className="w-5 h-5 cursor-pointer"
             onClick={() => navigate("/seller-page/order")}
           />
         </div>
         <div className="flex items-center gap-2">
-          <h6 className="cursor-pointer hover:text-arfagreen">Order</h6>
+          <h6
+            className="cursor-pointer hover:text-arfagreen"
+            onClick={() => navigate("/seller-page/order")}
+          >
+            Order
+          </h6>
           <h6 className="cursor-pointer">/</h6>
           <h6 className="cursor-pointer hover:text-arfagreen">Details</h6>
         </div>
       </nav>
-      <header className="p-4 mt-4 border rounded-sm">
+      <header className="mt-4 ">
         <section className="flex flex-wrap items-center justify-between">
           <div className="flex flex-col">
             <h6 className="font-medium">Order #{order.id}</h6>

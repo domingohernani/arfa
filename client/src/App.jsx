@@ -19,7 +19,6 @@ import { SellerDashboard } from "./pages/seller/SellerDashboard";
 import ShopperProtectedRoutes from "./utils/ShopperProtectedRoutes";
 import SellerLayout from "./pages/seller/SellerLayout";
 import SellerOrders from "./pages/seller/SellerOrders";
-import SellerProducts from "./pages/seller/SellerProductsInfo";
 import SellerTransaction from "./pages/seller/SellerTransaction";
 import SellerCustomers from "./pages/seller/SellerCustomers";
 import SellerReports from "./pages/seller/SellerReports";
@@ -33,7 +32,7 @@ import ShowMultiModel from "./components/ShowMultiModel";
 import DisplayChat from "./components/dynamic/DisplayChat";
 import SelectChat from "./components/SelectChat";
 import SellerProtectedRoutes from "./utils/SellerProtectedRoutes";
-import SellerProductsInfo from "./pages/seller/SellerProductsInfo";
+import SellerProductsListing from "./pages/seller/SellerProductsListing";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -43,6 +42,7 @@ import SellerProductInventory from "./pages/seller/SellerProductInventory";
 import SellerProductReviews from "./pages/seller/SellerProductReviews";
 import ProductDetails from "./pages/seller/sub/ProductDetails";
 import ProductReviews from "./pages/seller/sub/ProductReviews";
+import SellerAddProduct from "./pages/seller/SellerAddProduct";
 
 function App() {
   useEffect(() => {
@@ -102,7 +102,8 @@ function App() {
                 <Route path="details/:id" element={<OrderDetails />} />
               </Route>
 
-              <Route path="product-info" element={<SellerProductsInfo />}>
+              <Route path="add-new-product" element={<SellerAddProduct />} />
+              <Route path="product-info" element={<SellerProductsListing />}>
                 <Route path="details/:id" element={<ProductDetails />} />
               </Route>
               <Route
@@ -110,7 +111,7 @@ function App() {
                 path="product-inventory"
               ></Route>
               <Route element={<SellerProductReviews />} path="product-reviews">
-                <Route path="details/:id" element={<ProductReviews />} />
+                <Route path="furniture/:id" element={<ProductReviews />} />
               </Route>
 
               <Route element={<SellerTransaction />} path="transaction" />
