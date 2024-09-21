@@ -38,7 +38,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
 import OrderDetails from "./pages/seller/sub/OrderDetails ";
-import SellerProductInventory from "./pages/seller/SellerProductInventory";
+import SellerProductStock from "./pages/seller/SellerProductStock";
 import SellerProductReviews from "./pages/seller/SellerProductReviews";
 import ProductDetails from "./pages/seller/sub/ProductDetails";
 import ProductReviews from "./pages/seller/sub/ProductReviews";
@@ -107,8 +107,8 @@ function App() {
                 <Route path="details/:id" element={<ProductDetails />} />
               </Route>
               <Route
-                element={<SellerProductInventory />}
-                path="product-inventory"
+                element={<SellerProductStock />}
+                path="product-stock"
               ></Route>
               <Route element={<SellerProductReviews />} path="product-reviews">
                 <Route path="furniture/:id" element={<ProductReviews />} />

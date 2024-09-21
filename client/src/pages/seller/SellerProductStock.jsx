@@ -9,22 +9,42 @@ import { fetchFurnitureCollection } from "../../firebase/furniture";
 import { where } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useStore } from "../../stores/useStore";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { UpdateStock } from "../../components/modals/UpdateStock";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-const SellerProductInventory = () => {
+const SellerProductStock = () => {
   const location = useLocation();
   const gridRef = useRef();
   const { loggedUser } = useStore();
   const { rowFurnituresData, setRowFurnituresData } = useStore();
+  const [id, setId] = useState("");
+  const [currentStock, setCurrentStock] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
 
   const handleUpdateAction = (rowData) => {
-    alert(rowData);
+    setId(rowData.id);
+    setCurrentStock(rowData.stock);
+    setModalOpen(true);
+  };
+
+  const updateResultMessage = (message, isSuccess) => {
+    if (isSuccess) {
+      setIsUpdateSuccess(!isUpdateSuccess);
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
   };
 
   const columnDefs = useMemo(
@@ -50,22 +70,22 @@ const SellerProductInventory = () => {
       },
       {
         headerName: "Quantity on Hand",
-        field: "inventory",
+        field: "stock",
         flex: 1,
         filter: "agTextColumnFilter",
         cellRenderer: (params) => {
-          const inventory = params.value;
+          const stock = params.value;
 
           let statusText;
           let colorClass;
           let bgColorClass;
 
-          // Determine inventory status and corresponding color
-          if (inventory <= 5) {
+          // Determine stock status and corresponding color
+          if (stock <= 5) {
             statusText = "Few";
             colorClass = "text-red-600"; // Red for "Few"
             bgColorClass = "bg-red-600";
-          } else if (inventory <= 20) {
+          } else if (stock <= 20) {
             statusText = "Normal";
             colorClass = "text-yellow-300"; // Yellow for "Normal"
             bgColorClass = "bg-yellow-300";
@@ -78,7 +98,7 @@ const SellerProductInventory = () => {
           return (
             <div className="flex items-center justify-between">
               <span className={`font-bold ${colorClass} font-normal`}>
-                ({inventory}) {statusText}
+                ({stock}) {statusText}
               </span>
               <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
             </div>
@@ -87,7 +107,7 @@ const SellerProductInventory = () => {
       },
       {
         headerName: "Updated At",
-        field: "inventoryUpdatedAt",
+        field: "stockUpdatedAt",
         flex: 2,
         filter: "agDateColumnFilter",
         sort: "desc",
@@ -146,7 +166,7 @@ const SellerProductInventory = () => {
     if (loggedUser && loggedUser.userId) {
       fetchFurniture();
     }
-  }, [loggedUser]);
+  }, [loggedUser, isUpdateSuccess]);
 
   const isOutletPage = location.pathname.includes("/product-info/details/");
 
@@ -172,6 +192,15 @@ const SellerProductInventory = () => {
             />
           </div>
           <Toaster />
+          {modalOpen && id && currentStock && (
+            <UpdateStock
+              id={id}
+              currentStock={currentStock}
+              isOpen={modalOpen}
+              close={closeModal}
+              updateResultMessage={updateResultMessage}
+            />
+          )}
         </>
       ) : (
         <Outlet />
@@ -180,4 +209,4 @@ const SellerProductInventory = () => {
   );
 };
 
-export default SellerProductInventory;
+export default SellerProductStock;
