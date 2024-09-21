@@ -13,7 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ArrowPathIcon } from "@heroicons/react/20/solid";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -109,7 +109,7 @@ const SellerProductInventory = () => {
         cellRenderer: (params) => {
           return (
             <button
-              className="px-3 py-1 text-sm bg-blue-500 rounded-sm btn-update"
+              className="px-3 py-1 text-sm bg-arfagray text-arfablack font-normal border border-gray-300 rounded-sm btn-update"
               data-id={params.data.id}
               onClick={() => handleUpdateAction(params.data)}
             >
