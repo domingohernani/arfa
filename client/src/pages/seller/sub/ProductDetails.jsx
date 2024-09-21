@@ -6,6 +6,7 @@ import { fetchFurnitureById } from "../../../firebase/furniture";
 import { storage } from "../../../firebase/firebase";
 import ShowModel from "../../../components/ShowModel";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
+import { CubeTransparentIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { Carousel } from "flowbite-react";
 import { formatToPeso } from "../../../components/globalFunctions";
 
@@ -136,13 +137,16 @@ const ProductDetails = () => {
           </h3>
         </section>
       </header>
-      {/* <main className="w-full flex-col gap-5 my-5 flex mb-28 h-96"> */}
-      <section className="flex mb-1 mt-5 justify-between">
-        <h3 className="text-sm font-medium">3d Model</h3>
-        <h3 className="text-sm font-medium">Images</h3>
+      <section className="hidden md:flex mb-1 mt-5 justify-between">
+        <h3 className="text-sm gap-2 flex item-center font-medium flex-1">
+          <span>3d Model</span> <CubeTransparentIcon className="w-4 h-4" />
+        </h3>
+        <h3 className="text-sm gap-2 pl-4 item-center flex font-medium flex-1">
+          <span>Images</span> <PhotoIcon className="w-4 h-4" />
+        </h3>
       </section>
       <main
-        className="w-full mb-5 flex flex-col gap-14 md:gap-5 md:flex-row"
+        className="w-full mb-5 mt-5 md:mt-0 flex flex-col gap-14 md:gap-5 md:flex-row"
         style={{ height: "27rem" }}
       >
         <div className="w-full relative h-full border rounded-sm">
