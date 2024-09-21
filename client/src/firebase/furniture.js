@@ -1,4 +1,12 @@
-import { collection, doc, getDoc, getDocs, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./firebase";
 
 // Function to fetch all documents from a collection
@@ -115,5 +123,21 @@ const getReviewCollections = async (docRef) => {
   } catch (error) {
     console.error("Error fetching sub-collections:", error);
     return {};
+  }
+};
+
+export const updateStock = async (furnitureId, newStock) => {
+  try {
+    const furnitureDocRef = doc(db, "furnitures", furnitureId);
+
+    // Update the 'stock' and 'stockUpdatedAt' properties
+    await updateDoc(furnitureDocRef, {
+      stock: parseInt(newStock),
+      stockUpdatedAt: serverTimestamp(), // Set to the current timestamp
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating stock: ", error);
+    return false;
   }
 };
