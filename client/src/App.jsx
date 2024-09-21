@@ -111,7 +111,7 @@ function App() {
                 path="product-inventory"
               ></Route>
               <Route element={<SellerProductReviews />} path="product-reviews">
-                <Route path="details/:id" element={<ProductReviews />} />
+                <Route path="furniture/:id" element={<ProductReviews />} />
               </Route>
 
               <Route element={<SellerTransaction />} path="transaction" />

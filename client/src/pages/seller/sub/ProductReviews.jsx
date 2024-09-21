@@ -77,9 +77,14 @@ const ProductReviews = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          <h6 className="cursor-pointer hover:text-arfagreen">Order</h6>
+          <h6
+            className="cursor-pointer hover:text-arfagreen"
+            onClick={() => navigate("/seller-page/product-reviews")}
+          >
+            Reviews
+          </h6>
           <h6 className="cursor-pointer">/</h6>
-          <h6 className="cursor-pointer hover:text-arfagreen">Details</h6>
+          <h6 className="cursor-pointer hover:text-arfagreen">Furniture</h6>
         </div>
       </nav>
       <header className="flex flex-col gap-1">
