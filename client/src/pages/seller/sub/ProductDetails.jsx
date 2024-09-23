@@ -173,6 +173,31 @@ const ProductDetails = () => {
               </section>
             </header>
           </section>
+          <section className="mt-5 border pb-14">
+            <header className="px-3 py-4 text-sm font-medium border-b mb-14 bg-arfagray">
+              Visual Overview
+            </header>
+            <main
+              className="flex flex-col w-full mt-5 md:mt-0 gap-14 md:gap-5 md:flex-row"
+              style={{ height: "27rem" }}
+            >
+              <div className="relative w-full h-full px-3 border-r">
+                <ShowModel path={modelURL} />
+              </div>
+              <Carousel className="">
+                {furnitureImgUrls.map((image, index) => {
+                  return (
+                    <img
+                      src={image}
+                      alt="..."
+                      key={index}
+                      className="object-cover w-full h-full"
+                    />
+                  );
+                })}
+              </Carousel>
+            </main>
+          </section>
         </>
       ) : (
         <UpdateProductDetails
@@ -181,39 +206,6 @@ const ProductDetails = () => {
           handleIsUpdateBtn={handleIsUpdateBtn}
         />
       )}
-      <section className="mt-5 border pb-14">
-        <header className="px-3 py-4 text-sm font-medium border-b mb-14 bg-arfagray">
-          Visual Overview
-        </header>
-        {/* <section className="justify-between hidden mb-1 md:flex">
-        <h3 className="flex flex-1 gap-2 text-sm font-medium item-center">
-          <span>3d Model</span> <CubeTransparentIcon className="w-4 h-4" />
-        </h3>
-        <h3 className="flex flex-1 gap-2 pl-4 text-sm font-medium item-center">
-          <span>Images</span> <PhotoIcon className="w-4 h-4" />
-        </h3>
-      </section> */}
-        <main
-          className="flex flex-col w-full mt-5 md:mt-0 gap-14 md:gap-5 md:flex-row"
-          style={{ height: "27rem" }}
-        >
-          <div className="relative w-full h-full px-3 border-r">
-            <ShowModel path={modelURL} />
-          </div>
-          <Carousel className="">
-            {furnitureImgUrls.map((image, index) => {
-              return (
-                <img
-                  src={image}
-                  alt="..."
-                  key={index}
-                  className="object-cover w-full h-full"
-                />
-              );
-            })}
-          </Carousel>
-        </main>
-      </section>
     </section>
   );
 };
