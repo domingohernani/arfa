@@ -16,6 +16,14 @@ const FilterSortBar = ({ removePriceRange }) => {
     (state) => state.updateIsNewArrivalsOnly
   );
 
+  // Dimentions
+  const updateWidth = useStore((state) => state.updateWidth);
+  const updateDepth = useStore((state) => state.updateDepth);
+  const updateHeight = useStore((state) => state.updateHeight);
+  const width = useStore((state) => state.width);
+  const depth = useStore((state) => state.depth);
+  const height = useStore((state) => state.height);
+
   return (
     <div className="flex flex-wrap gap-3">
       {minP && maxP && (
@@ -54,6 +62,25 @@ const FilterSortBar = ({ removePriceRange }) => {
             aria-hidden="true"
             onClick={() => {
               updateIsNewArrivalsOnly(false);
+            }}
+          />
+        </div>
+      )}
+      {(width || depth || height) && (
+        <div className="flex items-center justify-center gap-1 px-2 py-1 border rounded-sm bg-arfagray w-fit">
+          <span className="text-sm">
+            {[width, depth, height]
+              .filter(Boolean)
+              .map((e) => `${e} cm`)
+              .join(" x ")}
+          </span>
+          <XMarkIcon
+            className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
+            aria-hidden="true"
+            onClick={() => {
+              updateWidth("");
+              updateDepth("");
+              updateHeight("");
             }}
           />
         </div>

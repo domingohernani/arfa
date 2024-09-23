@@ -34,6 +34,16 @@ export const filters = [
       { label: "searchPrice" },
     ],
   },
+  {
+    id: "dimension",
+    name: "Dimension",
+    options: [
+      { value: "width", label: "Width (W)", checked: false },
+      { value: "depth", label: "Depth (D)", checked: false },
+      { value: "height", label: "Height (H)", checked: false },
+      { label: "searchDimension" },
+    ],
+  },
 ];
 
 export const classNames = (...classes) => {
