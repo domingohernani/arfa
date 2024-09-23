@@ -34,23 +34,23 @@ const SellerOrders = () => {
     },
     {
       headerName: "Date",
-      field: "createdAtDateTime",
+      field: "createdAtDate",
       filter: "agDateColumnFilter",
       flex: 1,
       sort: "desc",
       sortIndex: 0,
+      valueGetter: (params) => {
+        const createdAtDate = params.data.createdAt;
+        if (createdAtDate && createdAtDate.seconds) {
+          return new Date(createdAtDate.seconds * 1000);
+        }
+        return null;
+      },
       valueFormatter: (params) => {
-        if (params.value) {
-          const date = new Date(params.value); // Convert ISO string to Date object
-          return date.toLocaleString("en-US", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true, // 12-hour format with AM/PM
-          });
+        const date = params.value;
+
+        if (date instanceof Date) {
+          return date.toLocaleDateString() + " " + date.toLocaleTimeString();
         }
         return "";
       },

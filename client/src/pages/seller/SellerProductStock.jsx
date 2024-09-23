@@ -112,10 +112,16 @@ const SellerProductStock = () => {
         filter: "agDateColumnFilter",
         sort: "desc",
         sortIndex: 0,
+        valueGetter: (params) => {
+          const stockUpdatedAt = params.data.stockUpdatedAt;
+          if (stockUpdatedAt && stockUpdatedAt.seconds) {
+            return new Date(stockUpdatedAt.seconds * 1000);
+          }
+          return null;
+        },
         valueFormatter: (params) => {
-          const createdAt = params.value;
-          if (createdAt && createdAt.seconds) {
-            const date = new Date(createdAt.seconds * 1000);
+          const date = params.value;
+          if (date instanceof Date) {
             return date.toLocaleDateString() + " " + date.toLocaleTimeString();
           }
           return "";
