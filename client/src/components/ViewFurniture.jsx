@@ -238,6 +238,17 @@ const ViewFurniture = () => {
 
               <p className="mt-6 text-sm leading-relaxed text-arfablack">
                 {furniture.description}
+                <div className="flex flex-wrap items-center gap-1 mt-4">
+                  <span className="text-sm leading-relaxed text-arfablack">
+                    Width: {furniture.width} cm /
+                  </span>
+                  <span className="text-sm leading-relaxed text-arfablack">
+                    Depth: {furniture.depth} cm /
+                  </span>
+                  <span className="text-sm leading-relaxed text-arfablack">
+                    Height: {furniture.height} cm
+                  </span>
+                </div>
               </p>
             </div>
           </div>
