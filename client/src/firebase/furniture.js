@@ -126,6 +126,23 @@ const getReviewCollections = async (docRef) => {
   }
 };
 
+// Function to update a furniture document
+export const updateFurniture = async (furnitureId, updatedData) => {
+  try {
+    const furnitureRef = doc(db, "furnitures", furnitureId);
+    await updateDoc(furnitureRef, updatedData);
+    return {
+      message: "Furniture document updated successfully.",
+      isSuccess: true,
+    };
+  } catch (error) {
+    return {
+      message: `Failed to update furniture document: ${error.message}`,
+      isSuccess: false,
+    };
+  }
+};
+
 export const updateStock = async (furnitureId, newStock) => {
   try {
     const furnitureDocRef = doc(db, "furnitures", furnitureId);
