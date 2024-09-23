@@ -35,13 +35,23 @@ const ReviewsTable = ({ reviews }) => {
       {
         headerName: "Date",
         field: "date",
+        filter: "agDateColumnFilter",
         flex: 1,
         sort: "desc",
         sortIndex: 0,
+        valueGetter: (params) => {
+          const dateValue = params.data.date;
+          if (dateValue && dateValue.seconds) {
+            return new Date(dateValue.seconds * 1000);
+          }
+          return null;
+        },
         valueFormatter: (params) => {
-          const seconds = params.value?.seconds || 0;
-          const date = new Date(seconds * 1000);
-          return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+          const date = params.value;
+          if (date instanceof Date) {
+            return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+          }
+          return "";
         },
       },
     ],
