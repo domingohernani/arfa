@@ -43,6 +43,7 @@ import SellerProductReviews from "./pages/seller/SellerProductReviews";
 import ProductDetails from "./pages/seller/sub/ProductDetails";
 import ProductReviews from "./pages/seller/sub/ProductReviews";
 import SellerAddProduct from "./pages/seller/SellerAddProduct";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   useEffect(() => {
@@ -57,6 +58,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <Toaster />
         <Routes>
           {/* Public routes */}
           <Route element={<LandingPage />} path="/"></Route>

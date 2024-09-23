@@ -17,8 +17,8 @@ const UpdateProductDetails = ({
     description: furniture.description || "",
     category: furniture.category || "Accent",
     price: furniture.price || 0,
-    status: furniture.isSale ? "On Sale" : "Not On Sale",
-    variant: furniture.variant || "No variant",
+    // status: furniture.isSale ? "On Sale" : "Not On Sale",
+    // variant: furniture.variant || "No variant",
   });
 
   const handleInputChange = (e) => {
@@ -31,7 +31,7 @@ const UpdateProductDetails = ({
 
   const confirmBtn = () => {
     if (handleConfirmBtn) {
-      handleConfirmBtn(productDetails); // Ensure `id` is included
+      handleConfirmBtn(productDetails);
     }
   };
 
@@ -78,87 +78,65 @@ const UpdateProductDetails = ({
           </button>
         </section>
       </nav>
-      <header className="flex flex-col gap-1 md:flex-row md:gap-3">
-        <section className="flex flex-col gap-1 basis-3/5">
-          <h3 className="text-sm font-medium">
-            Product ID:{" "}
-            <span className="font-normal text-gray-600">{furniture.id}</span>
-          </h3>
-          <h3 className="text-sm font-medium">
-            Name:{" "}
-            <input
-              type="text"
-              name="name"
-              value={productDetails.name}
-              onChange={handleInputChange}
-              className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-            />
-          </h3>
-          <h3 className="text-sm font-medium">
-            Description:{" "}
-            <textarea
-              name="description"
-              value={productDetails.description}
-              onChange={handleInputChange}
-              className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-              rows="4"
-            />
-          </h3>
-        </section>
+      <section className="border">
+        <header className="px-3 py-4 text-sm font-medium border-b bg-arfagray">
+          Product Details
+        </header>
+        <header className="flex flex-col gap-1 px-3 py-5 md:flex-row md:gap-3">
+          <section className="flex flex-col gap-1 basis-3/5">
+            <h3 className="text-sm font-medium">
+              Product ID:{" "}
+              <span className="font-normal text-gray-600">{furniture.id}</span>
+            </h3>
+            <h3 className="text-sm font-medium">
+              Name:{" "}
+              <input
+                type="text"
+                name="name"
+                value={productDetails.name}
+                onChange={handleInputChange}
+                className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+              />
+            </h3>
+            <h3 className="text-sm font-medium">
+              Description:{" "}
+              <textarea
+                name="description"
+                value={productDetails.description}
+                onChange={handleInputChange}
+                className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                rows="4"
+              />
+            </h3>
+          </section>
 
-        <section className="flex flex-col flex-1 gap-1">
-          <h3 className="text-sm font-medium">
-            Category:{" "}
-            <select
-              name="category"
-              value={productDetails.category}
-              onChange={handleInputChange}
-              className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-            >
-              <option value="Accent">Accent</option>
-              <option value="Living Room">Living Room</option>
-              <option value="Bedroom">Bedroom</option>
-            </select>
-          </h3>
-          <h3 className="text-sm font-medium">
-            Price:{" "}
-            <input
-              type="number"
-              name="price"
-              value={productDetails.price}
-              onChange={handleInputChange}
-              className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-            />
-          </h3>
-          <h3 className="text-sm font-medium">
-            Status:{" "}
-            <select
-              name="status"
-              value={productDetails.status}
-              onChange={handleInputChange}
-              className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-            >
-              <option value="On Sale">On Sale</option>
-              <option value="Not On Sale">Not On Sale</option>
-            </select>
-          </h3>
-          <h3 className="text-sm font-medium">
-            Variant:{" "}
-            <select
-              name="variant"
-              value={productDetails.variant}
-              onChange={handleInputChange}
-              className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-            >
-              <option value="Wood">Wood</option>
-              <option value="Metal">Metal</option>
-              <option value="Plastic">Plastic</option>
-              <option value="Glass">Glass</option>
-              <option value="No variant">No variant</option>
-            </select>
-          </h3>
-        </section>
-      </header>
+          <section className="flex flex-col flex-1 gap-1">
+            <h3 className="text-sm font-medium">
+              Category:{" "}
+              <select
+                name="category"
+                value={productDetails.category}
+                // onChange={handleInputChange}
+                className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+              >
+                <option value="Accent">Accent</option>
+                <option value="Living Room">Living Room</option>
+                <option value="Bedroom">Bedroom</option>
+              </select>
+            </h3>
+            <h3 className="text-sm font-medium">
+              Price:{" "}
+              <input
+                type="number"
+                name="price"
+                value={productDetails.price}
+                onChange={handleInputChange}
+                className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+              />
+            </h3>
+          </section>
+        </header>
+      </section>
     </section>
   );
 };
