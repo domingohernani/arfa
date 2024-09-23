@@ -44,6 +44,11 @@ const DisplayFurnitures = () => {
   const maxPrice = useStore((state) => state.maxPrice);
   const sortOption = useStore((state) => state.sortOption);
 
+  // Dimentions
+  const width = useStore((state) => state.width);
+  const depth = useStore((state) => state.depth);
+  const height = useStore((state) => state.height);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,18 +68,21 @@ const DisplayFurnitures = () => {
 
         if (minPrice) filters.push(where("discountedPrice", ">=", minPrice));
         if (maxPrice) filters.push(where("discountedPrice", "<=", maxPrice));
-
+  
+        if (width) filters.push(where("width", "==", width));
+        if (depth) filters.push(where("depth", "==", depth));
+        if (height) filters.push(where("height", "==", height));
+  
         if (filters.length > 0) {
           dataList = await fetchFurnitureCollection("furnitures", filters);
         } else {
           dataList = await fetchFurnitureCollection("furnitures");
         }
-
-        // para sa sorting
+        // Sorting
         sortFurnitures(sortOption, dataList);
-
+  
         setFurnitures(dataList);
-
+  
         const urls = await Promise.all(
           dataList.map(async (item) => {
             const url = await getImageDownloadUrl(
@@ -90,9 +98,9 @@ const DisplayFurnitures = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
-  }, [category, sale, newArrival, minPrice, maxPrice, sortOption]);
+  }, [category, sale, newArrival, minPrice, maxPrice, sortOption, width, depth, height]); 
 
   const onPageChange = useCallback((page) => {
     setCurrentPage(page);

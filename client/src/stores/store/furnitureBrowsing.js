@@ -11,6 +11,15 @@ export const furnitureBrowsing = (set) => ({
   maxPrice: "",
   updateMaxPrice: (value) => set(() => ({ maxPrice: value })),
 
+  width: "",
+  updateWidth: (value) => set(() => ({ width: value })),
+
+  depth: "",
+  updateDepth: (value) => set(() => ({ depth: value })),
+
+  height: "",
+  updateHeight: (value) => set(() => ({ height: value })),
+
   sortOption: null,
   setSortOption: (value) => set(() => ({ sortOption: value })),
 

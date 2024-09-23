@@ -49,9 +49,12 @@ const Catalog = () => {
     (state) => state.updateIsNewArrivalsOnly
   );
 
-  // Default values ng min at max price
+  // Default values ng min at max price and dimension
   const minP = useStore((state) => state.minPrice);
   const maxP = useStore((state) => state.maxPrice);
+  const width = useStore((state) => state.width);
+  const depth = useStore((state) => state.depth);
+  const height = useStore((state) => state.height);
 
   const [minPrice, setMinPrice] = useState(minP);
   const updateMinPrice = useStore((state) => state.updateMinPrice);
@@ -59,17 +62,25 @@ const Catalog = () => {
   const [maxPrice, setMaxPrice] = useState(maxP);
   const updateMaxPrice = useStore((state) => state.updateMaxPrice);
 
+  const [widthD, setWidth] = useState(width);
+  const [depthD, setDepth] = useState(depth);
+  const [heightD, setHeight] = useState(height);
+  // Dimentions
+  const updateWidth = useStore((state) => state.updateWidth);
+  const updateDepth = useStore((state) => state.updateDepth);
+  const updateHeight = useStore((state) => state.updateHeight);
+
   // Sorting
   const sortOption = useStore((state) => state.sortOption);
   const setSortOption = useStore((state) => state.setSortOption);
 
-  const handlePriceRangeChange = (value, setState) => {
+  const handlePriceAndDimensionChange = (value, setState) => {
     if (value === "" || /^\d*$/.test(value)) {
       setState(value === "" ? null : Number(value));
     }
   };
 
-  const handleCheckClick = () => {
+  const handlePricingCheckClick = () => {
     if (minPrice === null || maxPrice === null) {
       toast.error("Please enter both minimum and maximum prices.");
     } else if (minPrice === 0 || maxPrice === 0) {
@@ -80,6 +91,19 @@ const Catalog = () => {
       updateMinPrice(minPrice);
       updateMaxPrice(maxPrice);
       toast.success("Price range updated successfully.");
+    }
+  };
+
+  const handleDimensionCheckClick = () => {
+    if (widthD === 0 || depthD === 0 || heightD === 0) {
+      toast.error("Dimensions cannot be zero.");
+    } else if (widthD <= 0 && depthD <= 0 && heightD <= 0) {
+      toast.error("Dimensions must be positive numbers.");
+    } else {
+      updateWidth(widthD);
+      updateDepth(depthD);
+      updateHeight(heightD);
+      toast.success("Dimensions updated successfully.");
     }
   };
 
@@ -246,12 +270,12 @@ const Catalog = () => {
                                             }
                                             onChange={(e) => {
                                               if (option.label == "From") {
-                                                handlePriceRangeChange(
+                                                handlePriceAndDimensionChange(
                                                   e.target.value,
                                                   setMinPrice
                                                 );
                                               } else if (option.label == "To") {
-                                                handlePriceRangeChange(
+                                                handlePriceAndDimensionChange(
                                                   e.target.value,
                                                   setMaxPrice
                                                 );
@@ -262,7 +286,57 @@ const Catalog = () => {
                                           <CheckIcon
                                             className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
                                             aria-hidden="true"
-                                            onClick={handleCheckClick}
+                                            onClick={handlePricingCheckClick}
+                                          />
+                                        )}
+                                      </>
+                                    ) : null}
+
+                                    {/* Dimension (Smaller Screens)*/}
+                                    {section.id == "dimension" ? (
+                                      <>
+                                        {option.label != "searchDimension" ? (
+                                          <input
+                                            type="text"
+                                            className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+                                            placeholder={`${option.label}`}
+                                            value={
+                                              option.label === "Width (W)"
+                                                ? widthD
+                                                : option.label === "Depth (D)"
+                                                ? depthD
+                                                : heightD
+                                            }
+                                            onChange={(e) => {
+                                              if (
+                                                option.label === "Width (W)"
+                                              ) {
+                                                handlePriceAndDimensionChange(
+                                                  e.target.value,
+                                                  setWidth
+                                                );
+                                              } else if (
+                                                option.label === "Depth (D)"
+                                              ) {
+                                                handlePriceAndDimensionChange(
+                                                  e.target.value,
+                                                  setDepth
+                                                );
+                                              } else if (
+                                                option.label === "Height (H)"
+                                              ) {
+                                                handlePriceAndDimensionChange(
+                                                  e.target.value,
+                                                  setHeight
+                                                );
+                                              }
+                                            }}
+                                          />
+                                        ) : (
+                                          <CheckIcon
+                                            className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
+                                            aria-hidden="true"
+                                            onClick={handleDimensionCheckClick}
                                           />
                                         )}
                                       </>
@@ -445,7 +519,6 @@ const Catalog = () => {
                                         </label>
                                       </>
                                     ) : null}
-
                                     {/* Pricing (Larger Screens)*/}
                                     {section.id == "pricing" ? (
                                       <>
@@ -465,12 +538,12 @@ const Catalog = () => {
                                             }
                                             onChange={(e) => {
                                               if (option.label == "From") {
-                                                handlePriceRangeChange(
+                                                handlePriceAndDimensionChange(
                                                   e.target.value,
                                                   setMinPrice
                                                 );
                                               } else if (option.label == "To") {
-                                                handlePriceRangeChange(
+                                                handlePriceAndDimensionChange(
                                                   e.target.value,
                                                   setMaxPrice
                                                 );
@@ -481,7 +554,56 @@ const Catalog = () => {
                                           <CheckIcon
                                             className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
                                             aria-hidden="true"
-                                            onClick={handleCheckClick}
+                                            onClick={handlePricingCheckClick}
+                                          />
+                                        )}
+                                      </>
+                                    ) : null}
+                                    {/* Dimension (Smaller Screens)*/}
+                                    {section.id == "dimension" ? (
+                                      <>
+                                        {option.label != "searchDimension" ? (
+                                          <input
+                                            type="text"
+                                            className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+                                            placeholder={`${option.label}`}
+                                            value={
+                                              option.label === "Width (W)"
+                                                ? widthD
+                                                : option.label === "Depth (D)"
+                                                ? depthD
+                                                : heightD
+                                            }
+                                            onChange={(e) => {
+                                              if (
+                                                option.label === "Width (W)"
+                                              ) {
+                                                handlePriceAndDimensionChange(
+                                                  e.target.value,
+                                                  setWidth
+                                                );
+                                              } else if (
+                                                option.label === "Depth (D)"
+                                              ) {
+                                                handlePriceAndDimensionChange(
+                                                  e.target.value,
+                                                  setDepth
+                                                );
+                                              } else if (
+                                                option.label === "Height (H)"
+                                              ) {
+                                                handlePriceAndDimensionChange(
+                                                  e.target.value,
+                                                  setHeight
+                                                );
+                                              }
+                                            }}
+                                          />
+                                        ) : (
+                                          <CheckIcon
+                                            className="w-4 h-4 ml-auto mr-1 text-gray-400 cursor-pointer hover:text-gray-500"
+                                            aria-hidden="true"
+                                            onClick={handleDimensionCheckClick}
                                           />
                                         )}
                                       </>
