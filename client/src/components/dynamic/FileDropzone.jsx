@@ -2,13 +2,14 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { CloudArrowUpIcon } from "@heroicons/react/20/solid";
 
-const FileDropzone = ({ text, height }) => {
-  const onDrop = useCallback((acceptedFiles) => {
-    // Handle the files dropped
-    console.log(acceptedFiles);
-
-    // You can use acceptedFiles to upload or process the files
-  }, []);
+const FileDropzone = ({ text, height, onFilesSelected }) => {
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      // Handle the files dropped
+      onFilesSelected(acceptedFiles);
+    },
+    [onFilesSelected]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
