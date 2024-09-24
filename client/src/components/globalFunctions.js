@@ -147,3 +147,14 @@ export const formatTimeAgo = (timestamp) => {
     .replace(/ months?/, "mo")
     .replace(/ years?/, "y");
 };
+
+export const convertBlobUrlToFile = async (blobUrl, fileName) => {
+  const response = await fetch(blobUrl);
+  const blob = await response.blob();
+
+  // Extract the file's MIME type
+  const fileType = blob.type;
+
+  // Create and return a new File object
+  return new File([blob], fileName, { type: fileType });
+};

@@ -1,6 +1,12 @@
 import { doc, getDoc } from "firebase/firestore";
 import { storage } from "./firebase";
-import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  listAll,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 
 // ex; images/adf4j442342j42h/image.jpg
 export const getImageDownloadUrl = async (path) => {
@@ -52,7 +58,6 @@ export const updatePhoto = async (path, file, oldPhotoPath = null) => {
       await deleteObject(oldPhotoRef);
     }
 
-
     await uploadBytes(photoRef, file);
 
     const downloadUrl = await getDownloadURL(photoRef);
@@ -61,5 +66,19 @@ export const updatePhoto = async (path, file, oldPhotoPath = null) => {
   } catch (error) {
     console.error("Error updating photo:", error);
     throw error;
+  }
+};
+
+export const uploadPhoto = async (file, path) => {
+  try {
+    const storageRef = ref(storage, path);
+
+    await uploadBytes(storageRef, file);
+
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error in uploadPhoto:", error);
+    throw error; // Rethrow the error for handling elsewhere
   }
 };
