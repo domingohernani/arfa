@@ -11,7 +11,15 @@ const FileDropzone = ({ text, height, onFilesSelected }) => {
     [onFilesSelected]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "model/gltf+json": [".gltf"],
+      "model/gltf-binary": [".glb"],
+    },
+  });
 
   return (
     <div
