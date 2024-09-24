@@ -1,7 +1,7 @@
 import { getDownloadURL, ref } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllImageDownloadUrl } from "../../../firebase/photos";
+import { getAllImageDownloadUrl, uploadPhoto } from "../../../firebase/photos";
 import {
   fetchFurnitureById,
   updateFurniture,
@@ -11,7 +11,10 @@ import ShowModel from "../../../components/ShowModel";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { CubeTransparentIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { Carousel } from "flowbite-react";
-import { formatToPeso } from "../../../components/globalFunctions";
+import {
+  convertBlobUrlToFile,
+  formatToPeso,
+} from "../../../components/globalFunctions";
 import UpdateProductDetails from "../../../components/dynamic/UpdateProductDetails";
 import toast from "react-hot-toast";
 
@@ -44,20 +47,21 @@ const ProductDetails = () => {
     }
   });
 
+  const fetchFurniture = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchFurnitureById("furnitures", id);
+      setFurniture(data);
+      fetchModel(data.modelUrl);
+      fetchFurnitureImages(data.imagesUrl);
+    } catch (error) {
+      console.error("Error fetching furniture:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchFurniture = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchFurnitureById("furnitures", id);
-        setFurniture(data);
-        fetchModel(data.modelUrl);
-        fetchFurnitureImages(data.imagesUrl);
-      } catch (error) {
-        console.error("Error fetching furniture:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchFurniture();
   }, [id]);
 
@@ -65,10 +69,39 @@ const ProductDetails = () => {
     setIsUpdate(value);
   };
 
-  const handleConfirmBtn = async (value) => {
+  const handleConfirmBtn = async (value, variants) => {
+    const newVariants = await Promise.all(
+      variants.map(async (variant) => {
+        const updatedImagePaths = await Promise.all(
+          variant.imagePaths.map(async (url, index) => {
+            if (url.includes("blob")) {
+              const file = await convertBlobUrlToFile(
+                url,
+                `${variant.name}-${index}`
+              );
+              const fileExtension = file.name.split(".").pop();
+              const fileName = `${furniture.id}-${Date.now()}.${fileExtension}`;
+              const path = `images/${furniture.id}/${fileName}`;
+              // Now call uploadPhoto with the updated path
+              const newUrl = await uploadPhoto(file, path);
+              return newUrl;
+            }
+            return url;
+          })
+        );
+
+        return {
+          ...variant,
+          imagePaths: updatedImagePaths, // Assign the resolved array
+        };
+      })
+    );
+
+    value.variants = newVariants;
     const result = await updateFurniture(id, value);
 
     if (result.isSuccess) {
+      fetchFurniture();
       toast.success(result.message || "Furniture updated successfully!");
     } else {
       toast.error(result.message || "Failed to update furniture.");
