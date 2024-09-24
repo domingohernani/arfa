@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 import FileDropzone from "./FileDropzone";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { useStore } from "../../stores/useStore";
 
 const VariantUpload = ({ currentVariants }) => {
-  const [variants, setVariants] = useState(() => {
-    if (currentVariants.length === 0) {
-      return [
-        { name: "", imagePaths: [] },
-        { name: "", imagePaths: [] },
-      ];
-    }
-    return currentVariants;
-  });
+  // Access Zustand store state and actions
+  const { variants, setVariants, initializeVariants } = useStore();
+
+  useEffect(() => {
+    initializeVariants(currentVariants);
+  }, [currentVariants, initializeVariants]);
 
   const addVariant = () => {
     setVariants([

@@ -11,6 +11,7 @@ import { Switch } from "@headlessui/react";
 import { Tooltip } from "flowbite-react";
 import VariantUpload from "./VariantUpload";
 import ShowModel from "../ShowModel";
+import { useStore } from "../../stores/useStore";
 
 const UpdateProductDetails = ({
   furniture,
@@ -23,6 +24,7 @@ const UpdateProductDetails = ({
     furniture.variants.length > 0 ? true : false
   );
   const [modelFileUrl, setModelFileUrl] = useState(modelURL);
+  const { variants, setVariants, initializeVariants } = useStore();
 
   // Initialize state with furniture details, including id
   const [productDetails, setProductDetails] = useState({
@@ -45,7 +47,7 @@ const UpdateProductDetails = ({
 
   const confirmBtn = () => {
     if (handleConfirmBtn) {
-      handleConfirmBtn(productDetails);
+      handleConfirmBtn(productDetails, variants);
     }
   };
 
