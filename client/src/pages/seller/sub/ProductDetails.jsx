@@ -139,6 +139,18 @@ const ProductDetails = () => {
 
               <section className="flex flex-col flex-1 gap-1">
                 <h3 className="text-sm font-medium">
+                  Dimension:{" "}
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.width} cm /{" "}
+                  </span>
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.depth} cm /{" "}
+                  </span>
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.height} cm
+                  </span>
+                </h3>
+                <h3 className="text-sm font-medium">
                   Category:{" "}
                   <span className="font-normal text-gray-600">
                     {furniture.category}
@@ -202,6 +214,7 @@ const ProductDetails = () => {
       ) : (
         <UpdateProductDetails
           furniture={furniture}
+          modelURL={modelURL}
           handleConfirmBtn={handleConfirmBtn}
           handleIsUpdateBtn={handleIsUpdateBtn}
         />
