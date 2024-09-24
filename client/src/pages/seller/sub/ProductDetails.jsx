@@ -79,8 +79,7 @@ const ProductDetails = () => {
                 url,
                 `${variant.name}-${index}`
               );
-              const fileExtension = file.name.split(".").pop();
-              const fileName = `${furniture.id}-${Date.now()}.${fileExtension}`;
+              const fileName = `${furniture.id}-${Date.now()}.jpg`;
               const path = `images/${furniture.id}/${fileName}`;
               // Now call uploadPhoto with the updated path
               const newUrl = await uploadPhoto(file, path);
