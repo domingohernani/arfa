@@ -175,7 +175,7 @@ const ProductDetails = () => {
                 <h3 className="text-sm font-medium">
                   Variant:{" "}
                   <span className="font-normal text-gray-600">
-                    {furniture.variant
+                    {furniture.variants.length > 0
                       ? furniture.variants
                           .map((variant) => variant.name)
                           .join(", ")
