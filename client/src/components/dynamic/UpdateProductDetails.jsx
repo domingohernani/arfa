@@ -4,19 +4,25 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowLeftIcon,
   QuestionMarkCircleIcon,
+  XMarkIcon,
 } from "@heroicons/react/20/solid";
 import FileDropzone from "./FileDropzone";
 import { Switch } from "@headlessui/react";
 import { Tooltip } from "flowbite-react";
 import VariantUpload from "./VariantUpload";
+import ShowModel from "../ShowModel";
 
 const UpdateProductDetails = ({
   furniture,
+  modelURL,
   handleConfirmBtn,
   handleIsUpdateBtn,
 }) => {
   const navigate = useNavigate();
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(
+    furniture.variants.length > 0 ? true : false
+  );
+  const [modelFileUrl, setModelFileUrl] = useState(modelURL);
 
   // Initialize state with furniture details, including id
   const [productDetails, setProductDetails] = useState({
@@ -156,15 +162,25 @@ const UpdateProductDetails = ({
         </header>
         <main className="flex flex-col w-full px-3 mb-3 gap-14 md:gap-5 md:flex-row">
           <div className="flex-1 w-full h-full px-3">
-            <span className="absolute text-sm font-medium top-20">
-              3D Model
-            </span>
-            <FileDropzone
-              text={
-                "Drag & drop some 3D models here (.glb, .gltf), or click to select files"
-              }
-              height={"h-96"}
-            />
+            <div className="absolute text-sm font-medium top-20">
+              <span>3D Model</span>
+            </div>
+            {modelFileUrl ? (
+              <div className="relative mb-16 h-96">
+                <XMarkIcon
+                  className="w-5 h-5 ml-auto cursor-pointer "
+                  onClick={() => setModelFileUrl("")}
+                />
+                <ShowModel path={modelFileUrl} />
+              </div>
+            ) : (
+              <FileDropzone
+                text={
+                  "Drag & drop some 3D models here (.glb, .gltf), or click to select files"
+                }
+                height={"h-96"}
+              />
+            )}
           </div>
           <div className="flex flex-col justify-center flex-1 gap-3 px-3">
             <h3 className="text-sm font-medium">
@@ -242,7 +258,7 @@ const UpdateProductDetails = ({
             </div>
           </main>
         ) : (
-          <VariantUpload />
+          <VariantUpload currentVariants={furniture.variants} />
         )}
       </section>
     </>
