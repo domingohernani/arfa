@@ -1,7 +1,7 @@
 import { getDownloadURL, ref } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllImageDownloadUrl } from "../../../firebase/photos";
+import { getAllImageDownloadUrl, uploadPhoto } from "../../../firebase/photos";
 import {
   fetchFurnitureById,
   updateFurniture,
@@ -11,7 +11,10 @@ import ShowModel from "../../../components/ShowModel";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { CubeTransparentIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { Carousel } from "flowbite-react";
-import { formatToPeso } from "../../../components/globalFunctions";
+import {
+  convertBlobUrlToFile,
+  formatToPeso,
+} from "../../../components/globalFunctions";
 import UpdateProductDetails from "../../../components/dynamic/UpdateProductDetails";
 import toast from "react-hot-toast";
 
@@ -44,20 +47,21 @@ const ProductDetails = () => {
     }
   });
 
+  const fetchFurniture = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchFurnitureById("furnitures", id);
+      setFurniture(data);
+      fetchModel(data.modelUrl);
+      fetchFurnitureImages(data.imagesUrl);
+    } catch (error) {
+      console.error("Error fetching furniture:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchFurniture = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchFurnitureById("furnitures", id);
-        setFurniture(data);
-        fetchModel(data.modelUrl);
-        fetchFurnitureImages(data.imagesUrl);
-      } catch (error) {
-        console.error("Error fetching furniture:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchFurniture();
   }, [id]);
 
@@ -65,10 +69,38 @@ const ProductDetails = () => {
     setIsUpdate(value);
   };
 
-  const handleConfirmBtn = async (value) => {
+  const handleConfirmBtn = async (value, variants) => {
+    const newVariants = await Promise.all(
+      variants.map(async (variant) => {
+        const updatedImagePaths = await Promise.all(
+          variant.imagePaths.map(async (url, index) => {
+            if (url.includes("blob")) {
+              const file = await convertBlobUrlToFile(
+                url,
+                `${variant.name}-${index}`
+              );
+              const fileName = `${furniture.id}-${Date.now()}.jpg`;
+              const path = `images/${furniture.id}/${fileName}`;
+              // Now call uploadPhoto with the updated path
+              const newUrl = await uploadPhoto(file, path);
+              return newUrl;
+            }
+            return url;
+          })
+        );
+
+        return {
+          ...variant,
+          imagePaths: updatedImagePaths, // Assign the resolved array
+        };
+      })
+    );
+
+    value.variants = newVariants;
     const result = await updateFurniture(id, value);
 
     if (result.isSuccess) {
+      fetchFurniture();
       toast.success(result.message || "Furniture updated successfully!");
     } else {
       toast.error(result.message || "Failed to update furniture.");
@@ -139,6 +171,18 @@ const ProductDetails = () => {
 
               <section className="flex flex-col flex-1 gap-1">
                 <h3 className="text-sm font-medium">
+                  Dimension:{" "}
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.width} cm /{" "}
+                  </span>
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.depth} cm /{" "}
+                  </span>
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.height} cm
+                  </span>
+                </h3>
+                <h3 className="text-sm font-medium">
                   Category:{" "}
                   <span className="font-normal text-gray-600">
                     {furniture.category}
@@ -163,7 +207,7 @@ const ProductDetails = () => {
                 <h3 className="text-sm font-medium">
                   Variant:{" "}
                   <span className="font-normal text-gray-600">
-                    {furniture.variant
+                    {furniture.variants.length > 0
                       ? furniture.variants
                           .map((variant) => variant.name)
                           .join(", ")
@@ -173,47 +217,40 @@ const ProductDetails = () => {
               </section>
             </header>
           </section>
+          <section className="mt-5 border pb-14">
+            <header className="px-3 py-4 text-sm font-medium border-b mb-14 bg-arfagray">
+              Visual Overview
+            </header>
+            <main
+              className="flex flex-col w-full mt-5 md:mt-0 gap-14 md:gap-5 md:flex-row"
+              style={{ height: "27rem" }}
+            >
+              <div className="relative w-full h-full px-3 border-r">
+                <ShowModel path={modelURL} />
+              </div>
+              <Carousel className="">
+                {furnitureImgUrls.map((image, index) => {
+                  return (
+                    <img
+                      src={image}
+                      alt="..."
+                      key={index}
+                      className="object-cover w-full h-full"
+                    />
+                  );
+                })}
+              </Carousel>
+            </main>
+          </section>
         </>
       ) : (
         <UpdateProductDetails
           furniture={furniture}
+          modelURL={modelURL}
           handleConfirmBtn={handleConfirmBtn}
           handleIsUpdateBtn={handleIsUpdateBtn}
         />
       )}
-      <section className="mt-5 border pb-14">
-        <header className="px-3 py-4 text-sm font-medium border-b mb-14 bg-arfagray">
-          Visual Overview
-        </header>
-        {/* <section className="justify-between hidden mb-1 md:flex">
-        <h3 className="flex flex-1 gap-2 text-sm font-medium item-center">
-          <span>3d Model</span> <CubeTransparentIcon className="w-4 h-4" />
-        </h3>
-        <h3 className="flex flex-1 gap-2 pl-4 text-sm font-medium item-center">
-          <span>Images</span> <PhotoIcon className="w-4 h-4" />
-        </h3>
-      </section> */}
-        <main
-          className="flex flex-col w-full mt-5 md:mt-0 gap-14 md:gap-5 md:flex-row"
-          style={{ height: "27rem" }}
-        >
-          <div className="relative w-full h-full px-3 border-r">
-            <ShowModel path={modelURL} />
-          </div>
-          <Carousel className="">
-            {furnitureImgUrls.map((image, index) => {
-              return (
-                <img
-                  src={image}
-                  alt="..."
-                  key={index}
-                  className="object-cover w-full h-full"
-                />
-              );
-            })}
-          </Carousel>
-        </main>
-      </section>
     </section>
   );
 };
