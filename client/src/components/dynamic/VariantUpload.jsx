@@ -46,10 +46,6 @@ const VariantUpload = ({ currentVariants }) => {
     setVariants(updatedVariants);
   };
 
-  useEffect(() => {
-    console.log("Current variants:", variants);
-  }, [variants]);
-
   return (
     <section className="px-6">
       {variants.map((variant, i) => {
