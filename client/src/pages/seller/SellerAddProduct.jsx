@@ -20,6 +20,8 @@ const SellerAddProduct = () => {
     description: "",
     category: "Accent",
     price: "",
+    discountedPrice: 0,
+    variants: [],
   });
 
   // Handle input changes
@@ -43,6 +45,7 @@ const SellerAddProduct = () => {
 
     productDetails.ownerId = loggedUser.userId;
     productDetails.price = parseFloat(productDetails.price);
+    productDetails.discountedPrice = parseFloat(productDetails.discountedPrice);
 
     try {
       const docId = await addFurniture(productDetails);
