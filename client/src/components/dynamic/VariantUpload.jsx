@@ -50,18 +50,19 @@ const VariantUpload = ({ currentVariants }) => {
     <section className="px-6">
       {variants.map((variant, i) => {
         return (
-          <div className="flex items-center gap-6" key={i}>
+          <div
+            className="flex flex-col gap-6 lg:flex-row lg:items-center"
+            key={i}
+          >
+            
+            <section className="my-5">
             <TrashIcon
               className={`w-5 h-5 text-gray-600 cursor-pointer ${
                 variants.length <= 2 ? "opacity-50 cursor-not-allowed" : ""
               }`}
               onClick={() => deleteVariant(i)}
             />
-            <section className="my-5">
-              <div
-                className="flex gap-2 my-3 overflow-x-auto"
-                style={{ width: "43rem" }}
-              >
+              <div className="flex gap-2 mx-auto my-3 overflow-x-auto w-arfaWidth1 sm:w-arfaWidth2 md:w-arfaWidth3">
                 {variant.imagePaths.map((url, imgIndex) => {
                   return (
                     <div key={imgIndex} className="relative flex-shrink-0 mr-3">
