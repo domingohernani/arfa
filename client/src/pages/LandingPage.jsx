@@ -74,7 +74,7 @@ const LandingPage = () => {
               data-aos="fade-right"
               data-aos-delay="240"
             >
-              Get Started
+              Start Now!
             </Link>
           </article>
         </div>
