@@ -144,7 +144,7 @@ const UpdateProductDetails = ({
                 </select>
               </h3>
               <h3 className="text-sm font-medium">
-                Price:{" "}
+                Price (₱):{" "}
                 <input
                   type="number"
                   name="price"
