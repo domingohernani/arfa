@@ -34,7 +34,7 @@ const FileDropzone = ({ text, height, onFilesSelected }) => {
         <p className="text-sm text-gray-600">Drop the files here...</p>
       ) : (
         <div className="flex flex-col items-center">
-          <CloudArrowUpIcon className="w-10 h-w-10" />
+          <CloudArrowUpIcon className="w-8 h-8 sm:w-10 sm:h-10" />
           <p className="text-sm text-gray-600">{text}</p>
         </div>
       )}

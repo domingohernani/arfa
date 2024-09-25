@@ -39,9 +39,10 @@ const UpdateProductDetails = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setProductDetails((prevDetails) => ({
       ...prevDetails,
-      [name]: value,
+      [name]: name === "price" ? parseFloat(value) || "" : value,
     }));
   };
 
@@ -144,7 +145,7 @@ const UpdateProductDetails = ({
                 </select>
               </h3>
               <h3 className="text-sm font-medium">
-                Price:{" "}
+                Price (₱):{" "}
                 <input
                   type="number"
                   name="price"

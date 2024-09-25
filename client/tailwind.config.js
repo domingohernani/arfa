@@ -10,6 +10,11 @@ export default {
         arfagray: "#FAFAFA",
         arfablack: "#111827",
       },
+      width: {
+        arfaWidth1: "18rem",
+        arfaWidth2: "32rem",
+        arfaWidth3: "43rem",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms"), flowbite.plugin()],
