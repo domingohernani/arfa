@@ -59,7 +59,7 @@ const LandingPage = () => {
               </span>
             </h1>
             <h2
-              className="text-base leading-7 text-center text-gray-600 sm:text-white-400 text-white-500"
+              className="w-full mx-auto text-base leading-7 text-center text-green-600 md:text-lg md:w-2/4 sm:text-white-400 text-white-500"
               data-aos="fade-right"
               data-aos-delay="220"
             >
@@ -74,7 +74,7 @@ const LandingPage = () => {
               data-aos="fade-right"
               data-aos-delay="240"
             >
-              Get started
+              Get Started
             </Link>
           </article>
         </div>
