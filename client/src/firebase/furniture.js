@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -185,3 +186,17 @@ export const addFurniture = async (furnitureData) => {
   }
 };
 
+export const deleteFurniture = async (furnitureId) => {
+  try {
+    // Create a reference to the specific furniture document
+    const docRef = doc(db, "furnitures", furnitureId);
+
+    // Delete the document
+    await deleteDoc(docRef);
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting furniture: ", error);
+    throw error;
+  }
+};
