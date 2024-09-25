@@ -1,5 +1,7 @@
 import {
+  addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -156,5 +158,45 @@ export const updateStock = async (furnitureId, newStock) => {
   } catch (error) {
     console.error("Error updating stock: ", error);
     return false;
+  }
+};
+
+export const addFurniture = async (furnitureData) => {
+  try {
+    // Create a reference to the specific shop document
+    const shopRef = doc(db, "shops", furnitureData.ownerId);
+
+    // Add the furniture data to the 'furnitures' collection
+    const docRef = await addDoc(collection(db, "furnitures"), {
+      ...furnitureData,
+      shopReference: shopRef,
+      createdAt: serverTimestamp(),
+      stockUpdatedAt: serverTimestamp(),
+    });
+
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
+
+    console.log("Furniture added with ID: ", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding furniture: ", error);
+    throw error;
+  }
+};
+
+export const deleteFurniture = async (furnitureId) => {
+  try {
+    // Create a reference to the specific furniture document
+    const docRef = doc(db, "furnitures", furnitureId);
+
+    // Delete the document
+    await deleteDoc(docRef);
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting furniture: ", error);
+    throw error;
   }
 };
