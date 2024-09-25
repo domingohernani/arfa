@@ -1,4 +1,5 @@
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -158,3 +159,29 @@ export const updateStock = async (furnitureId, newStock) => {
     return false;
   }
 };
+
+export const addFurniture = async (furnitureData) => {
+  try {
+    // Create a reference to the specific shop document
+    const shopRef = doc(db, "shops", furnitureData.ownerId);
+
+    // Add the furniture data to the 'furnitures' collection
+    const docRef = await addDoc(collection(db, "furnitures"), {
+      ...furnitureData,
+      shopReference: shopRef,
+      createdAt: serverTimestamp(),
+      stockUpdatedAt: serverTimestamp(),
+    });
+
+    await updateDoc(docRef, {
+      id: docRef.id,
+    });
+
+    console.log("Furniture added with ID: ", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding furniture: ", error);
+    throw error;
+  }
+};
+
