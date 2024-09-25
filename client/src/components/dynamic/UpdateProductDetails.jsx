@@ -39,9 +39,10 @@ const UpdateProductDetails = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setProductDetails((prevDetails) => ({
       ...prevDetails,
-      [name]: value,
+      [name]: name === "price" ? parseFloat(value) || "" : value,
     }));
   };
 
