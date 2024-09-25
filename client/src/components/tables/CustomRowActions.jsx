@@ -12,10 +12,17 @@ export const CustomRowActions = ({
   viewFunc,
   editAction,
   deleteAction,
+  deleteFunc,
 }) => {
   const viewBtnClick = () => {
     if (viewFunc) {
       viewFunc(data.id);
+    }
+  };
+
+  const deleteBtnClick = () => {
+    if (deleteFunc) {
+      deleteFunc({ name: data.name, id: data.id });
     }
   };
 
@@ -70,9 +77,7 @@ export const CustomRowActions = ({
           <MenuItem
             as="div"
             className="flex items-center"
-            onClick={() => {
-              alert(data.id);
-            }}
+            onClick={deleteBtnClick}
           >
             <button className="group flex w-full items-center gap-2 text-arfablack rounded-lg py-1.5 px-3 justify-between">
               <div className="flex items-center gap-2">
