@@ -31,9 +31,24 @@ const SellerTransaction = () => {
       },
       {
         headerName: "Date",
-        // field: "shopper",
+        field: "createdAt",
         flex: 2,
         filter: "agDateColumnFilter",
+        valueGetter: (params) => {
+          const createdAt = params.data.createdAt;
+          if (createdAt && createdAt.seconds) {
+            return new Date(createdAt.seconds * 1000);
+          }
+          return null;
+        },
+        valueFormatter: (params) => {
+          const date = params.value;
+
+          if (date instanceof Date) {
+            return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+          }
+          return "";
+        },
       },
       {
         headerName: "Name",
@@ -52,6 +67,11 @@ const SellerTransaction = () => {
         field: "location",
         flex: 2,
         filter: "agTextColumnFilter",
+        valueGetter: (params) => {
+          const shopper = params.data.shopper;
+          if (!params.data && !shopper) return "---";
+          return `${shopper.location.barangay}, ${shopper.location.city}, ${shopper.location.province}, ${shopper.location.region}`;
+        },
       },
       {
         headerName: "Quantity",
@@ -128,6 +148,8 @@ const SellerTransaction = () => {
         where("shopId", "==", loggedUser.userId),
       ];
       const orders = await fetchOrdersByShopId(filter);
+      console.log(orders);
+
       setRowTransactionsData(orders);
     };
     if (loggedUser && loggedUser.userId) {
