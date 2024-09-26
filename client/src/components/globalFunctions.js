@@ -164,8 +164,10 @@ export const convertBlobUrlToFile = async (blobUrl, fileName) => {
 };
 
 export const blobsToImagesPaths = async (variants, id) => {
-  return await Promise.all(
-    variants.map(async (variant) => {
+  let imgPreviewFilename = "";
+
+  const updatedVariants = await Promise.all(
+    variants.map(async (variant, variantIndex) => {
       const updatedImagePaths = await Promise.all(
         variant.imagePaths.map(async (url, index) => {
           if (url.includes("blob")) {
@@ -176,6 +178,12 @@ export const blobsToImagesPaths = async (variants, id) => {
             const fileName = `${id}-${Date.now()}.jpg`;
             const path = `images/${id}/${fileName}`;
             const newUrl = await uploadPhoto(file, path);
+
+            // Set imgPreviewFilename to the first variant's fileName if it's the first variant and first image
+            if (variantIndex === 0 && index === 0) {
+              imgPreviewFilename = fileName;
+            }
+
             return newUrl;
           }
           return url;
@@ -188,4 +196,6 @@ export const blobsToImagesPaths = async (variants, id) => {
       };
     })
   );
+
+  return { updatedVariants, imgPreviewFilename };
 };

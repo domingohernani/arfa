@@ -21,10 +21,10 @@ const SellerAddProduct = () => {
     name: "",
     description: "",
     category: "",
-    price: "",
-    discountedPrice: "",
+    price: 0,
+    discountedPrice: 0,
     variants: [],
-    stock: "",
+    stock: 0,
     isSale: false,
   });
 
@@ -40,17 +40,17 @@ const SellerAddProduct = () => {
 
   const handleConfirmBtn = async () => {
     // Loop through productDetails to check for any empty fields
-    for (const [key, value] of Object.entries(productDetails)) {
-      if (key !== "discountedPrice" && value === "") {
-        toast.error(`Please fill in the ${key} field.`);
-        return;
-      }
-    }
 
     productDetails.ownerId = loggedUser.userId;
     productDetails.price = parseFloat(productDetails.price);
     productDetails.stock = parseInt(productDetails.stock);
-    productDetails.discountedPrice = parseFloat(productDetails.discountedPrice);
+    productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
+    for (const [key, value] of Object.entries(productDetails)) {
+      if ((!value || value === 0) && key !== "discountedPrice") {
+        toast.error(`Invalid input! Please fill in the field.`);
+        return;
+      }
+    }
 
     try {
       const docId = await addFurniture(productDetails, variants);
@@ -176,7 +176,7 @@ const SellerAddProduct = () => {
               </div>
               {productDetails.isSale && (
                 <h3 className="text-sm font-medium">
-                  Discounted Price:{" "}
+                  Discounted Price (₱):{" "}
                   <input
                     type="text"
                     name="discountedPrice"

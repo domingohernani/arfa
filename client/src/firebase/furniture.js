@@ -175,12 +175,16 @@ export const addFurniture = async (furnitureData, variants) => {
       stockUpdatedAt: serverTimestamp(),
     });
 
-    const convertedVariants = await blobsToImagesPaths(variants, docRef.id);
+    const { updatedVariants, imgPreviewFilename } = await blobsToImagesPaths(
+      variants,
+      docRef.id
+    );
 
     await updateDoc(docRef, {
       id: docRef.id,
       imagesUrl: `images/${docRef.id}`,
-      variants: convertedVariants,
+      variants: updatedVariants,
+      imgPreviewFilename: imgPreviewFilename,
     });
 
     console.log("Furniture added with ID: ", docRef.id);
