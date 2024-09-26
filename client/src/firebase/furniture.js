@@ -170,12 +170,13 @@ export const addFurniture = async (furnitureData) => {
     const docRef = await addDoc(collection(db, "furnitures"), {
       ...furnitureData,
       shopReference: shopRef,
-      createdAt: serverTimestamp(),
+      createdAt: serverTimestamp(),     
       stockUpdatedAt: serverTimestamp(),
     });
 
     await updateDoc(docRef, {
       id: docRef.id,
+      imagesUrl: `images/${docRef.id}`,
     });
 
     console.log("Furniture added with ID: ", docRef.id);
