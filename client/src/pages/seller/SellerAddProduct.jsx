@@ -41,7 +41,7 @@ const SellerAddProduct = () => {
   const handleConfirmBtn = async () => {
     // Loop through productDetails to check for any empty fields
     for (const [key, value] of Object.entries(productDetails)) {
-      if (value === "") {
+      if (key !== "discountedPrice" && value === "") {
         toast.error(`Please fill in the ${key} field.`);
         return;
       }
@@ -147,7 +147,8 @@ const SellerAddProduct = () => {
                         const { name, value } = e.target;
                         setProductDetails((prevDetails) => ({
                           ...prevDetails,
-                          [name]: value === "true", // Convert the string value to boolean
+                          [name]: value === "true",
+                          discountedPrice: 0,
                         }));
                       }}
                       className="mr-1 font-normal text-arfagreen focus:ring-arfagreen checked:bg-arfagreen"
