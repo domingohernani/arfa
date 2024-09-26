@@ -1,5 +1,6 @@
 import { average } from "firebase/firestore";
 import { formatDistanceToNowStrict } from "date-fns";
+import { uploadPhoto } from "../firebase/photos";
 
 export function formatToPeso(amount) {
   return (
@@ -162,4 +163,31 @@ export const convertBlobUrlToFile = async (blobUrl, fileName) => {
 
   // Create and return a new File object
   return new File([blob], fileName, { type: fileType });
+};
+
+export const blobsToImagesPaths = async (variants, id) => {
+  return await Promise.all(
+    variants.map(async (variant) => {
+      const updatedImagePaths = await Promise.all(
+        variant.imagePaths.map(async (url, index) => {
+          if (url.includes("blob")) {
+            const file = await convertBlobUrlToFile(
+              url,
+              `${variant.name}-${index}`
+            );
+            const fileName = `${id}-${Date.now()}.jpg`;
+            const path = `images/${id}/${fileName}`;
+            const newUrl = await uploadPhoto(file, path);
+            return newUrl;
+          }
+          return url;
+        })
+      );
+
+      return {
+        ...variant,
+        imagePaths: updatedImagePaths,
+      };
+    })
+  );
 };
