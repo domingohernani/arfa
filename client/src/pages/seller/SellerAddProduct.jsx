@@ -20,7 +20,7 @@ const SellerAddProduct = () => {
   const [productDetails, setProductDetails] = useState({
     name: "",
     description: "",
-    category: "Accent",
+    category: "",
     price: "",
     discountedPrice: "",
     variants: [],
@@ -40,28 +40,28 @@ const SellerAddProduct = () => {
 
   const handleConfirmBtn = async () => {
     // Loop through productDetails to check for any empty fields
-    // for (const [key, value] of Object.entries(productDetails)) {
-    //   if (value === "") {
-    //     toast.error(`Please fill in the ${key} field.`);
-    //     return;
-    //   }
-    // }
+    for (const [key, value] of Object.entries(productDetails)) {
+      if (value === "") {
+        toast.error(`Please fill in the ${key} field.`);
+        return;
+      }
+    }
 
-    // productDetails.ownerId = loggedUser.userId;
-    // productDetails.price = parseFloat(productDetails.price);
-    // productDetails.stock = parseInt(productDetails.stock);
-    // productDetails.discountedPrice = parseFloat(productDetails.discountedPrice);
+    productDetails.ownerId = loggedUser.userId;
+    productDetails.price = parseFloat(productDetails.price);
+    productDetails.stock = parseInt(productDetails.stock);
+    productDetails.discountedPrice = parseFloat(productDetails.discountedPrice);
 
-    // try {
-    //   const docId = await addFurniture(productDetails);
-    //   if (docId) {
-    //     toast.success("Furniture added successfully!");
-    //   } else {
-    //     toast.error("Something went wrong. Please try again.");
-    //   }
-    // } catch (error) {
-    //   toast.error("Error adding furniture. Please try again.");
-    // }
+    try {
+      const docId = await addFurniture(productDetails, variants);
+      if (docId) {
+        toast.success("Furniture added successfully!");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Error adding furniture. Please try again.");
+    }
     console.log(variants);
   };
 
@@ -102,6 +102,7 @@ const SellerAddProduct = () => {
                   onChange={handleInputChange}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                 >
+                  <option value="">Select category</option>
                   <option value="Living Room">Living Room</option>
                   <option value="Bedroom">Bedroom</option>
                   <option value="Dining Room">Dining Room</option>
