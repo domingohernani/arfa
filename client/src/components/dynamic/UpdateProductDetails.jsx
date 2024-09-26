@@ -12,6 +12,7 @@ import { Tooltip } from "flowbite-react";
 import VariantUpload from "./VariantUpload";
 import ShowModel from "../ShowModel";
 import { useStore } from "../../stores/useStore";
+import toast from "react-hot-toast";
 
 const UpdateProductDetails = ({
   furniture,
@@ -33,8 +34,8 @@ const UpdateProductDetails = ({
     description: furniture.description || "",
     category: furniture.category || "Accent",
     price: furniture.price || 0,
+    discountedPrice: furniture.discountedPrice || 0,
     isSale: furniture.isSale ? true : false,
-    discountedPrice: furniture.discountedPrice || "",
   });
 
   const handleInputChange = (e) => {
@@ -48,6 +49,16 @@ const UpdateProductDetails = ({
 
   const confirmBtn = () => {
     if (handleConfirmBtn) {
+      productDetails.stock = parseInt(productDetails.stock);
+      productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
+
+      for (const [key, value] of Object.entries(productDetails)) {
+        if ((!value || value === 0) && key !== "discountedPrice") {
+          toast.error(`Invalid input! Please fill in the field.`);
+          return;
+        }
+      }
+
       handleConfirmBtn(productDetails, variants);
       clearVariants();
     }
@@ -200,12 +211,8 @@ const UpdateProductDetails = ({
                     onChange={(e) => {
                       const { name, value } = e.target;
                       if (name === "discountedPrice") {
-                        const numbers = "0123456789";
-                        if (
-                          value
-                            .split("")
-                            .every((char) => numbers.includes(char))
-                        ) {
+                        const validNumberRegex = /^\d*$/;
+                        if (validNumberRegex.test(value)) {
                           handleInputChange(e);
                         }
                       }
