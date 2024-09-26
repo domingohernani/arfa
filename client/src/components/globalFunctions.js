@@ -2,7 +2,12 @@ import { average } from "firebase/firestore";
 import { formatDistanceToNowStrict } from "date-fns";
 
 export function formatToPeso(amount) {
-  return "₱" + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return (
+    "₱" +
+    Math.round(amount)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  );
 }
 
 export const unSlug = (str) => {
