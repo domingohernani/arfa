@@ -194,6 +194,14 @@ const ProductDetails = () => {
                     {formatToPeso(furniture.price)}
                   </span>
                 </h3>
+                {furniture.isSale && (
+                  <h3 className="text-sm font-medium">
+                    Discounted Price:{" "}
+                    <span className="font-normal text-gray-600">
+                      {formatToPeso(furniture.discountedPrice)}
+                    </span>
+                  </h3>
+                )}
                 <h3 className="text-sm font-medium">
                   Status:{" "}
                   <span

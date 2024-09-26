@@ -12,6 +12,7 @@ import { Tooltip } from "flowbite-react";
 import VariantUpload from "./VariantUpload";
 import ShowModel from "../ShowModel";
 import { useStore } from "../../stores/useStore";
+import toast from "react-hot-toast";
 
 const UpdateProductDetails = ({
   furniture,
@@ -33,8 +34,8 @@ const UpdateProductDetails = ({
     description: furniture.description || "",
     category: furniture.category || "Accent",
     price: furniture.price || 0,
-    // status: furniture.isSale ? "On Sale" : "Not On Sale",
-    // variant: furniture.variant || "No variant",
+    discountedPrice: furniture.discountedPrice || 0,
+    isSale: furniture.isSale ? true : false,
   });
 
   const handleInputChange = (e) => {
@@ -48,6 +49,16 @@ const UpdateProductDetails = ({
 
   const confirmBtn = () => {
     if (handleConfirmBtn) {
+      productDetails.stock = parseInt(productDetails.stock);
+      productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
+
+      for (const [key, value] of Object.entries(productDetails)) {
+        if ((!value || value === 0) && key !== "discountedPrice") {
+          toast.error(`Invalid input! Please fill in the field.`);
+          return;
+        }
+      }
+
       handleConfirmBtn(productDetails, variants);
       clearVariants();
     }
@@ -150,6 +161,66 @@ const UpdateProductDetails = ({
                   <option value="Entryway">Entryway</option>
                 </select>
               </h3>
+              <div className="my-1">
+                <h3 className="text-sm font-medium">Sale Status:</h3>
+                <div className="flex gap-4">
+                  <label className="text-sm font-medium">
+                    <input
+                      type="radio"
+                      name="isSale"
+                      value="false"
+                      checked={productDetails.isSale === false}
+                      onChange={(e) => {
+                        const { name, value } = e.target;
+                        setProductDetails((prevDetails) => ({
+                          ...prevDetails,
+                          [name]: value === "true",
+                          discountedPrice: 0,
+                        }));
+                      }}
+                      className="mr-1 font-normal text-arfagreen focus:ring-arfagreen checked:bg-arfagreen"
+                    />
+                    Not on Sale
+                  </label>
+                  <label className="text-sm font-medium">
+                    <input
+                      type="radio"
+                      name="isSale"
+                      value="true"
+                      checked={productDetails.isSale === true}
+                      onChange={(e) => {
+                        const { name, value } = e.target;
+                        setProductDetails((prevDetails) => ({
+                          ...prevDetails,
+                          [name]: value === "true", // Convert the string value to boolean
+                        }));
+                      }}
+                      className="mr-1 font-normal text-arfagreen focus:ring-arfagreen checked:bg-arfagreen"
+                    />
+                    On Sale
+                  </label>
+                </div>
+              </div>
+              {productDetails.isSale && (
+                <h3 className="text-sm font-medium">
+                  Discounted Price:{" "}
+                  <input
+                    type="text"
+                    name="discountedPrice"
+                    value={productDetails.discountedPrice}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "discountedPrice") {
+                        const validNumberRegex = /^\d*$/;
+                        if (validNumberRegex.test(value)) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                  />
+                </h3>
+              )}
               <h3 className="text-sm font-medium">
                 Price (₱):{" "}
                 <input
