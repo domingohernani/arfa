@@ -49,12 +49,16 @@ const UpdateProductDetails = ({
 
   const confirmBtn = () => {
     if (handleConfirmBtn) {
-      productDetails.stock = parseInt(productDetails.stock);
       productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
 
       for (const [key, value] of Object.entries(productDetails)) {
-        if ((!value || value === 0) && key !== "discountedPrice") {
-          toast.error(`Invalid input! Please fill in the field.`);
+        if (
+          (!value || value === 0) &&
+          key !== "discountedPrice" &&
+          key !== "isSale" &&
+          key !== "stock"
+        ) {
+          toast.error(`Invalid input! Please fill in the field. ${key}`);
           return;
         }
       }
