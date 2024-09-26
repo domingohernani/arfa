@@ -13,6 +13,8 @@ const SellerAddProduct = () => {
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const { loggedUser } = useStore();
+  const { variants, setVariants, initializeVariants } = useStore();
+  const [currentVariants, setCurrentVariants] = useState([]);
 
   // State to track form input values
   const [productDetails, setProductDetails] = useState({
@@ -20,8 +22,10 @@ const SellerAddProduct = () => {
     description: "",
     category: "Accent",
     price: "",
-    discountedPrice: 0,
+    discountedPrice: "",
     variants: [],
+    stock: "",
+    isSale: false,
   });
 
   // Handle input changes
@@ -36,27 +40,29 @@ const SellerAddProduct = () => {
 
   const handleConfirmBtn = async () => {
     // Loop through productDetails to check for any empty fields
-    for (const [key, value] of Object.entries(productDetails)) {
-      if (value === "") {
-        toast.error(`Please fill in the ${key} field.`);
-        return;
-      }
-    }
+    // for (const [key, value] of Object.entries(productDetails)) {
+    //   if (value === "") {
+    //     toast.error(`Please fill in the ${key} field.`);
+    //     return;
+    //   }
+    // }
 
-    productDetails.ownerId = loggedUser.userId;
-    productDetails.price = parseFloat(productDetails.price);
-    productDetails.discountedPrice = parseFloat(productDetails.discountedPrice);
+    // productDetails.ownerId = loggedUser.userId;
+    // productDetails.price = parseFloat(productDetails.price);
+    // productDetails.stock = parseInt(productDetails.stock);
+    // productDetails.discountedPrice = parseFloat(productDetails.discountedPrice);
 
-    try {
-      const docId = await addFurniture(productDetails);
-      if (docId) {
-        toast.success("Furniture added successfully!");
-      } else {
-        toast.error("Something went wrong. Please try again.");
-      }
-    } catch (error) {
-      toast.error("Error adding furniture. Please try again.");
-    }
+    // try {
+    //   const docId = await addFurniture(productDetails);
+    //   if (docId) {
+    //     toast.success("Furniture added successfully!");
+    //   } else {
+    //     toast.error("Something went wrong. Please try again.");
+    //   }
+    // } catch (error) {
+    //   toast.error("Error adding furniture. Please try again.");
+    // }
+    console.log(variants);
   };
 
   return (
@@ -88,9 +94,6 @@ const SellerAddProduct = () => {
                   rows="4"
                 />
               </h3>
-            </section>
-
-            <section className="flex flex-col flex-1 gap-1">
               <h3 className="text-sm font-medium">
                 Category:{" "}
                 <select
@@ -104,6 +107,9 @@ const SellerAddProduct = () => {
                   <option value="Bedroom">Bedroom</option>
                 </select>
               </h3>
+            </section>
+
+            <section className="flex flex-col flex-1 gap-1">
               <h3 className="text-sm font-medium">
                 Price (₱):{" "}
                 <input
@@ -113,13 +119,96 @@ const SellerAddProduct = () => {
                   onChange={(e) => {
                     const { name, value } = e.target;
                     if (name === "price") {
-                      const validNumberRegex = /^\d*\.?\d*$/;
+                      const validNumberRegex = /^\d*$/;
                       if (validNumberRegex.test(value)) {
                         handleInputChange(e);
                       }
                     }
                   }}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                />
+              </h3>
+              <div className="my-1">
+                <h3 className="text-sm font-medium">Sale Status:</h3>
+                <div className="flex gap-4">
+                  <label className="text-sm font-medium">
+                    <input
+                      type="radio"
+                      name="isSale"
+                      value="false"
+                      checked={productDetails.isSale === false}
+                      onChange={(e) => {
+                        const { name, value } = e.target;
+                        setProductDetails((prevDetails) => ({
+                          ...prevDetails,
+                          [name]: value === "true", // Convert the string value to boolean
+                        }));
+                      }}
+                      className="mr-1 font-normal text-arfagreen focus:ring-arfagreen checked:bg-arfagreen"
+                    />
+                    Not on Sale
+                  </label>
+                  <label className="text-sm font-medium">
+                    <input
+                      type="radio"
+                      name="isSale"
+                      value="true"
+                      checked={productDetails.isSale === true}
+                      onChange={(e) => {
+                        const { name, value } = e.target;
+                        setProductDetails((prevDetails) => ({
+                          ...prevDetails,
+                          [name]: value === "true", // Convert the string value to boolean
+                        }));
+                      }}
+                      className="mr-1 font-normal text-arfagreen focus:ring-arfagreen checked:bg-arfagreen"
+                    />
+                    On Sale
+                  </label>
+                </div>
+              </div>
+              {productDetails.isSale && (
+                <h3 className="text-sm font-medium">
+                  Discounted Price:{" "}
+                  <input
+                    type="text"
+                    name="discountedPrice"
+                    value={productDetails.discountedPrice}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "discountedPrice") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                  />
+                </h3>
+              )}
+              <h3 className="text-sm font-medium">
+                On Stock:{" "}
+                <input
+                  type="text"
+                  name="stock"
+                  value={productDetails.stock}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    if (name === "stock") {
+                      const numbers = "0123456789";
+                      if (
+                        value.split("").every((char) => numbers.includes(char))
+                      ) {
+                        handleInputChange(e);
+                      }
+                    }
+                  }}
+                  className=  "rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                 />
               </h3>
             </section>
@@ -218,7 +307,7 @@ const SellerAddProduct = () => {
             </div>
           </main>
         ) : (
-          <VariantUpload currentVariants={[]} />
+          <VariantUpload currentVariants={currentVariants} />
         )}
       </section>{" "}
       <button
