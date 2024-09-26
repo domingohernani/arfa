@@ -17,4 +17,12 @@ export const furnitures = (set) => ({
               { name: "", imagePaths: [] },
             ],
     }),
+  // Add this function to clear the variants
+  clearVariants: () =>
+    set({
+      variants: [
+        { name: "", imagePaths: [] },
+        { name: "", imagePaths: [] },
+      ],
+    }),
 });

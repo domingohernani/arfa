@@ -10,6 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { blobsToImagesPaths } from "../components/globalFunctions";
 
 // Function to fetch all documents from a collection
 export const fetchFurnitureCollection = async (
@@ -161,7 +162,7 @@ export const updateStock = async (furnitureId, newStock) => {
   }
 };
 
-export const addFurniture = async (furnitureData) => {
+export const addFurniture = async (furnitureData, variants) => {
   try {
     // Create a reference to the specific shop document
     const shopRef = doc(db, "shops", furnitureData.ownerId);
@@ -169,13 +170,17 @@ export const addFurniture = async (furnitureData) => {
     // Add the furniture data to the 'furnitures' collection
     const docRef = await addDoc(collection(db, "furnitures"), {
       ...furnitureData,
-      shopReference: shopRef,
+      shop: shopRef,
       createdAt: serverTimestamp(),
       stockUpdatedAt: serverTimestamp(),
     });
 
+    const convertedVariants = await blobsToImagesPaths(variants, docRef.id);
+
     await updateDoc(docRef, {
       id: docRef.id,
+      imagesUrl: `images/${docRef.id}`,
+      variants: convertedVariants,
     });
 
     console.log("Furniture added with ID: ", docRef.id);

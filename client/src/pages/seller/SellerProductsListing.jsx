@@ -17,6 +17,7 @@ import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { DeleteProductModal } from "../../components/modals/DeleteProductModal";
+import { formatToPeso } from "../../components/globalFunctions";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -62,6 +63,12 @@ const SellerProductsListing = () => {
         field: "price",
         flex: 1,
         filter: "agNumberColumnFilter",
+        valueFormatter: (params) => {
+          if (params.value != null) {
+            return formatToPeso(params.value);
+          }
+          return "";
+        },
       },
       {
         headerName: "Created At",

@@ -24,7 +24,7 @@ const UpdateProductDetails = ({
     furniture.variants.length > 0 ? true : false
   );
   const [modelFileUrl, setModelFileUrl] = useState(modelURL);
-  const { variants, setVariants, initializeVariants } = useStore();
+  const { variants, clearVariants } = useStore();
 
   // Initialize state with furniture details, including id
   const [productDetails, setProductDetails] = useState({
@@ -49,6 +49,7 @@ const UpdateProductDetails = ({
   const confirmBtn = () => {
     if (handleConfirmBtn) {
       handleConfirmBtn(productDetails, variants);
+      clearVariants();
     }
   };
 
@@ -136,21 +137,34 @@ const UpdateProductDetails = ({
                 <select
                   name="category"
                   value={productDetails.category}
-                  // onChange={handleInputChange}
+                  onChange={handleInputChange}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                 >
-                  <option value="Accent">Accent</option>
                   <option value="Living Room">Living Room</option>
                   <option value="Bedroom">Bedroom</option>
+                  <option value="Dining Room">Dining Room</option>
+                  <option value="Office">Office</option>
+                  <option value="Outdoor">Outdoor</option>
+                  <option value="Accent">Accent</option>
+                  <option value="Storage">Storage</option>
+                  <option value="Entryway">Entryway</option>
                 </select>
               </h3>
               <h3 className="text-sm font-medium">
                 Price (₱):{" "}
                 <input
-                  type="number"
+                  type="text"
                   name="price"
                   value={productDetails.price}
-                  onChange={handleInputChange}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    if (name === "price") {
+                      const validNumberRegex = /^\d*$/;
+                      if (validNumberRegex.test(value)) {
+                        handleInputChange(e);
+                      }
+                    }
+                  }}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                 />
               </h3>
