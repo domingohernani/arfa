@@ -30,6 +30,7 @@
     "react-router-dom": "^6.24.0",
     "recharts": "^2.12.7",
     "select-philippines-address": "^1.0.6",
+    "three": "^0.169.0",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
