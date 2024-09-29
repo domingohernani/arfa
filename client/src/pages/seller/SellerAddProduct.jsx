@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { QuestionMarkCircleIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import FileDropzone from "../../components/dynamic/FileDropzone";
@@ -18,6 +18,16 @@ const SellerAddProduct = () => {
   const { variants } = useStore();
   const [currentVariants] = useState([]);
   const [model, setModel] = useState("");
+  const detectedVariants = useStore((state) => state.detectedVariants);
+  const resetDetectedVariants = useStore(
+    (state) => state.resetDetectedVariants
+  );
+
+  useEffect(() => {
+    return () => {
+      resetDetectedVariants();
+    };
+  }, [navigate, resetDetectedVariants]);
 
   // State to track form input values
   const [productDetails, setProductDetails] = useState({
@@ -53,7 +63,6 @@ const SellerAddProduct = () => {
 
   const handleConfirmBtn = async () => {
     // Loop through productDetails to check for any empty fields
-
     productDetails.ownerId = loggedUser.userId;
     productDetails.price = parseFloat(productDetails.price);
     productDetails.stock = parseInt(productDetails.stock);
