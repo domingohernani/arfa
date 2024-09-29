@@ -16,7 +16,7 @@ const SellerAddProduct = () => {
   const [enabled, setEnabled] = useState(false);
   const { loggedUser } = useStore();
   const { variants } = useStore();
-  const [currentVariants] = useState([]);
+  const [currentVariants, setCurrentVariant] = useState([]);
   const [model, setModel] = useState("");
   const detectedVariants = useStore((state) => state.detectedVariants);
   const resetDetectedVariants = useStore(
@@ -85,6 +85,27 @@ const SellerAddProduct = () => {
       toast.error("Error adding furniture. Please try again.");
     }
   };
+
+  useEffect(() => {
+    const fetchVariants = () => {
+      if (detectedVariants.length >= 2) {
+        setEnabled(true);
+        const formatted = detectedVariants.reduce((acc, value) => {
+          acc.push({
+            name: value.label,
+            imagePaths: [],
+          });
+          return acc;
+        }, []);
+        setCurrentVariant(formatted);
+      } else {
+        setEnabled(false);
+      }
+    };
+    if (detectedVariants) {
+      fetchVariants();
+    }
+  }, [detectedVariants]);
 
   return (
     <section className="p-5">
@@ -257,7 +278,11 @@ const SellerAddProduct = () => {
               <div className="relative mb-16 h-96">
                 <XMarkIcon
                   className="w-5 h-5 ml-auto cursor-pointer "
-                  onClick={() => setModel("")}
+                  onClick={() => {
+                    setModel("");
+                    setCurrentVariant([]);
+                    setEnabled(false);
+                  }}
                 />
                 <ShowModel path={model} />
               </div>
