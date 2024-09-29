@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
+import { QuestionMarkCircleIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import FileDropzone from "../../components/dynamic/FileDropzone";
 import { Switch } from "@headlessui/react";
 import { Tooltip } from "flowbite-react";
@@ -8,13 +8,16 @@ import VariantUpload from "../../components/dynamic/VariantUpload";
 import toast from "react-hot-toast";
 import { addFurniture } from "../../firebase/furniture";
 import { useStore } from "../../stores/useStore";
+import ShowModel from "../../components/ShowModel";
+import { getModelDimensions } from "../../components/globalFunctions";
 
 const SellerAddProduct = () => {
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const { loggedUser } = useStore();
-  const { variants, setVariants, initializeVariants } = useStore();
-  const [currentVariants, setCurrentVariants] = useState([]);
+  const { variants } = useStore();
+  const [currentVariants] = useState([]);
+  const [model, setModel] = useState("");
 
   // State to track form input values
   const [productDetails, setProductDetails] = useState({
@@ -36,6 +39,16 @@ const SellerAddProduct = () => {
       ...prevDetails,
       [name]: value,
     }));
+  };
+
+  const handleFileUpload = async (files) => {
+    const file = files[0];
+    const result = await getModelDimensions(file);
+    if (result.success) {
+      setModel(result.url);
+    } else {
+      toast.error(result.message);
+    }
   };
 
   const handleConfirmBtn = async () => {
@@ -62,7 +75,6 @@ const SellerAddProduct = () => {
     } catch (error) {
       toast.error("Error adding furniture. Please try again.");
     }
-    console.log(variants);
   };
 
   return (
@@ -231,12 +243,24 @@ const SellerAddProduct = () => {
             <div className="absolute text-sm font-medium top-20">
               <span>3D Model</span>
             </div>
-            <FileDropzone
-              text={
-                "Drag & drop some 3D models here (.glb, .gltf), or click to select files"
-              }
-              height={"h-96"}
-            />
+
+            {model ? (
+              <div className="relative mb-16 h-96">
+                <XMarkIcon
+                  className="w-5 h-5 ml-auto cursor-pointer "
+                  onClick={() => setModel("")}
+                />
+                <ShowModel path={model} />
+              </div>
+            ) : (
+              <FileDropzone
+                text={
+                  "Drag & drop some 3D models here (.glb, .gltf), or click to select a file"
+                }
+                height={"h-96"}
+                onFilesSelected={(file) => handleFileUpload(file)}
+              />
+            )}
           </div>
           <div className="flex flex-col justify-center flex-1 gap-3 px-3">
             <h3 className="text-sm font-medium">
