@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { formatToPeso } from "../globalFunctions";
+import React, { useEffect, useState } from "react";
+import { formatToPeso, getModelDimensions } from "../globalFunctions";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -24,8 +24,11 @@ const UpdateProductDetails = ({
   const [enabled, setEnabled] = useState(
     furniture.variants.length > 0 ? true : false
   );
-  const [modelFileUrl, setModelFileUrl] = useState(modelURL);
+  const [model, setModel] = useState(modelURL);
+  const [currentVariants, setCurrentVariants] = useState([]);
   const { variants, clearVariants } = useStore();
+  const { detectedVariants } = useStore();
+  const [edited, setEdited] = useState(false);
 
   // Initialize state with furniture details, including id
   const [productDetails, setProductDetails] = useState({
@@ -46,6 +49,38 @@ const UpdateProductDetails = ({
       [name]: name === "price" ? parseFloat(value) || "" : value,
     }));
   };
+
+  const handleModelUpload = async (files) => {
+    const file = files[0];
+    const result = await getModelDimensions(file);
+    if (result.success) {
+      setModel(result.url);
+      setEdited(true);
+    } else {
+      toast.error(result.message);
+    }
+  };
+
+  useEffect(() => {
+    const fetchVariants = () => {
+      if (detectedVariants.length >= 2) {
+        setEnabled(true);
+        const formatted = detectedVariants.reduce((acc, value) => {
+          acc.push({
+            name: value.label,
+            imagePaths: [],
+          });
+          return acc;
+        }, []);
+        setCurrentVariants(formatted);
+      } else {
+        setEnabled(false);
+      }
+    };
+    if (detectedVariants) {
+      fetchVariants();
+    }
+  }, [detectedVariants]);
 
   const confirmBtn = () => {
     if (handleConfirmBtn) {
@@ -253,13 +288,17 @@ const UpdateProductDetails = ({
             <div className="absolute text-sm font-medium top-20">
               <span>3D Model</span>
             </div>
-            {modelFileUrl ? (
+            {model ? (
               <div className="relative mb-16 h-96">
                 <XMarkIcon
                   className="w-5 h-5 ml-auto cursor-pointer "
-                  onClick={() => setModelFileUrl("")}
+                  onClick={() => {
+                    setModel("");
+                    setCurrentVariants([]);
+                    setEnabled(false);
+                  }}
                 />
-                <ShowModel path={modelFileUrl} />
+                <ShowModel path={model} />
               </div>
             ) : (
               <FileDropzone
@@ -267,6 +306,7 @@ const UpdateProductDetails = ({
                   "Drag & drop some 3D models here (.glb, .gltf), or click to select files"
                 }
                 height={"h-96"}
+                onFilesSelected={(file) => handleModelUpload(file)}
               />
             )}
           </div>
@@ -345,8 +385,10 @@ const UpdateProductDetails = ({
               </li>
             </div>
           </main>
-        ) : (
+        ) : !edited ? (
           <VariantUpload currentVariants={furniture.variants} />
+        ) : (
+          <VariantUpload currentVariants={currentVariants} />
         )}
       </section>
     </>

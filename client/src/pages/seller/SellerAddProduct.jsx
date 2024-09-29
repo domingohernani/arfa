@@ -16,7 +16,7 @@ const SellerAddProduct = () => {
   const [enabled, setEnabled] = useState(false);
   const { loggedUser } = useStore();
   const { variants } = useStore();
-  const [currentVariants, setCurrentVariant] = useState([]);
+  const [currentVariants, setCurrentVariants] = useState([]);
   const [model, setModel] = useState("");
   const detectedVariants = useStore((state) => state.detectedVariants);
   const resetDetectedVariants = useStore(
@@ -51,7 +51,7 @@ const SellerAddProduct = () => {
     }));
   };
 
-  const handleFileUpload = async (files) => {
+  const handleModelUpload = async (files) => {
     const file = files[0];
     const result = await getModelDimensions(file);
     if (result.success) {
@@ -97,7 +97,7 @@ const SellerAddProduct = () => {
           });
           return acc;
         }, []);
-        setCurrentVariant(formatted);
+        setCurrentVariants(formatted);
       } else {
         setEnabled(false);
       }
@@ -280,7 +280,7 @@ const SellerAddProduct = () => {
                   className="w-5 h-5 ml-auto cursor-pointer "
                   onClick={() => {
                     setModel("");
-                    setCurrentVariant([]);
+                    setCurrentVariants([]);
                     setEnabled(false);
                   }}
                 />
@@ -292,7 +292,7 @@ const SellerAddProduct = () => {
                   "Drag & drop some 3D models here (.glb, .gltf), or click to select a file"
                 }
                 height={"h-96"}
-                onFilesSelected={(file) => handleFileUpload(file)}
+                onFilesSelected={(file) => handleModelUpload(file)}
               />
             )}
           </div>
