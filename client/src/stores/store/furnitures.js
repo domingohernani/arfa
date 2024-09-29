@@ -2,6 +2,10 @@ export const furnitures = (set) => ({
   rowFurnituresData: [],
   setRowFurnituresData: (data) => set({ rowFurnituresData: data }),
 
+  detectedVariants: [],
+  setDetectedVariants: (data) => set({ detectedVariants: data }),
+  resetDetectedVariants: (data) => set({ detectedVariants: data }),
+
   variants: [
     { name: "", imagePaths: [] },
     { name: "", imagePaths: [] },
