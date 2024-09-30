@@ -325,6 +325,7 @@ const SellerAddProduct = () => {
                     setModel("");
                     setCurrentVariants([]);
                     setEnabled(false);
+                    setImages([]);
                   }}
                 />
                 <ShowModel path={model} />
