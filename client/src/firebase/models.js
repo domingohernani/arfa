@@ -1,4 +1,4 @@
-import { ref, getDownloadURL, getStorage } from "firebase/storage";
+import { ref, getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
 
 export const get3DModelUrl = async (modelPath) => {
   const storage = getStorage();
@@ -12,5 +12,17 @@ export const get3DModelUrl = async (modelPath) => {
   } catch (error) {
     console.error("Error getting 3D model URL:", error);
     return null;
+  }
+};
+
+export const upload3DModel = async (file, modelPath) => {
+  const storage = getStorage();
+  try {
+    const modelRef = ref(storage, modelPath);
+    const result = await uploadBytes(modelRef, file);
+    return result;
+  } catch (error) {
+    console.error("Error uploading 3D model:", error);
+    return false;
   }
 };

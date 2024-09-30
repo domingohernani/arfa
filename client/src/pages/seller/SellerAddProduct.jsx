@@ -9,7 +9,13 @@ import toast from "react-hot-toast";
 import { addFurniture } from "../../firebase/furniture";
 import { useStore } from "../../stores/useStore";
 import ShowModel from "../../components/ShowModel";
-import { getModelDimensions } from "../../components/globalFunctions";
+import {
+  blobsToFiles,
+  blobTo3DFile,
+  getModelDimensions,
+} from "../../components/globalFunctions";
+import { upload3DModel } from "../../firebase/models";
+import { uploadPhoto } from "../../firebase/photos";
 
 const SellerAddProduct = () => {
   const navigate = useNavigate();
@@ -22,7 +28,7 @@ const SellerAddProduct = () => {
   const resetDetectedVariants = useStore(
     (state) => state.resetDetectedVariants
   );
-  const [variantlessImgs, setVariantlessImgs] = useState([]);
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
     resetDetectedVariants([]);
@@ -57,15 +63,16 @@ const SellerAddProduct = () => {
     }));
   };
 
-  const handleVariantlessUpload = (files) => {
+  const handleImagesUpload = (files) => {
     const urls = files.map((file) => URL.createObjectURL(file));
-    setVariantlessImgs((prev) => [...prev, ...urls]);
+    setImages((prev) => [...prev, ...urls]);
   };
 
   const handleModelUpload = async (files) => {
     const file = files[0];
     const result = await getModelDimensions(file);
     if (result.success) {
+      clearVariants();
       setModel(result.url);
     } else {
       toast.error(result.message);
@@ -89,14 +96,35 @@ const SellerAddProduct = () => {
       }
     }
 
+    const newModel = await blobTo3DFile(model, productDetails.name);
+    const newImages = await blobsToFiles(images, productDetails.name);
+
     try {
-      const docId = await addFurniture(productDetails, variants);
-      if (docId) {
+      // model
+      const modelUpload = await upload3DModel(
+        newModel,
+        `models/${newModel.name}.glb`
+      );
+      // furniture
+      productDetails.modelUrl = modelUpload.metadata.fullPath;
+      const furnitureId = await addFurniture(productDetails, variants);
+
+      // images
+      const imagesUpload = await Promise.all(
+        newImages.map((file, index) => {
+          const filePath = `images/${furnitureId}/${furnitureId}-${
+            index + 1
+          }.jpg`;
+          return uploadPhoto(file, filePath);
+        })
+      );
+      if (furnitureId && modelUpload && imagesUpload) {
         toast.success("Furniture added successfully!");
       } else {
         toast.error("Something went wrong. Please try again.");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Error adding furniture. Please try again.");
     }
   };
@@ -350,7 +378,7 @@ const SellerAddProduct = () => {
                     checked={enabled}
                     onChange={() => {
                       setEnabled(!enabled);
-                      setVariantlessImgs([]);
+                      setImages([]);
                     }}
                     className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
                   >
@@ -372,15 +400,15 @@ const SellerAddProduct = () => {
         {!enabled ? (
           <main className="relative flex flex-col w-full px-3 gap-14 md:gap-5 md:flex-row">
             <div className="flex-1 w-full h-full px-3">
-              {variantlessImgs.length > 0 ? (
+              {images.length > 0 ? (
                 <div className="flex flex-wrap gap-4">
-                  {variantlessImgs.map((url, index) => {
+                  {images.map((url, index) => {
                     return (
-                      <div className="">
+                      <div key={index}>
                         <XMarkIcon
                           className="w-5 h-5 ml-auto cursor-pointer "
                           onClick={() => {
-                            setVariantlessImgs((prev) => {
+                            setImages((prev) => {
                               const imgs = [...prev];
                               imgs.splice(index, 1);
                               return imgs;
@@ -400,7 +428,7 @@ const SellerAddProduct = () => {
                       "Drag & drop some images here (.jpg, .jpeg, .png), or click to select files"
                     }
                     height={"h-20"}
-                    onFilesSelected={(files) => handleVariantlessUpload(files)}
+                    onFilesSelected={(files) => handleImagesUpload(files)}
                   />
                 </div>
               ) : (
@@ -409,7 +437,7 @@ const SellerAddProduct = () => {
                     "Drag & drop some images here (.jpg, .jpeg, .png), or click to select files"
                   }
                   height={"h-96"}
-                  onFilesSelected={(files) => handleVariantlessUpload(files)}
+                  onFilesSelected={(files) => handleImagesUpload(files)}
                 />
               )}
             </div>
