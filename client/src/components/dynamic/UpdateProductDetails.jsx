@@ -29,7 +29,7 @@ const UpdateProductDetails = ({
   const { variants, clearVariants } = useStore();
   const { detectedVariants } = useStore();
   const [edited, setEdited] = useState(false);
-  const [variantlessImgs, setVariantlessImgs] = useState([]);
+  const [images, setImages] = useState([]);
 
   // Initialize state with furniture details, including id
   const [productDetails, setProductDetails] = useState({
@@ -51,9 +51,9 @@ const UpdateProductDetails = ({
     }));
   };
 
-  const handleVariantlessUpload = (files) => {
+  const handleImagesUpload = (files) => {
     const urls = files.map((file) => URL.createObjectURL(file));
-    setVariantlessImgs((prev) => [...prev, ...urls]);
+    setImages((prev) => [...prev, ...urls]);
   };
 
   const handleModelUpload = async (files) => {
@@ -355,7 +355,7 @@ const UpdateProductDetails = ({
                     checked={enabled}
                     onChange={() => {
                       setEnabled(!enabled);
-                      setVariantlessImgs([]);
+                      setImages([]);
                     }}
                     className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
                   >
@@ -377,15 +377,15 @@ const UpdateProductDetails = ({
         {!enabled ? (
           <main className="relative flex flex-col w-full px-3 gap-14 md:gap-5 md:flex-row">
             <div className="flex-1 w-full h-full px-3">
-              {variantlessImgs.length > 0 ? (
+              {images.length > 0 ? (
                 <div className="flex flex-wrap gap-4">
-                  {variantlessImgs.map((url, index) => {
+                  {images.map((url, index) => {
                     return (
                       <div className="">
                         <XMarkIcon
                           className="w-5 h-5 ml-auto cursor-pointer "
                           onClick={() => {
-                            setVariantlessImgs((prev) => {
+                            setImages((prev) => {
                               const imgs = [...prev];
                               imgs.splice(index, 1);
                               return imgs;
@@ -405,7 +405,7 @@ const UpdateProductDetails = ({
                       "Drag & drop some images here (.jpg, .jpeg, .png), or click to select files"
                     }
                     height={"h-20"}
-                    onFilesSelected={(files) => handleVariantlessUpload(files)}
+                    onFilesSelected={(files) => handleImagesUpload(files)}
                   />
                 </div>
               ) : (
@@ -414,7 +414,7 @@ const UpdateProductDetails = ({
                     "Drag & drop some images here (.jpg, .jpeg, .png), or click to select files"
                   }
                   height={"h-96"}
-                  onFilesSelected={(files) => handleVariantlessUpload(files)}
+                  onFilesSelected={(files) => handleImagesUpload(files)}
                 />
               )}
             </div>
