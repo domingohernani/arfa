@@ -108,7 +108,7 @@ const VariantUpload = ({ currentVariants, model = "" }) => {
           className="flex items-center justify-center gap-2 py-4 mt-6 border rounded-sm cursor-pointer bg-arfagray"
           onClick={addVariant}
         >
-          <span className="text-sm font-medium"> Add Variant ${model}</span>
+          <span className="text-sm font-medium"> Add Variant</span>
           <PlusIcon className="w-5 h-5" />
         </div>
       )}
