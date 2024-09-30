@@ -24,6 +24,10 @@ const SellerAddProduct = () => {
   );
 
   useEffect(() => {
+    resetDetectedVariants([]);
+  }, []);
+
+  useEffect(() => {
     return () => {
       resetDetectedVariants();
     };
