@@ -9,6 +9,7 @@ import { CubeTransparentIcon } from "@heroicons/react/20/solid";
 function ShowModel({ path, addToCartBtn = false, handleAddToCart }) {
   const modelViewerRef = useRef(null);
   const [variants, setVariants] = useState([]);
+  const setDetectedVariants = useStore((state) => state.setDetectedVariants);
   const [initialVariant, setInitialVariant] = useState("");
   const [toggleDimension, setToggleDimension] = useState(true);
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
@@ -25,6 +26,7 @@ function ShowModel({ path, addToCartBtn = false, handleAddToCart }) {
         label: name,
       }));
       setVariants(variantOptions);
+      setDetectedVariants(variantOptions);
 
       if (variantOptions.length > 0) {
         setInitialVariant(variantOptions[0].value);
