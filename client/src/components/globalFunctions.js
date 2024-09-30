@@ -1,6 +1,8 @@
 import { average } from "firebase/firestore";
 import { formatDistanceToNowStrict } from "date-fns";
 import { uploadPhoto } from "../firebase/photos";
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export function formatToPeso(amount) {
   return (
@@ -198,4 +200,56 @@ export const blobsToImagesPaths = async (variants, id) => {
   );
 
   return { updatedVariants, imgPreviewFilename };
+};
+
+export const getModelDimensions = (file) => {
+  return new Promise((resolve, reject) => {
+    // Check if the file type is .glb or .gltf
+    const validExtensions = [".glb", ".gltf"];
+    const fileExtension = file.name
+      .slice(file.name.lastIndexOf("."))
+      .toLowerCase();
+
+    if (!validExtensions.includes(fileExtension)) {
+      return resolve({
+        success: false,
+        message: "Invalid file type. Please upload a .glb or .gltf file.",
+      });
+    }
+
+    const fileUrl = URL.createObjectURL(file);
+    const loader = new GLTFLoader();
+
+    loader.load(
+      fileUrl,
+      (gltf) => {
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+
+        const size = new THREE.Vector3();
+        box.getSize(size);
+
+        // Convert from meters to centimeters
+        const widthInCm = Math.round(size.x * 100);
+        const heightInCm = Math.round(size.y * 100);
+        const depthInCm = Math.round(size.z * 100);
+
+        resolve({
+          url: fileUrl,
+          success: true,
+          width: widthInCm,
+          height: heightInCm,
+          depth: depthInCm,
+          message: "Model dimensions retrieved successfully.",
+        });
+      },
+      undefined,
+      (error) => {
+        reject({
+          success: false,
+          message: `An error occurred while loading the model: ${error.message}`,
+        });
+      }
+    );
+  });
 };

@@ -4,7 +4,7 @@ import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useStore } from "../../stores/useStore";
 
-const VariantUpload = ({ currentVariants }) => {
+const VariantUpload = ({ currentVariants, model = "" }) => {
   // Access Zustand store state and actions
   const { variants, setVariants, initializeVariants } = useStore();
 
@@ -54,14 +54,16 @@ const VariantUpload = ({ currentVariants }) => {
             className="flex flex-col gap-6 lg:flex-row lg:items-center"
             key={i}
           >
-            
             <section className="my-5">
-            <TrashIcon
-              className={`w-5 h-5 text-gray-600 cursor-pointer ${
-                variants.length <= 2 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              onClick={() => deleteVariant(i)}
-            />
+              {!model && (
+                <TrashIcon
+                  className={`w-5 h-5 text-gray-600 cursor-pointer ${
+                    variants.length <= 2 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={() => deleteVariant(i)}
+                />
+              )}
+
               <div className="flex gap-2 mx-auto my-3 overflow-x-auto w-arfaWidth1 sm:w-arfaWidth2 md:w-arfaWidth3">
                 {variant.imagePaths.map((url, imgIndex) => {
                   return (
@@ -101,13 +103,15 @@ const VariantUpload = ({ currentVariants }) => {
         );
       })}
 
-      <div
-        className="flex items-center justify-center gap-2 py-4 mt-6 border rounded-sm cursor-pointer bg-arfagray"
-        onClick={addVariant}
-      >
-        <span className="text-sm font-medium"> Add Variant</span>
-        <PlusIcon className="w-5 h-5" />
-      </div>
+      {!model && (
+        <div
+          className="flex items-center justify-center gap-2 py-4 mt-6 border rounded-sm cursor-pointer bg-arfagray"
+          onClick={addVariant}
+        >
+          <span className="text-sm font-medium"> Add Variant ${model}</span>
+          <PlusIcon className="w-5 h-5" />
+        </div>
+      )}
     </section>
   );
 };
