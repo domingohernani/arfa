@@ -29,6 +29,7 @@ const UpdateProductDetails = ({
   const { variants, clearVariants } = useStore();
   const { detectedVariants } = useStore();
   const [edited, setEdited] = useState(false);
+  const [variantlessImgs, setVariantlessImgs] = useState([]);
 
   // Initialize state with furniture details, including id
   const [productDetails, setProductDetails] = useState({
@@ -48,6 +49,11 @@ const UpdateProductDetails = ({
       ...prevDetails,
       [name]: name === "price" ? parseFloat(value) || "" : value,
     }));
+  };
+
+  const handleVariantlessUpload = (files) => {
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setVariantlessImgs((prev) => [...prev, ...urls]);
   };
 
   const handleModelUpload = async (files) => {
@@ -347,7 +353,10 @@ const UpdateProductDetails = ({
                   <span>Variants</span>
                   <Switch
                     checked={enabled}
-                    onChange={setEnabled}
+                    onChange={() => {
+                      setEnabled(!enabled);
+                      setVariantlessImgs([]);
+                    }}
                     className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
                   >
                     <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
@@ -368,12 +377,46 @@ const UpdateProductDetails = ({
         {!enabled ? (
           <main className="relative flex flex-col w-full px-3 gap-14 md:gap-5 md:flex-row">
             <div className="flex-1 w-full h-full px-3">
-              <FileDropzone
-                text={
-                  "Drag & drop some images here (.jpg, .jpeg, .png), or click to select files"
-                }
-                height={"h-96"}
-              />
+              {variantlessImgs.length > 0 ? (
+                <div className="flex flex-wrap gap-4">
+                  {variantlessImgs.map((url, index) => {
+                    return (
+                      <div className="">
+                        <XMarkIcon
+                          className="w-5 h-5 ml-auto cursor-pointer "
+                          onClick={() => {
+                            setVariantlessImgs((prev) => {
+                              const imgs = [...prev];
+                              imgs.splice(index, 1);
+                              return imgs;
+                            });
+                          }}
+                        />
+                        <img
+                          src={url}
+                          alt={`Image ${index}`}
+                          className="object-cover w-40 h-40 rounded-sm"
+                        />
+                      </div>
+                    );
+                  })}
+                  <FileDropzone
+                    text={
+                      "Drag & drop some images here (.jpg, .jpeg, .png), or click to select files"
+                    }
+                    height={"h-20"}
+                    onFilesSelected={(files) => handleVariantlessUpload(files)}
+                  />
+                </div>
+              ) : (
+                <FileDropzone
+                  text={
+                    "Drag & drop some images here (.jpg, .jpeg, .png), or click to select files"
+                  }
+                  height={"h-96"}
+                  onFilesSelected={(files) => handleVariantlessUpload(files)}
+                />
+              )}
             </div>
             <div className="flex flex-col justify-center flex-1 gap-3 px-3">
               <h3 className="text-sm font-medium">
