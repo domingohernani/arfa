@@ -9,7 +9,9 @@ const VariantUpload = ({ currentVariants, model = "" }) => {
   const { variants, setVariants, initializeVariants } = useStore();
 
   useEffect(() => {
-    initializeVariants(currentVariants);
+    if (model) {
+      initializeVariants(currentVariants);
+    }
   }, [currentVariants, initializeVariants]);
 
   const addVariant = () => {
