@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
+import { QuestionMarkCircleIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import FileDropzone from "../../components/dynamic/FileDropzone";
 import { Switch } from "@headlessui/react";
 import { Tooltip } from "flowbite-react";
@@ -8,13 +8,26 @@ import VariantUpload from "../../components/dynamic/VariantUpload";
 import toast from "react-hot-toast";
 import { addFurniture } from "../../firebase/furniture";
 import { useStore } from "../../stores/useStore";
+import ShowModel from "../../components/ShowModel";
+import { getModelDimensions } from "../../components/globalFunctions";
 
 const SellerAddProduct = () => {
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const { loggedUser } = useStore();
-  const { variants, setVariants, initializeVariants } = useStore();
+  const { variants } = useStore();
   const [currentVariants, setCurrentVariants] = useState([]);
+  const [model, setModel] = useState("");
+  const detectedVariants = useStore((state) => state.detectedVariants);
+  const resetDetectedVariants = useStore(
+    (state) => state.resetDetectedVariants
+  );
+
+  useEffect(() => {
+    return () => {
+      resetDetectedVariants();
+    };
+  }, [navigate, resetDetectedVariants]);
 
   // State to track form input values
   const [productDetails, setProductDetails] = useState({
@@ -38,9 +51,18 @@ const SellerAddProduct = () => {
     }));
   };
 
+  const handleModelUpload = async (files) => {
+    const file = files[0];
+    const result = await getModelDimensions(file);
+    if (result.success) {
+      setModel(result.url);
+    } else {
+      toast.error(result.message);
+    }
+  };
+
   const handleConfirmBtn = async () => {
     // Loop through productDetails to check for any empty fields
-
     productDetails.ownerId = loggedUser.userId;
     productDetails.price = parseFloat(productDetails.price);
     productDetails.stock = parseInt(productDetails.stock);
@@ -66,8 +88,28 @@ const SellerAddProduct = () => {
     } catch (error) {
       toast.error("Error adding furniture. Please try again.");
     }
-    console.log(variants);
   };
+
+  useEffect(() => {
+    const fetchVariants = () => {
+      if (detectedVariants.length >= 2) {
+        setEnabled(true);
+        const formatted = detectedVariants.reduce((acc, value) => {
+          acc.push({
+            name: value.label,
+            imagePaths: [],
+          });
+          return acc;
+        }, []);
+        setCurrentVariants(formatted);
+      } else {
+        setEnabled(false);
+      }
+    };
+    if (detectedVariants) {
+      fetchVariants();
+    }
+  }, [detectedVariants]);
 
   return (
     <section className="p-5">
@@ -235,12 +277,28 @@ const SellerAddProduct = () => {
             <div className="absolute text-sm font-medium top-20">
               <span>3D Model</span>
             </div>
-            <FileDropzone
-              text={
-                "Drag & drop some 3D models here (.glb, .gltf), or click to select files"
-              }
-              height={"h-96"}
-            />
+
+            {model ? (
+              <div className="relative mb-16 h-96">
+                <XMarkIcon
+                  className="w-5 h-5 ml-auto cursor-pointer "
+                  onClick={() => {
+                    setModel("");
+                    setCurrentVariants([]);
+                    setEnabled(false);
+                  }}
+                />
+                <ShowModel path={model} />
+              </div>
+            ) : (
+              <FileDropzone
+                text={
+                  "Drag & drop some 3D models here (.glb, .gltf), or click to select a file"
+                }
+                height={"h-96"}
+                onFilesSelected={(file) => handleModelUpload(file)}
+              />
+            )}
           </div>
           <div className="flex flex-col justify-center flex-1 gap-3 px-3">
             <h3 className="text-sm font-medium">
@@ -273,25 +331,27 @@ const SellerAddProduct = () => {
         </main>
         <div className="flex justify-between px-6 mb-2 text-sm font-medium item-center">
           <span>Images</span>
-          <div className="flex items-center gap-2">
-            <span>Variants</span>
-            <Switch
-              checked={enabled}
-              onChange={setEnabled}
-              className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
-            >
-              <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
-            </Switch>
-            <Tooltip
-              content="Turn this switch on if the product has variants"
-              className="w-max"
-            >
-              <QuestionMarkCircleIcon
-                className="w-5 h-5 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
-                aria-hidden="true"
-              />
-            </Tooltip>
-          </div>
+          {currentVariants.length >= 2 || !model ? (
+            <div className="flex items-center gap-2">
+              <span>Variants</span>
+              <Switch
+                checked={enabled}
+                onChange={setEnabled}
+                className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
+              >
+                <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
+              </Switch>
+              <Tooltip
+                content="Turn this switch on if the product has variants"
+                className="w-max"
+              >
+                <QuestionMarkCircleIcon
+                  className="w-5 h-5 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                  aria-hidden="true"
+                />
+              </Tooltip>
+            </div>
+          ) : null}
         </div>
         {!enabled ? (
           <main className="relative flex flex-col w-full px-3 gap-14 md:gap-5 md:flex-row">
@@ -318,7 +378,7 @@ const SellerAddProduct = () => {
             </div>
           </main>
         ) : (
-          <VariantUpload currentVariants={currentVariants} />
+          <VariantUpload currentVariants={currentVariants} model={model} />
         )}
       </section>{" "}
       <button
