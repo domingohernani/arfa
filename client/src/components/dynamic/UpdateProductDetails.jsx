@@ -58,7 +58,7 @@ const UpdateProductDetails = ({
           key !== "isSale" &&
           key !== "stock"
         ) {
-          toast.error(`Invalid input! Please fill in the field. ${key}`);
+          toast.error(`Invalid input! Please fill a required field.`);
           return;
         }
       }
