@@ -126,7 +126,7 @@ const DisplayFurnitures = () => {
                 loading="lazy"
               />
             </div>
-            {furniture.price !== furniture.discountedPrice && (
+            {furniture.isSale && (
               <div className="absolute top-0 m-1 rounded-full ">
                 <p className="text-[10px] rounded-full bg-arfablack p-1 font-bold uppercase tracking-wide text-white sm:px-3 sm:py-1">
                   Sale
@@ -151,7 +151,7 @@ const DisplayFurnitures = () => {
               </div>
 
               <div className="text-right">
-                {furniture.price !== furniture.discountedPrice ? (
+                {furniture.isSale ? (
                   <>
                     <del className="mt-px text-xs text-gray-600 sm:text-xs">
                       {formatToPeso(furniture.price)}
