@@ -170,12 +170,14 @@ const ViewFurniture = () => {
               </p>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
                 <p className="flex gap-2 text-2xl font-bold text-gray-900 sm:text-2xl dark:text-white">
-                  <span>{formatToPeso(furniture.discountedPrice) || 0}</span>
-                  {furniture.price !== furniture.discountedPrice ? (
+                  {furniture.isSale && (
+                    <span>{formatToPeso(furniture.discountedPrice) || 0}</span>
+                  )}
+                  {furniture.isSale ? (
                     <span className="text-sm font-normal text-arfablack">
                       <del> {formatToPeso(furniture.price)}</del>
                     </span>
-                  ) : null}
+                  ) : <span>{formatToPeso(furniture.price) || 0}</span>}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">
