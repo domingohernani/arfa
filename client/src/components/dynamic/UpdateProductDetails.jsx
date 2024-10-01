@@ -30,6 +30,11 @@ const UpdateProductDetails = ({
   const { detectedVariants } = useStore();
   const [edited, setEdited] = useState(false);
   const [images, setImages] = useState([]);
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    depth: 0,
+    height: 0,
+  });
 
   // Initialize state with furniture details, including id
   const [productDetails, setProductDetails] = useState({
@@ -60,6 +65,7 @@ const UpdateProductDetails = ({
     const file = files[0];
     const result = await getModelDimensions(file);
     if (result.success) {
+      setDimensions(result.dimensions);
       setModel(result.url);
       setEdited(true);
     } else {
