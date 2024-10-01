@@ -16,6 +16,7 @@ import {
 } from "../../components/globalFunctions";
 import { upload3DModel } from "../../firebase/models";
 import { uploadPhoto } from "../../firebase/photos";
+import { v4 as uuidv4 } from "uuid";
 
 const SellerAddProduct = () => {
   const navigate = useNavigate();
@@ -91,7 +92,7 @@ const SellerAddProduct = () => {
         key !== "discountedPrice" &&
         key !== "isSale"
       ) {
-        toast.error(`Invalid input! Please fill in the field`);
+        toast.error(`Invalid input! Please fill a required field.`);
         return;
       }
     }
@@ -101,9 +102,10 @@ const SellerAddProduct = () => {
 
     try {
       // model
+      const uniqueFileName = `${newModel.name}-${uuidv4()}.glb`;
       const modelUpload = await upload3DModel(
         newModel,
-        `models/${newModel.name}.glb`
+        `models/${uniqueFileName}`
       );
       // furniture
       productDetails.modelUrl = modelUpload.metadata.fullPath;
