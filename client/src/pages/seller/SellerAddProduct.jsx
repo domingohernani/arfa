@@ -51,7 +51,7 @@ const SellerAddProduct = () => {
         key !== "discountedPrice" &&
         key !== "isSale"
       ) {
-        toast.error(`Invalid input! Please fill in the field.`);
+        toast.error(`Invalid input! Please fill a required field.`);
         return;
       }
     }
