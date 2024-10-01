@@ -184,10 +184,9 @@ export const addFurniture = async (furnitureData, variants) => {
       id: docRef.id,
       imagesUrl: `images/${docRef.id}`,
       variants: updatedVariants,
-      imgPreviewFilename: imgPreviewFilename,
+      // fallback value ang pupuntahan if walang variant
+      imgPreviewFilename: imgPreviewFilename || `${docRef.id}-1.jpg`,
     });
-
-    console.log("Furniture added with ID: ", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Error adding furniture: ", error);

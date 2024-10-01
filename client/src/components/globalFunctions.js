@@ -156,6 +156,42 @@ export const formatTimeAgo = (timestamp) => {
     .replace(/ years?/, "y");
 };
 
+export const blobsToFiles = async (images, productName) => {
+  try {
+    const files = await Promise.all(
+      images.map(async (blobUrl, index) => {
+        const response = await fetch(blobUrl);
+        const blob = await response.blob();
+
+        const fileName = `${productName}-${index + 1}${
+          blob.type === "image/png" ? ".png" : ".jpg"
+        }`;
+        return new File([blob], fileName, { type: blob.type });
+      })
+    );
+
+    return files;
+  } catch (error) {
+    console.error("Error converting blobs to files:", error);
+    throw error;
+  }
+};
+
+export const blobTo3DFile = async (blobUrl, productName) => {
+  try {
+    const response = await fetch(blobUrl);
+    const blob = await response.blob();
+
+    const file = new File([blob], productName, { type: blob.type });
+
+    console.log(file);
+    return file;
+  } catch (error) {
+    console.error("Error converting blob to file:", error);
+    throw error;
+  }
+};
+
 export const convertBlobUrlToFile = async (blobUrl, fileName) => {
   const response = await fetch(blobUrl);
   const blob = await response.blob();
