@@ -273,9 +273,11 @@ export const getModelDimensions = (file) => {
         resolve({
           url: fileUrl,
           success: true,
-          width: widthInCm,
-          height: heightInCm,
-          depth: depthInCm,
+          dimensions: {
+            width: widthInCm,
+            height: heightInCm,
+            depth: depthInCm,
+          },
           message: "Model dimensions retrieved successfully.",
         });
       },
