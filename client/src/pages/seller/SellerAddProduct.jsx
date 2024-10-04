@@ -30,6 +30,11 @@ const SellerAddProduct = () => {
     (state) => state.resetDetectedVariants
   );
   const [images, setImages] = useState([]);
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    depth: 0,
+    height: 0,
+  });
 
   useEffect(() => {
     resetDetectedVariants([]);
@@ -73,6 +78,7 @@ const SellerAddProduct = () => {
     const file = files[0];
     const result = await getModelDimensions(file);
     if (result.success) {
+      setDimensions(result.dimensions);
       clearVariants();
       setModel(result.url);
     } else {
@@ -86,13 +92,18 @@ const SellerAddProduct = () => {
     productDetails.price = parseFloat(productDetails.price);
     productDetails.stock = parseInt(productDetails.stock);
     productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
+    productDetails.height = dimensions.height;
+    productDetails.width = dimensions.width;
+    productDetails.depth = dimensions.depth;
     for (const [key, value] of Object.entries(productDetails)) {
       if (
         (!value || value === 0) &&
         key !== "discountedPrice" &&
         key !== "isSale"
       ) {
-        toast.error(`Invalid input! Please fill a required field.`);
+        toast.error(
+          `Invalid input! Please fill a required field. ${key} ${loggedUser.userId}`
+        );
         return;
       }
     }
