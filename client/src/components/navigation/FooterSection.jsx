@@ -23,7 +23,9 @@ export function FooterSection() {
           </Footer.LinkGroup>
         </div>
         <Footer.Divider />
-        <Footer.Copyright href="#" by="ARFA™" year={2024} />
+        {/* <Footer.Copyright href="#" by="ARFA™" year={2024} /> */}
+        {/* tempo */}
+        <Footer.Copyright href="#" by="ARIA™" year={2024} />
       </div>
     </Footer>
   );
