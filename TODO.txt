@@ -46,3 +46,6 @@ For Presentation:
 content without performing a full page reload.
 2. Skeleton; as mas modern UX/UI design practice.
 3. Infinit Scrolling over Pagination
+
+
+seach "tempo"!!!
