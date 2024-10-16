@@ -29,6 +29,7 @@ const ViewFurniture = () => {
   const [furnitureImgUrls, setFurnitureImgUrls] = useState([]);
   const [modelURL, setModelURL] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [customerReview, setCustomerReview] = useState([]);
   const [aveReview, setAveReview] = useState(0);
   const updateIs3dOpen = useStore((state) => state.updateIs3dOpen);
   const updateIsImgsOpen = useStore((state) => state.updateIsImgsOpen);
@@ -66,6 +67,7 @@ const ViewFurniture = () => {
       const data = await fetchFurnitureById("furnitures", id);
 
       setFurniture(data);
+      setCustomerReview(data.reviewsData);
       fetchModel(data.modelUrl);
       fetchFurnitureImages(data.imagesUrl);
     } catch (error) {
@@ -258,7 +260,7 @@ const ViewFurniture = () => {
         <hr />
         <section className="">
           <CustomerReview
-            reviews={furniture.reviewsData}
+            reviews={customerReview}
             showAverageOfReview={showAverageOfReview}
           />
         </section>
