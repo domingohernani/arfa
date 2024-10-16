@@ -302,6 +302,13 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
                     <span
                       className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
                     >
+                      All
+                    </span>
+                  </MenuItem>
+                  <MenuItem className="cursor-pointer">
+                    <span
+                      className="block px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-arfagreen"
+                    >
                       5 Stars
                     </span>
                   </MenuItem>
