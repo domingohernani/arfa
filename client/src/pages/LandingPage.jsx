@@ -21,12 +21,7 @@ const LandingPage = () => {
           {/* <NavigationBar></NavigationBar> */}
           <section className="mx-6 my-3">
             <Link to="/">
-              <img
-                src={logo}
-                alt="ARFA"
-                className="w-16 h-auto"
-                data-aos="zoom-in"
-              />
+              <img src={logo} alt="ARFA" className="h-auto min-w-16 md:w-24" />
             </Link>
           </section>
           <div className="fixed w-screen h-screen -z-10">
