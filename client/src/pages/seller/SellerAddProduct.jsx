@@ -99,10 +99,13 @@ const SellerAddProduct = () => {
       if (
         (!value || value === 0) &&
         key !== "discountedPrice" &&
-        key !== "isSale"
+        key !== "isSale" &&
+        key !== "height" &&
+        key !== "width" &&
+        key !== "depth"
       ) {
         toast.error(
-          `Invalid input! Please fill a required field. ${key} ${loggedUser.userId}`
+          `Invalid input! Please fill a required field: ${key}`
         );
         return;
       }
