@@ -32,8 +32,7 @@ function SellerNavigationBar() {
 
   return (
     <div className="relative flex items-center justify-between px-6 py-3">
-      {/* <img src={logo} alt="ARFA" className="w-20 h-auto" /> */}
-      {/* tempo */}
+      <img src={logo} alt="ARFA" className="w-20 h-auto" />
       <img src={logo} alt="ARFA" className="w-16 h-auto" />
 
       <div className="items-center justify-end hidden col-start-11 gap-5 sm:flex">
