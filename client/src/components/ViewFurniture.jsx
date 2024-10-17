@@ -135,14 +135,17 @@ const ViewFurniture = () => {
                 </Carousel>
 
                 <div className="absolute flex gap-2 top-3 right-3">
-                  <div
-                    className="flex items-center gap-1 px-2 py-1 bg-white border rounded-md cursor-pointer hover:border-arfablack w-fit"
-                    onClick={() => {
-                      updateIs3dOpen(true);
-                    }}
-                  >
-                    <CubeTransparentIcon className="w-4 h-4 "></CubeTransparentIcon>
-                  </div>
+                  {modelURL && (
+                    <div
+                      className="flex items-center gap-1 px-2 py-1 bg-white border rounded-md cursor-pointer hover:border-arfablack w-fit"
+                      onClick={() => {
+                        updateIs3dOpen(true);
+                      }}
+                    >
+                      <CubeTransparentIcon className="w-4 h-4 "></CubeTransparentIcon>
+                    </div>
+                  )}
+
                   <div
                     className="flex items-center gap-1 px-2 py-1 bg-white border rounded-md cursor-pointer hover:border-arfablack w-fit"
                     onClick={() => {
@@ -179,7 +182,9 @@ const ViewFurniture = () => {
                     <span className="text-sm font-normal text-arfablack">
                       <del> {formatToPeso(furniture.price)}</del>
                     </span>
-                  ) : <span>{formatToPeso(furniture.price) || 0}</span>}
+                  ) : (
+                    <span>{formatToPeso(furniture.price) || 0}</span>
+                  )}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">
