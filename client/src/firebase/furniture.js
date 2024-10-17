@@ -8,6 +8,8 @@ import {
   query,
   serverTimestamp,
   updateDoc,
+  limit,
+  startAfter,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { blobsToImagesPaths } from "../components/globalFunctions";
@@ -63,6 +65,77 @@ export const fetchFurnitureCollection = async (
       })
     );
     return dataList;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw error;
+  }
+};
+
+// For inifit
+export const fetchFurnitureCollectionInfiniteScrolling = async (
+  collectionName,
+  filters = [],
+  pageParam = { lastDoc: null, pageSize: 10 }
+) => {
+  try {
+    const collectionRef = collection(db, collectionName);
+    let q = collectionRef;
+
+    // Apply filters if provided
+    if (filters.length > 0) {
+      q = query(collectionRef, ...filters);
+    }
+
+    // Apply pagination (limit and startAfter)
+    if (pageParam.lastDoc) {
+      q = query(q, limit(pageParam.pageSize), startAfter(pageParam.lastDoc));
+    } else {
+      q = query(q, limit(pageParam.pageSize));
+    }
+
+    const querySnapshot = await getDocs(q);
+
+    const dataList = await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const documentData = {
+          id: doc.id,
+          ...doc.data(),
+        };
+
+        // Format the createdAt timestamp to yyyy-mm-dd
+        if (documentData.createdAt) {
+          const createdAt = documentData.createdAt.toDate(); // Convert Firestore Timestamp to JavaScript Date
+          documentData.createdAtDate = createdAt.toISOString().split("T")[0]; // Format to yyyy-mm-dd
+        }
+
+        const reviewsData = await getReviewCollections(doc.ref);
+        documentData.reviewsData = reviewsData;
+
+        if (documentData.shop) {
+          const shopDoc = await getDoc(documentData.shop);
+
+          if (shopDoc.exists()) {
+            documentData.shopId = shopDoc.id;
+            documentData.shopDetails = {
+              ...shopDoc.data(),
+            };
+          } else {
+            documentData.shopDetails = null;
+            documentData.shopId = null;
+          }
+        } else {
+          documentData.shopDetails = null;
+          documentData.shopId = null;
+        }
+
+        return documentData;
+      })
+    );
+
+    return {
+      dataList,
+      lastDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+    };
   } catch (error) {
     console.error("Error fetching data: ", error);
     throw error;
