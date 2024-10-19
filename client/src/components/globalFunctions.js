@@ -183,8 +183,6 @@ export const blobTo3DFile = async (blobUrl, productName) => {
     const blob = await response.blob();
 
     const file = new File([blob], productName, { type: blob.type });
-
-    console.log(file);
     return file;
   } catch (error) {
     console.error("Error converting blob to file:", error);

@@ -1,4 +1,10 @@
-import { ref, getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
+import {
+  ref,
+  getDownloadURL,
+  getStorage,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
 
 export const get3DModelUrl = async (modelPath) => {
   const storage = getStorage();
@@ -23,6 +29,18 @@ export const upload3DModel = async (file, modelPath) => {
     return result;
   } catch (error) {
     console.error("Error uploading 3D model:", error);
+    return false;
+  }
+};
+
+export const delete3DModel = async (modelPath) => {
+  const storage = getStorage();
+  try {
+    const modelRef = ref(storage, modelPath);
+    await deleteObject(modelRef);
+    return true;
+  } catch (error) {
+    console.error("Error deleting 3D model:", error);
     return false;
   }
 };
