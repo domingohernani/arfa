@@ -56,6 +56,9 @@ const SellerAddProduct = () => {
     discountedPrice: 0,
     variants: [],
     stock: 0,
+    height: 0,
+    width: 0,
+    depth: 0,
     isSale: false,
   });
 
@@ -92,37 +95,45 @@ const SellerAddProduct = () => {
     productDetails.price = parseFloat(productDetails.price);
     productDetails.stock = parseInt(productDetails.stock);
     productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
-    productDetails.height = dimensions.height;
-    productDetails.width = dimensions.width;
-    productDetails.depth = dimensions.depth;
+
+    let newModel = "";
+    if (model) {
+      productDetails.height = dimensions.height;
+      productDetails.width = dimensions.width;
+      productDetails.depth = dimensions.depth;
+      newModel = await blobTo3DFile(model, productDetails.name);
+    }
+
     for (const [key, value] of Object.entries(productDetails)) {
       if (
         (!value || value === 0) &&
         key !== "discountedPrice" &&
         key !== "isSale" &&
-        key !== "height" &&
-        key !== "width" &&
-        key !== "depth"
+        key !== "modelUrl"
       ) {
-        toast.error(
-          `Invalid input! Please fill a required field: ${key}`
-        );
+        toast.error(`Invalid input! Please fill a required field: ${key}`);
         return;
       }
     }
 
-    const newModel = await blobTo3DFile(model, productDetails.name);
     const newImages = await blobsToFiles(images, productDetails.name);
-
     try {
-      // model
-      const uniqueFileName = `${newModel.name}-${uuidv4()}.glb`;
-      const modelUpload = await upload3DModel(
-        newModel,
-        `models/${uniqueFileName}`
-      );
+      // if the users uploads model
+      if (model) {
+        // model
+        const uniqueFileName = `${newModel.name}-${uuidv4()}.glb`;
+        const modelUpload = await upload3DModel(
+          newModel,
+          `models/${uniqueFileName}`
+        );
+        productDetails.modelUrl = modelUpload.metadata.fullPath;
+      } else {
+        // if no, assign an empty string sa modelUrl
+        productDetails.modelUrl = model;
+        // if no, assign an empty array sa variants (solves the bug)
+        productDetails.variants = [];
+      }
       // furniture
-      productDetails.modelUrl = modelUpload.metadata.fullPath;
       const furnitureId = await addFurniture(productDetails, variants);
 
       // images
@@ -134,7 +145,7 @@ const SellerAddProduct = () => {
           return uploadPhoto(file, filePath);
         })
       );
-      if (furnitureId && modelUpload && imagesUpload) {
+      if (furnitureId && imagesUpload) {
         toast.success("Furniture added successfully!");
       } else {
         toast.error("Something went wrong. Please try again.");
@@ -319,6 +330,83 @@ const SellerAddProduct = () => {
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                 />
               </h3>
+              <div className="flex gap-4 mt-2">
+                <h3 className="text-sm font-medium">
+                  Width: (cm){" "}
+                  <input
+                    type="text"
+                    name="width"
+                    disabled={model ? true : false}
+                    value={model ? dimensions.width : productDetails.width}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "width") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className={`rounded-sm ${
+                      model ? "bg-gray-200 cursor-not-allowed" : "bg-gray-50"
+                    } border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5`}
+                  />
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Depth: (cm){" "}
+                  <input
+                    type="text"
+                    name="depth"
+                    disabled={model ? true : false}
+                    value={model ? dimensions.depth : productDetails.depth}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "depth") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className={`rounded-sm ${
+                      model ? "bg-gray-200 cursor-not-allowed" : "bg-gray-50"
+                    } border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5`}
+                  />
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Height: (cm){" "}
+                  <input
+                    type="text"
+                    name="height"
+                    disabled={model ? true : false}
+                    value={model ? dimensions.height : productDetails.height}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "height") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className={`rounded-sm ${
+                      model ? "bg-gray-200 cursor-not-allowed" : "bg-gray-50"
+                    } border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5`}
+                  />
+                </h3>
+              </div>
             </section>
           </header>
         </section>
@@ -342,6 +430,11 @@ const SellerAddProduct = () => {
                     setCurrentVariants([]);
                     setEnabled(false);
                     setImages([]);
+                    setDimensions({
+                      width: 0,
+                      depth: 0,
+                      height: 0,
+                    });
                   }}
                 />
                 <ShowModel path={model} />
