@@ -22,7 +22,9 @@ const UpdateProductDetails = ({
 }) => {
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(
-    furniture.variants.length > 0 ? true : false
+    furniture.variants.some(
+      (variant) => variant.name !== "" || variant.imagePaths.length > 0
+    )
   );
   const [model, setModel] = useState(modelURL);
   const [currentVariants, setCurrentVariants] = useState([]);
@@ -31,9 +33,9 @@ const UpdateProductDetails = ({
   const [edited, setEdited] = useState(false);
   const [images, setImages] = useState([]);
   const [dimensions, setDimensions] = useState({
-    width: 0,
-    depth: 0,
-    height: 0,
+    width: furniture.width,
+    depth: furniture.depth,
+    height: furniture.height,
   });
 
   // Initialize state with furniture details, including id
@@ -45,6 +47,12 @@ const UpdateProductDetails = ({
     price: furniture.price || 0,
     discountedPrice: furniture.discountedPrice || 0,
     isSale: furniture.isSale ? true : false,
+    height: furniture.height || 0,
+    width: furniture.width || 0,
+    depth: furniture.depth || 0,
+    modelUrl: furniture.modelUrl || "",
+    imagesUrl: furniture.imagesUrl || "",
+    imgPreviewFilename: furniture.imgPreviewFilename || "",
   });
 
   const handleInputChange = (e) => {
@@ -64,6 +72,7 @@ const UpdateProductDetails = ({
   const handleModelUpload = async (files) => {
     const file = files[0];
     const result = await getModelDimensions(file);
+
     if (result.success) {
       setDimensions(result.dimensions);
       setModel(result.url);
@@ -103,14 +112,15 @@ const UpdateProductDetails = ({
           (!value || value === 0) &&
           key !== "discountedPrice" &&
           key !== "isSale" &&
-          key !== "stock"
+          key !== "stock" &&
+          key !== "modelUrl"
         ) {
-          toast.error(`Invalid input! Please fill a required field.`);
+          toast.error(`Invalid input! Please fill a required field. ${key}`);
           return;
         }
       }
 
-      handleConfirmBtn(productDetails, variants);
+      handleConfirmBtn(productDetails, variants, model, dimensions);
       clearVariants();
     }
   };
@@ -188,7 +198,7 @@ const UpdateProductDetails = ({
                   value={productDetails.description}
                   onChange={handleInputChange}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-                  rows="4"
+                  rows="6"
                 />
               </h3>
             </section>
@@ -290,6 +300,83 @@ const UpdateProductDetails = ({
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
                 />
               </h3>
+              <div className="flex gap-4 mt-2">
+                <h3 className="text-sm font-medium">
+                  Width: (cm){" "}
+                  <input
+                    type="text"
+                    name="width"
+                    disabled={model ? true : false}
+                    value={model ? dimensions.width : productDetails.width}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "width") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className={`rounded-sm ${
+                      model ? "bg-gray-200 cursor-not-allowed" : "bg-gray-50"
+                    } border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5`}
+                  />
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Depth: (cm){" "}
+                  <input
+                    type="text"
+                    name="depth"
+                    disabled={model ? true : false}
+                    value={model ? dimensions.depth : productDetails.depth}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "depth") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className={`rounded-sm ${
+                      model ? "bg-gray-200 cursor-not-allowed" : "bg-gray-50"
+                    } border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5`}
+                  />
+                </h3>
+                <h3 className="text-sm font-medium">
+                  Height: (cm){" "}
+                  <input
+                    type="text"
+                    name="height"
+                    disabled={model ? true : false}
+                    value={model ? dimensions.height : productDetails.height}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "height") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
+                      }
+                    }}
+                    className={`rounded-sm ${
+                      model ? "bg-gray-200 cursor-not-allowed" : "bg-gray-50"
+                    } border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5`}
+                  />
+                </h3>
+              </div>
             </section>
           </header>
         </section>
