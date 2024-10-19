@@ -12,11 +12,14 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { CubeTransparentIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { Carousel } from "flowbite-react";
 import {
+  blobTo3DFile,
   convertBlobUrlToFile,
   formatToPeso,
 } from "../../../components/globalFunctions";
 import UpdateProductDetails from "../../../components/dynamic/UpdateProductDetails";
 import toast from "react-hot-toast";
+import { delete3DModel, upload3DModel } from "../../../firebase/models";
+import { v4 as uuidv4 } from "uuid";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -69,7 +72,29 @@ const ProductDetails = () => {
     setIsUpdate(value);
   };
 
-  const handleConfirmBtn = async (value, variants) => {
+  const updateModel = async (model, name) => {
+    try {
+      const newModel = await blobTo3DFile(model, name);
+      if (newModel) {
+        const fileName = `${newModel.name}-${uuidv4()}.glb`;
+        await upload3DModel(newModel, `models/${fileName}`);
+        return `models/${fileName}`;
+      } else {
+        toast.error("Something went wrong");
+        return null;
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.error("Error updating model:", error);
+      return null;
+    }
+  };
+
+  const handleConfirmBtn = async (value, variants, model, dimensions) => {
+    let newModel = "";
+
+    // If model already exist, delete muna
+
     const newVariants = await Promise.all(
       variants.map(async (variant) => {
         const updatedImagePaths = await Promise.all(
@@ -96,7 +121,27 @@ const ProductDetails = () => {
       })
     );
 
+    if (!model.includes("https://firebasestorage.googleapis.com")) {
+      if (value.modelUrl) {
+        await delete3DModel(value.modelUrl);
+      }
+
+      if (model) {
+        newModel = await updateModel(model, value.name);
+      }
+
+      if (!model) {
+        await delete3DModel(value.modelUrl);
+        newModel = "";
+      }
+      value.modelUrl = newModel;
+    }
     value.variants = newVariants;
+
+    value.height = dimensions.height;
+    value.width = dimensions.width;
+    value.depth = dimensions.depth;
+
     const result = await updateFurniture(id, value);
 
     if (result.isSuccess) {
@@ -171,18 +216,6 @@ const ProductDetails = () => {
 
               <section className="flex flex-col flex-1 gap-1">
                 <h3 className="text-sm font-medium">
-                  Dimension:{" "}
-                  <span className="text-sm font-normal leading-relaxed text-gray-600">
-                    {furniture.width} cm /{" "}
-                  </span>
-                  <span className="text-sm font-normal leading-relaxed text-gray-600">
-                    {furniture.depth} cm /{" "}
-                  </span>
-                  <span className="text-sm font-normal leading-relaxed text-gray-600">
-                    {furniture.height} cm
-                  </span>
-                </h3>
-                <h3 className="text-sm font-medium">
                   Category:{" "}
                   <span className="font-normal text-gray-600">
                     {furniture.category}
@@ -212,14 +245,29 @@ const ProductDetails = () => {
                     {furniture.isSale ? "On Sale" : "Not On Sale"}
                   </span>
                 </h3>
+                {!furniture.variants.every(
+                  (variant) =>
+                    variant.name === "" && variant.imagePaths.length === 0
+                ) && (
+                  <h3 className="text-sm font-medium">
+                    Variant:{" "}
+                    <span className="font-normal text-gray-600">
+                      {furniture.variants
+                        .map((variant) => variant.name)
+                        .join(", ")}
+                    </span>
+                  </h3>
+                )}
                 <h3 className="text-sm font-medium">
-                  Variant:{" "}
-                  <span className="font-normal text-gray-600">
-                    {furniture.variants.length > 0
-                      ? furniture.variants
-                          .map((variant) => variant.name)
-                          .join(", ")
-                      : "No variant"}
+                  Dimension:{" "}
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.width} cm /{" "}
+                  </span>
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.depth} cm /{" "}
+                  </span>
+                  <span className="text-sm font-normal leading-relaxed text-gray-600">
+                    {furniture.height} cm
                   </span>
                 </h3>
               </section>
@@ -230,12 +278,14 @@ const ProductDetails = () => {
               Visual Overview
             </header>
             <main
-              className="flex flex-col w-full mt-5 md:mt-0 gap-14 md:gap-5 md:flex-row"
-              style={{ height: "27rem" }}
+              className="flex flex-col w-full px-5 mt-5 md:mt-0 gap-14 md:gap-5 md:flex-row"
+              style={{ height: "32rem" }}
             >
-              <div className="relative w-full h-full px-3 border-r">
-                <ShowModel path={modelURL} />
-              </div>
+              {furniture.modelUrl && (
+                <div className="relative w-full h-full px-3 border-r">
+                  <ShowModel path={modelURL} />
+                </div>
+              )}
               <Carousel className="">
                 {furnitureImgUrls.map((image, index) => {
                   return (
