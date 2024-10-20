@@ -1,6 +1,6 @@
 import { getDownloadURL, ref } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getAllImageDownloadUrl, uploadPhoto } from "../../../firebase/photos";
 import {
   fetchFurnitureById,
@@ -55,7 +55,9 @@ const ProductDetails = () => {
     try {
       const data = await fetchFurnitureById("furnitures", id);
       setFurniture(data);
-      fetchModel(data.modelUrl);
+      if (data.modelUrl) {
+        fetchModel(data.modelUrl);
+      }
       fetchFurnitureImages(data.imagesUrl);
     } catch (error) {
       console.error("Error fetching furniture:", error);
@@ -121,7 +123,10 @@ const ProductDetails = () => {
       })
     );
 
-    if (!model.includes("https://firebasestorage.googleapis.com")) {
+    if (
+      model != null &&
+      !model.includes("https://firebasestorage.googleapis.com")
+    ) {
       if (value.modelUrl) {
         await delete3DModel(value.modelUrl);
       }

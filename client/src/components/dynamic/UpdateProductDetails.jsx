@@ -317,6 +317,10 @@ const UpdateProductDetails = ({
                             .split("")
                             .every((char) => numbers.includes(char))
                         ) {
+                          setDimensions((prevDimension) => ({
+                            ...prevDimension,
+                            width: value,
+                          }));
                           handleInputChange(e);
                         }
                       }
@@ -342,6 +346,10 @@ const UpdateProductDetails = ({
                             .split("")
                             .every((char) => numbers.includes(char))
                         ) {
+                          setDimensions((prevDimension) => ({
+                            ...prevDimension,
+                            depth: value,
+                          }));
                           handleInputChange(e);
                         }
                       }
@@ -367,6 +375,10 @@ const UpdateProductDetails = ({
                             .split("")
                             .every((char) => numbers.includes(char))
                         ) {
+                          setDimensions((prevDimension) => ({
+                            ...prevDimension,
+                            height: value,
+                          }));
                           handleInputChange(e);
                         }
                       }
