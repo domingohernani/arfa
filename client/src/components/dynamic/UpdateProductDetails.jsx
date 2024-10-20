@@ -104,6 +104,17 @@ const UpdateProductDetails = ({
   }, [detectedVariants]);
 
   const confirmBtn = () => {
+    if (
+      dimensions.width === 0 ||
+      dimensions.depth === 0 ||
+      dimensions.height === 0
+    ) {
+      toast.error(
+        "Dimensions cannot have a value of 0. Please provide valid measurements."
+      );
+      return;
+    }
+
     if (handleConfirmBtn) {
       productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
 
@@ -319,7 +330,7 @@ const UpdateProductDetails = ({
                         ) {
                           setDimensions((prevDimension) => ({
                             ...prevDimension,
-                            width: value,
+                            width: parseInt(value),
                           }));
                           handleInputChange(e);
                         }
@@ -348,7 +359,7 @@ const UpdateProductDetails = ({
                         ) {
                           setDimensions((prevDimension) => ({
                             ...prevDimension,
-                            depth: value,
+                            depth: parseInt(value),
                           }));
                           handleInputChange(e);
                         }
@@ -377,7 +388,7 @@ const UpdateProductDetails = ({
                         ) {
                           setDimensions((prevDimension) => ({
                             ...prevDimension,
-                            height: value,
+                            height: parseInt(value),
                           }));
                           handleInputChange(e);
                         }

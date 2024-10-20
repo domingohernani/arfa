@@ -150,8 +150,8 @@ const ProductDetails = () => {
     const result = await updateFurniture(id, value);
 
     if (result.isSuccess) {
-      fetchFurniture();
-      toast.success(result.message || "Furniture updated successfully!");
+      setIsUpdate(false);
+      window.location.reload();
     } else {
       toast.error(result.message || "Failed to update furniture.");
     }
