@@ -92,23 +92,24 @@ const ProductDetails = () => {
     }
   };
 
-  const handleConfirmBtn = async (value, variants, model, dimensions) => {
-    let newModel = "";
-
-    // If model already exist, delete muna
-
+  const handleConfirmBtn = async (
+    value,
+    variants,
+    model,
+    dimensions,
+    variantlessImgs
+  ) => {
     const newVariants = await Promise.all(
       variants.map(async (variant) => {
         const updatedImagePaths = await Promise.all(
           variant.imagePaths.map(async (url, index) => {
-            if (url.includes("blob")) {
+            if (url.startsWith("blob")) {
               const file = await convertBlobUrlToFile(
                 url,
                 `${variant.name}-${index}`
               );
               const fileName = `${furniture.id}-${Date.now()}.jpg`;
               const path = `images/${furniture.id}/${fileName}`;
-              // Now call uploadPhoto with the updated path
               const newUrl = await uploadPhoto(file, path);
               return newUrl;
             }
@@ -118,7 +119,7 @@ const ProductDetails = () => {
 
         return {
           ...variant,
-          imagePaths: updatedImagePaths, // Assign the resolved array
+          imagePaths: updatedImagePaths,
         };
       })
     );
@@ -131,13 +132,16 @@ const ProductDetails = () => {
         await delete3DModel(value.modelUrl);
       }
 
+      let newModel = "";
       if (model) {
         newModel = await updateModel(model, value.name);
       }
 
       if (!model) {
-        await delete3DModel(value.modelUrl);
-        newModel = "";
+        try {
+          await delete3DModel(value.modelUrl);
+          newModel = "";
+        } catch (error) {}
       }
       value.modelUrl = newModel;
     }

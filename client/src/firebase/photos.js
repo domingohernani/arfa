@@ -82,3 +82,21 @@ export const uploadPhoto = async (file, path) => {
     throw error; // Rethrow the error for handling elsewhere
   }
 };
+
+// Function to delete a photo using its storage path
+export const deletePhoto = async (url) => {
+  try {
+    const decodedUrl = decodeURIComponent(url);
+    const startIndex = decodedUrl.indexOf("/o/") + 3;
+    const endIndex = decodedUrl.indexOf("?");
+    const storagePath = decodedUrl.substring(startIndex, endIndex);
+
+    // Delete the file using the storage path
+    const fileRef = ref(storage, storagePath);
+    await deleteObject(fileRef);
+
+    console.log("File deleted successfully!");
+  } catch (error) {
+    console.error("Error deleting file:", error);
+  }
+};
