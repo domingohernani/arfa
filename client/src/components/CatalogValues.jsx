@@ -38,9 +38,9 @@ export const filters = [
     id: "dimension",
     name: "Dimension",
     options: [
-      { value: "width", label: "Width (W)", checked: false },
-      { value: "depth", label: "Depth (D)", checked: false },
-      { value: "height", label: "Height (H)", checked: false },
+      { value: "width", label: "Width (cm)", checked: false },
+      { value: "depth", label: "Depth (cm)", checked: false },
+      { value: "height", label: "Height (cm)", checked: false },
       { label: "searchDimension" },
     ],
   },

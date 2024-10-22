@@ -1,6 +1,6 @@
 import { getDownloadURL, ref } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getAllImageDownloadUrl, uploadPhoto } from "../../../firebase/photos";
 import {
   fetchFurnitureById,
@@ -55,7 +55,9 @@ const ProductDetails = () => {
     try {
       const data = await fetchFurnitureById("furnitures", id);
       setFurniture(data);
-      fetchModel(data.modelUrl);
+      if (data.modelUrl) {
+        fetchModel(data.modelUrl);
+      }
       fetchFurnitureImages(data.imagesUrl);
     } catch (error) {
       console.error("Error fetching furniture:", error);
@@ -90,23 +92,24 @@ const ProductDetails = () => {
     }
   };
 
-  const handleConfirmBtn = async (value, variants, model, dimensions) => {
-    let newModel = "";
-
-    // If model already exist, delete muna
-
+  const handleConfirmBtn = async (
+    value,
+    variants,
+    model,
+    dimensions,
+    variantlessImgs
+  ) => {
     const newVariants = await Promise.all(
       variants.map(async (variant) => {
         const updatedImagePaths = await Promise.all(
           variant.imagePaths.map(async (url, index) => {
-            if (url.includes("blob")) {
+            if (url.startsWith("blob")) {
               const file = await convertBlobUrlToFile(
                 url,
                 `${variant.name}-${index}`
               );
               const fileName = `${furniture.id}-${Date.now()}.jpg`;
               const path = `images/${furniture.id}/${fileName}`;
-              // Now call uploadPhoto with the updated path
               const newUrl = await uploadPhoto(file, path);
               return newUrl;
             }
@@ -116,23 +119,29 @@ const ProductDetails = () => {
 
         return {
           ...variant,
-          imagePaths: updatedImagePaths, // Assign the resolved array
+          imagePaths: updatedImagePaths,
         };
       })
     );
 
-    if (!model.includes("https://firebasestorage.googleapis.com")) {
+    if (
+      model != null &&
+      !model.includes("https://firebasestorage.googleapis.com")
+    ) {
       if (value.modelUrl) {
         await delete3DModel(value.modelUrl);
       }
 
+      let newModel = "";
       if (model) {
         newModel = await updateModel(model, value.name);
       }
 
       if (!model) {
-        await delete3DModel(value.modelUrl);
-        newModel = "";
+        try {
+          await delete3DModel(value.modelUrl);
+          newModel = "";
+        } catch (error) {}
       }
       value.modelUrl = newModel;
     }
@@ -145,8 +154,8 @@ const ProductDetails = () => {
     const result = await updateFurniture(id, value);
 
     if (result.isSuccess) {
-      fetchFurniture();
-      toast.success(result.message || "Furniture updated successfully!");
+      setIsUpdate(false);
+      window.location.reload();
     } else {
       toast.error(result.message || "Failed to update furniture.");
     }
