@@ -84,7 +84,11 @@ const UpdateProductDetails = ({
 
   useEffect(() => {
     const fetchVariants = () => {
-      if (detectedVariants.length >= 2) {
+      if (
+        furniture.variants.some(
+          (variant) => variant.name !== "" || variant.imagePaths.length > 0
+        )
+      ) {
         setEnabled(true);
         const formatted = detectedVariants.reduce((acc, value) => {
           acc.push({
@@ -104,6 +108,17 @@ const UpdateProductDetails = ({
   }, [detectedVariants]);
 
   const confirmBtn = () => {
+    if (
+      dimensions.width === 0 ||
+      dimensions.depth === 0 ||
+      dimensions.height === 0
+    ) {
+      toast.error(
+        "Dimensions cannot have a value of 0. Please provide valid measurements."
+      );
+      return;
+    }
+
     if (handleConfirmBtn) {
       productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
 
@@ -120,7 +135,25 @@ const UpdateProductDetails = ({
         }
       }
 
-      handleConfirmBtn(productDetails, variants, model, dimensions);
+      // Para ma-set yung variant to empty if switch is off
+      // Converting firebase images to blob and to re-upload again
+      let variantToBePass = [];
+      if (enabled) {
+        variantToBePass = variants;
+      } else {
+        variantToBePass = [
+          { name: "", imagePaths: [] },
+          { name: "", imagePaths: [] },
+        ];
+      }
+
+      handleConfirmBtn(
+        productDetails,
+        variantToBePass,
+        model,
+        dimensions,
+        images
+      );
       clearVariants();
     }
   };
@@ -317,6 +350,10 @@ const UpdateProductDetails = ({
                             .split("")
                             .every((char) => numbers.includes(char))
                         ) {
+                          setDimensions((prevDimension) => ({
+                            ...prevDimension,
+                            width: parseInt(value),
+                          }));
                           handleInputChange(e);
                         }
                       }
@@ -342,6 +379,10 @@ const UpdateProductDetails = ({
                             .split("")
                             .every((char) => numbers.includes(char))
                         ) {
+                          setDimensions((prevDimension) => ({
+                            ...prevDimension,
+                            depth: parseInt(value),
+                          }));
                           handleInputChange(e);
                         }
                       }
@@ -367,6 +408,10 @@ const UpdateProductDetails = ({
                             .split("")
                             .every((char) => numbers.includes(char))
                         ) {
+                          setDimensions((prevDimension) => ({
+                            ...prevDimension,
+                            height: parseInt(value),
+                          }));
                           handleInputChange(e);
                         }
                       }

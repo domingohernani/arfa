@@ -3,6 +3,7 @@ import FileDropzone from "./FileDropzone";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useStore } from "../../stores/useStore";
+import { deletePhoto } from "../../firebase/photos";
 
 const VariantUpload = ({ currentVariants, model = "" }) => {
   // Access Zustand store state and actions
@@ -70,7 +71,10 @@ const VariantUpload = ({ currentVariants, model = "" }) => {
                     <div key={imgIndex} className="relative flex-shrink-0 mr-3">
                       <XMarkIcon
                         className="absolute top-0 w-5 h-5 text-gray-600 cursor-pointer -right-2"
-                        onClick={() => deleteImage(i, imgIndex)}
+                        onClick={async () => {
+                          await deletePhoto(url);
+                          deleteImage(i, imgIndex);
+                        }}
                       />
                       <img src={url} className="w-auto h-40" />
                     </div>

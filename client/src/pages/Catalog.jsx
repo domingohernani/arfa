@@ -301,22 +301,22 @@ const Catalog = () => {
                                             className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
                                             value={
-                                              option.label === "Width (W)"
+                                              option.label === "Width (cm)"
                                                 ? widthD
-                                                : option.label === "Depth (D)"
+                                                : option.label === "Depth (cm)"
                                                 ? depthD
                                                 : heightD
                                             }
                                             onChange={(e) => {
                                               if (
-                                                option.label === "Width (W)"
+                                                option.label === "Width (cm)"
                                               ) {
                                                 handlePriceAndDimensionChange(
                                                   e.target.value,
                                                   setWidth
                                                 );
                                               } else if (
-                                                option.label === "Depth (D)"
+                                                option.label === "Depth (cm)"
                                               ) {
                                                 handlePriceAndDimensionChange(
                                                   e.target.value,
@@ -568,22 +568,22 @@ const Catalog = () => {
                                             className="w-full text-sm border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
                                             placeholder={`${option.label}`}
                                             value={
-                                              option.label === "Width (W)"
+                                              option.label === "Width (cm)"
                                                 ? widthD
-                                                : option.label === "Depth (D)"
+                                                : option.label === "Depth (cm)"
                                                 ? depthD
                                                 : heightD
                                             }
                                             onChange={(e) => {
                                               if (
-                                                option.label === "Width (W)"
+                                                option.label === "Width (cm)"
                                               ) {
                                                 handlePriceAndDimensionChange(
                                                   e.target.value,
                                                   setWidth
                                                 );
                                               } else if (
-                                                option.label === "Depth (D)"
+                                                option.label === "Depth (cm)"
                                               ) {
                                                 handlePriceAndDimensionChange(
                                                   e.target.value,
