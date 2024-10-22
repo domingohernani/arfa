@@ -84,7 +84,11 @@ const UpdateProductDetails = ({
 
   useEffect(() => {
     const fetchVariants = () => {
-      if (detectedVariants.length >= 2) {
+      if (
+        furniture.variants.some(
+          (variant) => variant.name !== "" || variant.imagePaths.length > 0
+        )
+      ) {
         setEnabled(true);
         const formatted = detectedVariants.reduce((acc, value) => {
           acc.push({
@@ -131,7 +135,25 @@ const UpdateProductDetails = ({
         }
       }
 
-      handleConfirmBtn(productDetails, variants, model, dimensions);
+      // Para ma-set yung variant to empty if switch is off
+      // Converting firebase images to blob and to re-upload again
+      let variantToBePass = [];
+      if (enabled) {
+        variantToBePass = variants;
+      } else {
+        variantToBePass = [
+          { name: "", imagePaths: [] },
+          { name: "", imagePaths: [] },
+        ];
+      }
+
+      handleConfirmBtn(
+        productDetails,
+        variantToBePass,
+        model,
+        dimensions,
+        images
+      );
       clearVariants();
     }
   };
