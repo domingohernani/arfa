@@ -10,7 +10,7 @@ const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
   const { variants, setVariants, initializeVariants } = useStore();
 
   useEffect(() => {
-    if (variantlessImgs.length > 0) {
+    if (variantlessImgs?.length > 0) {
       const value = variantlessImgs.map((img, index) => ({
         name: "",
         imagePaths: [img],
@@ -67,8 +67,10 @@ const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
             <section className="my-5">
               {!model && (
                 <TrashIcon
-                  className={`w-5 h-5 text-gray-600 cursor-pointer ${
-                    variants.length <= 2 ? "opacity-50 cursor-not-allowed" : ""
+                  className={`w-5 h-5 text-gray-600  ${
+                    variants.length <= 2
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
                   }`}
                   onClick={() => deleteVariant(i)}
                 />

@@ -159,6 +159,32 @@ const UpdateProductDetails = ({
         }
       }
 
+      // Images validation for variantless furniture
+      if (images.length <= 1 && !enabled) {
+        console.log(variants);
+        toast.error(`Please upload at least 2 images to proceed`);
+        return;
+      }
+
+      // Images validation for furniture with variant
+      if (variants.length >= 2 && enabled) {
+        for (let i = 0; i < variants.length; i++) {
+          const variant = variants[i];
+
+          if (!variant.name || variant.name.trim() === "") {
+            toast.error(`Variant ${i + 1}: Name is required.`);
+            return;
+          }
+
+          if (!variant.imagePaths || variant.imagePaths.length < 2) {
+            toast.error(
+              `Variant ${variant.name}: At least 2 images are required.`
+            );
+            return;
+          }
+        }
+      }
+
       // Para ma-set yung variant to empty if switch is off
       // Converting firebase images to blob and to re-upload again
       let variantToBePass = [];
@@ -549,17 +575,23 @@ const UpdateProductDetails = ({
                     return (
                       <div key={index}>
                         <XMarkIcon
-                          className="w-5 h-5 ml-auto cursor-pointer "
+                          className={`w-5 h-5 ml-auto ${
+                            images.length >= 3
+                              ? "text-black cursor-pointer"
+                              : "text-gray-400 cursor-not-allowed "
+                          }`}
                           onClick={async () => {
                             // attempt to delete the image if present in the storage
-                            if (!url.startsWith("blob")) {
-                              await deletePhoto(url);
+                            if (images.length >= 3) {
+                              if (!url.startsWith("blob")) {
+                                await deletePhoto(url);
+                              }
+                              setImages((prev) => {
+                                const imgs = [...prev];
+                                imgs.splice(index, 1);
+                                return imgs;
+                              });
                             }
-                            setImages((prev) => {
-                              const imgs = [...prev];
-                              imgs.splice(index, 1);
-                              return imgs;
-                            });
                           }}
                         />
                         <img
