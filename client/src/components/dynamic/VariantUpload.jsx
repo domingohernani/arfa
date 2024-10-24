@@ -5,13 +5,22 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { useStore } from "../../stores/useStore";
 import { deletePhoto } from "../../firebase/photos";
 
-const VariantUpload = ({ currentVariants, model = "" }) => {
+const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
   // Access Zustand store state and actions
   const { variants, setVariants, initializeVariants } = useStore();
 
   useEffect(() => {
-    initializeVariants(currentVariants);
-  }, [currentVariants, initializeVariants]);
+    if (variantlessImgs.length > 0) {
+      const value = variantlessImgs.map((img, index) => ({
+        name: "",
+        imagePaths: [img],
+      }));
+
+      initializeVariants(value);
+    } else {
+      initializeVariants(currentVariants);
+    }
+  }, [currentVariants, initializeVariants, variantlessImgs]);
 
   const addVariant = () => {
     setVariants([
@@ -66,7 +75,7 @@ const VariantUpload = ({ currentVariants, model = "" }) => {
               )}
 
               <div className="flex gap-2 mx-auto my-3 overflow-x-auto w-arfaWidth1 sm:w-arfaWidth2 md:w-arfaWidth3">
-                {variant.imagePaths.map((url, imgIndex) => {
+                {variant.imagePaths?.map((url, imgIndex) => {
                   return (
                     <div key={imgIndex} className="relative flex-shrink-0 mr-3">
                       <XMarkIcon

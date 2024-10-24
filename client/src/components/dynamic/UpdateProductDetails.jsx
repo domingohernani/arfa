@@ -13,6 +13,7 @@ import VariantUpload from "./VariantUpload";
 import ShowModel from "../ShowModel";
 import { useStore } from "../../stores/useStore";
 import toast from "react-hot-toast";
+import { deletePhoto, getAllImageDownloadUrl } from "../../firebase/photos";
 
 const UpdateProductDetails = ({
   furniture,
@@ -77,17 +78,31 @@ const UpdateProductDetails = ({
       setDimensions(result.dimensions);
       setModel(result.url);
       setEdited(true);
+      setCurrentVariants(detectedVariants);
     } else {
       toast.error(result.message);
     }
   };
 
   useEffect(() => {
+    const fetchVariantlessImages = async () => {
+      try {
+        const urls = await getAllImageDownloadUrl(furniture.imagesUrl);
+        setImages(urls);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchVariantlessImages();
+  }, [enabled]);
+
+  useEffect(() => {
     const fetchVariants = () => {
       if (
         furniture.variants.some(
           (variant) => variant.name !== "" || variant.imagePaths.length > 0
-        )
+        ) ||
+        detectedVariants.length >= 2
       ) {
         setEnabled(true);
         const formatted = detectedVariants.reduce((acc, value) => {
@@ -128,7 +143,8 @@ const UpdateProductDetails = ({
           key !== "discountedPrice" &&
           key !== "isSale" &&
           key !== "stock" &&
-          key !== "modelUrl"
+          key !== "modelUrl" &&
+          key !== "imgPreviewFilename"
         ) {
           toast.error(`Invalid input! Please fill a required field. ${key}`);
           return;
@@ -523,10 +539,14 @@ const UpdateProductDetails = ({
                 <div className="flex flex-wrap gap-4">
                   {images.map((url, index) => {
                     return (
-                      <div className="">
+                      <div key={index}>
                         <XMarkIcon
                           className="w-5 h-5 ml-auto cursor-pointer "
-                          onClick={() => {
+                          onClick={async () => {
+                            // attempt to delete the image if present in the storage
+                            if (!url.startsWith("blob")) {
+                              await deletePhoto(url);
+                            }
                             setImages((prev) => {
                               const imgs = [...prev];
                               imgs.splice(index, 1);
@@ -575,9 +595,17 @@ const UpdateProductDetails = ({
             </div>
           </main>
         ) : !edited ? (
-          <VariantUpload currentVariants={furniture.variants} model={model} />
+          <VariantUpload
+            currentVariants={furniture.variants || currentVariants}
+            model={model}
+            variantlessImgs={images}
+          />
         ) : (
-          <VariantUpload currentVariants={currentVariants} model={model} />
+          <VariantUpload
+            currentVariants={currentVariants}
+            model={model}
+            variantlessImgs={images}
+          />
         )}
       </section>
     </>
