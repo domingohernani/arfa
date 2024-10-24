@@ -154,7 +154,7 @@ const UpdateProductDetails = ({
           key !== "modelUrl" &&
           key !== "imgPreviewFilename"
         ) {
-          toast.error(`Invalid input! Please fill a required field. ${key}`);
+          toast.error(`Invalid input! Please fill all required field.`);
           return;
         }
       }
@@ -255,7 +255,7 @@ const UpdateProductDetails = ({
                   value={productDetails.description}
                   onChange={handleInputChange}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-                  rows="6"
+                  rows={`${productDetails.isSale ? "10" : "6"}`}
                 />
               </h3>
             </section>
