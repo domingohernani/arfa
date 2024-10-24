@@ -116,6 +116,32 @@ const SellerAddProduct = () => {
       }
     }
 
+    // Images validation for variantless furniture
+    if (images.length <= 1 && !enabled) {
+      console.log(variants);
+      toast.error(`Please upload at least 2 images to proceed`);
+      return;
+    }
+
+    // Images validation for furniture with variant
+    if (variants.length >= 2 && enabled) {
+      for (let i = 0; i < variants.length; i++) {
+        const variant = variants[i];
+
+        if (!variant.name || variant.name.trim() === "") {
+          toast.error(`Variant ${i + 1}: Name is required.`);
+          return;
+        }
+
+        if (!variant.imagePaths || variant.imagePaths.length < 2) {
+          toast.error(
+            `Variant ${variant.name}: At least 2 images are required.`
+          );
+          return;
+        }
+      }
+    }
+
     const newImages = await blobsToFiles(images, productDetails.name);
     try {
       // if the users uploads model
@@ -147,6 +173,7 @@ const SellerAddProduct = () => {
       );
       if (furnitureId && imagesUpload) {
         toast.success("Furniture added successfully!");
+        navigate("/seller-page/product-info");
       } else {
         toast.error("Something went wrong. Please try again.");
       }
