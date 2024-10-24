@@ -185,7 +185,7 @@ const SellerAddProduct = () => {
             Product Details
           </header>
           <header className="flex flex-col gap-1 px-3 py-5 md:flex-row md:gap-3">
-            <section className="flex flex-col gap-1 basis-3/5">
+            <section className="flex flex-col gap-2 basis-3/5">
               <h3 className="text-sm font-medium">
                 Name:{" "}
                 <input
@@ -203,7 +203,7 @@ const SellerAddProduct = () => {
                   value={productDetails.description}
                   onChange={handleInputChange}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-                  rows="4"
+                  rows={`${productDetails.isSale ? "7" : "4"}`}
                 />
               </h3>
               <h3 className="text-sm font-medium">
