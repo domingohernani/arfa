@@ -116,6 +116,32 @@ const SellerAddProduct = () => {
       }
     }
 
+    // Images validation for variantless furniture
+    if (images.length <= 1 && !enabled) {
+      console.log(variants);
+      toast.error(`Please upload at least 2 images to proceed`);
+      return;
+    }
+
+    // Images validation for furniture with variant
+    if (variants.length >= 2 && enabled) {
+      for (let i = 0; i < variants.length; i++) {
+        const variant = variants[i];
+
+        if (!variant.name || variant.name.trim() === "") {
+          toast.error(`Variant ${i + 1}: Name is required.`);
+          return;
+        }
+
+        if (!variant.imagePaths || variant.imagePaths.length < 2) {
+          toast.error(
+            `Variant ${variant.name}: At least 2 images are required.`
+          );
+          return;
+        }
+      }
+    }
+
     const newImages = await blobsToFiles(images, productDetails.name);
     try {
       // if the users uploads model
@@ -147,6 +173,7 @@ const SellerAddProduct = () => {
       );
       if (furnitureId && imagesUpload) {
         toast.success("Furniture added successfully!");
+        navigate("/seller-page/product-info");
       } else {
         toast.error("Something went wrong. Please try again.");
       }
@@ -185,7 +212,7 @@ const SellerAddProduct = () => {
             Product Details
           </header>
           <header className="flex flex-col gap-1 px-3 py-5 md:flex-row md:gap-3">
-            <section className="flex flex-col gap-1 basis-3/5">
+            <section className="flex flex-col gap-2 basis-3/5">
               <h3 className="text-sm font-medium">
                 Name:{" "}
                 <input
@@ -203,7 +230,7 @@ const SellerAddProduct = () => {
                   value={productDetails.description}
                   onChange={handleInputChange}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-                  rows="4"
+                  rows={`${productDetails.isSale ? "7" : "4"}`}
                 />
               </h3>
               <h3 className="text-sm font-medium">
@@ -562,6 +589,9 @@ const SellerAddProduct = () => {
                 Recommended: Provide multiple images, including a clear front
                 view, side view, back view, and close-up shots of any important
                 details or features.
+              </li>
+              <li className="text-sm text-gray-600">
+                Please upload at least 2 images of the product.
               </li>
             </div>
           </main>

@@ -94,8 +94,6 @@ export const deletePhoto = async (url) => {
     // Delete the file using the storage path
     const fileRef = ref(storage, storagePath);
     await deleteObject(fileRef);
-
-    console.log("File deleted successfully!");
   } catch (error) {
     console.error("Error deleting file:", error);
   }
