@@ -92,6 +92,35 @@ const ProductDetails = () => {
     }
   };
 
+  const uploadVariantlessImgs = async (images, furnitureName) => {
+    let previewImage = "";
+    await Promise.all(
+      images.map(async (img, index) => {
+        if (img.startsWith("blob")) {
+          const file = await convertBlobUrlToFile(
+            img,
+            `${furnitureName}-${index}`
+          );
+          const fileName = `${furniture.id}-${Date.now()}.jpg`;
+          if (index === 0) {
+            previewImage = fileName;
+          }
+          const path = `images/${furniture.id}/${fileName}`;
+          const newUrl = await uploadPhoto(file, path);
+          return newUrl;
+        } else {
+          if (index === 0) {
+            const pathWithEncoding = img.split("?")[0];
+            const decodedPath = decodeURIComponent(pathWithEncoding);
+            const fileName = decodedPath.split("/").pop();
+            previewImage = fileName;
+          }
+        }
+      })
+    );
+    return previewImage;
+  };
+
   const handleConfirmBtn = async (
     value,
     variants,
@@ -99,6 +128,11 @@ const ProductDetails = () => {
     dimensions,
     variantlessImgs
   ) => {
+    if (variantlessImgs.length > 0) {
+      const preview = await uploadVariantlessImgs(variantlessImgs, value.name);
+      value.imgPreviewFilename = preview;
+    }
+
     const newVariants = await Promise.all(
       variants.map(async (variant) => {
         const updatedImagePaths = await Promise.all(
@@ -155,7 +189,7 @@ const ProductDetails = () => {
 
     if (result.isSuccess) {
       setIsUpdate(false);
-      window.location.reload();
+      fetchFurniture();
     } else {
       toast.error(result.message || "Failed to update furniture.");
     }
