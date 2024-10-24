@@ -600,6 +600,9 @@ const UpdateProductDetails = ({
                 view, side view, back view, and close-up shots of any important
                 details or features.
               </li>
+              <li className="text-sm text-gray-600">
+                Please upload at least 2 images of the product.
+              </li>
             </div>
           </main>
         ) : !edited ? (
