@@ -13,6 +13,7 @@ import VariantUpload from "./VariantUpload";
 import ShowModel from "../ShowModel";
 import { useStore } from "../../stores/useStore";
 import toast from "react-hot-toast";
+import { deletePhoto, getAllImageDownloadUrl } from "../../firebase/photos";
 
 const UpdateProductDetails = ({
   furniture,
@@ -77,17 +78,31 @@ const UpdateProductDetails = ({
       setDimensions(result.dimensions);
       setModel(result.url);
       setEdited(true);
+      setCurrentVariants(detectedVariants);
     } else {
       toast.error(result.message);
     }
   };
 
   useEffect(() => {
+    const fetchVariantlessImages = async () => {
+      try {
+        const urls = await getAllImageDownloadUrl(furniture.imagesUrl);
+        setImages(urls);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchVariantlessImages();
+  }, [enabled]);
+
+  useEffect(() => {
     const fetchVariants = () => {
       if (
         furniture.variants.some(
           (variant) => variant.name !== "" || variant.imagePaths.length > 0
-        )
+        ) ||
+        detectedVariants.length >= 2
       ) {
         setEnabled(true);
         const formatted = detectedVariants.reduce((acc, value) => {
@@ -119,6 +134,14 @@ const UpdateProductDetails = ({
       return;
     }
 
+    if (
+      productDetails.isSale &&
+      productDetails.discountedPrice >= productDetails.price
+    ) {
+      toast.error("Discounted price must be lower than the regular price.");
+      return;
+    }
+
     if (handleConfirmBtn) {
       productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
 
@@ -128,10 +151,37 @@ const UpdateProductDetails = ({
           key !== "discountedPrice" &&
           key !== "isSale" &&
           key !== "stock" &&
-          key !== "modelUrl"
+          key !== "modelUrl" &&
+          key !== "imgPreviewFilename"
         ) {
-          toast.error(`Invalid input! Please fill a required field. ${key}`);
+          toast.error(`Invalid input! Please fill all required field.`);
           return;
+        }
+      }
+
+      // Images validation for variantless furniture
+      if (images.length <= 1 && !enabled) {
+        console.log(variants);
+        toast.error(`Please upload at least 2 images to proceed`);
+        return;
+      }
+
+      // Images validation for furniture with variant
+      if (variants.length >= 2 && enabled) {
+        for (let i = 0; i < variants.length; i++) {
+          const variant = variants[i];
+
+          if (!variant.name || variant.name.trim() === "") {
+            toast.error(`Variant ${i + 1}: Name is required.`);
+            return;
+          }
+
+          if (!variant.imagePaths || variant.imagePaths.length < 2) {
+            toast.error(
+              `Variant ${variant.name}: At least 2 images are required.`
+            );
+            return;
+          }
         }
       }
 
@@ -231,7 +281,7 @@ const UpdateProductDetails = ({
                   value={productDetails.description}
                   onChange={handleInputChange}
                   className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-                  rows="6"
+                  rows={`${productDetails.isSale ? "10" : "6"}`}
                 />
               </h3>
             </section>
@@ -523,15 +573,25 @@ const UpdateProductDetails = ({
                 <div className="flex flex-wrap gap-4">
                   {images.map((url, index) => {
                     return (
-                      <div className="">
+                      <div key={index}>
                         <XMarkIcon
-                          className="w-5 h-5 ml-auto cursor-pointer "
-                          onClick={() => {
-                            setImages((prev) => {
-                              const imgs = [...prev];
-                              imgs.splice(index, 1);
-                              return imgs;
-                            });
+                          className={`w-5 h-5 ml-auto ${
+                            images.length >= 3
+                              ? "text-black cursor-pointer"
+                              : "text-gray-400 cursor-not-allowed "
+                          }`}
+                          onClick={async () => {
+                            // attempt to delete the image if present in the storage
+                            if (images.length >= 3) {
+                              if (!url.startsWith("blob")) {
+                                await deletePhoto(url);
+                              }
+                              setImages((prev) => {
+                                const imgs = [...prev];
+                                imgs.splice(index, 1);
+                                return imgs;
+                              });
+                            }
                           }}
                         />
                         <img
@@ -572,12 +632,23 @@ const UpdateProductDetails = ({
                 view, side view, back view, and close-up shots of any important
                 details or features.
               </li>
+              <li className="text-sm text-gray-600">
+                Please upload at least 2 images of the product.
+              </li>
             </div>
           </main>
         ) : !edited ? (
-          <VariantUpload currentVariants={furniture.variants} model={model} />
+          <VariantUpload
+            currentVariants={furniture.variants || currentVariants}
+            model={model}
+            variantlessImgs={images}
+          />
         ) : (
-          <VariantUpload currentVariants={currentVariants} model={model} />
+          <VariantUpload
+            currentVariants={currentVariants}
+            model={model}
+            variantlessImgs={images}
+          />
         )}
       </section>
     </>
