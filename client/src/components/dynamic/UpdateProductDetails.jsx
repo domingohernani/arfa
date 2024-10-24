@@ -134,6 +134,14 @@ const UpdateProductDetails = ({
       return;
     }
 
+    if (
+      productDetails.isSale &&
+      productDetails.discountedPrice >= productDetails.price
+    ) {
+      toast.error("Discounted price must be lower than the regular price.");
+      return;
+    }
+
     if (handleConfirmBtn) {
       productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
 
