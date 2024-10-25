@@ -1,4 +1,7 @@
 export const furnitures = (set) => ({
+  furnitureStocks: 0,
+  setFurnitureStocks: (data) => set({ furnitureStocks: data }),
+
   rowFurnituresData: [],
   setRowFurnituresData: (data) => set({ rowFurnituresData: data }),
 

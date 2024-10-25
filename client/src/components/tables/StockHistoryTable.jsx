@@ -10,7 +10,7 @@ const StockHistoryTable = ({ stocks }) => {
       { headerName: "Product ID", field: "id", flex: 1 },
       { headerName: "Old Quantity", field: "oldQuantity", flex: 1 },
       { headerName: "New Quantity", field: "newQuantity", flex: 1 },
-      { headerName: "Quantity Added", field: "quantityAdded", flex: 1 },
+      { headerName: "Quantity Changed", field: "quantityAdded", flex: 1 },
       {
         headerName: "Updated At",
         field: "updatedAt",
@@ -44,7 +44,9 @@ const StockHistoryTable = ({ stocks }) => {
           resizable: true,
         }}
         pagination={true}
-        paginationPageSize={10}
+        paginationPageSize={15}
+        paginationPageSizeSelector={[15, 25, 50]}
+        domLayout="normal"
       />
     </div>
   );

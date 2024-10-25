@@ -15,6 +15,7 @@ import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ArrowPathIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
 import { UpdateStock } from "../../components/modals/UpdateStock";
+import { getStocks } from "../../firebase/stock";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -23,7 +24,7 @@ const SellerProductStock = () => {
   const navigate = useNavigate();
   const gridRef = useRef();
   const { loggedUser } = useStore();
-  const { rowFurnituresData, setRowFurnituresData } = useStore();
+  const { furnitureStocks, setFurnitureStocks } = useStore();
   const [id, setId] = useState("");
   const [currentStock, setCurrentStock] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -31,7 +32,7 @@ const SellerProductStock = () => {
 
   const handleUpdateAction = (rowData) => {
     setId(rowData.id);
-    setCurrentStock(rowData.stock);
+    setCurrentStock(rowData.stocks[0].newQuantity);
     setModalOpen(true);
   };
 
@@ -71,61 +72,77 @@ const SellerProductStock = () => {
       },
       {
         headerName: "Quantity on Hand",
-        field: "stock",
+        field: "stocks[0].newQuantity",
         flex: 1,
         filter: "agTextColumnFilter",
         cellRenderer: (params) => {
-          const stock = params.value;
+          const stocks = params.data?.stocks;
 
-          let statusText;
-          let colorClass;
-          let bgColorClass;
+          // Ensure stocks array exists and has at least one element
+          if (stocks && stocks.length > 0) {
+            const stock = stocks[0]?.newQuantity;
 
-          // Determine stock status and corresponding color
-          if (stock <= 5) {
-            statusText = "Few";
-            colorClass = "text-red-600"; // Red for "Few"
-            bgColorClass = "bg-red-600";
-          } else if (stock <= 20) {
-            statusText = "Normal";
-            colorClass = "text-yellow-300"; // Yellow for "Normal"
-            bgColorClass = "bg-yellow-300";
+            let statusText;
+            let colorClass;
+            let bgColorClass;
+
+            // Determine stock status and corresponding color
+            if (stock <= 5) {
+              statusText = "Few";
+              colorClass = "text-red-600"; // Red for "Few"
+              bgColorClass = "bg-red-600";
+            } else if (stock <= 20) {
+              statusText = "Normal";
+              colorClass = "text-yellow-300"; // Yellow for "Normal"
+              bgColorClass = "bg-yellow-300";
+            } else {
+              statusText = "High";
+              colorClass = "text-green-600"; // Green for "High"
+              bgColorClass = "bg-green-600";
+            }
+
+            return (
+              <div className="flex items-center justify-between">
+                <span className={`font-bold ${colorClass} font-normal`}>
+                  ({stock}) {statusText}
+                </span>
+                <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
+              </div>
+            );
           } else {
-            statusText = "High";
-            colorClass = "text-green-600"; // Green for "High"
-            bgColorClass = "bg-green-600";
+            return (
+              <div className="flex items-center justify-between">
+                <span className="font-normal text-gray-600">---</span>
+                <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+              </div>
+            );
           }
-
-          return (
-            <div className="flex items-center justify-between">
-              <span className={`font-bold ${colorClass} font-normal`}>
-                ({stock}) {statusText}
-              </span>
-              <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
-            </div>
-          );
         },
       },
       {
         headerName: "Updated At",
-        field: "stockUpdatedAt",
+        field: "stocks[0].updatedAt",
         flex: 2,
         filter: "agDateColumnFilter",
         sort: "desc",
         sortIndex: 0,
         valueGetter: (params) => {
-          const stockUpdatedAt = params.data.stockUpdatedAt;
-          if (stockUpdatedAt && stockUpdatedAt.seconds) {
-            return new Date(stockUpdatedAt.seconds * 1000);
+          const stocks = params.data?.stocks;
+          if (stocks && stocks.length > 0) {
+            const updatedAt = stocks[0]?.updatedAt;
+            if (updatedAt && updatedAt.seconds) {
+              return new Date(updatedAt.seconds * 1000);
+            }
           }
-          return null;
+          return null; // Return null if stocks or updatedAt is not available
         },
         valueFormatter: (params) => {
           const date = params.value;
           if (date instanceof Date) {
             return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+          } else {
+            return "---";
           }
-          return "";
         },
       },
       {
@@ -175,7 +192,16 @@ const SellerProductStock = () => {
         let filter = [];
         filter.push(where("ownerId", "==", loggedUser.userId));
         const furnitures = await fetchFurnitureCollection("furnitures", filter);
-        setRowFurnituresData(furnitures);
+
+        const furnituresWithStocks = await Promise.all(
+          furnitures.map(async (furniture) => {
+            const stocks = await getStocks(furniture.id);
+            return { ...furniture, stocks };
+          })
+        );
+
+        setFurnitureStocks(furnituresWithStocks);
+        // setRowFurnituresData(furnituresWithStocks);
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
@@ -197,7 +223,7 @@ const SellerProductStock = () => {
             style={{ height: "max(600px, 90%)", width: "100%" }}
           >
             <AgGridReact
-              rowData={rowFurnituresData}
+              rowData={furnitureStocks}
               ref={gridRef}
               columnDefs={columnDefs}
               defaultColDef={defaultColDef}
