@@ -195,13 +195,12 @@ const SellerProductStock = () => {
 
         const furnituresWithStocks = await Promise.all(
           furnitures.map(async (furniture) => {
-            const stocks = await getStocks(furniture.id);
+            const { stocks } = await getStocks(furniture.id);
             return { ...furniture, stocks };
           })
         );
 
         setFurnitureStocks(furnituresWithStocks);
-        // setRowFurnituresData(furnituresWithStocks);
       } catch (error) {
         console.error("Error fetching furniture:", error);
       }
