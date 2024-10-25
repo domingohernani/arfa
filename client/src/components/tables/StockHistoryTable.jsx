@@ -3,48 +3,23 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 
-const StockHistoryTable = ({ reviews }) => {
+const StockHistoryTable = ({ stocks }) => {
+  // Update column definitions to match stock data fields
   const columnDefs = useMemo(
     () => [
-      { headerName: "ID", field: "id", flex: 1 },
-      { headerName: "Title", field: "title", flex: 2 },
+      { headerName: "Product ID", field: "id", flex: 1 },
+      { headerName: "Old Quantity", field: "oldQuantity", flex: 1 },
+      { headerName: "New Quantity", field: "newQuantity", flex: 1 },
+      { headerName: "Quantity Added", field: "quantityAdded", flex: 1 },
       {
-        headerName: "Description",
-        field: "description",
+        headerName: "Updated At",
+        field: "updatedAt",
         flex: 2,
-      },
-      {
-        headerName: "Rating",
-        field: "rating",
-        flex: 1,
-        valueGetter: (params) => {
-          const rating = params.data.rating;
-          return `${rating} star(s)`;
-        },
-      },
-      {
-        headerName: "Reviewer Name",
-        field: "userData.firstName",
-        flex: 2,
-        valueGetter: (params) => {
-          const firstName = params.data.userData?.firstName || "";
-          const lastName = params.data.userData?.lastName || "";
-          return `${firstName} ${lastName}`.trim();
-        },
-      },
-      {
-        headerName: "Date",
-        field: "date",
-        filter: "agDateColumnFilter",
-        flex: 1,
         sort: "desc",
         sortIndex: 0,
         valueGetter: (params) => {
-          const dateValue = params.data.date;
-          if (dateValue && dateValue.seconds) {
-            return new Date(dateValue.seconds * 1000);
-          }
-          return null;
+          const updatedAt = params.data.updatedAt;
+          return updatedAt ? new Date(updatedAt.seconds * 1000) : null;
         },
         valueFormatter: (params) => {
           const date = params.value;
@@ -59,9 +34,9 @@ const StockHistoryTable = ({ reviews }) => {
   );
 
   return (
-    <div className="ag-theme-quartz" style={{ height: 500 }}>
+    <div className="ag-theme-quartz" style={{ height: 600 }}>
       <AgGridReact
-        rowData={reviews}
+        rowData={stocks} // Passing the fetched stocks data as rowData
         columnDefs={columnDefs}
         defaultColDef={{
           sortable: true,
@@ -70,7 +45,6 @@ const StockHistoryTable = ({ reviews }) => {
         }}
         pagination={true}
         paginationPageSize={10}
-        paginationPageSizeSelector={[10, 25, 50]}
       />
     </div>
   );

@@ -146,7 +146,6 @@ const SellerProductStock = () => {
               </button>
               <button
                 className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
-                // data-id={params.data.id}
                 onClick={() => {
                   navigate(`furniture/${params.data.id}`);
                 }}
