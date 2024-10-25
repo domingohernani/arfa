@@ -78,7 +78,7 @@ const SellerProductReviews = () => {
         cellRenderer: (params) => {
           return (
             <button
-              className="px-3 py-1 text-sm bg-arfagray text-arfablack font-normal border border-gray-300 rounded-sm btn-update"
+              className="px-3 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
               data-id={params.data.id}
               onClick={() => handleMoreAction(params.data)}
             >
@@ -137,8 +137,8 @@ const SellerProductReviews = () => {
               rowSelection="multiple"
               suppressRowClickSelection={true}
               pagination={true}
-              paginationPageSize={10}
-              paginationPageSizeSelector={[10, 25, 50]}
+              paginationPageSize={15}
+              paginationPageSizeSelector={[15, 25, 50]}
               domLayout="normal"
             />
           </div>
