@@ -219,22 +219,6 @@ export const updateFurniture = async (furnitureId, updatedData) => {
   }
 };
 
-export const updateStock = async (furnitureId, newStock) => {
-  try {
-    const furnitureDocRef = doc(db, "furnitures", furnitureId);
-
-    // Update the 'stock' and 'stockUpdatedAt' properties
-    await updateDoc(furnitureDocRef, {
-      stock: parseInt(newStock),
-      stockUpdatedAt: serverTimestamp(), // Set to the current timestamp
-    });
-    return true;
-  } catch (error) {
-    console.error("Error updating stock: ", error);
-    return false;
-  }
-};
-
 export const addFurniture = async (furnitureData, variants) => {
   try {
     // Create a reference to the specific shop document
