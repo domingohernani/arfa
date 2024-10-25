@@ -10,15 +10,22 @@ const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
   const { variants, setVariants, initializeVariants } = useStore();
 
   useEffect(() => {
-    if (variantlessImgs?.length > 0) {
-      const value = variantlessImgs.map((img, index) => ({
-        name: "",
-        imagePaths: [img],
-      }));
-
-      initializeVariants(value);
-    } else {
+    if (
+      currentVariants.some(
+        (variant) => variant.name !== "" || variant.imagePaths.length > 0
+      )
+    ) {
       initializeVariants(currentVariants);
+    } else {
+      if (variantlessImgs?.length > 0) {
+        const value = variantlessImgs.map((img, index) => ({
+          name: "",
+          imagePaths: [img],
+        }));
+        console.log("variantlessImgs?.length", variantlessImgs?.length);
+
+        initializeVariants(value);
+      }
     }
   }, [currentVariants, initializeVariants, variantlessImgs]);
 
