@@ -43,6 +43,7 @@ import SellerProductReviews from "./pages/seller/SellerProductReviews";
 import ProductDetails from "./pages/seller/sub/ProductDetails";
 import ProductReviews from "./pages/seller/sub/ProductReviews";
 import SellerAddProduct from "./pages/seller/SellerAddProduct";
+import ProductStockHistory from "./pages/seller/sub/ProductStockHistory";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -108,10 +109,9 @@ function App() {
               <Route path="product-info" element={<SellerProductsListing />}>
                 <Route path="details/:id" element={<ProductDetails />} />
               </Route>
-              <Route
-                element={<SellerProductStock />}
-                path="product-stock"
-              ></Route>
+              <Route element={<SellerProductStock />} path="product-stock">
+                <Route path="furniture/:id" element={<ProductStockHistory />} />
+              </Route>
               <Route element={<SellerProductReviews />} path="product-reviews">
                 <Route path="furniture/:id" element={<ProductReviews />} />
               </Route>

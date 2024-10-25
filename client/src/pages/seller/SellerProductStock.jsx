@@ -13,13 +13,14 @@ import toast, { Toaster } from "react-hot-toast";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
 import { UpdateStock } from "../../components/modals/UpdateStock";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const SellerProductStock = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const gridRef = useRef();
   const { loggedUser } = useStore();
   const { rowFurnituresData, setRowFurnituresData } = useStore();
@@ -65,7 +66,7 @@ const SellerProductStock = () => {
       {
         headerName: "Name",
         field: "name",
-        flex: 2,
+        flex: 3,
         filter: "agTextColumnFilter",
       },
       {
@@ -131,17 +132,29 @@ const SellerProductStock = () => {
         headerName: "Action",
         field: "action",
         filter: false,
-        flex: 1,
+        flex: 2,
         cellRenderer: (params) => {
           return (
-            <button
-              className="px-3 py-1 text-sm bg-arfagray text-arfablack font-normal border border-gray-300 rounded-sm btn-update"
-              data-id={params.data.id}
-              onClick={() => handleUpdateAction(params.data)}
-            >
-              <ArrowPathIcon className="inline-block w-4 h-4 mr-1" />
-              <span className="text-sm">Update</span>
-            </button>
+            <section className="flex items-center justify-center gap-2 px-2 mt-1">
+              <button
+                className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+                data-id={params.data.id}
+                onClick={() => handleUpdateAction(params.data)}
+              >
+                <ArrowPathIcon className="inline-block w-4 h-4 mr-1" />
+                <span className="text-sm">Update</span>
+              </button>
+              <button
+                className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+                // data-id={params.data.id}
+                onClick={() => {
+                  navigate(`furniture/${params.data.id}`);
+                }}
+              >
+                <RectangleStackIcon className="inline-block w-4 h-4 mr-1" />
+                <span className="text-sm">History</span>
+              </button>
+            </section>
           );
         },
       },
@@ -174,7 +187,7 @@ const SellerProductStock = () => {
     }
   }, [loggedUser, isUpdateSuccess]);
 
-  const isOutletPage = location.pathname.includes("/product-info/details/");
+  const isOutletPage = location.pathname.includes("/product-stock/furniture/");
 
   return (
     <>
