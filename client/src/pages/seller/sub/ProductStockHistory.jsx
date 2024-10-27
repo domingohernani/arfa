@@ -7,6 +7,9 @@ import { Tooltip } from "flowbite-react";
 import { getStocks } from "../../../firebase/stock";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import { UpdateStock } from "../../../components/modals/UpdateStock";
+import { ArrowPathIcon, RectangleStackIcon } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
 
 const ProductStockHistory = () => {
   const navigate = useNavigate();
@@ -16,6 +19,10 @@ const ProductStockHistory = () => {
   const [selectedVariant, setSelectedVariant] = useState("");
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [updateId, setUpdateId] = useState("");
+  const [currentStock, setCurrentStock] = useState("");
+  const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
 
   useEffect(() => {
     const fetchStocks = async () => {
@@ -35,7 +42,7 @@ const ProductStockHistory = () => {
     };
 
     fetchStocks();
-  }, [id]);
+  }, [id, isUpdateSuccess]);
 
   useEffect(() => {
     if (selectedVariant) {
@@ -54,7 +61,6 @@ const ProductStockHistory = () => {
       { headerName: "Old Quantity", field: "oldQuantity", flex: 1 },
       { headerName: "New Quantity", field: "newQuantity", flex: 1 },
       { headerName: "Quantity Changed", field: "quantityAdded", flex: 1 },
-      { headerName: "Variant", field: "variant", flex: 1 }, // Assuming each stock has a 'variant' field
       {
         headerName: "Updated At",
         field: "updatedAt",
@@ -73,9 +79,48 @@ const ProductStockHistory = () => {
           return "";
         },
       },
+      // {
+      //   headerName: "Action",
+      //   field: "action",
+      //   filter: false,
+      //   flex: 2,
+      //   cellRenderer: (params) => {
+      //     return (
+      //       <section className="flex items-center justify-center gap-2 px-2 mt-1">
+      //         <button
+      //           className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+      //           data-id={params.data.id}
+      //           onClick={() => handleUpdateAction(params.data)}
+      //         >
+      //           <ArrowPathIcon className="inline-block w-4 h-4 mr-1" />
+      //           <span className="text-sm">Update</span>
+      //         </button>
+      //       </section>
+      //     );
+      //   },
+      // },
     ],
     []
   );
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleUpdateAction = () => {
+    setUpdateId(stocks[0]?.id);
+    setCurrentStock(stocks[0]?.newQuantity || 0);
+    setModalOpen(true);
+  };
+
+  const updateResultMessage = (message, isSuccess) => {
+    if (isSuccess) {
+      setIsUpdateSuccess(!isUpdateSuccess);
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
 
   return (
     <div className="m-5">
@@ -101,33 +146,48 @@ const ProductStockHistory = () => {
 
       {/* Filter Dropdown */}
       <div className="flex items-center gap-2 my-3">
-        <div className="flex items-center justify-between">
-          <label
-            htmlFor="variant"
-            className="block text-sm font-medium text-gray-900 dark:text-white"
+        {variants.some((variant) => variant.name !== "") && (
+          <>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="variant"
+                className="block text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Variant
+              </label>
+            </div>
+            <select
+              name="variant"
+              id="variant"
+              className="bg-gray-50 w-fit border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block p-2.5"
+              value={selectedVariant}
+              onChange={(e) => setSelectedVariant(e.target.value)} // Update selected variant
+            >
+              {variants.map((variant, index) => (
+                <option key={index} value={variant.name}>
+                  {variant.name}
+                </option>
+              ))}
+            </select>
+            <Tooltip content="Select a variant to filter stocks">
+              <QuestionMarkCircleIcon
+                className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                aria-hidden="true"
+              />
+            </Tooltip>
+          </>
+        )}
+
+        <section className="flex items-center justify-center gap-2 ml-auto">
+          <button
+            className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+            // onClick={() => handleUpdateAction(params.data)}
+            onClick={handleUpdateAction}
           >
-            Variant
-          </label>
-        </div>
-        <select
-          name="variant"
-          id="variant"
-          className="bg-gray-50 w-fit border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block p-2.5"
-          value={selectedVariant}
-          onChange={(e) => setSelectedVariant(e.target.value)} // Update selected variant
-        >
-          {variants.map((variant, index) => (
-            <option key={index} value={variant.name}>
-              {variant.name}
-            </option>
-          ))}
-        </select>
-        <Tooltip content="Select a variant to filter stocks">
-          <QuestionMarkCircleIcon
-            className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
-            aria-hidden="true"
-          />
-        </Tooltip>
+            <ArrowPathIcon className="inline-block w-4 h-4 mr-1" />
+            <span className="text-sm">Update</span>
+          </button>
+        </section>
       </div>
 
       {/* AG Grid Table */}
@@ -148,6 +208,16 @@ const ProductStockHistory = () => {
           />
         )}
       </div>
+      {modalOpen && (
+        <UpdateStock
+          id={id}
+          currentStock={currentStock}
+          isOpen={modalOpen}
+          close={closeModal}
+          updateResultMessage={updateResultMessage}
+          selectedVariant={selectedVariant}
+        />
+      )}
     </div>
   );
 };
