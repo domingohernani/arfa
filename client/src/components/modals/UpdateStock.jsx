@@ -16,6 +16,7 @@ export const UpdateStock = ({
   isOpen,
   close,
   updateResultMessage,
+  selectedVariant,
 }) => {
   const [stock, setStock] = useState(currentStock);
   const [updateDateTime, setUpdateDateTime] = useState("");
@@ -25,9 +26,23 @@ export const UpdateStock = ({
     let newQuantity = stockValue;
     let quantityChanged = stockValue - currentStock;
 
+    if (stockValue == currentStock) {
+      updateResultMessage(
+        "The new stock level cannot be the same as the current stock level.",
+        false
+      );
+      return;
+    }
+
     let result = "";
     if (stock) {
-      result = await addStock(id, newQuantity, currentStock, quantityChanged);
+      result = await addStock(
+        id,
+        newQuantity,
+        currentStock,
+        quantityChanged,
+        selectedVariant
+      );
     }
     if (updateResultMessage && stock) {
       if (result) {

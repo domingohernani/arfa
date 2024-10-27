@@ -45,6 +45,33 @@ const SellerProductStock = () => {
     }
   };
 
+  const sumLatestQuantities = (data) => {
+    data.forEach((record) => {
+      record.updatedAt = new Date(record.updatedAt.seconds * 1000);
+    });
+
+    const variantsLatestQuantity = {};
+
+    data.forEach((record) => {
+      const variant = record.variant;
+      if (variant) {
+        if (
+          !variantsLatestQuantity[variant] ||
+          record.updatedAt > variantsLatestQuantity[variant].updatedAt
+        ) {
+          variantsLatestQuantity[variant] = record;
+        }
+      }
+    });
+
+    let totalQuantity = 0;
+    Object.values(variantsLatestQuantity).forEach((record) => {
+      totalQuantity += record.newQuantity;
+    });
+
+    return totalQuantity;
+  };
+
   const closeModal = () => {
     setModalOpen(false);
   };
@@ -72,21 +99,18 @@ const SellerProductStock = () => {
       },
       {
         headerName: "Quantity on Hand",
-        field: "stocks[0].newQuantity",
+        field: "stock",
         flex: 1,
         filter: "agTextColumnFilter",
         cellRenderer: (params) => {
-          const stocks = params.data?.stocks;
-
-          // Ensure stocks array exists and has at least one element
-          if (stocks && stocks.length > 0) {
-            const stock = stocks[0]?.newQuantity;
+          const stocks = sumLatestQuantities(params.data.stocks);
+          if (stocks) {
+            const stock = stocks;
 
             let statusText;
             let colorClass;
             let bgColorClass;
 
-            // Determine stock status and corresponding color
             if (stock <= 5) {
               statusText = "Few";
               colorClass = "text-red-600"; // Red for "Few"
@@ -120,32 +144,6 @@ const SellerProductStock = () => {
         },
       },
       {
-        headerName: "Updated At",
-        field: "stocks[0].updatedAt",
-        flex: 2,
-        filter: "agDateColumnFilter",
-        sort: "desc",
-        sortIndex: 0,
-        valueGetter: (params) => {
-          const stocks = params.data?.stocks;
-          if (stocks && stocks.length > 0) {
-            const updatedAt = stocks[0]?.updatedAt;
-            if (updatedAt && updatedAt.seconds) {
-              return new Date(updatedAt.seconds * 1000);
-            }
-          }
-          return null; // Return null if stocks or updatedAt is not available
-        },
-        valueFormatter: (params) => {
-          const date = params.value;
-          if (date instanceof Date) {
-            return date.toLocaleDateString() + " " + date.toLocaleTimeString();
-          } else {
-            return "---";
-          }
-        },
-      },
-      {
         headerName: "Action",
         field: "action",
         filter: false,
@@ -153,14 +151,6 @@ const SellerProductStock = () => {
         cellRenderer: (params) => {
           return (
             <section className="flex items-center justify-center gap-2 px-2 mt-1">
-              <button
-                className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
-                data-id={params.data.id}
-                onClick={() => handleUpdateAction(params.data)}
-              >
-                <ArrowPathIcon className="inline-block w-4 h-4 mr-1" />
-                <span className="text-sm">Update</span>
-              </button>
               <button
                 className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
                 onClick={() => {

@@ -12,7 +12,6 @@ import { db } from "./firebase";
 
 export const getStocks = async (furnitureId) => {
   try {
-    // First, get the furniture document to retrieve the variant information
     const furnitureDocRef = doc(db, "furnitures", furnitureId);
     const furnitureDocSnapshot = await getDoc(furnitureDocRef);
 
@@ -20,11 +19,9 @@ export const getStocks = async (furnitureId) => {
       throw new Error("Furniture document not found");
     }
 
-    // Get the variant(s) from the furniture document
     const furnitureData = furnitureDocSnapshot.data();
-    const variants = furnitureData.variants || []; // Assuming 'variants' is a field in the furniture document
+    const variants = furnitureData.variants || [];
 
-    // Then, get the stock data from the stocks subcollection
     const stocksCollection = collection(
       db,
       "furnitures",
@@ -34,16 +31,14 @@ export const getStocks = async (furnitureId) => {
     const stocksQuery = query(stocksCollection, orderBy("updatedAt", "desc"));
     const stockSnapshot = await getDocs(stocksQuery);
 
-    // Map stock data without joining the variants
     const stockList = stockSnapshot.docs.map((doc) => ({
       id: furnitureId,
-      ...doc.data(), // Include stock data as is
+      ...doc.data(),
     }));
 
-    // Return both the stocks and variants as separate values
     return {
       stocks: stockList,
-      variants, // Return variants as a separate array
+      variants,
     };
   } catch (error) {
     console.error("Error fetching stocks and variants: ", error);
@@ -55,10 +50,10 @@ export const addStock = async (
   furnitureId,
   newQuantity,
   oldQuantity,
-  quantityChanged
+  quantityChanged,
+  selectedVariant
 ) => {
   try {
-    // Reference to the stocks subcollection for the given furniture ID
     const stocksCollectionRef = collection(
       db,
       "furnitures",
@@ -73,9 +68,9 @@ export const addStock = async (
       oldQuantity,
       quantityAdded: quantityChanged,
       updatedAt,
+      variant: selectedVariant,
     });
 
-    console.log("Stock added successfully with ID:", docRef.id);
     return {
       success: true,
       message: "Stock added successfully!",
