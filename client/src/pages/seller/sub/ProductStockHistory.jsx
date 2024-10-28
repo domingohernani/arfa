@@ -108,11 +108,23 @@ const ProductStockHistory = () => {
   };
 
   const handleUpdateAction = () => {
-    setUpdateId(stocks[0]?.id);
-    setCurrentStock(stocks[0]?.newQuantity || 0);
+    const latestRecord = stocks
+      .filter((stock) => stock.variant === selectedVariant)
+      .sort(
+        (a, b) =>
+          b.updatedAt.seconds - a.updatedAt.seconds ||
+          b.updatedAt.nanoseconds - a.updatedAt.nanoseconds
+      )[0];
+
+    if (latestRecord) {
+      setUpdateId(latestRecord.id);
+      setCurrentStock(latestRecord.newQuantity);
+    } else {
+      console.log("No record found for the selected variant");
+    }
     setModalOpen(true);
   };
-
+  
   const updateResultMessage = (message, isSuccess) => {
     if (isSuccess) {
       setIsUpdateSuccess(!isUpdateSuccess);
