@@ -23,12 +23,14 @@ const ProductStockHistory = () => {
   const [updateId, setUpdateId] = useState("");
   const [currentStock, setCurrentStock] = useState("");
   const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
+  const [variantLessStock, setVariantLessStock] = useState(0);
 
   useEffect(() => {
     const fetchStocks = async () => {
       try {
         const stockData = await getStocks(id);
         setStocks(stockData.stocks);
+        setVariantLessStock(stockData.variantLessStock);
         setVariants(stockData.variants);
         setFilteredStocks(stockData.stocks);
         if (stockData.variants.length > 0) {
@@ -79,26 +81,6 @@ const ProductStockHistory = () => {
           return "";
         },
       },
-      // {
-      //   headerName: "Action",
-      //   field: "action",
-      //   filter: false,
-      //   flex: 2,
-      //   cellRenderer: (params) => {
-      //     return (
-      //       <section className="flex items-center justify-center gap-2 px-2 mt-1">
-      //         <button
-      //           className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
-      //           data-id={params.data.id}
-      //           onClick={() => handleUpdateAction(params.data)}
-      //         >
-      //           <ArrowPathIcon className="inline-block w-4 h-4 mr-1" />
-      //           <span className="text-sm">Update</span>
-      //         </button>
-      //       </section>
-      //     );
-      //   },
-      // },
     ],
     []
   );
@@ -133,6 +115,12 @@ const ProductStockHistory = () => {
       toast.error(message);
     }
   };
+
+  // Find the stock for the selected variant
+  // Find the stock for the selected variant, fallback to variantLessStock if not found
+  const selectedVariantStock = variants.find(
+    (variant) => variant.name === selectedVariant
+  )?.stock;
 
   return (
     <div className="m-5">
@@ -187,7 +175,21 @@ const ProductStockHistory = () => {
                 aria-hidden="true"
               />
             </Tooltip>
+            {/* Display the stock of the selected variant */}
+            {selectedVariant && (
+              <p className="mt-2 text-sm text-gray-900 dark:text-gray-300">
+                Current: {selectedVariantStock || 0}
+              </p>
+            )}
           </>
+        )}
+
+        {!selectedVariant && (
+          <div className="flex items-center justify-between">
+            <div className="py-1 text-sm font-normal bg-transparent text-arfablack">
+              Current: {variantLessStock || 0}
+            </div>
+          </div>
         )}
 
         <section className="flex items-center justify-center gap-2 ml-auto">
