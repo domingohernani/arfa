@@ -21,6 +21,8 @@ export const getStocks = async (furnitureId) => {
     }
 
     const furnitureData = furnitureDocSnapshot.data();
+    const variantLessStock = furnitureData.stock || 0;
+
     const variants = furnitureData.variants || [];
 
     const stocksCollection = collection(
@@ -40,6 +42,7 @@ export const getStocks = async (furnitureId) => {
     return {
       stocks: stockList,
       variants,
+      variantLessStock: variantLessStock,
     };
   } catch (error) {
     console.error("Error fetching stocks and variants: ", error);
