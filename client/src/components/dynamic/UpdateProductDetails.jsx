@@ -187,8 +187,11 @@ const UpdateProductDetails = ({
 
       // Para ma-set yung variant to empty if switch is off
       // Converting firebase images to blob and to re-upload again
+      // add reseting the stock to 0 since we are managing yung stock doon sa
+      // variants array if variants exist
       let variantToBePass = [];
       if (enabled) {
+        productDetails.stock = 0;
         variantToBePass = variants;
       } else {
         variantToBePass = [

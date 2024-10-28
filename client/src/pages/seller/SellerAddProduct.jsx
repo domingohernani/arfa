@@ -17,6 +17,7 @@ import {
 import { upload3DModel } from "../../firebase/models";
 import { uploadPhoto } from "../../firebase/photos";
 import { v4 as uuidv4 } from "uuid";
+import { addStock } from "../../firebase/stock";
 
 const SellerAddProduct = () => {
   const navigate = useNavigate();
@@ -93,15 +94,23 @@ const SellerAddProduct = () => {
     // Loop through productDetails to check for any empty fields
     productDetails.ownerId = loggedUser.userId;
     productDetails.price = parseFloat(productDetails.price);
-    productDetails.stock = parseInt(productDetails.stock);
+    // if the product has variants; so this stock property should be 0,
+    // we will get the stock value sa variants array
+    productDetails.stock = enabled ? 0 : parseFloat(productDetails.price);
     productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
 
     let newModel = "";
     if (model) {
-      productDetails.height = dimensions.height;
-      productDetails.width = dimensions.width;
-      productDetails.depth = dimensions.depth;
+      // making the dimentions int
+      productDetails.height = parseInt(dimensions.height);
+      productDetails.width = parseInt(dimensions.width);
+      productDetails.depth = parseInt(dimensions.depth);
       newModel = await blobTo3DFile(model, productDetails.name);
+    } else {
+      // making the dimentions int
+      productDetails.height = parseInt(productDetails.height);
+      productDetails.width = parseInt(productDetails.width);
+      productDetails.depth = parseInt(productDetails.depth);
     }
 
     for (const [key, value] of Object.entries(productDetails)) {
@@ -109,27 +118,53 @@ const SellerAddProduct = () => {
         (!value || value === 0) &&
         key !== "discountedPrice" &&
         key !== "isSale" &&
-        key !== "modelUrl"
+        key !== "modelUrl" &&
+        enabled &&
+        key !== "stock"
       ) {
         toast.error(`Invalid input! Please fill a required field: ${key}`);
         return;
       }
     }
 
+    // Discount validation
+    if (
+      productDetails.isSale &&
+      productDetails.discountedPrice >= productDetails.price
+    ) {
+      toast.error("Discounted price must be lower than the regular price.");
+      return;
+    }
+
     // Images validation for variantless furniture
     if (images.length <= 1 && !enabled) {
-      console.log(variants);
       toast.error(`Please upload at least 2 images to proceed`);
       return;
     }
 
     // Images validation for furniture with variant
     if (variants.length >= 2 && enabled) {
+      const nameSet = new Set();
+
       for (let i = 0; i < variants.length; i++) {
         const variant = variants[i];
 
         if (!variant.name || variant.name.trim() === "") {
           toast.error(`Variant ${i + 1}: Name is required.`);
+          return;
+        }
+
+        if (nameSet.has(variant.name.trim())) {
+          toast.error(
+            `Variant ${i + 1}: Duplicate name "${variant.name}" found.`
+          );
+          return;
+        } else {
+          nameSet.add(variant.name.trim());
+        }
+
+        if (!variant.stock || variant.stock === 0) {
+          toast.error(`Variant ${i + 1}: Stock is required.`);
           return;
         }
 
@@ -161,6 +196,29 @@ const SellerAddProduct = () => {
       }
       // furniture
       const furnitureId = await addFurniture(productDetails, variants);
+
+      // add stock (sub collection of furniture)
+      if (enabled) {
+        await Promise.all(
+          variants.map(async (variant) => {
+            const { success } = await addStock(
+              furnitureId,
+              variant.stock,
+              0,
+              variant.stock,
+              variant.name
+            );
+            return success;
+          })
+        );
+      } else {
+        await addStock(
+          furnitureId,
+          productDetails.stock,
+          0,
+          productDetails.stock
+        );
+      }
 
       // images
       const imagesUpload = await Promise.all(
@@ -337,26 +395,31 @@ const SellerAddProduct = () => {
                   />
                 </h3>
               )}
-              <h3 className="text-sm font-medium">
-                On Stock:{" "}
-                <input
-                  type="text"
-                  name="stock"
-                  value={productDetails.stock}
-                  onChange={(e) => {
-                    const { name, value } = e.target;
-                    if (name === "stock") {
-                      const numbers = "0123456789";
-                      if (
-                        value.split("").every((char) => numbers.includes(char))
-                      ) {
-                        handleInputChange(e);
+              {!enabled && (
+                <h3 className="text-sm font-medium">
+                  On Stock:{" "}
+                  <input
+                    type="text"
+                    name="stock"
+                    value={productDetails.stock}
+                    onChange={(e) => {
+                      const { name, value } = e.target;
+                      if (name === "stock") {
+                        const numbers = "0123456789";
+                        if (
+                          value
+                            .split("")
+                            .every((char) => numbers.includes(char))
+                        ) {
+                          handleInputChange(e);
+                        }
                       }
-                    }
-                  }}
-                  className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-                />
-              </h3>
+                    }}
+                    className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                  />
+                </h3>
+              )}
+
               <div className="flex gap-4 mt-2">
                 <h3 className="text-sm font-medium">
                   Width: (cm){" "}
