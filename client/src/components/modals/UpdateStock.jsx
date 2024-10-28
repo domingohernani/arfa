@@ -8,7 +8,11 @@ import {
 import React, { Fragment, useState } from "react";
 import inventory from "../../assets/images/inventory.svg";
 import { useEffect } from "react";
-import { addStock } from "../../firebase/stock";
+import {
+  addStock,
+  addStockByVariantName,
+  addStockVariantless,
+} from "../../firebase/stock";
 
 export const UpdateStock = ({
   id,
@@ -34,6 +38,15 @@ export const UpdateStock = ({
       return;
     }
 
+    let isSuccess = false;
+    // (for variantless only)
+    if (!selectedVariant) {
+      isSuccess = await addStockVariantless(id, newQuantity);
+    } else {
+      // (for w/ variant)
+      isSuccess = await addStockByVariantName(id, selectedVariant, newQuantity);
+    }
+
     let result = "";
     if (stock) {
       result = await addStock(
@@ -44,7 +57,7 @@ export const UpdateStock = ({
         selectedVariant
       );
     }
-    if (updateResultMessage && stock) {
+    if (updateResultMessage && stock && isSuccess) {
       if (result) {
         updateResultMessage("Stock updated successfully", true);
       } else {

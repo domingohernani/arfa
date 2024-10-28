@@ -17,6 +17,7 @@ import {
 import { upload3DModel } from "../../firebase/models";
 import { uploadPhoto } from "../../firebase/photos";
 import { v4 as uuidv4 } from "uuid";
+import { addStock } from "../../firebase/stock";
 
 const SellerAddProduct = () => {
   const navigate = useNavigate();
@@ -126,9 +127,17 @@ const SellerAddProduct = () => {
       }
     }
 
+    // Discount validation
+    if (
+      productDetails.isSale &&
+      productDetails.discountedPrice >= productDetails.price
+    ) {
+      toast.error("Discounted price must be lower than the regular price.");
+      return;
+    }
+
     // Images validation for variantless furniture
     if (images.length <= 1 && !enabled) {
-      console.log(variants);
       toast.error(`Please upload at least 2 images to proceed`);
       return;
     }
@@ -187,6 +196,29 @@ const SellerAddProduct = () => {
       }
       // furniture
       const furnitureId = await addFurniture(productDetails, variants);
+
+      // add stock (sub collection of furniture)
+      if (enabled) {
+        await Promise.all(
+          variants.map(async (variant) => {
+            const { success } = await addStock(
+              furnitureId,
+              variant.stock,
+              0,
+              variant.stock,
+              variant.name
+            );
+            return success;
+          })
+        );
+      } else {
+        await addStock(
+          furnitureId,
+          productDetails.stock,
+          0,
+          productDetails.stock
+        );
+      }
 
       // images
       const imagesUpload = await Promise.all(

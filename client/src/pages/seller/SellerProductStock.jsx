@@ -45,31 +45,52 @@ const SellerProductStock = () => {
     }
   };
 
-  const sumLatestQuantities = (data) => {
-    data.forEach((record) => {
-      record.updatedAt = new Date(record.updatedAt.seconds * 1000);
-    });
+  const getTotalStock = (data) => {
+    // Check if there are any valid variants with a non-empty name and imagePaths
+    const hasValidVariants =
+      data.variants &&
+      data.variants.some(
+        (variant) => variant.name.trim() && variant.imagePaths.length > 0
+      );
 
-    const variantsLatestQuantity = {};
-
-    data.forEach((record) => {
-      const variant = record.variant;
-      if (variant) {
-        if (
-          !variantsLatestQuantity[variant] ||
-          record.updatedAt > variantsLatestQuantity[variant].updatedAt
-        ) {
-          variantsLatestQuantity[variant] = record;
+    if (hasValidVariants) {
+      // Calculate total stock from valid variants
+      const totalVariantStock = data.variants.reduce((total, variant) => {
+        if (variant.name.trim() && variant.imagePaths.length > 0) {
+          return total + (variant.stock || 0);
         }
-      }
-    });
+        return total;
+      }, 0);
+      return totalVariantStock;
+    } else {
+      // If no valid variants, return the stock property of the main document
+      return data.stock || 0;
+    }
 
-    let totalQuantity = 0;
-    Object.values(variantsLatestQuantity).forEach((record) => {
-      totalQuantity += record.newQuantity;
-    });
+    // data.forEach((record) => {
+    //   record.updatedAt = new Date(record.updatedAt.seconds * 1000);
+    // });
 
-    return totalQuantity;
+    // const variantsLatestQuantity = {};
+
+    // data.forEach((record) => {
+    //   const variant = record.variant;
+    //   if (variant) {
+    //     if (
+    //       !variantsLatestQuantity[variant] ||
+    //       record.updatedAt > variantsLatestQuantity[variant].updatedAt
+    //     ) {
+    //       variantsLatestQuantity[variant] = record;
+    //     }
+    //   }
+    // });
+
+    // let totalQuantity = 0;
+    // Object.values(variantsLatestQuantity).forEach((record) => {
+    //   totalQuantity += record.newQuantity;
+    // });
+
+    // return totalQuantity;
   };
 
   const closeModal = () => {
@@ -99,11 +120,10 @@ const SellerProductStock = () => {
       },
       {
         headerName: "Quantity on Hand",
-        field: "stock",
         flex: 1,
         filter: "agTextColumnFilter",
         cellRenderer: (params) => {
-          const stocks = sumLatestQuantities(params.data.stocks);
+          const stocks = getTotalStock(params.data);
           if (stocks) {
             const stock = stocks;
 

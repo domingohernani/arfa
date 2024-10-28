@@ -7,6 +7,7 @@ import {
   addDoc,
   getDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -46,6 +47,65 @@ export const getStocks = async (furnitureId) => {
   }
 };
 
+export const addStockVariantless = async (furnitureId, newStock) => {
+  try {
+    const furnitureDocRef = doc(db, "furnitures", furnitureId);
+
+    const furnitureDocSnapshot = await getDoc(furnitureDocRef);
+
+    if (!furnitureDocSnapshot.exists()) {
+      throw new Error("Furniture document not found");
+    }
+
+    await updateDoc(furnitureDocRef, { stock: newStock });
+
+    console.log("Stock updated successfully:", newStock);
+    return {
+      success: true,
+      message: "Stock updated successfully!",
+      newStock,
+    };
+  } catch (error) {
+    console.error("Error updating stock:", error);
+    return { success: false, message: "Failed to update stock", error };
+  }
+};
+
+export const addStockByVariantName = async (
+  furnitureId,
+  variantName,
+  newStock
+) => {
+  try {
+    const furnitureDocRef = doc(db, "furnitures", furnitureId);
+    const furnitureDocSnapshot = await getDoc(furnitureDocRef);
+
+    if (!furnitureDocSnapshot.exists()) {
+      throw new Error("Furniture document not found");
+    }
+
+    const furnitureData = furnitureDocSnapshot.data();
+    const variants = furnitureData.variants || [];
+
+    const updatedVariants = variants.map((variant) => {
+      if (variant.name === variantName) {
+        return {
+          ...variant,
+          stock: newStock,
+        };
+      }
+      return variant;
+    });
+
+    // Update the variants array in Firestore
+    await updateDoc(furnitureDocRef, { variants: updatedVariants });
+    return { success: true, message: "Stock updated successfully!" };
+  } catch (error) {
+    console.error("Error updating stock:", error);
+    return { success: false, message: "Failed to update stock", error };
+  }
+};
+
 export const addStock = async (
   furnitureId,
   newQuantity,
@@ -68,7 +128,8 @@ export const addStock = async (
       oldQuantity,
       quantityAdded: quantityChanged,
       updatedAt,
-      variant: selectedVariant,
+      // Only include variant if selectedVariant is defined
+      ...(selectedVariant && { variant: selectedVariant }),
     });
 
     return {
