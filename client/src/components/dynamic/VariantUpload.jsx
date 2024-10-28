@@ -6,7 +6,6 @@ import { useStore } from "../../stores/useStore";
 import { deletePhoto } from "../../firebase/photos";
 
 const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
-  // Access Zustand store state and actions
   const { variants, setVariants, initializeVariants } = useStore();
 
   useEffect(() => {
@@ -21,9 +20,8 @@ const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
         const value = variantlessImgs.map((img, index) => ({
           name: "",
           imagePaths: [img],
+          stock: 0,
         }));
-        console.log("variantlessImgs?.length", variantlessImgs?.length);
-
         initializeVariants(value);
       }
     }
@@ -35,6 +33,7 @@ const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
       {
         name: "",
         imagePaths: [],
+        stock: 0,
       },
     ]);
   };
@@ -107,20 +106,54 @@ const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
                 onFilesSelected={(files) => handleFileUpload(files, i)}
               />
             </section>
-            <div className="flex flex-col flex-1">
-              <span className="text-sm font-medium">Variant Name:</span>
-              <input
-                type="text"
-                name="name"
-                value={variant.name}
-                className="rounded-sm h-fit bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
-                onChange={(e) => {
-                  const updatedVariants = [...variants];
-                  updatedVariants[i].name = e.target.value;
-                  setVariants(updatedVariants);
-                }}
-              />
-            </div>
+            <section className="flex flex-wrap flex-1 gap-6">
+              <div className="flex flex-col flex-1">
+                <span className="text-sm font-medium">Name:</span>
+                <input
+                  type="text"
+                  name="name"
+                  value={variant.name}
+                  className="rounded-sm h-fit bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                  onChange={(e) => {
+                    const updatedVariants = [...variants];
+                    updatedVariants[i].name = e.target.value;
+                    setVariants(updatedVariants);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col flex-1">
+                <span className="text-sm font-medium">Stock:</span>
+                <input
+                  type="text"
+                  name="stock"
+                  value={variant.stock || 0}
+                  className="rounded-sm h-fit bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    if (name === "stock") {
+                      if (/^\d*$/.test(value)) {
+                        const updatedVariants = [...variants];
+                        updatedVariants[i].stock = parseInt(value);
+                        setVariants(updatedVariants);
+                      }
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (
+                      !/[0-9]/.test(e.key) &&
+                      ![
+                        "Backspace",
+                        "Delete",
+                        "ArrowLeft",
+                        "ArrowRight",
+                      ].includes(e.key)
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+              </div>
+            </section>
           </div>
         );
       })}
