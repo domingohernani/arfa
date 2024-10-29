@@ -17,7 +17,8 @@ const SellerDelivery = () => {
   const gridRef = useRef();
   const { loggedUser } = useStore();
   const [modalOpen, setModalOpen] = useState(false);
-  const [regionData, setRegionData] = useState([]);
+  const regionData = useStore((state) => state.regionData);
+  const setRegionData = useStore((state) => state.setRegionData);
   const [location, setLocation] = useState("");
   const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
   const [fee, setCurrentFee] = useState(0);
