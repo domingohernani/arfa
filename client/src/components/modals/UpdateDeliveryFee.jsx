@@ -43,6 +43,12 @@ export const UpdateDeliveryFee = ({
       doDeliver,
       isFreeDelivery
     );
+
+    if (!delivery && !isFreeDelivery && parseInt(price) === 0) {
+      updateResultMessage("The fee amount must be greater than zero.", false);
+      return;
+    }
+
     if (updateResultMessage && isSuccess) {
       updateResultMessage(message, isSuccess);
       close();
