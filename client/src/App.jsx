@@ -33,6 +33,7 @@ import DisplayChat from "./components/dynamic/DisplayChat";
 import SelectChat from "./components/SelectChat";
 import SellerProtectedRoutes from "./utils/SellerProtectedRoutes";
 import SellerProductsListing from "./pages/seller/SellerProductsListing";
+import SellerDelivery from "./pages/seller/SellerDelivery";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -115,6 +116,8 @@ function App() {
               <Route element={<SellerProductReviews />} path="product-reviews">
                 <Route path="furniture/:id" element={<ProductReviews />} />
               </Route>
+
+              <Route element={<SellerDelivery />} path="delivery" />
 
               <Route element={<SellerTransaction />} path="transaction" />
               <Route element={<SellerReports />} path="report" />
