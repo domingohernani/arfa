@@ -21,6 +21,8 @@ const SellerDelivery = () => {
   const [location, setLocation] = useState("");
   const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
   const [fee, setCurrentFee] = useState(0);
+  const [isFreeDelivery, setIsFreeDelivery] = useState(false);
+  const [doDeliver, setDoDeliver] = useState(false);
 
   const columnDefs = useMemo(
     () => [
@@ -64,9 +66,15 @@ const SellerDelivery = () => {
             <section className="flex items-center justify-center gap-2 px-2 mt-1">
               <button
                 className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
-                onClick={() =>
-                  updateDeliveryFee(params.data.region_name, params.data.price)
-                }
+                onClick={() => {
+                  const data = params.data;
+                  updateDeliveryFee(
+                    data.region_name,
+                    data.price,
+                    data.isFreeDelivery,
+                    data.doDeliver
+                  );
+                }}
               >
                 <ArrowPathIcon className="inline-block w-4 h-4 mr-1" />
                 <span className="text-sm">Update</span>
@@ -129,9 +137,11 @@ const SellerDelivery = () => {
     setModalOpen(false);
   };
 
-  const updateDeliveryFee = (location, fee) => {
+  const updateDeliveryFee = (location, fee, isFreeDelivery, doDeliver) => {
     setLocation(location);
     setCurrentFee(fee);
+    setIsFreeDelivery(isFreeDelivery);
+    setDoDeliver(doDeliver);
     setModalOpen(true);
   };
 
@@ -169,6 +179,8 @@ const SellerDelivery = () => {
           shopId={loggedUser.userId}
           location={location}
           fee={fee}
+          freeDelivery={isFreeDelivery}
+          delivery={doDeliver}
           isOpen={modalOpen}
           close={closeModal}
           updateResultMessage={updateResultMessage}

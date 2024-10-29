@@ -6,7 +6,7 @@ import {
   DialogPanel,
 } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
-import delivery from "../../assets/images/delivery.svg";
+import deliveryImg from "../../assets/images/delivery.svg";
 import { updateDeliveryFee } from "../../firebase/shop";
 import { Tooltip } from "flowbite-react";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
@@ -15,13 +15,15 @@ export const UpdateDeliveryFee = ({
   shopId,
   location,
   fee,
+  freeDelivery,
+  delivery,
   isOpen,
   close,
   updateResultMessage,
 }) => {
   const [price, setPrice] = useState(fee);
-  const [isFreeDelivery, setIsFreeDelivery] = useState(false);
-  const [doDeliver, setDoDeliver] = useState(true); // New state for doDeliver
+  const [isFreeDelivery, setIsFreeDelivery] = useState(freeDelivery);
+  const [doDeliver, setDoDeliver] = useState(delivery);
 
   const handlePriceChange = (value) => {
     const numbers = "0123456789";
@@ -90,7 +92,7 @@ export const UpdateDeliveryFee = ({
                   className="text-lg font-medium leading-6 text-center text-gray-900"
                 >
                   <img
-                    src={delivery}
+                    src={deliveryImg}
                     alt="Update Inventory"
                     className="w-auto mx-auto h-72"
                   />
