@@ -1,6 +1,23 @@
 import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
+export const getShopInfo = async (shopId) => {
+  try {
+    const shopRef = doc(db, "shops", shopId);
+    const shopDoc = await getDoc(shopRef);
+
+    if (shopDoc.exists()) {
+      return shopDoc.data();
+    } else {
+      console.error("No such shop document!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching shop information:", error);
+    return null;
+  }
+};
+
 export const getDelivery = async (shopId) => {
   try {
     const deliveryCollectionRef = collection(db, "shops", shopId, "delivery");

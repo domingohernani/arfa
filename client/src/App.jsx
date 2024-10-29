@@ -46,6 +46,7 @@ import ProductReviews from "./pages/seller/sub/ProductReviews";
 import SellerAddProduct from "./pages/seller/SellerAddProduct";
 import ProductStockHistory from "./pages/seller/sub/ProductStockHistory";
 import { Toaster } from "react-hot-toast";
+import SellerSettings from "./pages/seller/SellerSettings";
 
 function App() {
   useEffect(() => {
@@ -122,6 +123,8 @@ function App() {
               <Route element={<SellerTransaction />} path="transaction" />
               <Route element={<SellerReports />} path="report" />
               <Route element={<SellerInbox />} path="inbox" />
+
+              <Route element={<SellerSettings />} path="settings" />
             </Route>
           </Route>
 
