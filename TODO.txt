@@ -49,3 +49,39 @@ content without performing a full page reload.
 
 
 seach "tempo"!!!
+
+Reports
+Top Seller by Units Sold w/ revenue & unit sold
+Most Positively Reviewed
+Most Negatively Reviewed
+Monthly Revenue -> Orders sa month na yon -> View order details
+
+1. Top Seller by Units Sold with Revenue & Units Sold
+	Current: 
+		Shows top-selling products by the number of units sold and their corresponding revenue.
+	Enhancement Suggestions:
+		Include filters for different time periods (e.g., weekly, monthly, quarterly).
+
+2. Most Positively Reviewed
+	Current: 
+		Shows products with the most positive reviews.
+	Enhancement Suggestions:
+		Display average rating alongside the number of positive reviews.
+		Allow filters by date range to see recent vs. all-time data.
+		Include the option to view customer feedback on these products for more context.
+3. Most Negatively Reviewed
+	Current: 
+		Shows products with the most negative reviews.
+	Enhancement Suggestions:
+		Similar to the positively reviewed section, include average rating and filter by date range.
+		Include the option to view customer feedback on these products for more context.
+4. Monthly Revenue
+	Current: 
+		Displays revenue for each month with the option to view orders for that month and order details.
+	Enhancement Suggestions:
+		Include a comparison with the previous month or year-over-year to analyze growth.
+		Add a breakdown of revenue by categories or product types.
+		Include customer data to see if certain demographics are contributing more to revenue.
+		Add the ability to download or export monthly reports.
+5. Top Categories by Revenue ? (if kaya ng time)
+	Show categories that are driving the most revenue. This is helpful for product and marketing decisions.
