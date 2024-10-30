@@ -9,10 +9,10 @@ import {
 } from "@heroicons/react/24/solid";
 import { Tooltip } from "flowbite-react";
 import toast, { Toaster } from "react-hot-toast";
-import { doPasswordChange, doPasswordReset } from "../../firebase/auth";
 import { getAuth } from "firebase/auth";
+import { doPasswordChange, doPasswordReset } from "../../../firebase/auth";
 
-const Security = () => {
+const SellerUserSecurity = () => {
   const [email, setEmail] = useState(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -70,6 +70,8 @@ const Security = () => {
         toast.error(
           "The current password you entered is incorrect. Please try again."
         );
+      } else if (result.errorCode === "auth/requires-recent-login") {
+        forgotPassword();
       } else {
         toast.error(result.message);
       }
@@ -284,4 +286,4 @@ const Security = () => {
   );
 };
 
-export default Security;
+export default SellerUserSecurity;
