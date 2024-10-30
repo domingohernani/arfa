@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { getShopInfo } from "../../../firebase/shop";
+import {
+  getShopInfo,
+  updateAddress,
+  updateBrandName,
+  updateBusinessPermit,
+  updateLogo,
+  updateValidID,
+} from "../../../firebase/shop";
 import { auth } from "../../../firebase/firebase";
 import {
   regions,
@@ -9,6 +16,8 @@ import {
 } from "select-philippines-address";
 import { Tooltip } from "flowbite-react";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
+import { getImageDownloadUrl } from "../../../firebase/photos";
+import toast from "react-hot-toast";
 
 export const SellerUserProfile = () => {
   const [shopName, setShopName] = useState("");
@@ -22,14 +31,22 @@ export const SellerUserProfile = () => {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedBarangay, setSelectedBarangay] = useState("");
+  const [selectedRegionName, setSelectedRegionName] = useState("");
+  const [selectedProvinceName, setSelectedProvinceName] = useState("");
+  const [selectedCityName, setSelectedCityName] = useState("");
+  const [selectedBarangayName, setSelectedBarangayName] = useState("");
   const [streetNumber, setStreetNumber] = useState("");
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const [editForm, setEditForm] = useState(false);
 
-  // States for logo upload and preview
   const [profile, setProfile] = useState(null);
   const [profilePreview, setProfilePreview] = useState("");
+
+  const fetchLogo = useCallback(async (path) => {
+    const logoUrl = await getImageDownloadUrl(path);
+    return logoUrl;
+  });
 
   const fetchShopInfo = useCallback(async () => {
     if (!userId) return;
@@ -46,6 +63,13 @@ export const SellerUserProfile = () => {
         setSelectedCity(result.address?.city || "");
         setSelectedBarangay(result.address?.barangay || "");
         setStreetNumber(result.address?.street || "");
+
+        setSelectedRegionName(result.address?.region || "");
+        setSelectedProvinceName(result.address?.province || "");
+        setSelectedCityName(result.address?.city || "");
+        setSelectedBarangayName(result.address?.street || "");
+
+        setProfilePreview(await fetchLogo(result.logo));
 
         const reg = await regions();
         setRegionOptions(reg);
@@ -78,7 +102,9 @@ export const SellerUserProfile = () => {
 
   const handleRegionChange = async (e) => {
     const regionCode = e.target.value;
+    const regionName = e.target.options[e.target.selectedIndex].text;
     setSelectedRegion(regionCode);
+    setSelectedRegionName(regionName);
     setSelectedProvince("");
     setSelectedCity("");
     setSelectedBarangay("");
@@ -92,7 +118,9 @@ export const SellerUserProfile = () => {
 
   const handleProvinceChange = async (e) => {
     const provinceCode = e.target.value;
+    const provinceName = e.target.options[e.target.selectedIndex].text;
     setSelectedProvince(provinceCode);
+    setSelectedProvinceName(provinceName);
     setSelectedCity("");
     setSelectedBarangay("");
     setCityOptions([]);
@@ -104,7 +132,9 @@ export const SellerUserProfile = () => {
 
   const handleCityChange = async (e) => {
     const cityCode = e.target.value;
+    const cityName = e.target.options[e.target.selectedIndex].text;
     setSelectedCity(cityCode);
+    setSelectedCityName(cityName);
     setSelectedBarangay("");
     setBarangayOptions([]);
 
@@ -113,7 +143,10 @@ export const SellerUserProfile = () => {
   };
 
   const handleBarangayChange = (e) => {
-    setSelectedBarangay(e.target.value);
+    const barangayCode = e.target.value;
+    const barangayName = e.target.options[e.target.selectedIndex].text;
+    setSelectedBarangay(barangayCode);
+    setSelectedBarangayName(barangayName);
   };
 
   const handleCancelBtn = () => {
@@ -123,13 +156,46 @@ export const SellerUserProfile = () => {
     fetchShopInfo();
   };
 
-  const handleSaveBtn = (e) => {
+  const handleSaveBtn = async (e) => {
     e.preventDefault();
-    // Implement save functionality if needed
+
+    // brandname
+    const resultBrandName = await updateBrandName(userId, shopName);
+
+    // Business Permit
+    if (businessPermit) {
+      await updateBusinessPermit(userId, businessPermit);
+    }
+    // Valid ID
+    if (validId) {
+      await updateValidID(userId, validId);
+    }
+
+    // address
+    const address = {
+      selectedRegionName,
+      selectedProvinceName,
+      selectedCityName,
+      selectedBarangayName,
+      streetNumber,
+    };
+    const resultAddress = await updateAddress(userId, address);
+
+    // logo
+    if (profile) {
+      await updateLogo(userId, profile);
+    }
+
+    if (resultAddress && resultBrandName) {
+      fetchShopInfo();
+      toast.success("Shop information updated successfully.");
+    } else {
+      toast.error("Failed to update shop information. Please try again.");
+    }
+
     setEditForm(false);
   };
 
-  // Handle logo upload and preview
   const handleFileChange = (setter, previewSetter) => (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -147,7 +213,6 @@ export const SellerUserProfile = () => {
         className="w-full px-4 py-5 mx-auto mt-5 border md:px-8"
         onSubmit={handleSaveBtn}
       >
-        {/* Shop Name */}
         <div className="mb-4">
           <label className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-900">
             Shop Name
@@ -172,8 +237,6 @@ export const SellerUserProfile = () => {
             </span>
           )}
         </div>
-
-        {/* Logo Upload */}
 
         <div className="flex items-end gap-5 mb-5">
           {profilePreview && (
@@ -208,7 +271,6 @@ export const SellerUserProfile = () => {
         </div>
 
         <section className="flex gap-5 mb-5">
-          {/* Business Permit */}
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-900">
@@ -220,7 +282,6 @@ export const SellerUserProfile = () => {
                   />
                 </Tooltip>
               </label>
-
               <a
                 href={businessPermit}
                 target="_blank"
@@ -241,7 +302,6 @@ export const SellerUserProfile = () => {
             />
           </div>
 
-          {/* Valid ID */}
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-900">
@@ -302,6 +362,7 @@ export const SellerUserProfile = () => {
               </select>
             ) : (
               <span className="bg-gray-50 border cursor-not-allowed pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5">
+                {/* {selectedRegionName} */}
                 {selectedRegion}
               </span>
             )}
@@ -337,6 +398,7 @@ export const SellerUserProfile = () => {
               </select>
             ) : (
               <span className="bg-gray-50 border cursor-not-allowed pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5">
+                {/* {selectedProvinceName} */}
                 {selectedProvince}
               </span>
             )}
@@ -369,6 +431,7 @@ export const SellerUserProfile = () => {
               </select>
             ) : (
               <span className="bg-gray-50 border cursor-not-allowed pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5">
+                {/* {selectedCityName} */}
                 {selectedCity}
               </span>
             )}
@@ -401,6 +464,7 @@ export const SellerUserProfile = () => {
               </select>
             ) : (
               <span className="bg-gray-50 border cursor-not-allowed pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5">
+                {/* {selectedBarangayName} */}
                 {selectedBarangay}
               </span>
             )}
@@ -422,7 +486,7 @@ export const SellerUserProfile = () => {
               value={streetNumber}
               onChange={(e) => setStreetNumber(e.target.value)}
               placeholder="Enter street number"
-              className={`bg-gray-50 border  pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
+              className={`bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5 ${
                 editForm ? "cursor-pointer" : "cursor-not-allowed"
               }`}
               disabled={!editForm}
