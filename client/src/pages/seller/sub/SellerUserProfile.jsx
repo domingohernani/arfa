@@ -196,13 +196,17 @@ export const SellerUserProfile = () => {
     setEditForm(false);
   };
 
-  const handleFileChange = (setter, previewSetter) => (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setter(file);
-      previewSetter(URL.createObjectURL(file));
-    }
-  };
+  const handleFileChange =
+    (setter, previewSetter = null) =>
+    (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setter(file);
+        if (previewSetter) {
+          previewSetter(URL.createObjectURL(file));
+        }
+      }
+    };
 
   if (!userId) return <div>User not logged in.</div>;
   if (loading) return <div>Loading...</div>;
