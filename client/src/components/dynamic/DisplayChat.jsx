@@ -25,6 +25,7 @@ import {
 import Typing from "../Typing";
 import VideoPlayer from "./VideoPlayer";
 import PictureFullScreen from "./PictureFullScreen";
+import selectImage from "../../assets/images/select-images.svg";
 
 const DisplayChat = memo(({ chat, setBackButton }) => {
   const messenger = chat.shopperInfo || chat.shopInfo;
@@ -217,7 +218,15 @@ const DisplayChat = memo(({ chat, setBackButton }) => {
   };
 
   if (!chat.id) {
-    return <div>Select an convo</div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <img src={selectImage} alt="Select a message" className="h-auto w-80" />
+        <p className="text-sm">
+          Please select a conversation from the list to view messages and
+          details.
+        </p>
+      </div>
+    );
   }
 
   return (
