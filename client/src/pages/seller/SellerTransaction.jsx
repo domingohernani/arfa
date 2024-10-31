@@ -148,7 +148,6 @@ const SellerTransaction = () => {
         where("shopId", "==", loggedUser.userId),
       ];
       const orders = await fetchOrdersByShopId(filter);
-      console.log(orders);
 
       setRowTransactionsData(orders);
     };
