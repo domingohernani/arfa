@@ -143,7 +143,7 @@ const TopSellers = ({ shopId }) => {
   }, [rowData]);
 
   return (
-    <section className="p-5">
+    <section>
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm font-medium">
           Best-Selling Products by Units Sold
