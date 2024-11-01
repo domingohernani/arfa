@@ -2,13 +2,24 @@ import React, { useMemo, useRef } from "react";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import { formatToPeso } from "../globalFunctions";
 
 const ItemsOrdered = ({ orders }) => {
   const columnDefs = [
     { headerName: "Items Name", field: "name", flex: 2 },
     { headerName: "Quantity", field: "quantity", flex: 1, editable: true },
-    { headerName: "Price (₱)", field: "price", flex: 1 },
-    { headerName: "Total (₱)", field: "totalItemPrice", flex: 1 },
+    {
+      headerName: "Price (₱)",
+      field: "price",
+      flex: 1,
+      valueFormatter: (params) => formatToPeso(params.value),
+    },
+    {
+      headerName: "Total (₱)",
+      field: "totalItemPrice",
+      flex: 1,
+      valueFormatter: (params) => formatToPeso(params.value),
+    },
   ];
 
   console.log("passed orders", orders);
