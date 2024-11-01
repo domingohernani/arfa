@@ -13,6 +13,7 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import { formatToPeso } from "../globalFunctions";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 const TopSellers = ({ shopId }) => {
@@ -48,6 +49,7 @@ const TopSellers = ({ shopId }) => {
         field: "revenue",
         flex: 1,
         filter: "agNumberColumnFilter",
+        valueFormatter: (params) => formatToPeso(params.value),
       },
       {
         headerName: "Action",

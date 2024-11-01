@@ -9,7 +9,7 @@ import { fetchOrdersByShopId } from "../../firebase/orders";
 import { useStore } from "../../stores/useStore";
 import { Toaster } from "react-hot-toast";
 import { where } from "firebase/firestore";
-import { getOrderStatusStyles } from "../../components/globalFunctions";
+import { formatToPeso, getOrderStatusStyles } from "../../components/globalFunctions";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -80,6 +80,7 @@ const SellerOrders = () => {
       field: "orderTotal",
       flex: 1,
       filter: "agNumberColumnFilter",
+      valueFormatter: (params) => formatToPeso(params.value),
     },
     {
       headerName: "Status",
