@@ -1,14 +1,17 @@
 import React from "react";
 import TopSeller from "../../components/tables/TopSeller";
-import { getAuth } from "firebase/auth";
 import { useStore } from "../../stores/useStore";
+import { Outlet, useLocation } from "react-router-dom";
 
 const SellerReports = () => {
   const { loggedUser } = useStore();
+  const location = useLocation();
+
+  const isOutletPage = location.pathname.includes("/furniture-transaction/");
 
   return (
     <div>
-      <TopSeller shopId={loggedUser?.userId} />
+      {!isOutletPage ? <TopSeller shopId={loggedUser?.userId} /> : <Outlet />}
     </div>
   );
 };
