@@ -23,60 +23,53 @@ const TopSellers = ({ shopId }) => {
   const [csvContent, setCsvContent] = useState("");
   const [toggleShowCSV, setToggleShowCSV] = useState(false);
 
-  const [columnDefs, setColumnDefs] = useState([
-    {
-      headerName: "Product ID",
-      field: "productId",
-      flex: 1,
-      filter: "agTextColumnFilter",
-    },
-    {
-      headerName: "Product Name",
-      field: "name",
-      flex: 1,
-      filter: "agTextColumnFilter",
-    },
-    {
-      headerName: "Units Sold",
-      field: "unitsSold",
-      flex: 1,
-      filter: "agNumberColumnFilter",
-    },
-    {
-      headerName: "Revenue (₱)",
-      field: "revenue",
-      flex: 1,
-      filter: "agNumberColumnFilter",
-    },
-    {
-      headerName: "Action",
-      colId: "action",
-      flex: 1,
-      cellRenderer: (params) => {
-        const handleViewClick = () => {
-          const data = params.data;
-          navigate(
-            `/seller-page/report/furniture-transaction/${data.productId}`
-          );
-        };
-        return (
-          <section className="flex items-center justify-center gap-2 px-2 mt-1">
-            <button
-              className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
-              // onClick={() => {
-              //   const data = params.data;
-              //   alert(data.productId);
-              // }}
-              onClick={handleViewClick}
-            >
-              <EyeIcon className="inline-block w-4 h-4 mr-1" />
-              <span className="text-sm">View</span>
-            </button>
-          </section>
-        );
+  const columnDefs = useMemo(
+    () => [
+      {
+        headerName: "Product ID",
+        field: "productId",
+        flex: 1,
+        filter: "agTextColumnFilter",
       },
-    },
-  ]);
+      {
+        headerName: "Product Name",
+        field: "name",
+        flex: 1,
+        filter: "agTextColumnFilter",
+      },
+      {
+        headerName: "Units Sold",
+        field: "unitsSold",
+        flex: 1,
+        filter: "agNumberColumnFilter",
+      },
+      {
+        headerName: "Revenue (₱)",
+        field: "revenue",
+        flex: 1,
+        filter: "agNumberColumnFilter",
+      },
+      {
+        headerName: "Action",
+        colId: "action",
+        flex: 1,
+        cellRenderer: (params) => {
+          return (
+            <section className="flex items-center justify-center gap-2 px-2 mt-1">
+              <button
+                className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+                onClick={() => handleViewClick(params.data, timeFilter)}
+              >
+                <EyeIcon className="inline-block w-4 h-4 mr-1" />
+                <span className="text-sm">View {timeFilter}</span>
+              </button>
+            </section>
+          );
+        },
+      },
+    ],
+    [timeFilter]
+  );
 
   const defaultColDef = useMemo(
     () => ({
@@ -86,6 +79,12 @@ const TopSellers = ({ shopId }) => {
     }),
     []
   );
+
+  const handleViewClick = (data, filter) => {
+    navigate(
+      `/seller-page/report/furniture-transaction/${data.productId}?filter=${filter}`
+    );
+  };
 
   const handleExport = () => {
     gridRef.current.api.exportDataAsCsv({
