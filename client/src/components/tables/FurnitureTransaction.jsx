@@ -6,6 +6,7 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { CsvExportModule } from "@ag-grid-community/csv-export";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
+import { ArrowDownOnSquareStackIcon } from "@heroicons/react/24/outline";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { formatToPeso } from "../globalFunctions";
@@ -84,25 +85,19 @@ export const FurnitureTransaction = () => {
         headerName: "Action",
         field: "action",
         flex: 1,
-        cellRenderer: (params) => {
-          console.log(params.data);
-
-          return (
-            <section className="flex items-center justify-center gap-2 px-2 mt-1">
-              <button
-                className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
-                onClick={() => {
-                  navigate(
-                    `/seller-page/transaction/details/${params.data.id}`
-                  );
-                }}
-              >
-                <EyeIcon className="inline-block w-4 h-4 mr-1" />
-                <span className="text-sm">View</span>
-              </button>
-            </section>
-          );
-        },
+        cellRenderer: (params) => (
+          <section className="flex items-center justify-center gap-2 px-2 mt-1">
+            <button
+              className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+              onClick={() => {
+                navigate(`/seller-page/transaction/details/${params.data.id}`);
+              }}
+            >
+              <EyeIcon className="inline-block w-4 h-4 mr-1" />
+              <span className="text-sm">View</span>
+            </button>
+          </section>
+        ),
         filter: false,
       },
     ],
@@ -118,10 +113,21 @@ export const FurnitureTransaction = () => {
     []
   );
 
+  const handleExport = () => {
+    gridRef.current.api.exportDataAsCsv({
+      processCellCallback: (params) => {
+        // Exclude the action column from export
+        if (params.column.getColId() === "action") {
+          return null;
+        }
+        return params.value;
+      },
+    });
+  };
+
   const fetchFurniture = async () => {
     setLoading(true);
     try {
-      // Fetch furniture details
       const furnitureRef = collection(db, "furnitures");
       const furnitureSnapshot = await getDocs(
         query(furnitureRef, where("id", "==", id))
@@ -129,7 +135,6 @@ export const FurnitureTransaction = () => {
       const furnitureData = furnitureSnapshot.docs[0]?.data();
       setFurniture(furnitureData);
 
-      // Determine the start and end dates based on the filter
       let start, end;
       const today = new Date();
 
@@ -153,7 +158,6 @@ export const FurnitureTransaction = () => {
           break;
       }
 
-      // Fetch orders with "Delivered" or "Picked-up" status within the specified timeframe
       const ordersRef = collection(db, "orders");
       const ordersQuery = query(
         ordersRef,
@@ -170,7 +174,6 @@ export const FurnitureTransaction = () => {
             (item) => item.id === id
           );
 
-          // Only include the order if it contains the furniture item with the specified id
           if (matchingItem) {
             return {
               id: doc.id,
@@ -221,7 +224,6 @@ export const FurnitureTransaction = () => {
         </div>
       </nav>
 
-      {/* Product Details */}
       <section className="border">
         <header className="px-3 py-4 text-sm font-medium border-b bg-arfagray">
           Product Details
@@ -229,61 +231,38 @@ export const FurnitureTransaction = () => {
         <header className="flex flex-col gap-1 px-3 py-5 md:flex-row md:gap-3">
           <section className="flex flex-col gap-1 basis-3/5">
             <h3 className="text-sm font-medium">
-              Product ID:{" "}
-              <span className="font-normal text-gray-600">{furniture.id}</span>
+              Product ID: <span className="font-normal text-gray-600">{furniture.id}</span>
             </h3>
             <h3 className="text-sm font-medium">
-              Name:{" "}
-              <span className="font-normal text-gray-600">
-                {furniture.name}
-              </span>
+              Name: <span className="font-normal text-gray-600">{furniture.name}</span>
             </h3>
             <h3 className="text-sm font-medium">
-              Description:{" "}
-              <span className="font-normal text-gray-600">
-                {furniture.description}
-              </span>
+              Description: <span className="font-normal text-gray-600">{furniture.description}</span>
             </h3>
           </section>
 
           <section className="flex flex-col flex-1 gap-1">
             <h3 className="text-sm font-medium">
-              Category:{" "}
-              <span className="font-normal text-gray-600">
-                {furniture.category}
-              </span>
+              Category: <span className="font-normal text-gray-600">{furniture.category}</span>
             </h3>
             <h3 className="text-sm font-medium">
-              Price:{" "}
-              <span className="font-normal text-gray-600">
-                {formatToPeso(furniture.price)}
-              </span>
+              Price: <span className="font-normal text-gray-600">{formatToPeso(furniture.price)}</span>
             </h3>
             {furniture.isSale && (
               <h3 className="text-sm font-medium">
-                Discounted Price:{" "}
-                <span className="font-normal text-gray-600">
-                  {formatToPeso(furniture.discountedPrice)}
-                </span>
+                Discounted Price: <span className="font-normal text-gray-600">{formatToPeso(furniture.discountedPrice)}</span>
               </h3>
             )}
             <h3 className="text-sm font-medium">
-              Status:{" "}
-              <span
-                className={`font-normal ${
-                  furniture.isSale ? "text-blue-600" : "text-green-500"
-                }`}
-              >
+              Status: <span className={`font-normal ${furniture.isSale ? "text-blue-600" : "text-green-500"}`}>
                 {furniture.isSale ? "On Sale" : "Not On Sale"}
               </span>
             </h3>
             {!furniture.variants.every(
-              (variant) =>
-                variant.name === "" && variant.imagePaths.length === 0
+              (variant) => variant.name === "" && variant.imagePaths.length === 0
             ) && (
               <h3 className="text-sm font-medium">
-                Variant:{" "}
-                <span className="font-normal text-gray-600">
+                Variant: <span className="font-normal text-gray-600">
                   {furniture.variants.map((variant) => variant.name).join(", ")}
                 </span>
               </h3>
@@ -303,10 +282,20 @@ export const FurnitureTransaction = () => {
           </section>
         </header>
       </section>
-      <header className="px-3 py-4 mt-5 text-sm font-medium border-t border-x bg-arfagray">
+
+      <div className="flex items-center justify-end my-5">
+        <button
+          onClick={handleExport}
+          className="text-white flex min-w-max items-center justify-center gap-1 bg-arfagreen font-medium rounded-md text-sm px-2 py-2.5 text-center"
+        >
+          <ArrowDownOnSquareStackIcon className="w-5 h-5 text-white" />
+          <span>Download CSV</span>
+        </button>
+      </div>
+
+      <header className="px-3 py-4 text-sm font-medium border-t border-x bg-arfagray">
         Related Transactions ({filter})
       </header>
-      {/* Orders AG Grid */}
       <div className="ag-theme-quartz" style={{ height: "600px" }}>
         <AgGridReact
           ref={gridRef}

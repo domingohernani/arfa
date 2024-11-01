@@ -193,9 +193,8 @@ export const updateValidID = async (shopId, validIDFile) => {
 
 export const fetchTopSellers = async (shopId, timeFilter) => {
   try {
-    // Define the start and end date based on the time filter
     let start;
-    const end = endOfToday(); // End of today for the current time period
+    const end = endOfToday();
 
     if (timeFilter === "weekly") {
       start = startOfWeek(new Date());
@@ -205,23 +204,28 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
       start = startOfQuarter(new Date());
     } else if (timeFilter === "yearly") {
       start = startOfYear(new Date());
+    } else if (timeFilter === "all") {
+      start = null; // No start date filtering for "All Time"
     } else {
       throw new Error("Invalid time filter");
     }
 
-    const startTimestamp = Timestamp.fromDate(start);
-    const endTimestamp = Timestamp.fromDate(end);
-
     const ordersCollection = collection(db, "orders");
-    const shopOrdersQuery = query(
-      ordersCollection,
-      where("shopId", "==", shopId),
-      where("createdAt", ">=", startTimestamp),
-      where("createdAt", "<=", endTimestamp),
-      where("orderStatus", "in", ["Delivered", "Picked-up"])
-    );
-    const ordersSnapshot = await getDocs(shopOrdersQuery);
+    const shopOrdersQuery = start
+      ? query(
+          ordersCollection,
+          where("shopId", "==", shopId),
+          where("createdAt", ">=", Timestamp.fromDate(start)),
+          where("createdAt", "<=", Timestamp.fromDate(end)),
+          where("orderStatus", "in", ["Delivered", "Picked-up"])
+        )
+      : query(
+          ordersCollection,
+          where("shopId", "==", shopId),
+          where("orderStatus", "in", ["Delivered", "Picked-up"])
+        );
 
+    const ordersSnapshot = await getDocs(shopOrdersQuery);
     const productStats = {};
 
     ordersSnapshot.forEach((doc) => {
@@ -229,7 +233,6 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
 
       order.orderItems.forEach((item) => {
         const { id, name, price, quantity, totalItemPrice } = item;
-
         if (productStats[id]) {
           productStats[id].unitsSold += quantity;
           productStats[id].revenue += totalItemPrice;
@@ -245,11 +248,7 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
     });
 
     const productArray = Object.values(productStats);
-
-    // Sort by units sold and then by revenue
-    productArray.sort(
-      (a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue
-    );
+    productArray.sort((a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue);
 
     return productArray;
   } catch (error) {
