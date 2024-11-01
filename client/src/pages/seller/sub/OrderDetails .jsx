@@ -23,10 +23,8 @@ const OrderDetails = () => {
       try {
         setLoading(true);
         const orderResult = await getOrderById(id);
-        console.log("order: ", orderResult);
         setOrder(orderResult);
         const userResult = await getUserById(orderResult.shopperId);
-        console.log("customer: ", userResult);
         setCustomer(userResult);
       } catch (error) {
         setLoading(false);
