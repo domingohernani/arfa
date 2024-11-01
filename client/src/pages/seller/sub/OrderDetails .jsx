@@ -86,11 +86,11 @@ const OrderDetails = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 mb-2 sm:mb-0">
-            <button className="flex items-center gap-2 px-2 py-1 text-sm font-medium border border-gray-300 rounded-sm text-arfablack">
+            <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center border border-gray-300 rounded-sm bg-arfagray min-w-max text-arfablack">
               <FolderIcon className="w-4 h-4 text-gray-400" />
               Export
             </button>
-            <button className="px-2 py-1 text-sm font-medium bg-blue-500 rounded-sm">
+            <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen">
               Update Status
             </button>
           </div>
