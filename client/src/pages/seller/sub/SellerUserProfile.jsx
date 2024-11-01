@@ -163,11 +163,16 @@ export const SellerUserProfile = () => {
     const resultBrandName = await updateBrandName(userId, shopName);
 
     // Business Permit
-    if (businessPermit) {
+    if (
+      businessPermit &&
+      businessPermit.size > 0 &&
+      businessPermit.type === "application/pdf"
+    ) {
       await updateBusinessPermit(userId, businessPermit);
     }
+
     // Valid ID
-    if (validId) {
+    if (validId && validId.size > 0 && validId.type === "application/pdf") {
       await updateValidID(userId, validId);
     }
 
