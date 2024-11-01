@@ -5,6 +5,9 @@ import {
   getDoc,
   setDoc,
   updateDoc,
+  query,
+  where,
+  Timestamp,
 } from "firebase/firestore";
 import { db, storage } from "./firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -178,5 +181,62 @@ export const updateValidID = async (shopId, validIDFile) => {
   } catch (error) {
     console.error("Error updating valid ID:", error);
     return null;
+  }
+};
+
+export const fetchTopSellers = async (shopId, timeFilter) => {
+  try {
+    let startDate = new Date();
+    if (timeFilter === "weekly") {
+      startDate.setDate(startDate.getDate() - 7);
+    } else if (timeFilter === "monthly") {
+      startDate.setMonth(startDate.getMonth() - 1);
+    } else if (timeFilter === "quarterly") {
+      startDate.setMonth(startDate.getMonth() - 3);
+    } else if (timeFilter === "yearly") {
+      startDate.setFullYear(startDate.getFullYear() - 1);
+    }
+    const startTimestamp = Timestamp.fromDate(startDate);
+
+    const ordersCollection = collection(db, "orders");
+    const shopOrdersQuery = query(
+      ordersCollection,
+      where("shopId", "==", shopId),
+      where("createdAt", ">=", startTimestamp),
+      where("orderStatus", "in", ["Delivered", "Picked-up"])
+    );
+    const ordersSnapshot = await getDocs(shopOrdersQuery);
+
+    const productStats = {};
+
+    ordersSnapshot.forEach((doc) => {
+      const order = doc.data();
+
+      order.orderItems.forEach((item) => {
+        const { id, name, price, quantity, totalItemPrice } = item;
+
+        if (productStats[id]) {
+          productStats[id].unitsSold += quantity;
+          productStats[id].revenue += totalItemPrice;
+        } else {
+          productStats[id] = {
+            productId: id,
+            name: name,
+            unitsSold: quantity,
+            revenue: totalItemPrice,
+          };
+        }
+      });
+    });
+
+    const productArray = Object.values(productStats);
+
+    productArray.sort(
+      (a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue
+    );
+
+    return productArray;
+  } catch (error) {
+    console.error("Error fetching top sellers:", error);
   }
 };

@@ -50,6 +50,7 @@ import SellerSettings from "./pages/seller/SellerSettings";
 import SellerUserProfile from "./pages/seller/sub/SellerUserProfile";
 import SellerUserSecurity from "./pages/seller/sub/SellerUserSecurity";
 import { SellerUserPayment } from "./pages/seller/sub/SellerUserPayment";
+import { FurnitureTransaction } from "./components/tables/FurnitureTransaction";
 
 function App() {
   useEffect(() => {
@@ -124,7 +125,14 @@ function App() {
               <Route element={<SellerDelivery />} path="delivery" />
 
               <Route element={<SellerTransaction />} path="transaction" />
-              <Route element={<SellerReports />} path="report" />
+
+              <Route path="report" element={<SellerReports />}>
+                <Route
+                  path="furniture-transaction/:id"
+                  element={<FurnitureTransaction />}
+                />
+              </Route>
+
               <Route element={<SellerInbox />} path="inbox" />
 
               <Route path="settings" element={<SellerSettings />}>
