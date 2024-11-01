@@ -145,10 +145,21 @@ const TopSellers = ({ shopId }) => {
   return (
     <section>
       <div className="flex flex-wrap items-center justify-between mb-2">
-        <p className="text-sm font-medium">
-          Best-Selling Products by Units Sold
-        </p>
-        <div className="flex items-center gap-4">
+        <div>
+          <p className="text-sm font-medium">
+            Best-Selling Products by Units Sold
+          </p>
+          <p className="text-sm font-normal">
+            This screen displays the top-selling products by units sold, showing
+            details such as the Product ID, Product Name, Units Sold, and
+            Revenue (₱). The table includes filters for easy searching and
+            sorting of products. A dropdown menu allows selection of different
+            time periods - Weekly, Monthly, Quarterly, Yearly, and All Time.
+            Data can be downloaded as a CSV file, and each product has an action
+            button to view its performance for the selected time period.
+          </p>
+        </div>
+        <div className="flex items-center gap-4 ml-auto">
           <div
             className="flex items-center gap-2"
             style={{ width: "min(250px, 50%)" }}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TopSeller from "../../components/tables/TopSeller";
 import MostRated from "./sub/MostRated";
 import { useStore } from "../../stores/useStore";
+import YearlyRevenue from "./sub/YearlyRevenue";
 
 const SellerReports = () => {
   const { loggedUser } = useStore();
@@ -38,6 +39,18 @@ const SellerReports = () => {
               Most Rated
             </button>
           </li>
+          <li className="me-2">
+            <button
+              onClick={() => setActiveTab("revenue")}
+              className={`inline-block p-4 font-medium border-b-2 rounded-t-lg ${
+                activeTab === "revenue"
+                  ? "border-b-black text-arfablack"
+                  : "border-transparent text-arfablack"
+              }`}
+            >
+              Revenue
+            </button>
+          </li>
         </ul>
       </div>
 
@@ -48,6 +61,9 @@ const SellerReports = () => {
         )}
         {activeTab === "most-rated" && (
           <MostRated shopId={loggedUser?.userId} />
+        )}
+        {activeTab === "revenue" && (
+          <YearlyRevenue shopId={loggedUser?.userId} />
         )}
       </div>
     </section>

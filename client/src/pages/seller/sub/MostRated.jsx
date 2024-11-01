@@ -168,8 +168,18 @@ const MostRated = ({ shopId }) => {
   return (
     <section>
       <div className="flex flex-wrap items-center justify-between mb-2">
-        <p className="text-sm font-medium">Most Rated Products</p>
-        <div className="flex items-center gap-4">
+        <div>
+          <p className="text-sm font-medium">Most Rated Products</p>
+          <p className="text-sm font-normal">
+            This screen displays the most-rated products, organized by the
+            number of reviews and average rating. It includes columns for
+            Product ID, Category, Name, Total Reviews, and Rating. Filters allow
+            sorting by Best Rated or Worst Rated products. Each product entry
+            has an action button to view more details. Data can also be
+            downloaded as a CSV file.
+          </p>
+        </div>
+        <div className="flex items-center gap-4 ml-auto">
           <div className="flex items-center gap-2">
             <label htmlFor="filterType" className="text-sm font-medium">
               Filter:
