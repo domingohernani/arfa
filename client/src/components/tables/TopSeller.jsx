@@ -206,6 +206,8 @@ const TopSellers = ({ shopId }) => {
           pagination={true}
           paginationPageSize={15}
           domLayout="normal"
+          suppressRowClickSelection={true}
+          paginationPageSizeSelector={[15, 25, 50]}
         />
       </div>
       {toggleShowCSV && (
