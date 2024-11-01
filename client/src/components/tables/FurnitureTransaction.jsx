@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -10,11 +10,24 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { formatToPeso } from "../globalFunctions";
 import { db } from "../../firebase/firebase";
+import {
+  startOfYear,
+  endOfYear,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  startOfQuarter,
+  endOfQuarter,
+} from "date-fns";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
 export const FurnitureTransaction = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const filter = searchParams.get("filter");
   const navigate = useNavigate();
   const gridRef = useRef();
   const [furniture, setFurniture] = useState(null);
@@ -67,11 +80,37 @@ export const FurnitureTransaction = () => {
       const furnitureData = furnitureSnapshot.docs[0]?.data();
       setFurniture(furnitureData);
 
-      // Fetch all orders with "Delivered" or "Picked-up" status
+      // Determine the start and end dates based on the filter
+      let start, end;
+      const today = new Date();
+
+      switch (filter) {
+        case "weekly":
+          start = startOfWeek(today);
+          end = endOfWeek(today);
+          break;
+        case "monthly":
+          start = startOfMonth(today);
+          end = endOfMonth(today);
+          break;
+        case "quarterly":
+          start = startOfQuarter(today);
+          end = endOfQuarter(today);
+          break;
+        case "yearly":
+        default:
+          start = startOfYear(today);
+          end = endOfYear(today);
+          break;
+      }
+
+      // Fetch orders with "Delivered" or "Picked-up" status within the specified timeframe
       const ordersRef = collection(db, "orders");
       const ordersQuery = query(
         ordersRef,
-        where("orderStatus", "in", ["Delivered", "Picked-up"])
+        where("orderStatus", "in", ["Delivered", "Picked-up"]),
+        where("createdAt", ">=", start),
+        where("createdAt", "<=", end)
       );
 
       const ordersSnapshot = await getDocs(ordersQuery);
@@ -215,7 +254,7 @@ export const FurnitureTransaction = () => {
         </header>
       </section>
       <header className="px-3 py-4 mt-5 text-sm font-medium border-t border-x bg-arfagray">
-        Related Transactions
+        Related Transactions ({filter})
       </header>
       {/* Orders AG Grid */}
       <div className="ag-theme-quartz" style={{ height: "600px" }}>
