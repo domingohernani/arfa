@@ -202,7 +202,8 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
     const shopOrdersQuery = query(
       ordersCollection,
       where("shopId", "==", shopId),
-      where("createdAt", ">=", startTimestamp)
+      where("createdAt", ">=", startTimestamp),
+      where("orderStatus", "in", ["Delivered", "Picked-up"])
     );
     const ordersSnapshot = await getDocs(shopOrdersQuery);
 
