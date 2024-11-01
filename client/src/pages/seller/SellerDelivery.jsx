@@ -160,18 +160,18 @@ const SellerDelivery = () => {
     <section className="m-5">
       <div
         className="ag-theme-quartz"
-        style={{ height: "600px", width: "100%" }}
+        style={{ height: "813px", width: "100%" }}
       >
         <AgGridReact
           ref={gridRef}
           rowData={regionData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
-          pagination={true}
-          paginationPageSize={15}
+          // pagination={true}
+          // paginationPageSize={15}
           rowSelection="multiple"
           suppressRowClickSelection={true}
-          paginationPageSizeSelector={[15, 25, 50]}
+          // paginationPageSizeSelector={[15, 25, 50]}
           domLayout="normal"
         />
       </div>
