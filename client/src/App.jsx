@@ -51,6 +51,7 @@ import SellerUserProfile from "./pages/seller/sub/SellerUserProfile";
 import SellerUserSecurity from "./pages/seller/sub/SellerUserSecurity";
 import { SellerUserPayment } from "./pages/seller/sub/SellerUserPayment";
 import { FurnitureTransaction } from "./components/tables/FurnitureTransaction";
+import TransactionDetails from "./pages/seller/sub/TransactionDetails";
 
 function App() {
   useEffect(() => {
@@ -124,7 +125,9 @@ function App() {
 
               <Route element={<SellerDelivery />} path="delivery" />
 
-              <Route element={<SellerTransaction />} path="transaction" />
+              <Route element={<SellerTransaction />} path="transaction">
+                <Route path="details/:id" element={<TransactionDetails />} />
+              </Route>
 
               <Route path="report" element={<SellerReports />}>
                 <Route
