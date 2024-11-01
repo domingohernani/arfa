@@ -144,7 +144,7 @@ const TopSellers = ({ shopId }) => {
 
   return (
     <section>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex flex-wrap items-center justify-between mb-2">
         <p className="text-sm font-medium">
           Best-Selling Products by Units Sold
         </p>

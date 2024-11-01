@@ -167,7 +167,7 @@ const MostRated = ({ shopId }) => {
 
   return (
     <section>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex flex-wrap items-center justify-between mb-2">
         <p className="text-sm font-medium">Most Rated Products</p>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -219,8 +219,9 @@ const MostRated = ({ shopId }) => {
           rowSelection="multiple"
           pagination={true}
           paginationPageSize={15}
-          domLayout="normal"
           suppressRowClickSelection={true}
+          paginationPageSizeSelector={[15, 25, 50]}
+          domLayout="normal"
         />
       </div>
       {toggleShowCSV && (
