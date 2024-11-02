@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -21,6 +22,7 @@ ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
 const YearlyRevenue = ({ shopId }) => {
   const gridRef = useRef();
+  const navigate = useNavigate();
   const orderGridRef = useRef();
   const [rowData, setRowData] = useState([]);
   const [selectedYearOrders, setSelectedYearOrders] = useState([]);
@@ -68,9 +70,8 @@ const YearlyRevenue = ({ shopId }) => {
   );
 
   const orderColumnDefs = [
-    { headerName: "Order ID", field: "id", flex: 1 },
-    { headerName: "Shopper Name", field: "shopperName", flex: 1 },
-    { headerName: "Shopper Email", field: "shopperEmail", flex: 1 },
+    { headerName: "Transaction ID", field: "id", flex: 1 },
+    { headerName: "Name", field: "shopperName", flex: 1 },
     {
       headerName: "Quantity",
       field: "orderItems",
@@ -83,7 +84,7 @@ const YearlyRevenue = ({ shopId }) => {
       flex: 1,
       valueFormatter: (params) => formatToPeso(params.value),
     },
-    { headerName: "Order Status", field: "orderStatus", flex: 1 },
+    { headerName: "Status", field: "orderStatus", flex: 1 },
     {
       headerName: "Created At",
       field: "createdAt",
@@ -102,6 +103,25 @@ const YearlyRevenue = ({ shopId }) => {
         if (date instanceof Date) {
           return date.toLocaleDateString() + " " + date.toLocaleTimeString();
         }
+      },
+    },
+    {
+      headerName: "Action",
+      field: "action",
+      filter: false,
+      flex: 1,
+      cellRenderer: (params) => {
+        return (
+          <button
+            className="px-3 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+            onClick={() => {
+              navigate(`/seller-page/transaction/details/${params.data.id}`);
+            }}
+          >
+            <EyeIcon className="inline-block w-4 h-4 mr-1" />
+            <span className="text-sm">View</span>
+          </button>
+        );
       },
     },
   ];
@@ -165,13 +185,12 @@ const YearlyRevenue = ({ shopId }) => {
             shopperName: shopperInfo
               ? `${shopperInfo.firstName} ${shopperInfo.lastName}`
               : "N/A",
-            shopperEmail: shopperInfo ? shopperInfo.email : "N/A",
           });
         }
       }
       setSelectedYear(year);
       setSelectedYearOrders(orders);
-      setIsOrderTableVisible(true); 
+      setIsOrderTableVisible(true);
     } catch (error) {
       console.error("Error fetching orders by year and status:", error);
     }
@@ -184,18 +203,22 @@ const YearlyRevenue = ({ shopId }) => {
   }, [shopId]);
 
   const handleExport = () => {
-    gridRef.current.api.exportDataAsCsv();
+    if (gridRef.current) {
+      gridRef.current.api.exportDataAsCsv();
+    }
   };
 
   const handleOrderExport = () => {
-    orderGridRef.current.api.exportDataAsCsv();
+    if (orderGridRef.current) {
+      orderGridRef.current.api.exportDataAsCsv();
+    }
   };
 
   const handleToggleCsvContent = () => {
     if (toggleShowCSV) {
       setCsvContent("");
       setToggleShowCSV(false);
-    } else {
+    } else if (gridRef.current) {
       const csvData = gridRef.current.api.getDataAsCsv();
       setCsvContent(csvData);
       setToggleShowCSV(true);
@@ -206,26 +229,12 @@ const YearlyRevenue = ({ shopId }) => {
     if (toggleShowOrderCSV) {
       setCsvContent("");
       setToggleShowOrderCSV(false);
-    } else {
+    } else if (orderGridRef.current) {
       const csvData = orderGridRef.current.api.getDataAsCsv();
       setCsvContent(csvData);
       setToggleShowOrderCSV(true);
     }
   };
-
-  useEffect(() => {
-    if (toggleShowCSV && gridRef.current) {
-      const csvData = gridRef.current.api.getDataAsCsv();
-      setCsvContent(csvData);
-    }
-  }, [toggleShowCSV, rowData]);
-
-  useEffect(() => {
-    if (toggleShowOrderCSV && orderGridRef.current) {
-      const csvData = orderGridRef.current.api.getDataAsCsv();
-      setCsvContent(csvData);
-    }
-  }, [toggleShowOrderCSV, selectedYearOrders]);
 
   return (
     <section>
