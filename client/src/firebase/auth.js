@@ -14,7 +14,7 @@ import {
   browserLocalPersistence,
   getAuth,
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
 export const setAuthPersistence = async () => {
   try {
@@ -57,6 +57,7 @@ export const doCreateUserWithEmailAndPassword = async (
     profileUrl: null,
     role: role,
     wishlist: [],
+    dateJoined: serverTimestamp(),
   });
   const userData = { ...user, role };
   return userData;
@@ -143,6 +144,7 @@ export const doSignupWithGoogle = async (userRole) => {
     profileUrl: user.reloadUserInfo.photoUrl || null,
     role: userRole,
     wishlist: [],
+    dateJoined: serverTimestamp(),
   });
 
   // Return the user along with the role and other details
@@ -222,6 +224,7 @@ export const doSignupWithFacebook = async (userRole) => {
     profileUrl: user.reloadUserInfo.photoUrl || null,
     role: userRole,
     wishlist: [],
+    dateJoined: serverTimestamp(),
   });
 
   // Return the user along with the role and other details
