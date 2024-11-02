@@ -11,7 +11,7 @@ import { getOrderById } from "../../../firebase/orders";
 import { getUserById } from "../../../firebase/user";
 import { getOrderStatusStyles } from "../../../components/globalFunctions";
 
-const OrderDetails = () => {
+const TransactionDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -54,15 +54,15 @@ const OrderDetails = () => {
         <div className="p-1 w-fit">
           <ArrowLeftIcon
             className="w-5 h-5 cursor-pointer"
-            onClick={() => navigate("/seller-page/order")}
+            onClick={() => navigate("/seller-page/transaction")}
           />
         </div>
         <div className="flex items-center gap-2">
           <h6
             className="cursor-pointer hover:text-arfagreen"
-            onClick={() => navigate("/seller-page/order")}
+            onClick={() => navigate("/seller-page/transaction")}
           >
-            Order
+            Transaction
           </h6>
           <h6 className="cursor-pointer">/</h6>
           <h6 className="cursor-pointer hover:text-arfagreen">Details</h6>
@@ -71,7 +71,7 @@ const OrderDetails = () => {
       <header className="mt-4 ">
         <section className="flex flex-wrap items-center justify-between">
           <div className="flex flex-col">
-            <h6 className="font-medium">Order #{order.id}</h6>
+            <h6 className="font-medium">Transaction #{order.id}</h6>
             <div className="flex gap-2">
               <p
                 className={`px-2 py-1 text-sm font-medium rounded-sm ${
@@ -86,12 +86,9 @@ const OrderDetails = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 mb-2 sm:mb-0">
-            <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center border border-gray-300 rounded-sm bg-arfagray min-w-max text-arfablack">
-              <FolderIcon className="w-4 h-4 text-gray-400" />
-              Export
-            </button>
             <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen">
-              Update Status
+              <FolderIcon className="w-4 h-4 text-white" />
+              <span>Export</span>
             </button>
           </div>
         </section>
@@ -112,7 +109,7 @@ const OrderDetails = () => {
       </header>
       <main className="flex flex-col gap-4 my-4 text-sm sm:flex-row">
         <section className="flex-1 border rounded-sm">
-          <section className="px-3 py-4 bg-arfagray">
+          <section className="px-3 py-4 border-b bg-arfagray">
             <span className="font-medium">Customer Details</span>
           </section>
           <section className="flex flex-col gap-1 p-4 ">
@@ -131,7 +128,7 @@ const OrderDetails = () => {
           </section>
         </section>
         <section className="flex-1 border rounded-sm">
-          <section className="flex items-center justify-between p-3 py-4 bg-arfagray">
+          <section className="flex items-center justify-between p-3 py-4 border-b bg-arfagray">
             <span className="font-medium">Shipping Address</span>
           </section>
           <section className="flex flex-col gap-1 p-4 ">
@@ -151,4 +148,4 @@ const OrderDetails = () => {
   );
 };
 
-export default OrderDetails;
+export default TransactionDetails;

@@ -11,6 +11,13 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "./firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  startOfWeek,
+  startOfMonth,
+  startOfQuarter,
+  startOfYear,
+  endOfToday,
+} from "date-fns";
 
 export const getShopInfo = async (shopId) => {
   try {
@@ -186,27 +193,39 @@ export const updateValidID = async (shopId, validIDFile) => {
 
 export const fetchTopSellers = async (shopId, timeFilter) => {
   try {
-    let startDate = new Date();
+    let start;
+    const end = endOfToday();
+
     if (timeFilter === "weekly") {
-      startDate.setDate(startDate.getDate() - 7);
+      start = startOfWeek(new Date());
     } else if (timeFilter === "monthly") {
-      startDate.setMonth(startDate.getMonth() - 1);
+      start = startOfMonth(new Date());
     } else if (timeFilter === "quarterly") {
-      startDate.setMonth(startDate.getMonth() - 3);
+      start = startOfQuarter(new Date());
     } else if (timeFilter === "yearly") {
-      startDate.setFullYear(startDate.getFullYear() - 1);
+      start = startOfYear(new Date());
+    } else if (timeFilter === "all") {
+      start = null; // No start date filtering for "All Time"
+    } else {
+      throw new Error("Invalid time filter");
     }
-    const startTimestamp = Timestamp.fromDate(startDate);
 
     const ordersCollection = collection(db, "orders");
-    const shopOrdersQuery = query(
-      ordersCollection,
-      where("shopId", "==", shopId),
-      where("createdAt", ">=", startTimestamp),
-      where("orderStatus", "in", ["Delivered", "Picked-up"])
-    );
-    const ordersSnapshot = await getDocs(shopOrdersQuery);
+    const shopOrdersQuery = start
+      ? query(
+          ordersCollection,
+          where("shopId", "==", shopId),
+          where("createdAt", ">=", Timestamp.fromDate(start)),
+          where("createdAt", "<=", Timestamp.fromDate(end)),
+          where("orderStatus", "in", ["Delivered", "Picked-up"])
+        )
+      : query(
+          ordersCollection,
+          where("shopId", "==", shopId),
+          where("orderStatus", "in", ["Delivered", "Picked-up"])
+        );
 
+    const ordersSnapshot = await getDocs(shopOrdersQuery);
     const productStats = {};
 
     ordersSnapshot.forEach((doc) => {
@@ -214,7 +233,6 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
 
       order.orderItems.forEach((item) => {
         const { id, name, price, quantity, totalItemPrice } = item;
-
         if (productStats[id]) {
           productStats[id].unitsSold += quantity;
           productStats[id].revenue += totalItemPrice;
@@ -230,10 +248,7 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
     });
 
     const productArray = Object.values(productStats);
-
-    productArray.sort(
-      (a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue
-    );
+    productArray.sort((a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue);
 
     return productArray;
   } catch (error) {
