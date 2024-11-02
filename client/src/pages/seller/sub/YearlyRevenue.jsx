@@ -15,18 +15,20 @@ import {
 import { db } from "../../../firebase/firebase";
 import { formatToPeso } from "../../../components/globalFunctions";
 import { getUserById } from "../../../firebase/user";
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
 const YearlyRevenue = ({ shopId }) => {
   const gridRef = useRef();
-  const orderGridRef = useRef(); // New ref for the orders table
+  const orderGridRef = useRef();
   const [rowData, setRowData] = useState([]);
   const [selectedYearOrders, setSelectedYearOrders] = useState([]);
   const [isOrderTableVisible, setIsOrderTableVisible] = useState(false);
   const [csvContent, setCsvContent] = useState("");
   const [toggleShowCSV, setToggleShowCSV] = useState(false);
-  const [toggleShowOrderCSV, setToggleShowOrderCSV] = useState(false); // New toggle for order CSV
+  const [toggleShowOrderCSV, setToggleShowOrderCSV] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(0);
 
   const columnDefs = useMemo(
     () => [
@@ -167,9 +169,9 @@ const YearlyRevenue = ({ shopId }) => {
           });
         }
       }
-
+      setSelectedYear(year);
       setSelectedYearOrders(orders);
-      setIsOrderTableVisible(true); // Show the order table
+      setIsOrderTableVisible(true); 
     } catch (error) {
       console.error("Error fetching orders by year and status:", error);
     }
@@ -239,10 +241,37 @@ const YearlyRevenue = ({ shopId }) => {
             CSV file for further analysis, reporting, or record-keeping.
           </p>
         </div>
-        <div className="flex items-center w-full gap-4 ml-auto bg-red-300">
-          <div>
-            <p className="text-sm font-medium">Yearly </p>
-          </div>
+        <div className="flex items-center justify-between w-full gap-4 ml-auto ">
+          <nav className="flex items-center gap-2 mb-3">
+            {selectedYear !== 0 && (
+              <>
+                <div className="p-1 w-fit">
+                  <ArrowLeftIcon
+                    className="w-5 h-5 cursor-pointer"
+                    onClick={() => {
+                      setSelectedYear(0);
+                      setIsOrderTableVisible(false);
+                    }}
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h6
+                    className="font-normal cursor-pointer hover:text-arfagreen"
+                    onClick={() => {
+                      setSelectedYear(0);
+                      setIsOrderTableVisible(false);
+                    }}
+                  >
+                    Yearly
+                  </h6>
+                  <h6 className="cursor-pointer">/</h6>
+                  <h6 className="font-normal cursor-pointer hover:text-arfagreen">
+                    {selectedYear}
+                  </h6>
+                </div>
+              </>
+            )}
+          </nav>
           <div className="flex items-center gap-4">
             <button
               onClick={
