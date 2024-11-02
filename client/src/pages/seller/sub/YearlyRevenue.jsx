@@ -14,12 +14,15 @@ import {
 } from "@heroicons/react/24/outline";
 import { db } from "../../../firebase/firebase";
 import { formatToPeso } from "../../../components/globalFunctions";
+import { getUserById } from "../../../firebase/user";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
 const YearlyRevenue = ({ shopId }) => {
   const gridRef = useRef();
   const [rowData, setRowData] = useState([]);
+  const [selectedYearOrders, setSelectedYearOrders] = useState([]);
+  const [isOrderTableVisible, setIsOrderTableVisible] = useState(false);
   const [csvContent, setCsvContent] = useState("");
   const [toggleShowCSV, setToggleShowCSV] = useState(false);
 
@@ -31,6 +34,21 @@ const YearlyRevenue = ({ shopId }) => {
         field: "totalRevenue",
         flex: 1,
         valueFormatter: (params) => formatToPeso(params.value),
+      },
+      {
+        headerName: "Action",
+        field: "action",
+        filter: false,
+        flex: 1,
+        cellRenderer: (params) => (
+          <button
+            className="px-3 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+            onClick={() => fetchOrdersByYearAndStatus(params.data.year)}
+          >
+            <EyeIcon className="inline-block w-4 h-4 mr-1" />
+            <span className="text-sm">View</span>
+          </button>
+        ),
       },
     ],
     []
@@ -45,9 +63,54 @@ const YearlyRevenue = ({ shopId }) => {
     []
   );
 
+  const orderColumnDefs = [
+    { headerName: "Order ID", field: "id", flex: 1 },
+    { headerName: "Shopper Name", field: "shopperName", flex: 1 },
+    { headerName: "Shopper Email", field: "shopperEmail", flex: 1 },
+    {
+      headerName: "Quantity",
+      field: "orderItems",
+      flex: 1,
+      valueFormatter: (params) => {
+        return params.value.length;
+      },
+    },
+    {
+      headerName: "Total Price (₱)",
+      field: "orderTotal",
+      flex: 1,
+      valueFormatter: (params) => {
+        console.log(params.data);
+
+        return formatToPeso(params.value);
+      },
+    },
+    { headerName: "Order Status", field: "orderStatus", flex: 1 },
+    {
+      headerName: "Created At",
+      field: "createdAt",
+      flex: 1,
+      sort: "desc",
+      sortIndex: 0,
+      valueGetter: (params) => {
+        const createdAtDate = params.data.createdAt;
+        if (createdAtDate && createdAtDate.seconds) {
+          return new Date(createdAtDate.seconds * 1000);
+        }
+        return null;
+      },
+      valueFormatter: (params) => {
+        const date = params.value;
+
+        if (date instanceof Date) {
+          return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+        }
+      },
+    },
+  ];
+
   const fetchYearlyRevenue = async () => {
     try {
-      // Query orders that belong to the specified shop and have been "Delivered" or "Picked-up"
       const ordersRef = collection(db, "orders");
       const ordersQuery = query(
         ordersRef,
@@ -66,11 +129,9 @@ const YearlyRevenue = ({ shopId }) => {
           revenueByYear[orderYear] = 0;
         }
 
-        // Accumulate revenue for the year
         revenueByYear[orderYear] += order.orderTotal || 0;
       });
 
-      // Convert the revenueByYear object into an array of objects for AG Grid
       const formattedData = Object.keys(revenueByYear).map((year) => ({
         year: parseInt(year, 10),
         totalRevenue: revenueByYear[year],
@@ -79,6 +140,44 @@ const YearlyRevenue = ({ shopId }) => {
       setRowData(formattedData);
     } catch (error) {
       console.error("Error fetching yearly revenue:", error);
+    }
+  };
+
+  const fetchOrdersByYearAndStatus = async (year) => {
+    try {
+      const ordersRef = collection(db, "orders");
+      const ordersQuery = query(
+        ordersRef,
+        where("shopId", "==", shopId),
+        where("orderStatus", "in", ["Delivered", "Picked-up"])
+      );
+      const ordersSnapshot = await getDocs(ordersQuery);
+
+      const orders = [];
+
+      for (const doc of ordersSnapshot.docs) {
+        const order = doc.data();
+        const orderYear = order.createdAt.toDate().getFullYear();
+
+        if (orderYear === year) {
+          const shopperInfo = await getUserById(order.shopperId);
+          console.log(shopperInfo);
+
+          orders.push({
+            id: doc.id,
+            ...order,
+            shopperName: shopperInfo
+              ? `${shopperInfo.firstName} ${shopperInfo.lastName}`
+              : "N/A",
+            shopperEmail: shopperInfo ? shopperInfo.email : "N/A",
+          });
+        }
+      }
+
+      setSelectedYearOrders(orders);
+      setIsOrderTableVisible(true); // Show the order table
+    } catch (error) {
+      console.error("Error fetching orders by year and status:", error);
     }
   };
 
@@ -121,7 +220,7 @@ const YearlyRevenue = ({ shopId }) => {
             and Total Revenue (₱), giving a clear view of financial performance
             over time. Filters enable quick searching and sorting by specific
             years. Additionally, there is an option to download the data as a
-            CSV file for further analysis, reporting, or record-keeping
+            CSV file for further analysis, reporting, or record-keeping.
           </p>
         </div>
         <div className="flex items-center gap-4 ml-auto">
@@ -150,29 +249,43 @@ const YearlyRevenue = ({ shopId }) => {
           </button>
         </div>
       </div>
-      <div className="ag-theme-quartz" style={{ height: "600px" }}>
-        <AgGridReact
-          ref={gridRef}
-          rowData={rowData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          pagination={true}
-          rowSelection="multiple"
-          suppressRowClickSelection={true}
-          paginationPageSize={15}
-          paginationPageSizeSelector={[15, 25, 50]}
-          domLayout="normal"
-        />
-      </div>
-      {toggleShowCSV && (
-        <div className="mt-4">
-          <textarea
-            value={csvContent}
-            readOnly
-            placeholder="CSV content will appear here when you click 'Show CSV Content'"
-            className="h-40 bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+
+      {isOrderTableVisible ? (
+        <div className="ag-theme-quartz" style={{ height: "400px" }}>
+          <AgGridReact
+            rowData={selectedYearOrders}
+            columnDefs={orderColumnDefs}
+            defaultColDef={defaultColDef}
+            pagination={true}
+            paginationPageSize={10}
           />
         </div>
+      ) : (
+        <section>
+          <div className="ag-theme-quartz" style={{ height: "600px" }}>
+            <AgGridReact
+              ref={gridRef}
+              rowData={rowData}
+              columnDefs={columnDefs}
+              defaultColDef={defaultColDef}
+              pagination={true}
+              rowSelection="multiple"
+              suppressRowClickSelection={true}
+              paginationPageSize={15}
+            />
+          </div>
+
+          {toggleShowCSV && (
+            <div className="mt-4">
+              <textarea
+                value={csvContent}
+                readOnly
+                placeholder="CSV content will appear here when you click 'Show CSV Content'"
+                className="h-40 bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+              />
+            </div>
+          )}
+        </section>
       )}
       <Toaster />
     </section>
