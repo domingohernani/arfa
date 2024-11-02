@@ -20,11 +20,13 @@ ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
 const YearlyRevenue = ({ shopId }) => {
   const gridRef = useRef();
+  const orderGridRef = useRef(); // New ref for the orders table
   const [rowData, setRowData] = useState([]);
   const [selectedYearOrders, setSelectedYearOrders] = useState([]);
   const [isOrderTableVisible, setIsOrderTableVisible] = useState(false);
   const [csvContent, setCsvContent] = useState("");
   const [toggleShowCSV, setToggleShowCSV] = useState(false);
+  const [toggleShowOrderCSV, setToggleShowOrderCSV] = useState(false); // New toggle for order CSV
 
   const columnDefs = useMemo(
     () => [
@@ -71,19 +73,13 @@ const YearlyRevenue = ({ shopId }) => {
       headerName: "Quantity",
       field: "orderItems",
       flex: 1,
-      valueFormatter: (params) => {
-        return params.value.length;
-      },
+      valueFormatter: (params) => params.value.length,
     },
     {
       headerName: "Total Price (₱)",
       field: "orderTotal",
       flex: 1,
-      valueFormatter: (params) => {
-        console.log(params.data);
-
-        return formatToPeso(params.value);
-      },
+      valueFormatter: (params) => formatToPeso(params.value),
     },
     { headerName: "Order Status", field: "orderStatus", flex: 1 },
     {
@@ -101,7 +97,6 @@ const YearlyRevenue = ({ shopId }) => {
       },
       valueFormatter: (params) => {
         const date = params.value;
-
         if (date instanceof Date) {
           return date.toLocaleDateString() + " " + date.toLocaleTimeString();
         }
@@ -161,7 +156,6 @@ const YearlyRevenue = ({ shopId }) => {
 
         if (orderYear === year) {
           const shopperInfo = await getUserById(order.shopperId);
-          console.log(shopperInfo);
 
           orders.push({
             id: doc.id,
@@ -191,6 +185,10 @@ const YearlyRevenue = ({ shopId }) => {
     gridRef.current.api.exportDataAsCsv();
   };
 
+  const handleOrderExport = () => {
+    orderGridRef.current.api.exportDataAsCsv();
+  };
+
   const handleToggleCsvContent = () => {
     if (toggleShowCSV) {
       setCsvContent("");
@@ -199,6 +197,17 @@ const YearlyRevenue = ({ shopId }) => {
       const csvData = gridRef.current.api.getDataAsCsv();
       setCsvContent(csvData);
       setToggleShowCSV(true);
+    }
+  };
+
+  const handleToggleOrderCsvContent = () => {
+    if (toggleShowOrderCSV) {
+      setCsvContent("");
+      setToggleShowOrderCSV(false);
+    } else {
+      const csvData = orderGridRef.current.api.getDataAsCsv();
+      setCsvContent(csvData);
+      setToggleShowOrderCSV(true);
     }
   };
 
@@ -241,7 +250,9 @@ const YearlyRevenue = ({ shopId }) => {
             )}
           </button>
           <button
-            onClick={handleExport}
+            onClick={() => {
+              !isOrderTableVisible ? handleExport() : handleOrderExport();
+            }}
             className="text-white flex min-w-max items-center justify-center gap-1 bg-arfagreen font-medium rounded-md text-sm px-2 py-2.5 text-center"
           >
             <ArrowDownOnSquareStackIcon className="w-5 h-5 text-white" />
@@ -253,6 +264,7 @@ const YearlyRevenue = ({ shopId }) => {
       {isOrderTableVisible ? (
         <div className="ag-theme-quartz" style={{ height: "400px" }}>
           <AgGridReact
+            ref={orderGridRef} // Ref for order grid
             rowData={selectedYearOrders}
             columnDefs={orderColumnDefs}
             defaultColDef={defaultColDef}
