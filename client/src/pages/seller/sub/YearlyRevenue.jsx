@@ -212,11 +212,18 @@ const YearlyRevenue = ({ shopId }) => {
   };
 
   useEffect(() => {
-    if (toggleShowCSV) {
+    if (toggleShowCSV && gridRef.current) {
       const csvData = gridRef.current.api.getDataAsCsv();
       setCsvContent(csvData);
     }
-  }, [rowData]);
+  }, [toggleShowCSV, rowData]);
+
+  useEffect(() => {
+    if (toggleShowOrderCSV && orderGridRef.current) {
+      const csvData = orderGridRef.current.api.getDataAsCsv();
+      setCsvContent(csvData);
+    }
+  }, [toggleShowOrderCSV, selectedYearOrders]);
 
   return (
     <section>
@@ -232,45 +239,69 @@ const YearlyRevenue = ({ shopId }) => {
             CSV file for further analysis, reporting, or record-keeping.
           </p>
         </div>
-        <div className="flex items-center gap-4 ml-auto">
-          <button
-            onClick={handleToggleCsvContent}
-            className="flex text-arfablack items-center border-gray-300 border justify-center gap-1 bg-arfagray font-medium rounded-md text-sm px-2 py-2.5 text-center"
-          >
-            {toggleShowCSV ? (
-              <>
-                <span>Hide</span>
-                <EyeSlashIcon className="w-5 h-5 text-black" />
-              </>
-            ) : (
-              <>
-                <span>Show</span>
-                <EyeIcon className="w-5 h-5 text-black" />
-              </>
-            )}
-          </button>
-          <button
-            onClick={() => {
-              !isOrderTableVisible ? handleExport() : handleOrderExport();
-            }}
-            className="text-white flex min-w-max items-center justify-center gap-1 bg-arfagreen font-medium rounded-md text-sm px-2 py-2.5 text-center"
-          >
-            <ArrowDownOnSquareStackIcon className="w-5 h-5 text-white" />
-            <span>Download CSV</span>
-          </button>
+        <div className="flex items-center w-full gap-4 ml-auto bg-red-300">
+          <div>
+            <p className="text-sm font-medium">Yearly </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={
+                !isOrderTableVisible
+                  ? handleToggleCsvContent
+                  : handleToggleOrderCsvContent
+              }
+              className="flex text-arfablack items-center border-gray-300 border justify-center gap-1 bg-arfagray font-medium rounded-md text-sm px-2 py-2.5 text-center"
+            >
+              {(!isOrderTableVisible && toggleShowCSV) ||
+              (isOrderTableVisible && toggleShowOrderCSV) ? (
+                <>
+                  <span>Hide</span>
+                  <EyeSlashIcon className="w-5 h-5 text-black" />
+                </>
+              ) : (
+                <>
+                  <span>Show</span>
+                  <EyeIcon className="w-5 h-5 text-black" />
+                </>
+              )}
+            </button>
+            <button
+              onClick={() =>
+                !isOrderTableVisible ? handleExport() : handleOrderExport()
+              }
+              className="text-white flex min-w-max items-center justify-center gap-1 bg-arfagreen font-medium rounded-md text-sm px-2 py-2.5 text-center"
+            >
+              <ArrowDownOnSquareStackIcon className="w-5 h-5 text-white" />
+              <span>Download CSV</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {isOrderTableVisible ? (
-        <div className="ag-theme-quartz" style={{ height: "400px" }}>
+        <div className="ag-theme-quartz" style={{ height: "600px" }}>
           <AgGridReact
-            ref={orderGridRef} // Ref for order grid
+            ref={orderGridRef}
             rowData={selectedYearOrders}
             columnDefs={orderColumnDefs}
             defaultColDef={defaultColDef}
             pagination={true}
-            paginationPageSize={10}
+            rowSelection="multiple"
+            suppressRowClickSelection={true}
+            paginationPageSize={15}
+            paginationPageSizeSelector={[15, 25, 50]}
+            domLayout="normal"
           />
+          {toggleShowOrderCSV && (
+            <div className="mt-4">
+              <textarea
+                value={csvContent}
+                readOnly
+                placeholder="CSV content will appear here when you click 'Show CSV Content'"
+                className="h-40 bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+              />
+            </div>
+          )}
         </div>
       ) : (
         <section>
@@ -284,9 +315,10 @@ const YearlyRevenue = ({ shopId }) => {
               rowSelection="multiple"
               suppressRowClickSelection={true}
               paginationPageSize={15}
+              paginationPageSizeSelector={[15, 25, 50]}
+              domLayout="normal"
             />
           </div>
-
           {toggleShowCSV && (
             <div className="mt-4">
               <textarea
