@@ -13,6 +13,7 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import { formatToPeso } from "../globalFunctions";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 const TopSellers = ({ shopId }) => {
@@ -23,60 +24,54 @@ const TopSellers = ({ shopId }) => {
   const [csvContent, setCsvContent] = useState("");
   const [toggleShowCSV, setToggleShowCSV] = useState(false);
 
-  const [columnDefs, setColumnDefs] = useState([
-    {
-      headerName: "Product ID",
-      field: "productId",
-      flex: 1,
-      filter: "agTextColumnFilter",
-    },
-    {
-      headerName: "Product Name",
-      field: "name",
-      flex: 1,
-      filter: "agTextColumnFilter",
-    },
-    {
-      headerName: "Units Sold",
-      field: "unitsSold",
-      flex: 1,
-      filter: "agNumberColumnFilter",
-    },
-    {
-      headerName: "Revenue (₱)",
-      field: "revenue",
-      flex: 1,
-      filter: "agNumberColumnFilter",
-    },
-    {
-      headerName: "Action",
-      colId: "action",
-      flex: 1,
-      cellRenderer: (params) => {
-        const handleViewClick = () => {
-          const data = params.data;
-          navigate(
-            `/seller-page/report/furniture-transaction/${data.productId}`
-          );
-        };
-        return (
-          <section className="flex items-center justify-center gap-2 px-2 mt-1">
-            <button
-              className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
-              // onClick={() => {
-              //   const data = params.data;
-              //   alert(data.productId);
-              // }}
-              onClick={handleViewClick}
-            >
-              <EyeIcon className="inline-block w-4 h-4 mr-1" />
-              <span className="text-sm">View</span>
-            </button>
-          </section>
-        );
+  const columnDefs = useMemo(
+    () => [
+      {
+        headerName: "Product ID",
+        field: "productId",
+        flex: 1,
+        filter: "agTextColumnFilter",
       },
-    },
-  ]);
+      {
+        headerName: "Product Name",
+        field: "name",
+        flex: 1,
+        filter: "agTextColumnFilter",
+      },
+      {
+        headerName: "Units Sold",
+        field: "unitsSold",
+        flex: 1,
+        filter: "agNumberColumnFilter",
+      },
+      {
+        headerName: "Revenue (₱)",
+        field: "revenue",
+        flex: 1,
+        filter: "agNumberColumnFilter",
+        valueFormatter: (params) => formatToPeso(params.value),
+      },
+      {
+        headerName: "Action",
+        colId: "action",
+        flex: 1,
+        cellRenderer: (params) => {
+          return (
+            <section className="flex items-center justify-center gap-2 px-2 mt-1">
+              <button
+                className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+                onClick={() => handleViewClick(params.data, timeFilter)}
+              >
+                <EyeIcon className="inline-block w-4 h-4 mr-1" />
+                <span className="text-sm">View {timeFilter}</span>
+              </button>
+            </section>
+          );
+        },
+      },
+    ],
+    [timeFilter]
+  );
 
   const defaultColDef = useMemo(
     () => ({
@@ -86,6 +81,12 @@ const TopSellers = ({ shopId }) => {
     }),
     []
   );
+
+  const handleViewClick = (data, filter) => {
+    navigate(
+      `/seller-page/report/furniture-transaction/${data.productId}?filter=${filter}`
+    );
+  };
 
   const handleExport = () => {
     gridRef.current.api.exportDataAsCsv({
@@ -142,12 +143,23 @@ const TopSellers = ({ shopId }) => {
   }, [rowData]);
 
   return (
-    <section className="p-5">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-medium">
-          Best-Selling Products by Units Sold
-        </p>
-        <div className="flex items-center gap-4">
+    <section>
+      <div className="flex flex-wrap items-center justify-between mb-2">
+        <div>
+          <p className="text-sm font-medium">
+            Best-Selling Products by Units Sold
+          </p>
+          <p className="text-sm font-normal">
+            The top-selling products by units sold are displayed here, with
+            details such as Product ID, Product Name, Units Sold, and Revenue
+            (₱). The table includes filters for easy searching and sorting of
+            products. A dropdown menu allows selection of different time periods
+            - Weekly, Monthly, Quarterly, Yearly, and All Time. Data can be
+            downloaded as a CSV file, and each product has an action button to
+            view its performance for the selected time period
+          </p>
+        </div>
+        <div className="flex items-center gap-4 ml-auto">
           <div
             className="flex items-center gap-2"
             style={{ width: "min(250px, 50%)" }}
@@ -168,6 +180,7 @@ const TopSellers = ({ shopId }) => {
               <option value="monthly">Monthly</option>
               <option value="quarterly">Quarterly</option>
               <option value="yearly">Yearly</option>
+              <option value="all">All Time</option>
             </select>
           </div>
 
@@ -206,6 +219,8 @@ const TopSellers = ({ shopId }) => {
           pagination={true}
           paginationPageSize={15}
           domLayout="normal"
+          suppressRowClickSelection={true}
+          paginationPageSizeSelector={[15, 25, 50]}
         />
       </div>
       {toggleShowCSV && (

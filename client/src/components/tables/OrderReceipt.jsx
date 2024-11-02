@@ -2,7 +2,7 @@ import React from "react";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
-import { getOrderStatusStyles } from "../globalFunctions";
+import { formatToPeso, getOrderStatusStyles } from "../globalFunctions";
 
 const OrderReceipt = () => {
   const columnDefs = [
@@ -11,7 +11,7 @@ const OrderReceipt = () => {
       headerName: "Total Amount (₱)",
       field: "amount",
       flex: 1,
-      //   valueFormatter: currencyFormatter,
+      valueFormatter: (params) => formatToPeso(params.value),
     },
     { headerName: "Customer", field: "customer", flex: 2 },
     { headerName: "No. of Items", field: "numberOfItems" },
