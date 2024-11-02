@@ -152,24 +152,30 @@ const UserProfile = () => {
           onSubmit={handleFormSubmit}
         >
           <section className="flex flex-col items-center gap-3 lg:items-end lg:flex-row">
-            <div className="w-full max-w-96 h-96">
-              {profileUrl ? (
-                <img
-                  key={profileUrl}
-                  src={profileUrl}
-                  alt="profile image"
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <div
-                  className={
-                    "min-w-96 w-full h-full text-gray-600 text-8xl bg-arfagray flex justify-center items-center "
-                  }
-                >
-                  {firstName && lastName ? `${firstName[0]}${lastName[0]}` : ""}
-                </div>
-              )}
-            </div>
+            {profileUrl &&
+            typeof profileUrl === "string" &&
+            profileUrl.trim() !== "" ? (
+              <div className="w-full max-w-96 h-96">
+                {profileUrl ? (
+                  <img
+                    key={profileUrl}
+                    src={profileUrl}
+                    alt={`profile image ${profileUrl}`}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <div
+                    className={
+                      "min-w-96 w-full h-full text-gray-600 text-8xl bg-arfagray flex justify-center items-center "
+                    }
+                  >
+                    {firstName && lastName
+                      ? `${firstName[0]}${lastName[0]}`
+                      : ""}
+                  </div>
+                )}
+              </div>
+            ) : null}
             <section className="w-full gap-3 md:flex-1">
               <div className="flex items-center justify-between">
                 <label
