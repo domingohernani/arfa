@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -15,18 +16,21 @@ import {
 import { db } from "../../../firebase/firebase";
 import { formatToPeso } from "../../../components/globalFunctions";
 import { getUserById } from "../../../firebase/user";
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, CsvExportModule]);
 
 const YearlyRevenue = ({ shopId }) => {
   const gridRef = useRef();
-  const orderGridRef = useRef(); // New ref for the orders table
+  const navigate = useNavigate();
+  const orderGridRef = useRef();
   const [rowData, setRowData] = useState([]);
   const [selectedYearOrders, setSelectedYearOrders] = useState([]);
   const [isOrderTableVisible, setIsOrderTableVisible] = useState(false);
   const [csvContent, setCsvContent] = useState("");
   const [toggleShowCSV, setToggleShowCSV] = useState(false);
-  const [toggleShowOrderCSV, setToggleShowOrderCSV] = useState(false); // New toggle for order CSV
+  const [toggleShowOrderCSV, setToggleShowOrderCSV] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(0);
 
   const columnDefs = useMemo(
     () => [
@@ -66,9 +70,8 @@ const YearlyRevenue = ({ shopId }) => {
   );
 
   const orderColumnDefs = [
-    { headerName: "Order ID", field: "id", flex: 1 },
-    { headerName: "Shopper Name", field: "shopperName", flex: 1 },
-    { headerName: "Shopper Email", field: "shopperEmail", flex: 1 },
+    { headerName: "Transaction ID", field: "id", flex: 1 },
+    { headerName: "Name", field: "shopperName", flex: 1 },
     {
       headerName: "Quantity",
       field: "orderItems",
@@ -81,7 +84,7 @@ const YearlyRevenue = ({ shopId }) => {
       flex: 1,
       valueFormatter: (params) => formatToPeso(params.value),
     },
-    { headerName: "Order Status", field: "orderStatus", flex: 1 },
+    { headerName: "Status", field: "orderStatus", flex: 1 },
     {
       headerName: "Created At",
       field: "createdAt",
@@ -100,6 +103,25 @@ const YearlyRevenue = ({ shopId }) => {
         if (date instanceof Date) {
           return date.toLocaleDateString() + " " + date.toLocaleTimeString();
         }
+      },
+    },
+    {
+      headerName: "Action",
+      field: "action",
+      filter: false,
+      flex: 1,
+      cellRenderer: (params) => {
+        return (
+          <button
+            className="px-3 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+            onClick={() => {
+              navigate(`/seller-page/transaction/details/${params.data.id}`);
+            }}
+          >
+            <EyeIcon className="inline-block w-4 h-4 mr-1" />
+            <span className="text-sm">View</span>
+          </button>
+        );
       },
     },
   ];
@@ -163,13 +185,12 @@ const YearlyRevenue = ({ shopId }) => {
             shopperName: shopperInfo
               ? `${shopperInfo.firstName} ${shopperInfo.lastName}`
               : "N/A",
-            shopperEmail: shopperInfo ? shopperInfo.email : "N/A",
           });
         }
       }
-
+      setSelectedYear(year);
       setSelectedYearOrders(orders);
-      setIsOrderTableVisible(true); // Show the order table
+      setIsOrderTableVisible(true);
     } catch (error) {
       console.error("Error fetching orders by year and status:", error);
     }
@@ -182,18 +203,22 @@ const YearlyRevenue = ({ shopId }) => {
   }, [shopId]);
 
   const handleExport = () => {
-    gridRef.current.api.exportDataAsCsv();
+    if (gridRef.current) {
+      gridRef.current.api.exportDataAsCsv();
+    }
   };
 
   const handleOrderExport = () => {
-    orderGridRef.current.api.exportDataAsCsv();
+    if (orderGridRef.current) {
+      orderGridRef.current.api.exportDataAsCsv();
+    }
   };
 
   const handleToggleCsvContent = () => {
     if (toggleShowCSV) {
       setCsvContent("");
       setToggleShowCSV(false);
-    } else {
+    } else if (gridRef.current) {
       const csvData = gridRef.current.api.getDataAsCsv();
       setCsvContent(csvData);
       setToggleShowCSV(true);
@@ -204,26 +229,12 @@ const YearlyRevenue = ({ shopId }) => {
     if (toggleShowOrderCSV) {
       setCsvContent("");
       setToggleShowOrderCSV(false);
-    } else {
+    } else if (orderGridRef.current) {
       const csvData = orderGridRef.current.api.getDataAsCsv();
       setCsvContent(csvData);
       setToggleShowOrderCSV(true);
     }
   };
-
-  useEffect(() => {
-    if (toggleShowCSV && gridRef.current) {
-      const csvData = gridRef.current.api.getDataAsCsv();
-      setCsvContent(csvData);
-    }
-  }, [toggleShowCSV, rowData]);
-
-  useEffect(() => {
-    if (toggleShowOrderCSV && orderGridRef.current) {
-      const csvData = orderGridRef.current.api.getDataAsCsv();
-      setCsvContent(csvData);
-    }
-  }, [toggleShowOrderCSV, selectedYearOrders]);
 
   return (
     <section>
@@ -239,10 +250,37 @@ const YearlyRevenue = ({ shopId }) => {
             CSV file for further analysis, reporting, or record-keeping.
           </p>
         </div>
-        <div className="flex items-center w-full gap-4 ml-auto bg-red-300">
-          <div>
-            <p className="text-sm font-medium">Yearly </p>
-          </div>
+        <div className="flex items-center justify-between w-full gap-4 ml-auto ">
+          <nav className="flex items-center gap-2 mb-3">
+            {selectedYear !== 0 && (
+              <>
+                <div className="p-1 w-fit">
+                  <ArrowLeftIcon
+                    className="w-5 h-5 cursor-pointer"
+                    onClick={() => {
+                      setSelectedYear(0);
+                      setIsOrderTableVisible(false);
+                    }}
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h6
+                    className="font-normal cursor-pointer hover:text-arfagreen"
+                    onClick={() => {
+                      setSelectedYear(0);
+                      setIsOrderTableVisible(false);
+                    }}
+                  >
+                    Yearly
+                  </h6>
+                  <h6 className="cursor-pointer">/</h6>
+                  <h6 className="font-normal cursor-pointer hover:text-arfagreen">
+                    {selectedYear}
+                  </h6>
+                </div>
+              </>
+            )}
+          </nav>
           <div className="flex items-center gap-4">
             <button
               onClick={
