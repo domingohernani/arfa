@@ -171,12 +171,17 @@ const MostRated = ({ shopId }) => {
         <div>
           <p className="text-sm font-medium">Most Rated Products</p>
           <p className="text-sm font-normal">
-            This screen displays the most-rated products, organized by the
-            number of reviews and average rating. It includes columns for
-            Product ID, Category, Name, Total Reviews, and Rating. Filters allow
-            sorting by Best Rated or Worst Rated products. Each product entry
-            has an action button to view more details. Data can also be
-            downloaded as a CSV file.
+            Displays the most-rated products, organized by the number of reviews
+            and average rating, providing valuable insights into customer
+            preferences. It includes columns for essential product details such
+            as Product ID, Category, Name, Total Reviews, and Average Rating,
+            giving a comprehensive overview of each product's popularity and
+            quality. Filters can be applied to sort products by Best Rated or
+            Worst Rated, ensuring quick access to top-performing or lowest-rated
+            items. Additionally, each product entry has an action button to view
+            detailed insights and feedback from customers. For convenience, data
+            can be downloaded as a CSV file for further analysis or
+            record-keeping
           </p>
         </div>
         <div className="flex items-center gap-4 ml-auto">
