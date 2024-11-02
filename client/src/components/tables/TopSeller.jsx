@@ -150,13 +150,13 @@ const TopSellers = ({ shopId }) => {
             Best-Selling Products by Units Sold
           </p>
           <p className="text-sm font-normal">
-            This screen displays the top-selling products by units sold, showing
-            details such as the Product ID, Product Name, Units Sold, and
-            Revenue (₱). The table includes filters for easy searching and
-            sorting of products. A dropdown menu allows selection of different
-            time periods - Weekly, Monthly, Quarterly, Yearly, and All Time.
-            Data can be downloaded as a CSV file, and each product has an action
-            button to view its performance for the selected time period.
+            The top-selling products by units sold are displayed here, with
+            details such as Product ID, Product Name, Units Sold, and Revenue
+            (₱). The table includes filters for easy searching and sorting of
+            products. A dropdown menu allows selection of different time periods
+            - Weekly, Monthly, Quarterly, Yearly, and All Time. Data can be
+            downloaded as a CSV file, and each product has an action button to
+            view its performance for the selected time period
           </p>
         </div>
         <div className="flex items-center gap-4 ml-auto">

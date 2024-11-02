@@ -116,11 +116,12 @@ const YearlyRevenue = ({ shopId }) => {
         <div>
           <p className="text-sm font-medium">Yearly Revenue</p>
           <p className="text-sm font-normal">
-            This screen shows yearly revenue, providing a summary of total
-            revenue generated for each year. The table includes columns for the
-            Year and Total Revenue (₱). Filters allow searching and sorting by
-            specific years, and there is an option to download the data as a CSV
-            file.
+            Shows yearly revenue, providing a comprehensive summary of total
+            revenue generated for each year. It includes columns for the Year
+            and Total Revenue (₱), giving a clear view of financial performance
+            over time. Filters enable quick searching and sorting by specific
+            years. Additionally, there is an option to download the data as a
+            CSV file for further analysis, reporting, or record-keeping
           </p>
         </div>
         <div className="flex items-center gap-4 ml-auto">
