@@ -18,6 +18,7 @@ import {
   startOfYear,
   endOfToday,
 } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 export const getShopInfo = async (shopId) => {
   try {
@@ -248,10 +249,76 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
     });
 
     const productArray = Object.values(productStats);
-    productArray.sort((a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue);
+    productArray.sort(
+      (a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue
+    );
 
     return productArray;
   } catch (error) {
     console.error("Error fetching top sellers:", error);
+  }
+};
+
+export const saveImageHotspotData = async (
+  shopId,
+  imageFile,
+  hotspots,
+  existingImageUrl = null
+) => {
+  try {
+    // Check if the shop document exists
+    const shopRef = doc(db, "shops", shopId);
+    const imageHotspotCollectionRef = collection(shopRef, "image-hotspot");
+
+    let imageUrl = existingImageUrl;
+
+    // Upload the image to Firebase Storage
+    if (imageFile instanceof File) {
+      const storagePath = `files/image-hotspot/${uuidv4()}-${imageFile.name}`;
+      const storageRef = ref(storage, storagePath);
+      await uploadBytes(storageRef, imageFile);
+      imageUrl = await getDownloadURL(storageRef);
+    }
+
+    const imageHotspotDocRef = doc(imageHotspotCollectionRef, "data");
+    const imageHotspotDoc = await getDoc(imageHotspotDocRef);
+
+    const imageHotspotData = {
+      imageUrl,
+      hotspots,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (imageHotspotDoc.exists()) {
+      await updateDoc(imageHotspotDocRef, imageHotspotData);
+    } else {
+      await setDoc(imageHotspotDocRef, imageHotspotData);
+    }
+
+    return { success: true, imageUrl };
+  } catch (error) {
+    console.error("Error saving image hotspot data:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getImageHotspotData = async (shopId) => {
+  try {
+    const shopRef = doc(db, "shops", shopId);
+    const imageHotspotDocRef = doc(
+      collection(shopRef, "image-hotspot"),
+      "data"
+    );
+
+    const imageHotspotDoc = await getDoc(imageHotspotDocRef);
+
+    if (imageHotspotDoc.exists()) {
+      return { success: true, data: imageHotspotDoc.data() };
+    } else {
+      return { success: false, data: null, message: "No hotspot data found" };
+    }
+  } catch (error) {
+    console.error("Error fetching image hotspot data:", error);
+    return { success: false, error: error.message };
   }
 };
