@@ -4,6 +4,8 @@ import { formatToPeso } from "../../components/globalFunctions";
 import toast from "react-hot-toast";
 import { Tooltip } from "flowbite-react";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
+import { saveImageHotspotData } from "../../firebase/shop";
+import { useStore } from "../../stores/useStore";
 
 const SellerImageHotspot = () => {
   const [isMarkMode, setIsMarkMode] = useState(true);
@@ -13,6 +15,7 @@ const SellerImageHotspot = () => {
   const [isHoveringHotspot, setIsHoveringHotspot] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
+  const { loggedUser } = useStore();
 
   // Handle image upload and generate preview
   const handleImageUpload = (e) => {
@@ -87,8 +90,29 @@ const SellerImageHotspot = () => {
     setIsHoveringHotspot(false);
   };
 
-  const handleHotspotSave = () => {
-    console.log("Hotspots with associated furniture:", hotspots);
+  const handleHotspotSave = async () => {
+    if (!uploadedImage) {
+      toast.error("Please upload an image before saving hotspots.");
+      return;
+    }
+    try {
+      const file = document.querySelector('input[type="file"]').files[0];
+      const result = await saveImageHotspotData(
+        loggedUser.userId,
+        file,
+        hotspots
+      );
+
+      if (result.success) {
+        toast.success("Hotspot data saved successfully!");
+        console.log("Image URL:", result.imageUrl);
+      } else {
+        toast.error(`Failed to save: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Error saving hotspots:", error);
+      toast.error("Failed to save hotspots.");
+    }
   };
 
   return (
