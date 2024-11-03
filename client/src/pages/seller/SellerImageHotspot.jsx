@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import HotspotCard from "../../components/dynamic/HotspotCard";
+import { formatToPeso } from "../../components/globalFunctions";
 
 const SellerImageHotspot = () => {
   const [isMarkMode, setIsMarkMode] = useState(true);
@@ -137,6 +138,7 @@ const SellerImageHotspot = () => {
           {/* Fixed Hotspots */}
           {hotspots.map((hotspot) => (
             <div
+              // title={`Click this cicle to visit '${visibleContent?.name}'`}
               className="flex items-center justify-center border-2 border-black opacity-50 bg-arfablack"
               key={hotspot.id}
               style={{
@@ -149,7 +151,7 @@ const SellerImageHotspot = () => {
                 cursor: "pointer",
                 transform: "translate(-50%, -50%)",
               }}
-              onMouseEnter={() => handleMouseEnter(hotspot.furniture.name)}
+              onMouseEnter={() => handleMouseEnter(hotspot.furniture)}
               onMouseLeave={handleMouseLeave}
               onClick={(e) => {
                 e.stopPropagation();
@@ -181,18 +183,34 @@ const SellerImageHotspot = () => {
           {/* Tooltip Content */}
           {visibleContent && (
             <div
+              className="text-sm text-black bg-white"
               style={{
                 position: "absolute",
                 bottom: "10px",
                 left: "50%",
                 transform: "translateX(-50%)",
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                color: "white",
                 padding: "10px",
                 borderRadius: "5px",
+                width: "200px",
               }}
             >
-              {visibleContent}
+              <div
+                className="overflow-hidden font-medium text-arfagreen whitespace-nowrap text-ellipsis"
+                style={{ maxWidth: "200px" }}
+              >
+                {visibleContent.name}
+              </div>
+              <div
+                className="overflow-hidden text-xs whitespace-nowrap text-ellipsis"
+                style={{ maxWidth: "200px" }}
+              >
+                {visibleContent.description}
+              </div>
+              <div className="text-xl font-semibold">
+                {visibleContent.isSale
+                  ? formatToPeso(visibleContent.discountedPrice)
+                  : formatToPeso(visibleContent.price)}
+              </div>
             </div>
           )}
         </div>
