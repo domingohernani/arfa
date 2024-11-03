@@ -259,17 +259,26 @@ export const fetchTopSellers = async (shopId, timeFilter) => {
   }
 };
 
-export const saveImageHotspotData = async (shopId, imageFile, hotspots) => {
+export const saveImageHotspotData = async (
+  shopId,
+  imageFile,
+  hotspots,
+  existingImageUrl = null
+) => {
   try {
     // Check if the shop document exists
     const shopRef = doc(db, "shops", shopId);
     const imageHotspotCollectionRef = collection(shopRef, "image-hotspot");
 
+    let imageUrl = existingImageUrl;
+
     // Upload the image to Firebase Storage
-    const storagePath = `files/image-hotspot/${uuidv4()}-${imageFile.name}`;
-    const storageRef = ref(storage, storagePath);
-    await uploadBytes(storageRef, imageFile);
-    const imageUrl = await getDownloadURL(storageRef);
+    if (imageFile instanceof File) {
+      const storagePath = `files/image-hotspot/${uuidv4()}-${imageFile.name}`;
+      const storageRef = ref(storage, storagePath);
+      await uploadBytes(storageRef, imageFile);
+      imageUrl = await getDownloadURL(storageRef);
+    }
 
     const imageHotspotDocRef = doc(imageHotspotCollectionRef, "data");
     const imageHotspotDoc = await getDoc(imageHotspotDocRef);
