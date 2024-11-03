@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import HotspotCard from "../../components/dynamic/HotspotCard";
 import { formatToPeso } from "../../components/globalFunctions";
+import toast from "react-hot-toast";
 
 const SellerImageHotspot = () => {
   const [isMarkMode, setIsMarkMode] = useState(true);
@@ -10,7 +11,6 @@ const SellerImageHotspot = () => {
   const [isHoveringHotspot, setIsHoveringHotspot] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Update temporary hotspot position on mouse move
   const handleMouseMove = (e) => {
     if (isMarkMode && !isHoveringHotspot) {
       const rect = e.target.getBoundingClientRect();
@@ -23,22 +23,32 @@ const SellerImageHotspot = () => {
   // Add a new hotspot in mark mode
   const handleClick = () => {
     if (isMarkMode && !isHoveringHotspot) {
-      setIsModalOpen(true); // Open the modal to select furniture
+      setIsModalOpen(true);
     }
   };
 
-  // Save hotspot with selected furniture
   const handleSaveCard = (furniture) => {
+    // Check if the furniture is already marked
+    const isAlreadyMarked = hotspots.some(
+      (hotspot) => hotspot.furniture.id === furniture.id
+    );
+
+    if (isAlreadyMarked) {
+      toast.error("This furniture is already marked as a hotspot.");
+      return;
+    }
+
     setHotspots((prevHotspots) => [
       ...prevHotspots,
       {
         id: prevHotspots.length + 1,
         top: tempHotspot.top,
         left: tempHotspot.left,
-        furniture, // Save the selected furniture object with the hotspot
+        furniture,
       },
     ]);
-    setIsModalOpen(false); // Close the modal after saving
+
+    setIsModalOpen(false);
   };
 
   // Remove a hotspot in erase mode
@@ -139,7 +149,7 @@ const SellerImageHotspot = () => {
           {hotspots.map((hotspot) => (
             <div
               // title={`Click this cicle to visit '${visibleContent?.name}'`}
-              className="flex items-center justify-center border-2 border-black opacity-50 bg-arfablack"
+              className="flex items-center justify-center bg-gray-600 border-2 border-gray-700"
               key={hotspot.id}
               style={{
                 position: "absolute",
@@ -159,6 +169,43 @@ const SellerImageHotspot = () => {
               }}
             >
               <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
+
+              {/* Tooltip Content positioned above the hotspot */}
+              {visibleContent && visibleContent.id === hotspot.furniture.id && (
+                <div
+                  className="text-sm text-black bg-white opacity-100"
+                  style={{
+                    position: "absolute",
+                    bottom: "100%",
+                    left: "50%",
+                    transform: "translate(-50%, -10px)",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    width: "200px",
+                    marginBottom: "5px",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                    zIndex: 10,
+                  }}
+                >
+                  <div
+                    className="overflow-hidden font-medium text-arfagreen whitespace-nowrap text-ellipsis"
+                    style={{ maxWidth: "200px" }}
+                  >
+                    {visibleContent.name}
+                  </div>
+                  <div
+                    className="overflow-hidden text-xs whitespace-nowrap text-ellipsis"
+                    style={{ maxWidth: "200px" }}
+                  >
+                    {visibleContent.description}
+                  </div>
+                  <div className="text-xl font-semibold">
+                    {visibleContent.isSale
+                      ? formatToPeso(visibleContent.discountedPrice)
+                      : formatToPeso(visibleContent.price)}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
 
@@ -178,40 +225,6 @@ const SellerImageHotspot = () => {
                 pointerEvents: "none",
               }}
             />
-          )}
-
-          {/* Tooltip Content */}
-          {visibleContent && (
-            <div
-              className="text-sm text-black bg-white"
-              style={{
-                position: "absolute",
-                bottom: "10px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                padding: "10px",
-                borderRadius: "5px",
-                width: "200px",
-              }}
-            >
-              <div
-                className="overflow-hidden font-medium text-arfagreen whitespace-nowrap text-ellipsis"
-                style={{ maxWidth: "200px" }}
-              >
-                {visibleContent.name}
-              </div>
-              <div
-                className="overflow-hidden text-xs whitespace-nowrap text-ellipsis"
-                style={{ maxWidth: "200px" }}
-              >
-                {visibleContent.description}
-              </div>
-              <div className="text-xl font-semibold">
-                {visibleContent.isSale
-                  ? formatToPeso(visibleContent.discountedPrice)
-                  : formatToPeso(visibleContent.price)}
-              </div>
-            </div>
           )}
         </div>
         <div className="flex justify-between mt-4">
