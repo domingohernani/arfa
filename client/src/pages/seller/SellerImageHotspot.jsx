@@ -3,9 +3,14 @@ import HotspotCard from "../../components/dynamic/HotspotCard";
 import { formatToPeso } from "../../components/globalFunctions";
 import toast from "react-hot-toast";
 import { Tooltip } from "flowbite-react";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
+import {
+  QuestionMarkCircleIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/solid";
 import { saveImageHotspotData, getImageHotspotData } from "../../firebase/shop";
 import { useStore } from "../../stores/useStore";
+import imageHotspot from "../../assets/images/image-hotspot.svg";
+import { ImageHotspotExplain } from "../../components/modals/ImageHotspotExplain";
 
 const SellerImageHotspot = () => {
   const [isMarkMode, setIsMarkMode] = useState(true);
@@ -16,6 +21,7 @@ const SellerImageHotspot = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
   const { loggedUser } = useStore();
+  const [isHelpModal, setHelpModal] = useState(false);
 
   // Fetch existing hotspot data on component mount
   useEffect(() => {
@@ -137,33 +143,43 @@ const SellerImageHotspot = () => {
     }
   };
 
+  const handleCloseHelp = () => {
+    setHelpModal(false);
+  };
+
   return (
     <section className="p-5">
-      <HotspotCard
-        handleSaveCard={handleSaveCard}
-        isOpen={isModalOpen}
-        close={() => setIsModalOpen(false)}
-      />
-
+      <ImageHotspotExplain close={handleCloseHelp} isOpen={isHelpModal} />
       {/* Image Upload Section */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between w-fit">
-          <label className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-900">
-            Upload an Image
-            <Tooltip content="Upload a photo that displays the products you want to showcase">
-              <QuestionMarkCircleIcon
-                className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
-                aria-hidden="true"
-              />
-            </Tooltip>
-          </label>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <div className="flex items-center justify-between w-fit">
+            <label className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-900">
+              Upload an Image
+              <Tooltip content="Upload a photo that displays the products you want to showcase">
+                <QuestionMarkCircleIcon
+                  className="w-4 h-4 ml-auto mr-1 text-gray-300 cursor-pointer hover:text-gray-500"
+                  aria-hidden="true"
+                />
+              </Tooltip>
+            </label>
+          </div>
+          <input
+            type="file"
+            onChange={handleImageUpload}
+            className={`block w-min pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen cursor-pointer`}
+            accept=".jpg, .jpeg, .png"
+          />
         </div>
-        <input
-          type="file"
-          onChange={handleImageUpload}
-          className={`block w-min pr-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-arfagreen focus:border-arfagreen cursor-pointer`}
-          accept=".jpg, .jpeg, .png"
-        />
+        <div
+          className="flex items-center gap-2 underline cursor-pointer text-arfablack"
+          onClick={() => {
+            setHelpModal(true);
+          }}
+        >
+          <span>Help</span>
+          <InformationCircleIcon className="w-4 h-4" />
+        </div>
       </div>
 
       {/* Preview Section */}
