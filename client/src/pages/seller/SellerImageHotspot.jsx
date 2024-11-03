@@ -4,12 +4,10 @@ import HotspotCard from "../../components/dynamic/HotspotCard";
 const SellerImageHotspot = () => {
   const [isMarkMode, setIsMarkMode] = useState(true);
   const [hotspots, setHotspots] = useState([]);
-
   const [tempHotspot, setTempHotspot] = useState({ top: "0%", left: "0%" });
   const [visibleContent, setVisibleContent] = useState(null);
   const [isHoveringHotspot, setIsHoveringHotspot] = useState(false);
-
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Update temporary hotspot position on mouse move
   const handleMouseMove = (e) => {
@@ -24,16 +22,22 @@ const SellerImageHotspot = () => {
   // Add a new hotspot in mark mode
   const handleClick = () => {
     if (isMarkMode && !isHoveringHotspot) {
-      setHotspots([
-        ...hotspots,
-        {
-          id: hotspots.length + 1,
-          top: tempHotspot.top,
-          left: tempHotspot.left,
-          content: `Hotspot ${hotspots.length + 1} content`,
-        },
-      ]);
+      setIsModalOpen(true); // Open the modal to select furniture
     }
+  };
+
+  // Save hotspot with selected furniture
+  const handleSaveCard = (furniture) => {
+    setHotspots((prevHotspots) => [
+      ...prevHotspots,
+      {
+        id: prevHotspots.length + 1,
+        top: tempHotspot.top,
+        left: tempHotspot.left,
+        furniture, // Save the selected furniture object with the hotspot
+      },
+    ]);
+    setIsModalOpen(false); // Close the modal after saving
   };
 
   // Remove a hotspot in erase mode
@@ -42,12 +46,12 @@ const SellerImageHotspot = () => {
       const updatedHotspots = hotspots.filter((hotspot) => hotspot.id !== id);
       setHotspots(updatedHotspots);
 
-      // Reset isHoveringHotspot if no hotspots remain
       if (updatedHotspots.length === 0) {
         setIsHoveringHotspot(false);
       }
     }
   };
+
   // Show content on hover
   const handleMouseEnter = (content) => {
     setVisibleContent(content);
@@ -59,16 +63,9 @@ const SellerImageHotspot = () => {
     setIsHoveringHotspot(false);
   };
 
-  const handleSaveCard = (furniture) => {
-    console.log(furniture);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
+  // Log all hotspots with associated furniture on save
   const handleHotspotSave = () => {
-    // log all the hotspot with the furniture object associated with it
+    console.log("Hotspots with associated furniture:", hotspots);
   };
 
   return (
@@ -76,7 +73,7 @@ const SellerImageHotspot = () => {
       <HotspotCard
         handleSaveCard={handleSaveCard}
         isOpen={isModalOpen}
-        close={handleModalClose}
+        close={() => setIsModalOpen(false)}
       />
       <section className="flex items-center gap-2">
         <div className="inline">Tools: </div>
@@ -140,28 +137,30 @@ const SellerImageHotspot = () => {
           {/* Fixed Hotspots */}
           {hotspots.map((hotspot) => (
             <div
-              className="bg-lime-500"
+              className="flex items-center justify-center border-2 border-black opacity-50 bg-arfablack"
               key={hotspot.id}
               style={{
                 position: "absolute",
                 top: hotspot.top,
                 left: hotspot.left,
-                width: "20px",
-                height: "20px",
+                width: "25px",
+                height: "25px",
                 borderRadius: "50%",
                 cursor: "pointer",
                 transform: "translate(-50%, -50%)",
               }}
-              onMouseEnter={() => handleMouseEnter(hotspot.content)}
+              onMouseEnter={() => handleMouseEnter(hotspot.furniture.name)}
               onMouseLeave={handleMouseLeave}
               onClick={(e) => {
                 e.stopPropagation();
                 handleHotspotClick(hotspot.id);
               }}
-            />
+            >
+              <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
+            </div>
           ))}
 
-          {/* Moving Hotspot - Show even if no fixed hotspots */}
+          {/* Moving Hotspot */}
           {!isHoveringHotspot && isMarkMode && (
             <div
               style={{

@@ -2,7 +2,13 @@ import React, { useEffect, useState, Fragment } from "react";
 import { useStore } from "../../stores/useStore";
 import { where } from "firebase/firestore";
 import { fetchFurnitureCollection } from "../../firebase/furniture";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  Transition,
+  TransitionChild,
+  DialogTitle,
+  DialogPanel,
+} from "@headlessui/react";
 
 const HotspotCard = ({ isOpen, close, handleSaveCard }) => {
   const { loggedUser } = useStore();
@@ -38,8 +44,9 @@ const HotspotCard = ({ isOpen, close, handleSaveCard }) => {
   };
 
   const handleSave = () => {
-    if (handleSaveCard && selectedProduct) {
+    if (handleSaveCard && selectedProduct && inputValue) {
       handleSaveCard(selectedProduct);
+      setInputValue("");
     }
     close();
   };
@@ -47,13 +54,13 @@ const HotspotCard = ({ isOpen, close, handleSaveCard }) => {
   return (
     <Transition appear show={isOpen} as={Fragment} className="z-40">
       <Dialog as="div" className="relative z-10" onClose={close}>
-        <Transition.Child as={Fragment}>
+        <TransitionChild as={Fragment}>
           <div className="fixed inset-0 bg-black bg-opacity-30" />
-        </Transition.Child>
+        </TransitionChild>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-center justify-center min-h-full p-4 text-center">
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
@@ -62,13 +69,13 @@ const HotspotCard = ({ isOpen, close, handleSaveCard }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-xl">
-                <Dialog.Title
+              <DialogPanel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-xl">
+                <DialogTitle
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
                   Select Product
-                </Dialog.Title>
+                </DialogTitle>
                 <div className="mt-2">
                   <label className="flex items-center gap-2 mb-2 text-sm font-medium text-gray-900">
                     Product
@@ -102,8 +109,8 @@ const HotspotCard = ({ isOpen, close, handleSaveCard }) => {
                     Cancel
                   </button>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </div>
       </Dialog>
