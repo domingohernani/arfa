@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HotspotCard from "../../components/dynamic/HotspotCard";
 import { formatToPeso } from "../../components/globalFunctions";
 import toast from "react-hot-toast";
 import { Tooltip } from "flowbite-react";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
-import { saveImageHotspotData } from "../../firebase/shop";
+import { saveImageHotspotData, getImageHotspotData } from "../../firebase/shop";
 import { useStore } from "../../stores/useStore";
 
 const SellerImageHotspot = () => {
@@ -16,6 +16,21 @@ const SellerImageHotspot = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState(null);
   const { loggedUser } = useStore();
+
+  // Fetch existing hotspot data on component mount
+  useEffect(() => {
+    const fetchHotspotData = async () => {
+      const result = await getImageHotspotData(loggedUser.userId);
+      if (result.success && result.data) {
+        setUploadedImage(result.data.imageUrl); // Set the uploaded image URL
+        setHotspots(result.data.hotspots); // Set the existing hotspots
+      } else {
+        console.log(result.message || result.error);
+      }
+    };
+
+    fetchHotspotData();
+  }, [loggedUser.userId]);
 
   // Handle image upload and generate preview
   const handleImageUpload = (e) => {
@@ -95,12 +110,19 @@ const SellerImageHotspot = () => {
       toast.error("Please upload an image before saving hotspots.");
       return;
     }
+
+    if (hotspots.length === 0) {
+      toast.error("Please add at least one hotspot marker before saving.");
+      return;
+    }
+
     try {
       const file = document.querySelector('input[type="file"]').files[0];
       const result = await saveImageHotspotData(
         loggedUser.userId,
         file,
-        hotspots
+        hotspots,
+        uploadedImage
       );
 
       if (result.success) {
@@ -148,7 +170,6 @@ const SellerImageHotspot = () => {
       {uploadedImage ? (
         <>
           <section className="flex items-center gap-2 mb-4">
-            {/* <div className="inline">Tools: </div> */}
             <section className="flex items-center gap-2 border border-gray-300 rounded-md bg-arfagray w-fit">
               <button
                 title="Use to mark the furniture"
@@ -302,35 +323,31 @@ const SellerImageHotspot = () => {
 
             {/* Preview section of marked furnitures */}
             <div className="flex flex-col flex-1">
-              {hotspots.map((hotspot) => {
-                return (
-                  <>
-                    <div className="flex flex-col gap-1 ">
-                      <div
-                        className="overflow-hidden font-medium text-arfagreen whitespace-nowrap text-ellipsis"
-                        style={{ maxWidth: "400px" }}
-                      >
-                        {hotspot.furniture.name}
-                      </div>
-                      <div className="text-sm" style={{ maxWidth: "400px" }}>
-                        {hotspot.furniture.id}
-                      </div>
-                      <div
-                        className="overflow-hidden text-sm whitespace-nowrap text-ellipsis"
-                        style={{ maxWidth: "500px" }}
-                      >
-                        {hotspot.furniture.description}
-                      </div>
-                      <div className="text-xl font-semibold">
-                        {hotspot.furniture.isSale
-                          ? formatToPeso(hotspot.furniture.discountedPrice)
-                          : formatToPeso(hotspot.furniture.price)}
-                      </div>
-                    </div>
-                    <hr className="my-4 border-t border-gray-300 border-dashed" />
-                  </>
-                );
-              })}
+              {hotspots.map((hotspot) => (
+                <div key={hotspot.id} className="flex flex-col gap-1 ">
+                  <div
+                    className="overflow-hidden font-medium text-arfagreen whitespace-nowrap text-ellipsis"
+                    style={{ maxWidth: "400px" }}
+                  >
+                    {hotspot.furniture.name}
+                  </div>
+                  <div className="text-sm" style={{ maxWidth: "400px" }}>
+                    {hotspot.furniture.id}
+                  </div>
+                  <div
+                    className="overflow-hidden text-sm whitespace-nowrap text-ellipsis"
+                    style={{ maxWidth: "500px" }}
+                  >
+                    {hotspot.furniture.description}
+                  </div>
+                  <div className="text-xl font-semibold">
+                    {hotspot.furniture.isSale
+                      ? formatToPeso(hotspot.furniture.discountedPrice)
+                      : formatToPeso(hotspot.furniture.price)}
+                  </div>
+                  <hr className="my-4 border-t border-gray-300 border-dashed" />
+                </div>
+              ))}
             </div>
           </section>
         </>
