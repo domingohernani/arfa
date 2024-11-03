@@ -52,6 +52,7 @@ import SellerUserSecurity from "./pages/seller/sub/SellerUserSecurity";
 import { SellerUserPayment } from "./pages/seller/sub/SellerUserPayment";
 import { FurnitureTransaction } from "./components/tables/FurnitureTransaction";
 import TransactionDetails from "./pages/seller/sub/TransactionDetails";
+import SellerImageHotspot from "./pages/seller/SellerImageHotspot";
 
 function App() {
   useEffect(() => {
@@ -122,6 +123,7 @@ function App() {
               <Route element={<SellerProductReviews />} path="product-reviews">
                 <Route path="furniture/:id" element={<ProductReviews />} />
               </Route>
+              <Route element={<SellerImageHotspot />} path="image-hotspot" />
 
               <Route element={<SellerDelivery />} path="delivery" />
 
