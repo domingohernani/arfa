@@ -165,6 +165,17 @@ export const SellerSideBar = ({ setIsOpen }) => {
                 >
                   Reviews
                 </NavLink>
+                <NavLink
+                  onClick={handleClose}
+                  to={"image-hotspot"}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-white flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg bg-arfagreen"
+                      : "text-arfablack flex items-center justify-start py-2 px-4 md:pr-6 rounded-lg"
+                  }
+                >
+                  Image Hotspot
+                </NavLink>
               </section>
             )}
           </li>
