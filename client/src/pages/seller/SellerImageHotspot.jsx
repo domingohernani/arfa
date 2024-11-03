@@ -150,6 +150,12 @@ const SellerImageHotspot = () => {
   return (
     <section className="p-5">
       <ImageHotspotExplain close={handleCloseHelp} isOpen={isHelpModal} />
+      <HotspotCard
+        handleSaveCard={handleSaveCard}
+        isOpen={isModalOpen}
+        close={() => setIsModalOpen(false)}
+      />
+
       {/* Image Upload Section */}
       <div className="flex items-center justify-between mb-4">
         <div>
