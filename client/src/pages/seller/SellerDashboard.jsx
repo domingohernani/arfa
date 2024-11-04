@@ -24,9 +24,9 @@ export const SellerDashboard = () => {
     const fetchMetrics = async () => {
       if (!loggedUser?.userId) return;
 
-      const result = await getMonthlyMetrics(loggedUser.userId); // Pass shopId to getMonthlyMetrics
+      const result = await getMonthlyMetrics(loggedUser.userId);
       if (result.success) {
-        setMetrics(result.data); // Update the state with the fetched data
+        setMetrics(result.data);
       } else {
         console.error("Failed to fetch monthly metrics:", result.error);
       }
@@ -88,10 +88,10 @@ export const SellerDashboard = () => {
       </section>
       <section className="flex flex-col gap-5 pb-5 md:flex-row ">
         <div className="p-5 bg-white border basis-4/6">
-          <OrdersOverTime />
+          <OrdersOverTime shopId={loggedUser.userId} />
         </div>
         <div className="flex flex-col self-stretch w-full gap-2 py-5 bg-white border basis-1/3 justify-evenly">
-          <WeeklySale />
+          <WeeklySale shopId={loggedUser.userId} />
         </div>
       </section>
       <section className="flex flex-col gap-5 lg:flex-row">
