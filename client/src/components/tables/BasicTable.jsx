@@ -21,7 +21,9 @@ const BasicTable = ({
 
   return (
     <div>
-      <h2 className="px-10 py-3 text-lg font-semibold text-gray-900">{title}</h2>
+      <h2 className="px-10 py-3 text-lg font-semibold text-gray-900">
+        {title}
+      </h2>
       <div className={`${theme} px-6`} style={{ height, width }}>
         <AgGridReact
           ref={gridRef}
@@ -29,6 +31,7 @@ const BasicTable = ({
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           rowSelection={rowSelection}
+          domLayout="normal"
         />
       </div>
     </div>
