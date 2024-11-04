@@ -88,7 +88,7 @@ const SellerInbox = () => {
     <>
       <div className="flex-row hidden m-5 border lg:flex">
         <div className="flex flex-row flex-auto rounded-tl-xl">
-          <div className="flex flex-col w-1/5 bg-white">
+          <div className="flex flex-col bg-white max-w-60">
             <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
               <div className="relative">
                 <input
@@ -158,7 +158,7 @@ const SellerInbox = () => {
             </div>
           </div>
 
-          <div className="flex flex-col flex-1 w-3/5 bg-white border-l">
+          <div className="flex flex-col flex-1 bg-white border-l">
             {chats.length > 0 ? (
               selectedChat && <DisplayChat chat={selectedChat} />
             ) : (
