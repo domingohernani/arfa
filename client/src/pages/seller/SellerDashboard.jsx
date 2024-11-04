@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import OrdersOverTime from "../../components/graphs/OrdersOverTime";
 import {
   CurrencyDollarIcon,
@@ -7,8 +7,34 @@ import {
 } from "@heroicons/react/20/solid";
 import WeeklySale from "../../components/graphs/WeeklySale";
 import BasicTable from "../../components/tables/BasicTable";
+import { getMonthlyMetrics } from "../../firebase/shop";
+import { useStore } from "../../stores/useStore";
 
 export const SellerDashboard = () => {
+  const { loggedUser } = useStore();
+  const [metrics, setMetrics] = useState({
+    monthlyRevenue: 0,
+    revenueGrowth: 0,
+    newMonthlyOrders: 0,
+    ordersGrowth: 0,
+    totalOrders: 0,
+  });
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      if (!loggedUser?.userId) return;
+
+      const result = await getMonthlyMetrics(loggedUser.userId); // Pass shopId to getMonthlyMetrics
+      if (result.success) {
+        setMetrics(result.data); // Update the state with the fetched data
+      } else {
+        console.error("Failed to fetch monthly metrics:", result.error);
+      }
+    };
+
+    fetchMetrics();
+  }, [loggedUser]);
+
   const rowData = [
     { name: "Jagarnath S.", date: "24.05.2023", amount: "₱ 1,060" },
     { name: "Anand G.", date: "23.05.2023", amount: "₱ 3,060" },
@@ -29,30 +55,33 @@ export const SellerDashboard = () => {
         <div className="flex justify-between px-5 py-5 text-white bg-green-500 rounded-md">
           <div className="flex items-center gap-5">
             <div className="">
-              <h3 className="text-base">₱10.540</h3>
-              <p className="text-xs font-semibold">Total Revenue</p>
+              <h3 className="text-base">
+                ₱{metrics.monthlyRevenue.toLocaleString()}
+              </h3>
+              <p className="text-xs font-semibold">Monthly Revenue</p>
             </div>
-            <span>22.45%</span>
+            <span>{metrics.revenueGrowth.toFixed(2)}%</span>
           </div>
           <CurrencyDollarIcon className="w-10"></CurrencyDollarIcon>
         </div>
         <div className="flex justify-between px-5 py-5 text-white bg-green-400 rounded-md">
           <div className="flex items-center gap-5">
             <div className="">
-              <h3 className="text-base">56</h3>
-              <p className="text-xs font-semibold">New Orders</p>
+              <h3 className="text-base">
+                {metrics.newMonthlyOrders} purchase(s)
+              </h3>
+              <p className="text-xs font-semibold">Monthly Purchases</p>
             </div>
-            <span>22.45%</span>
+            <span>{metrics.ordersGrowth.toFixed(2)}%</span>
           </div>
           <ShoppingBagIcon className="w-10"></ShoppingBagIcon>
         </div>
         <div className="flex justify-between px-5 py-5 text-white bg-green-600 rounded-md">
           <div className="flex items-center gap-5">
             <div className="">
-              <h3 className="text-base">1,056</h3>
-              <p className="text-xs font-semibold">Orders</p>
+              <h3 className="text-base">{metrics.totalOrders} purchase(s)</h3>
+              <p className="text-xs font-semibold">Total Purchases</p>
             </div>
-            <span>22.45%</span>
           </div>
           <ShoppingCartIcon className="w-10"></ShoppingCartIcon>
         </div>
