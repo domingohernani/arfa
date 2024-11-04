@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -9,27 +9,83 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  Timestamp,
+} from "firebase/firestore";
+import { startOfYear, endOfToday } from "date-fns";
+import { db } from "../../firebase/firebase";
+import { formatToPeso } from "../globalFunctions";
 
-const OrdersOverTime = () => {
+const OrdersOverTime = ({ shopId }) => {
   const [lineStatus, setLineStatus] = useState({
     2023: true,
     2024: true,
   });
+  const [data, setData] = useState([]);
 
-  const data = [
-    { month: "Jan", 2023: 50, 2024: 65 },
-    { month: "Feb", 2023: 60, 2024: 59 },
-    { month: "Mar", 2023: 70, 2024: 80 },
-    { month: "Apr", 2023: 65, 2024: 81 },
-    { month: "May", 2023: 75, 2024: 56 },
-    { month: "Jun", 2023: 80, 2024: 55 },
-    { month: "Jul", 2023: 85, 2024: 40 },
-    { month: "Aug", 2023: 70, 2024: 42 },
-    { month: "Sep", 2023: 60, 2024: 67 },
-    { month: "Oct", 2023: 50, 2024: 76 },
-    { month: "Nov", 2023: 45, 2024: 70 },
-    { month: "Dec", 2023: 55, 2024: 90 },
-  ];
+  const fetchData = async () => {
+    try {
+      const ordersCollectionRef = collection(db, "orders");
+      const startOfCurrentYear = startOfYear(new Date());
+      const endOfCurrentDay = endOfToday();
+
+      const ordersQuery = query(
+        ordersCollectionRef,
+        where("shopId", "==", shopId),
+        where("orderStatus", "in", ["Delivered", "Picked-up"]),
+        where("createdAt", ">=", Timestamp.fromDate(startOfCurrentYear)),
+        where("createdAt", "<=", Timestamp.fromDate(endOfCurrentDay))
+      );
+
+      const ordersSnapshot = await getDocs(ordersQuery);
+
+      const ordersData = {};
+
+      ordersSnapshot.forEach((doc) => {
+        const order = doc.data();
+        const createdAt = order.createdAt.toDate();
+        const year = createdAt.getFullYear();
+        const month = createdAt.toLocaleString("default", { month: "short" });
+        const orderTotal = order.orderTotal || 0;
+
+        if (!ordersData[year]) ordersData[year] = {};
+        if (!ordersData[year][month]) ordersData[year][month] = 0;
+
+        ordersData[year][month] += orderTotal;
+      });
+
+      const formattedData = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ].map((month) => ({
+        month,
+        2023: ordersData[2023]?.[month] || 0,
+        2024: ordersData[2024]?.[month] || 0,
+      }));
+
+      setData(formattedData);
+    } catch (error) {
+      console.error("Error fetching orders data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [shopId]);
 
   const handleLegendClick = (event) => {
     const { dataKey } = event;
@@ -42,7 +98,9 @@ const OrdersOverTime = () => {
   return (
     <>
       <div className="absolute">
-        <h3 className="text-base font-semibold">Yearly Orders Comparison</h3>
+        <h3 className="text-base font-semibold">
+          Yearly Transactions Comparison
+        </h3>
       </div>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
@@ -59,6 +117,7 @@ const OrdersOverTime = () => {
             }}
           />
           <YAxis
+            tickFormatter={formatToPeso} // Format Y-axis values to peso
             tick={{
               fontFamily: "Raleway, sans-serif",
               fontSize: "0.875rem",
@@ -66,6 +125,7 @@ const OrdersOverTime = () => {
             }}
           />
           <Tooltip
+            formatter={(value) => formatToPeso(value)} // Format tooltip values to peso
             contentStyle={{
               fontFamily: "Raleway, sans-serif",
               fontSize: "0.875rem",

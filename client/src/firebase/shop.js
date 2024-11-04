@@ -17,6 +17,8 @@ import {
   startOfQuarter,
   startOfYear,
   endOfToday,
+  endOfMonth,
+  subMonths,
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
@@ -319,6 +321,70 @@ export const getImageHotspotData = async (shopId) => {
     }
   } catch (error) {
     console.error("Error fetching image hotspot data:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getMonthlyMetrics = async (shopId) => {
+  try {
+    const currentMonthStart = startOfMonth(new Date());
+    const currentMonthEnd = endOfMonth(new Date());
+    const previousMonthStart = startOfMonth(subMonths(new Date(), 1));
+    const previousMonthEnd = endOfMonth(subMonths(new Date(), 1));
+
+    let currentRevenue = 0;
+    let previousRevenue = 0;
+    let currentOrderCount = 0;
+    let previousOrderCount = 0;
+    let totalOrderCount = 0;
+
+    const ordersRef = collection(db, "orders");
+    const shopOrdersQuery = query(ordersRef, where("shopId", "==", shopId));
+
+    const ordersSnapshot = await getDocs(shopOrdersQuery);
+
+    ordersSnapshot.forEach((doc) => {
+      const order = doc.data();
+      const orderDate = order.createdAt.toDate();
+      const isCompleted =
+        order.orderStatus === "Delivered" || order.orderStatus === "Picked-up";
+
+      if (isCompleted) {
+        totalOrderCount++;
+
+        if (orderDate >= currentMonthStart && orderDate <= currentMonthEnd) {
+          currentOrderCount++;
+          currentRevenue += order.orderTotal || 0;
+        }
+
+        if (orderDate >= previousMonthStart && orderDate <= previousMonthEnd) {
+          previousOrderCount++;
+          previousRevenue += order.orderTotal || 0;
+        }
+      }
+    });
+
+    const revenueGrowth =
+      previousRevenue > 0
+        ? ((currentRevenue - previousRevenue) / previousRevenue) * 100
+        : 0;
+    const ordersGrowth =
+      previousOrderCount > 0
+        ? ((currentOrderCount - previousOrderCount) / previousOrderCount) * 100
+        : 0;
+
+    return {
+      success: true,
+      data: {
+        monthlyRevenue: currentRevenue,
+        revenueGrowth,
+        newMonthlyOrders: currentOrderCount,
+        ordersGrowth,
+        totalOrders: totalOrderCount,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching monthly metrics:", error);
     return { success: false, error: error.message };
   }
 };
