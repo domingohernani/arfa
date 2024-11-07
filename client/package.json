@@ -31,6 +31,7 @@
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.24.0",
+    "react-to-print": "^3.0.2",
     "recharts": "^2.12.7",
     "select-philippines-address": "^1.0.6",
     "three": "^0.163.0",

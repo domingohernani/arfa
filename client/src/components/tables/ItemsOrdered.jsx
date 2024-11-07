@@ -6,7 +6,7 @@ import { formatToPeso } from "../globalFunctions";
 
 const ItemsOrdered = ({ orders }) => {
   const columnDefs = [
-    { headerName: "Items Name", field: "name", flex: 2 },
+    { headerName: "Items Name", field: "name", flex: 1 },
     { headerName: "Quantity", field: "quantity", flex: 1, editable: true },
     {
       headerName: "Total (₱)",
