@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -10,6 +10,7 @@ import OrderReceipt from "../../../components/tables/OrderReceipt";
 import { getOrderById } from "../../../firebase/orders";
 import { getUserById } from "../../../firebase/user";
 import { getOrderStatusStyles } from "../../../components/globalFunctions";
+import { useReactToPrint } from "react-to-print";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -17,6 +18,13 @@ const OrderDetails = () => {
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState();
   const [customer, setCustomer] = useState();
+  const contentRef = useRef();
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
+  <style type="text/css" media="print">{"\
+    @page {\ size: landscape;\ }\
+  "}</style>
+
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -49,7 +57,7 @@ const OrderDetails = () => {
   };
 
   return (
-    <section className="m-5">
+    <section className="m-5" ref={contentRef}>
       <nav className="flex items-center gap-2">
         <div className="p-1 w-fit">
           <ArrowLeftIcon
@@ -57,7 +65,7 @@ const OrderDetails = () => {
             onClick={() => navigate("/seller-page/order")}
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 no-print">
           <h6
             className="cursor-pointer hover:text-arfagreen"
             onClick={() => navigate("/seller-page/order")}
@@ -84,10 +92,15 @@ const OrderDetails = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 mb-2 sm:mb-0">
-            <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center border border-gray-300 rounded-sm bg-arfagray min-w-max text-arfablack">
+          <div className="flex items-center gap-2 mb-2 sm:mb-0 no-print">
+            <button
+              onClick={() => {
+                reactToPrintFn();
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center border border-gray-300 rounded-sm bg-arfagray min-w-max text-arfablack"
+            >
               <FolderIcon className="w-4 h-4 text-gray-400" />
-              Export
+              Print
             </button>
             <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen">
               Update Status

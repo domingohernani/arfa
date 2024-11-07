@@ -11,7 +11,6 @@ const OrderReceipt = ({ details, customer }) => {
     {
       headerName: "No",
       field: "receiptNumber",
-      flex: 1,
       cellRenderer: (params) => (
         <span>{params.value}</span>
       ),
@@ -19,13 +18,11 @@ const OrderReceipt = ({ details, customer }) => {
     {
       headerName: "Total Amount (₱)",
       field: "totalAmount",
-      flex: 1,
       valueFormatter: (params) => formatToPeso(params.value),
     },
     {
       headerName: "Customer",
       field: "customerName",
-      flex: 2,
       cellRenderer: (params) => (
         <span>{params.value}</span>
       ),
@@ -33,7 +30,6 @@ const OrderReceipt = ({ details, customer }) => {
     {
       headerName: "No. of Items",
       field: "numberOfItems",
-      flex: 1,
       cellRenderer: (params) => <span>{params.value}</span>,
     },
     {
