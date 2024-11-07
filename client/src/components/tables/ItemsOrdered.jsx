@@ -9,12 +9,6 @@ const ItemsOrdered = ({ orders }) => {
     { headerName: "Items Name", field: "name", flex: 2 },
     { headerName: "Quantity", field: "quantity", flex: 1, editable: true },
     {
-      headerName: "Price (₱)",
-      field: "price",
-      flex: 1,
-      valueFormatter: (params) => formatToPeso(params.value),
-    },
-    {
       headerName: "Total (₱)",
       field: "totalItemPrice",
       flex: 1,
@@ -23,14 +17,17 @@ const ItemsOrdered = ({ orders }) => {
   ];
 
   const rowData = [
-    ...orders,
+    ...orders.orderItems,
   ];
 
   const pinnedBottomRowData = [
-    { name: "Subtotal", totalItemPrice: 94.65 },
-    { name: "Free Shipping", totalItemPrice: 0.0 },
-    { name: "Tax Amount (10%)", totalItemPrice: 9.47 },
-    { name: "Total", totalItemPrice: 104.12 },
+    { name: "Subtotal", totalItemPrice: orders.orderTotal },
+    { name: "Free Shipping", totalItemPrice: orders.deliveryFee },
+    { name: "Tax Amount (5%)", totalItemPrice: orders.orderTotal * 0.05 },
+    {
+      name: "Total",
+      totalItemPrice: orders.orderTotal + orders.deliveryFee + (orders.orderTotal * 0.05),
+    },
   ];
 
   return (

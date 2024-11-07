@@ -96,16 +96,23 @@ const OrderDetails = () => {
         </section>
         <section className="flex flex-wrap justify-start gap-2">
           <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-            <b className="font-medium text-black">Paid: </b> 2024-03-12, 12:56
-            pm
+            <b className="font-medium text-black">Paid: </b>
+            {order.createdAt && (
+              new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
+              new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
+            )}
           </div>
           <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-            <b className="font-medium text-black">Placed: </b> 2024-03-12, 12:56
-            pm
+            <b className="font-medium text-black">Placed: </b> {order.createdAt && (
+              new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
+              new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
+            )}
           </div>
           <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-            <b className="font-medium text-black">Updated: </b> 2024-03-12,
-            12:56 pm
+            <b className="font-medium text-black">Placed: </b> {order.updatedAt && (
+              new Date(order.updatedAt.seconds * 1000).toLocaleDateString() + " " +
+              new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()
+            )}
           </div>
         </section>
       </header>
@@ -144,7 +151,7 @@ const OrderDetails = () => {
         <OrderReceipt details={order} customer={customer} />
       </main>
       <main className="mt-16">
-        <ItemsOrdered orders={order.orderItems} />
+        <ItemsOrdered orders={order} />
       </main>
     </section>
   );
