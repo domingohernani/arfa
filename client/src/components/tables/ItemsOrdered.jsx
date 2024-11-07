@@ -22,49 +22,7 @@ const ItemsOrdered = ({ orders }) => {
     },
   ];
 
-  console.log("passed orders", orders);
-
   const rowData = [
-    // {
-    //   itemName: orders.name,
-    //   sku: "6473FGDH7",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 14,
-    //   price: 45.0,
-    //   total: 45.0,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
     ...orders,
   ];
 

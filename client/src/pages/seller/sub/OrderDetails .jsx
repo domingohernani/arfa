@@ -74,13 +74,12 @@ const OrderDetails = () => {
             <h6 className="font-medium">Order #{order.id}</h6>
             <div className="flex gap-2">
               <p
-                className={`px-2 py-1 text-sm font-medium rounded-sm ${
-                  getStatusColor().bgColorClass
-                } w-fit ${getStatusColor().colorClass}`}
+                className={`px-2 py-1 text-sm font-semibold rounded-sm ${getStatusColor().bgColorClass
+                  } w-fit ${getStatusColor().colorClass}`}
               >
                 {order.orderStatus}
               </p>
-              <p className="px-2 py-1 text-sm font-medium text-red-500 rounded-sm bg-red-50 w-fit">
+              <p className="px-2 py-1 text-sm font-semibold text-red-500 rounded-sm bg-red-50 w-fit">
                 Delivery
               </p>
             </div>
@@ -142,7 +141,7 @@ const OrderDetails = () => {
         </section>
       </main>
       <main>
-        <OrderReceipt />
+        <OrderReceipt details={order} customer={customer} />
       </main>
       <main className="mt-16">
         <ItemsOrdered orders={order.orderItems} />
