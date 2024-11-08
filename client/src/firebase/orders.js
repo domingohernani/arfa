@@ -1,4 +1,4 @@
-import { collection, getDoc, getDocs, doc, query, updateDoc } from "firebase/firestore";
+import { collection, getDoc, getDocs, doc, query, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 
 export const fetchOrdersByShopId = async (filters = []) => {
@@ -86,8 +86,13 @@ export const updateOrderStatus = async (orderId, newStatus) => {
   try {
     const orderDocRef = doc(db, "orders", orderId);
 
+    // Create a field path for the new status timestamp
+    const timestampField = `statusTimestamps.${newStatus}`;
+
     await updateDoc(orderDocRef, {
-      orderStatus: newStatus
+      orderStatus: newStatus,
+      [timestampField]: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
     return true;
   } catch (error) {

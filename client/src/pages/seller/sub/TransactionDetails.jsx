@@ -115,7 +115,7 @@ const TransactionDetails = () => {
             )}
           </div>
           <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-            <b className="font-medium text-black">Placed: </b> {order.updatedAt && (
+            <b className="font-medium text-black">Updated: </b> {order.updatedAt && (
               new Date(order.updatedAt.seconds * 1000).toLocaleDateString() + " " +
               new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()
             )}

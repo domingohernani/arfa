@@ -37,14 +37,13 @@ const statusFlowOptions = {
 const getNextStatus = (currentStatus, statusFlow) => {
     const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
     if (currentIndex === -1 || currentIndex === statusFlow.length - 1) {
-        return null; // No further status if it's the last in the flow
+        return null;
     }
     return statusFlow[currentIndex + 1].status;
 };
 
-export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDelivery }) => {
+export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDelivery, statusTimestamps }) => {
     const statusFlow = onDelivery ? statusFlowOptions.delivery : statusFlowOptions.pickup;
-
 
     const handleUpdateStatus = async () => {
         if (status === "Picked-up" || status === "Delivered") {
@@ -101,8 +100,8 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
                                 <p className="text-sm text-gray-500 mt-1">
                                     Review the current order status and select the next stage in the process. This will help keep both the customer and the delivery team updated on the progress of the order.
                                 </p>
-                                <div className="">
-                                    <Tracking currentStatus={status} statusFlow={statusFlow} />
+                                <div>
+                                    <Tracking currentStatus={status} statusFlow={statusFlow} statusTimestamps={statusTimestamps} />
                                 </div>
                                 <div className="flex justify-between mt-4">
                                     <button
@@ -129,7 +128,7 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
     );
 };
 
-const Tracking = ({ currentStatus, statusFlow }) => {
+const Tracking = ({ currentStatus, statusFlow, statusTimestamps }) => {
     const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
     const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
 
@@ -151,6 +150,11 @@ const Tracking = ({ currentStatus, statusFlow }) => {
                                         <p className={`text-sm  ${item.status === currentStatus ? "text-arfablack font-medium" : "text-gray-500 font-normal"}`}>
                                             {item.description}
                                         </p>
+                                        {statusTimestamps && statusTimestamps[item.status] && (
+                                            <p className="text-xs text-gray-400 mt-1">
+                                                Updated on: {new Date(statusTimestamps[item.status].seconds * 1000).toLocaleString()}
+                                            </p>
+                                        )}
                                     </li>
                                 ))}
                             </ol>
