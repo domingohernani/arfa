@@ -110,13 +110,15 @@ const SellerOrders = () => {
       field: "action",
       filter: false,
       flex: 1,
-      cellRenderer: () => {
+      cellRenderer: (params) => {
+        const furnitureId = params.data.id
+
         return (
           <section className="flex items-center justify-center gap-2 px-2 mt-1">
             <button
               className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
               onClick={() => {
-                navigate("details/Hv50UBys6U4cDZVGhKEN");
+                navigate(`details/${furnitureId}`);
               }}
             >
               <EyeIcon className="inline-block w-4 h-4 mr-1" />
@@ -139,7 +141,7 @@ const SellerOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       const filter = [
-        where("orderStatus", "!=", "Delivered"),
+        where("orderStatus", "not-in", ["Delivered", "Picked-up"]),
         where("shopId", "==", loggedUser.userId),
       ];
       const orders = await fetchOrdersByShopId(filter);

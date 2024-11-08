@@ -42,7 +42,7 @@ const getNextStatus = (currentStatus, statusFlow) => {
     return statusFlow[currentIndex + 1].status;
 };
 
-export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDelivery, statusTimestamps }) => {
+export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDelivery, statusTimestamps, isOrderPage }) => {
     const statusFlow = onDelivery ? statusFlowOptions.delivery : statusFlowOptions.pickup;
 
     const handleUpdateStatus = async () => {
@@ -95,10 +95,12 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
                                     as="h3"
                                     className="text-lg font-medium leading-6 text-gray-900"
                                 >
-                                    Update Status
+                                    {isOrderPage ? "Update Status" : "Order Status Logs"}
                                 </DialogTitle>
                                 <p className="text-sm text-gray-500 mt-1">
-                                    Review the current order status and select the next stage in the process. This will help keep both the customer and the delivery team updated on the progress of the order.
+                                    {isOrderPage
+                                        ? "Review the current order status and select the next stage in the process. This will help keep both the customer and the delivery team updated on the progress of the order."
+                                        : "This is a record of the completed stages in the order process, providing a history of updates for this transaction."}
                                 </p>
                                 <div>
                                     <Tracking currentStatus={status} statusFlow={statusFlow} statusTimestamps={statusTimestamps} />
