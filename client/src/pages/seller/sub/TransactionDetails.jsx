@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
   FolderIcon,
-  ArrowPathIcon
+  ArrowPathIcon,
 } from "@heroicons/react/20/solid";
 import ItemsOrdered from "../../../components/tables/ItemsOrdered";
 import OrderReceipt from "../../../components/tables/OrderReceipt";
@@ -12,7 +12,6 @@ import { getUserById } from "../../../firebase/user";
 import { getOrderStatusStyles } from "../../../components/globalFunctions";
 import { useReactToPrint } from "react-to-print";
 import { OrderStatus } from "../../../components/modals/OrderStatus";
-
 
 const TransactionDetails = () => {
   const { id } = useParams();
@@ -23,7 +22,6 @@ const TransactionDetails = () => {
   const contentRef = useRef();
   const reactToPrintFn = useReactToPrint({ contentRef });
   const [isModalOpen, setModalOpen] = useState(false);
-
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -55,18 +53,31 @@ const TransactionDetails = () => {
     return { colorClass, bgColorClass };
   };
 
-  <style type="text/css" media="print">{"\
-    @page {\ size: landscape;\ }\
-  "}</style>
+  <style type="text/css" media="print">
+    {
+      "\
+    @page { size: landscape; }\
+  "
+    }
+  </style>;
 
   const handleModalClose = () => {
     setModalOpen(false);
-  }
-
+  };
 
   return (
     <>
-      <OrderStatus refreshPage={null} isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} onDelivery={order.onDelivery} statusTimestamps={order.statusTimestamps} isOrderPage={false} />
+      <OrderStatus
+        refreshPage={null}
+        isOpen={isModalOpen}
+        close={handleModalClose}
+        orderId={order.id}
+        status={order.orderStatus}
+        onDelivery={order.onDelivery}
+        statusTimestamps={order.statusTimestamps}
+        isOrderPage={false}
+        podUrl={order.proofOfDeliveryUrl}
+      />
       <section className="m-5" ref={contentRef}>
         <nav className="flex items-center gap-2 no-print">
           <div className="p-1 w-fit">
@@ -92,8 +103,9 @@ const TransactionDetails = () => {
               <h6 className="font-medium">Transaction #{order.id}</h6>
               <div className="flex gap-2">
                 <p
-                  className={`px-2 py-1 text-sm font-semibold rounded-sm ${getStatusColor().bgColorClass
-                    } w-fit ${getStatusColor().colorClass}`}
+                  className={`px-2 py-1 text-sm font-semibold rounded-sm ${
+                    getStatusColor().bgColorClass
+                  } w-fit ${getStatusColor().colorClass}`}
                 >
                   {order.orderStatus}
                 </p>
@@ -103,8 +115,10 @@ const TransactionDetails = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 mb-2 sm:mb-0 no-print">
-              <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen"
-                onClick={reactToPrintFn}>
+              <button
+                className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen"
+                onClick={reactToPrintFn}
+              >
                 <FolderIcon className="w-4 h-4 text-white" />
                 <span>Export</span>
               </button>
@@ -122,22 +136,24 @@ const TransactionDetails = () => {
           <section className="flex flex-wrap justify-start gap-2">
             <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
               <b className="font-medium text-black">Paid: </b>
-              {order.createdAt && (
-                new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
-                new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
-              )}
+              {order.createdAt &&
+                new Date(order.createdAt.seconds * 1000).toLocaleDateString() +
+                  " " +
+                  new Date(order.createdAt.seconds * 1000).toLocaleTimeString()}
             </div>
             <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-              <b className="font-medium text-black">Placed: </b> {order.createdAt && (
-                new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
-                new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
-              )}
+              <b className="font-medium text-black">Placed: </b>{" "}
+              {order.createdAt &&
+                new Date(order.createdAt.seconds * 1000).toLocaleDateString() +
+                  " " +
+                  new Date(order.createdAt.seconds * 1000).toLocaleTimeString()}
             </div>
             <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-              <b className="font-medium text-black">Updated: </b> {order.updatedAt && (
-                new Date(order.updatedAt.seconds * 1000).toLocaleDateString() + " " +
-                new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()
-              )}
+              <b className="font-medium text-black">Updated: </b>{" "}
+              {order.updatedAt &&
+                new Date(order.updatedAt.seconds * 1000).toLocaleDateString() +
+                  " " +
+                  new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()}
             </div>
           </section>
         </header>
@@ -157,7 +173,9 @@ const TransactionDetails = () => {
               </div>
               <div className="flex justify-between gap-2">
                 <div className="flex-1 font-medium">Phone: </div>
-                <div className="flex-1 text-gray-600">{customer.phoneNumber}</div>
+                <div className="flex-1 text-gray-600">
+                  {customer.phoneNumber}
+                </div>
               </div>
             </section>
           </section>
@@ -180,7 +198,6 @@ const TransactionDetails = () => {
         </main>
       </section>
     </>
-
   );
 };
 

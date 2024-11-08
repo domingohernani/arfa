@@ -12,7 +12,6 @@ export const UploadPOD = ({ isOpen, close, upload, onDelivery }) => {
         const file = e.target.files[0];
         if (file) {
             setImagePOD(file);
-            console.log(file);
             setImage(URL.createObjectURL(file));
         }
     };
