@@ -104,8 +104,8 @@ export const getOrderStatusStyles = (orderStatus) => {
       colorClass = "text-yellow-300"; // Yellow for "Ready"
       bgColorClass = "bg-yellow-300";
       break;
-    case "Out of Delivery":
-      statusText = "Out of Delivery";
+    case "Out for Delivery":
+      statusText = "Out for Delivery";
       colorClass = "text-purple-500"; // Purple for "Out for Delivery"
       bgColorClass = "bg-purple-500";
       break;
@@ -163,9 +163,8 @@ export const blobsToFiles = async (images, productName) => {
         const response = await fetch(blobUrl);
         const blob = await response.blob();
 
-        const fileName = `${productName}-${index + 1}${
-          blob.type === "image/png" ? ".png" : ".jpg"
-        }`;
+        const fileName = `${productName}-${index + 1}${blob.type === "image/png" ? ".png" : ".jpg"
+          }`;
         return new File([blob], fileName, { type: blob.type });
       })
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -10,6 +10,8 @@ import OrderReceipt from "../../../components/tables/OrderReceipt";
 import { getOrderById } from "../../../firebase/orders";
 import { getUserById } from "../../../firebase/user";
 import { getOrderStatusStyles } from "../../../components/globalFunctions";
+import { useReactToPrint } from "react-to-print";
+
 
 const TransactionDetails = () => {
   const { id } = useParams();
@@ -17,6 +19,8 @@ const TransactionDetails = () => {
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState();
   const [customer, setCustomer] = useState();
+  const contentRef = useRef();
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -48,9 +52,13 @@ const TransactionDetails = () => {
     return { colorClass, bgColorClass };
   };
 
+  <style type="text/css" media="print">{"\
+    @page {\ size: landscape;\ }\
+  "}</style>
+
   return (
-    <section className="m-5">
-      <nav className="flex items-center gap-2">
+    <section className="m-5" ref={contentRef}>
+      <nav className="flex items-center gap-2 no-print">
         <div className="p-1 w-fit">
           <ArrowLeftIcon
             className="w-5 h-5 cursor-pointer"
@@ -68,25 +76,25 @@ const TransactionDetails = () => {
           <h6 className="cursor-pointer hover:text-arfagreen">Details</h6>
         </div>
       </nav>
-      <header className="mt-4 ">
+      <header className="mt-4">
         <section className="flex flex-wrap items-center justify-between">
           <div className="flex flex-col">
             <h6 className="font-medium">Transaction #{order.id}</h6>
             <div className="flex gap-2">
               <p
-                className={`px-2 py-1 text-sm font-medium rounded-sm ${
-                  getStatusColor().bgColorClass
-                } w-fit ${getStatusColor().colorClass}`}
+                className={`px-2 py-1 text-sm font-semibold rounded-sm ${getStatusColor().bgColorClass
+                  } w-fit ${getStatusColor().colorClass}`}
               >
                 {order.orderStatus}
               </p>
-              <p className="px-2 py-1 text-sm font-medium text-red-500 rounded-sm bg-red-50 w-fit">
+              <p className="px-2 py-1 text-sm font-semibold text-red-500 rounded-sm bg-red-50 w-fit">
                 Delivery
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 mb-2 sm:mb-0">
-            <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen">
+          <div className="flex items-center gap-2 mb-2 sm:mb-0 no-print">
+            <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen"
+              onClick={reactToPrintFn}>
               <FolderIcon className="w-4 h-4 text-white" />
               <span>Export</span>
             </button>
@@ -94,16 +102,23 @@ const TransactionDetails = () => {
         </section>
         <section className="flex flex-wrap justify-start gap-2">
           <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-            <b className="font-medium text-black">Paid: </b> 2024-03-12, 12:56
-            pm
+            <b className="font-medium text-black">Paid: </b>
+            {order.createdAt && (
+              new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
+              new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
+            )}
           </div>
           <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-            <b className="font-medium text-black">Placed: </b> 2024-03-12, 12:56
-            pm
+            <b className="font-medium text-black">Placed: </b> {order.createdAt && (
+              new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
+              new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
+            )}
           </div>
           <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-            <b className="font-medium text-black">Updated: </b> 2024-03-12,
-            12:56 pm
+            <b className="font-medium text-black">Placed: </b> {order.updatedAt && (
+              new Date(order.updatedAt.seconds * 1000).toLocaleDateString() + " " +
+              new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()
+            )}
           </div>
         </section>
       </header>
@@ -139,10 +154,10 @@ const TransactionDetails = () => {
         </section>
       </main>
       <main>
-        <OrderReceipt />
+        <OrderReceipt details={order} customer={customer} />
       </main>
       <main className="mt-16">
-        <ItemsOrdered orders={order.orderItems} />
+        <ItemsOrdered orders={order} />
       </main>
     </section>
   );
