@@ -69,7 +69,7 @@ const OrderDetails = () => {
 
   return (
     <>
-      <OrderStatus refreshPage={refreshPage} isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} onDelivery={order.onDelivery} statusTimestamps={order.statusTimestamps} />
+      <OrderStatus refreshPage={refreshPage} isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} onDelivery={order.onDelivery} statusTimestamps={order.statusTimestamps} isOrderPage={true} />
       <section className="m-5" ref={contentRef}>
         <nav className="flex items-center gap-2">
           <div className="p-1 w-fit">
