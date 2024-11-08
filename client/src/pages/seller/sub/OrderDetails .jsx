@@ -69,7 +69,7 @@ const OrderDetails = () => {
 
   return (
     <>
-      <OrderStatus refreshPage={refreshPage} isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} onDelivery={order.onDelivery} />
+      <OrderStatus refreshPage={refreshPage} isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} onDelivery={order.onDelivery} statusTimestamps={order.statusTimestamps} />
       <section className="m-5" ref={contentRef}>
         <nav className="flex items-center gap-2">
           <div className="p-1 w-fit">
@@ -138,7 +138,7 @@ const OrderDetails = () => {
               )}
             </div>
             <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-              <b className="font-medium text-black">Placed: </b> {order.updatedAt && (
+              <b className="font-medium text-black">Updated: </b> {order.updatedAt && (
                 new Date(order.updatedAt.seconds * 1000).toLocaleDateString() + " " +
                 new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()
               )}
