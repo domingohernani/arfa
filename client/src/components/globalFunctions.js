@@ -96,8 +96,8 @@ export const getOrderStatusStyles = (orderStatus) => {
       break;
     case "Preparing":
       statusText = "Preparing";
-      colorClass = "text-orange-500"; // Orange for "Preparing"
-      bgColorClass = "bg-orange-400";
+      colorClass = "text-pink-500"; // Orange for "Preparing"
+      bgColorClass = "bg-pink-600";
       break;
     case "Ready":
       statusText = "Ready";
@@ -114,21 +114,26 @@ export const getOrderStatusStyles = (orderStatus) => {
       colorClass = "text-green-500"; // Green for "Delivered"
       bgColorClass = "bg-green-500";
       break;
+    case "Picked-up":
+      statusText = "Picked-up";
+      colorClass = "text-green-500"; // Green for "Delivered"
+      bgColorClass = "bg-green-500";
+      break;
     case "Cancelled":
       statusText = "Cancelled";
       colorClass = "text-red-500"; // Red for "Cancelled"
       bgColorClass = "bg-red-500";
       break;
-    case "Returned":
-      statusText = "Returned";
-      colorClass = "text-gray-500"; // Gray for "Returned"
-      bgColorClass = "bg-gray-500";
-      break;
-    case "Refunded":
-      statusText = "Refunded";
-      colorClass = "text-teal-500"; // Teal for "Refunded"
-      bgColorClass = "bg-teal-500";
-      break;
+    // case "Returned":
+    //   statusText = "Returned";
+    //   colorClass = "text-gray-500"; // Gray for "Returned"
+    //   bgColorClass = "bg-gray-500";
+    //   break;
+    // case "Refunded":
+    //   statusText = "Refunded";
+    //   colorClass = "text-teal-500"; // Teal for "Refunded"
+    //   bgColorClass = "bg-teal-500";
+    //   break;
     default:
       statusText = "Unknown";
       colorClass = "text-black"; // Black for unknown status

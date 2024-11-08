@@ -14,27 +14,59 @@ import {
     HomeIcon,
     XCircleIcon,
     ArrowUpTrayIcon,
-    ArrowPathIcon
 } from "@heroicons/react/24/outline";
+import { updateOrderStatus } from "../../firebase/orders";
 
-const statusFlow = [
-    { status: "Placed", icon: ShoppingCartIcon, description: "The customer has successfully placed the order." },
-    { status: "Confirmed", icon: CheckCircleIcon, description: "The seller has confirmed the order and processed the payment." },
-    { status: "Preparing for Delivery", icon: CogIcon, description: "The seller is preparing the order, including packing or assembling the furniture." },
-    { status: "Ready for Delivery", icon: TruckIcon, description: "The order is ready to be delivered and is waiting for the delivery schedule." },
-    { status: "Out for Delivery", icon: TruckIcon, description: "The order is on its way to the customer." },
-    { status: "Delivered", icon: HomeIcon, description: "The furniture has been delivered to the customer, and the order is now considered completed." },
-    { status: "Picked-up", icon: ArrowUpTrayIcon, description: "The customer picked up the order directly from the store." },
-    { status: "Cancelled", icon: XCircleIcon, description: "The order was canceled by either the customer or the seller before delivery." },
-];
+const statusFlowOptions = {
+    pickup: [
+        { status: "Placed", icon: ShoppingCartIcon, description: "The customer has successfully placed the order." },
+        { status: "Confirmed", icon: CheckCircleIcon, description: "The seller has confirmed the order and processed the payment." },
+        { status: "Ready", icon: TruckIcon, description: "The order is ready for pick-up and is waiting for the customer to collect." },
+        { status: "Picked-up", icon: ArrowUpTrayIcon, description: "The customer picked up the order directly from the store." },
+    ],
+    delivery: [
+        { status: "Placed", icon: ShoppingCartIcon, description: "The customer has successfully placed the order." },
+        { status: "Confirmed", icon: CheckCircleIcon, description: "The seller has confirmed the order and processed the payment." },
+        { status: "Preparing", icon: CogIcon, description: "The seller is preparing the order, including packing or assembling the furniture." },
+        { status: "Ready", icon: TruckIcon, description: "The order is ready to be delivered and is waiting for the delivery schedule." },
+        { status: "Out for Delivery", icon: TruckIcon, description: "The order is on its way to the customer." },
+        { status: "Delivered", icon: HomeIcon, description: "The furniture has been delivered to the customer, and the order is now considered completed." },
+    ]
+};
 
-export const OrderStatus = ({ isOpen, close, orderId, status }) => {
-    const handleUpdateStatus = () => {
-        close();
-        try {
-        } catch (error) {
-            console.log(error);
+const getNextStatus = (currentStatus, statusFlow) => {
+    const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
+    if (currentIndex === -1 || currentIndex === statusFlow.length - 1) {
+        return null; // No further status if it's the last in the flow
+    }
+    return statusFlow[currentIndex + 1].status;
+};
+
+export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDelivery }) => {
+    const statusFlow = onDelivery ? statusFlowOptions.delivery : statusFlowOptions.pickup;
+
+
+    const handleUpdateStatus = async () => {
+        if (status === "Picked-up" || status === "Delivered") {
+            console.log("No further updates allowed.");
+            return;
         }
+
+        try {
+            const nextStatus = getNextStatus(status, statusFlow);
+            if (nextStatus) {
+                await updateOrderStatus(orderId, nextStatus);
+                if (refreshPage) {
+                    refreshPage();
+                }
+                console.log(`Order ${orderId} status updated to: ${nextStatus}`);
+            } else {
+                console.log("No further status to update.");
+            }
+        } catch (error) {
+            console.log("Error updating status:", error);
+        }
+        close();
     };
 
     const handleCancel = () => {
@@ -66,8 +98,11 @@ export const OrderStatus = ({ isOpen, close, orderId, status }) => {
                                 >
                                     Update Status
                                 </DialogTitle>
-                                <div className="mt-2">
-                                    <Tracking currentStatus={status} />
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Review the current order status and select the next stage in the process. This will help keep both the customer and the delivery team updated on the progress of the order.
+                                </p>
+                                <div className="">
+                                    <Tracking currentStatus={status} statusFlow={statusFlow} />
                                 </div>
                                 <div className="flex justify-between mt-4">
                                     <button
@@ -94,15 +129,14 @@ export const OrderStatus = ({ isOpen, close, orderId, status }) => {
     );
 };
 
-const Tracking = ({ currentStatus }) => {
+const Tracking = ({ currentStatus, statusFlow }) => {
     const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
     const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
-
 
     return (
         <section className="bg-white antialiased">
             <div className="mx-auto max-w-screen-xl 2xl:px-0">
-                <div className="lg:flex h-96 overflow-y-scroll lg:gap-8">
+                <div className="lg:flex h-96 overflow-y-auto lg:gap-8">
                     <div className="grow sm:mt-8 lg:mt-0">
                         <div className="space-y-6 rounded-lg bg-white p-4">
                             <ol className="relative ms-3 border-s border-gray-200 dark:border-gray-700">

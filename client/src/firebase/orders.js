@@ -1,4 +1,4 @@
-import { collection, getDoc, getDocs, doc, query } from "firebase/firestore";
+import { collection, getDoc, getDocs, doc, query, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 export const fetchOrdersByShopId = async (filters = []) => {
@@ -80,3 +80,18 @@ export const getOrderById = async (orderId) => {
     console.error("Error fetching order:", error);
   }
 };
+
+
+export const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    const orderDocRef = doc(db, "orders", orderId);
+
+    await updateDoc(orderDocRef, {
+      orderStatus: newStatus
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return false;
+  }
+}

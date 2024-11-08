@@ -28,22 +28,22 @@ const OrderDetails = () => {
     @page {\ size: landscape;\ }\
   "}</style>
 
+  const fetchOrder = async () => {
+    try {
+      setLoading(true);
+      const orderResult = await getOrderById(id);
+      setOrder(orderResult);
+      const userResult = await getUserById(orderResult.shopperId);
+      setCustomer(userResult);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchOrder = async () => {
-      try {
-        setLoading(true);
-        const orderResult = await getOrderById(id);
-        setOrder(orderResult);
-        const userResult = await getUserById(orderResult.shopperId);
-        setCustomer(userResult);
-      } catch (error) {
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchOrder();
   }, []);
 
@@ -63,9 +63,13 @@ const OrderDetails = () => {
     setModalOpen(false);
   }
 
+  const refreshPage = () => {
+    fetchOrder();
+  }
+
   return (
     <>
-      <OrderStatus isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} />
+      <OrderStatus refreshPage={refreshPage} isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} onDelivery={order.onDelivery} />
       <section className="m-5" ref={contentRef}>
         <nav className="flex items-center gap-2">
           <div className="p-1 w-fit">
@@ -96,8 +100,8 @@ const OrderDetails = () => {
                 >
                   {order.orderStatus}
                 </p>
-                <p className="px-2 py-1 text-sm font-semibold text-red-500 rounded-sm bg-red-50 w-fit">
-                  Delivery
+                <p className={`px-2 py-1 text-sm font-semibold  ${order.onDelivery ? "text-red-500 bg-red-50" : "text-blue-500 bg-blue-50"} rounded-sm  w-fit`}>
+                  {order.onDelivery ? "Delivery" : "Pick-up"}
                 </p>
               </div>
             </div>
