@@ -20,16 +20,19 @@
 .cartWishlistTab {
   box-sizing: border-box;
 }
-.cartWishlistTab > button {
+
+.cartWishlistTab>button {
   /* background-color: transparent; */
   color: #111827;
   padding-left: 2rem;
   padding-right: 2rem;
 }
-.cartWishlistTab > button:hover {
+
+.cartWishlistTab>button:hover {
   color: #111827;
 }
-.cartWishlistTab > button:focus {
+
+.cartWishlistTab>button:focus {
   box-shadow: inset 0 0 0 0px white;
 }
 
@@ -85,9 +88,11 @@ button {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
@@ -143,21 +148,25 @@ button {
 .hide {
   display: none;
 }
+
 /* This keeps child nodes hidden while the element loads */
-:not(:defined) > * {
+:not(:defined)>* {
   display: none;
 }
 
 /* progress of reviews */
-.progressBarBg > div {
+.progressBarBg>div {
   background-color: rgba(14, 159, 110, 1);
 }
 
 .ag-root-wrapper {
-  border-radius: 0px; /* Adjust the border-radius to your desired value */
+  border-radius: 0px;
+  /* Adjust the border-radius to your desired value */
 }
+
 .ag-root {
-  border-radius: 4px; /* Adjust the border-radius */
+  border-radius: 4px;
+  /* Adjust the border-radius */
   overflow: hidden;
 }
 
@@ -220,10 +229,42 @@ canvas {
   0% {
     opacity: 0;
   }
+
   50% {
     opacity: 0.8;
   }
+
   100% {
     opacity: 0;
+  }
+}
+
+
+/* export on order (seller) */
+@media print {
+  .no-print {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .ag-theme-quartz .ag-header-cell-label {
+    font-size: 12px;
+  }
+
+  .ag-theme-quartz .ag-cell {
+    padding: 4px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .ag-theme-quartz .ag-header-cell-label {
+    font-size: 10px;
+  }
+
+  .ag-theme-quartz .ag-cell {
+    padding: 2px;
+    font-size: 10px;
   }
 }

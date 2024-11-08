@@ -120,8 +120,6 @@ const SellerDelivery = () => {
         };
       });
 
-      console.log(combinedData);
-
       setRegionData(combinedData);
     } catch (error) {
       console.error("Error fetching data:", error);

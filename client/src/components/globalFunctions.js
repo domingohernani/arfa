@@ -96,16 +96,16 @@ export const getOrderStatusStyles = (orderStatus) => {
       break;
     case "Preparing":
       statusText = "Preparing";
-      colorClass = "text-orange-500"; // Orange for "Preparing"
-      bgColorClass = "bg-orange-400";
+      colorClass = "text-pink-500"; // Orange for "Preparing"
+      bgColorClass = "bg-pink-600";
       break;
     case "Ready":
       statusText = "Ready";
       colorClass = "text-yellow-300"; // Yellow for "Ready"
       bgColorClass = "bg-yellow-300";
       break;
-    case "Out of Delivery":
-      statusText = "Out of Delivery";
+    case "Out for Delivery":
+      statusText = "Out for Delivery";
       colorClass = "text-purple-500"; // Purple for "Out for Delivery"
       bgColorClass = "bg-purple-500";
       break;
@@ -114,21 +114,26 @@ export const getOrderStatusStyles = (orderStatus) => {
       colorClass = "text-green-500"; // Green for "Delivered"
       bgColorClass = "bg-green-500";
       break;
+    case "Picked-up":
+      statusText = "Picked-up";
+      colorClass = "text-green-500"; // Green for "Delivered"
+      bgColorClass = "bg-green-500";
+      break;
     case "Cancelled":
       statusText = "Cancelled";
       colorClass = "text-red-500"; // Red for "Cancelled"
       bgColorClass = "bg-red-500";
       break;
-    case "Returned":
-      statusText = "Returned";
-      colorClass = "text-gray-500"; // Gray for "Returned"
-      bgColorClass = "bg-gray-500";
-      break;
-    case "Refunded":
-      statusText = "Refunded";
-      colorClass = "text-teal-500"; // Teal for "Refunded"
-      bgColorClass = "bg-teal-500";
-      break;
+    // case "Returned":
+    //   statusText = "Returned";
+    //   colorClass = "text-gray-500"; // Gray for "Returned"
+    //   bgColorClass = "bg-gray-500";
+    //   break;
+    // case "Refunded":
+    //   statusText = "Refunded";
+    //   colorClass = "text-teal-500"; // Teal for "Refunded"
+    //   bgColorClass = "bg-teal-500";
+    //   break;
     default:
       statusText = "Unknown";
       colorClass = "text-black"; // Black for unknown status
@@ -163,9 +168,8 @@ export const blobsToFiles = async (images, productName) => {
         const response = await fetch(blobUrl);
         const blob = await response.blob();
 
-        const fileName = `${productName}-${index + 1}${
-          blob.type === "image/png" ? ".png" : ".jpg"
-        }`;
+        const fileName = `${productName}-${index + 1}${blob.type === "image/png" ? ".png" : ".jpg"
+          }`;
         return new File([blob], fileName, { type: blob.type });
       })
     );

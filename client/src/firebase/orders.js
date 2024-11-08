@@ -1,5 +1,6 @@
-import { collection, getDoc, getDocs, doc, query } from "firebase/firestore";
-import { db } from "./firebase";
+import { collection, getDoc, getDocs, doc, query, updateDoc, serverTimestamp } from "firebase/firestore";
+import { db, storage } from "./firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export const fetchOrdersByShopId = async (filters = []) => {
   try {
@@ -78,5 +79,44 @@ export const getOrderById = async (orderId) => {
     }
   } catch (error) {
     console.error("Error fetching order:", error);
+  }
+};
+
+
+export const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    const orderDocRef = doc(db, "orders", orderId);
+
+    // Create a field path for the new status timestamp
+    const timestampField = `statusTimestamps.${newStatus}`;
+
+    await updateDoc(orderDocRef, {
+      orderStatus: newStatus,
+      [timestampField]: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return false;
+  }
+}
+
+export const uploadPOD = async (orderId, file) => {
+  if (!file) throw new Error("No file provided for upload.");
+
+  try {
+    const storageRef = ref(storage, `orders/${orderId}/${file.name}`);
+
+    const snapshot = await uploadBytes(storageRef, file);
+
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    const orderDocRef = doc(db, "orders", orderId);
+
+    await updateDoc(orderDocRef, { proofOfDeliveryUrl: downloadURL });
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading Proof of Delivery:", error);
+    throw error;
   }
 };

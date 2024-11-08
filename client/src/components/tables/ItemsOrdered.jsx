@@ -6,14 +6,8 @@ import { formatToPeso } from "../globalFunctions";
 
 const ItemsOrdered = ({ orders }) => {
   const columnDefs = [
-    { headerName: "Items Name", field: "name", flex: 2 },
+    { headerName: "Items Name", field: "name", flex: 1 },
     { headerName: "Quantity", field: "quantity", flex: 1, editable: true },
-    {
-      headerName: "Price (₱)",
-      field: "price",
-      flex: 1,
-      valueFormatter: (params) => formatToPeso(params.value),
-    },
     {
       headerName: "Total (₱)",
       field: "totalItemPrice",
@@ -22,57 +16,18 @@ const ItemsOrdered = ({ orders }) => {
     },
   ];
 
-  console.log("passed orders", orders);
-
   const rowData = [
-    // {
-    //   itemName: orders.name,
-    //   sku: "6473FGDH7",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 14,
-    //   price: 45.0,
-    //   total: 45.0,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
-    // {
-    //   itemName: "PVC Plastic",
-    //   sku: "183GD9983",
-    //   location: "Shop 34 floor CA, US",
-    //   quantity: 12,
-    //   price: 49.65,
-    //   total: 49.65,
-    // },
-    ...orders,
+    ...orders.orderItems,
   ];
 
   const pinnedBottomRowData = [
-    { name: "Subtotal", totalItemPrice: 94.65 },
-    { name: "Free Shipping", totalItemPrice: 0.0 },
-    { name: "Tax Amount (10%)", totalItemPrice: 9.47 },
-    { name: "Total", totalItemPrice: 104.12 },
+    { name: "Subtotal", totalItemPrice: orders.orderTotal },
+    { name: "Free Shipping", totalItemPrice: orders.deliveryFee },
+    { name: "Commision Rate (5%)", totalItemPrice: orders.orderTotal * 0.05 },
+    {
+      name: "Total",
+      totalItemPrice: orders.orderTotal + orders.deliveryFee + (orders.orderTotal * 0.05),
+    },
   ];
 
   return (
