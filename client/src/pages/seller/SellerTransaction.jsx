@@ -8,7 +8,10 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { fetchOrdersByShopId } from "../../firebase/orders";
 import { useStore } from "../../stores/useStore";
 import { where } from "firebase/firestore";
-import { formatToPeso, getOrderStatusStyles } from "../../components/globalFunctions";
+import {
+  formatToPeso,
+  getOrderStatusStyles,
+} from "../../components/globalFunctions";
 import { Toaster } from "react-hot-toast";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
@@ -37,6 +40,8 @@ const SellerTransaction = () => {
         headerName: "Date",
         field: "createdAt",
         flex: 2,
+        sort: "desc",
+        sortIndex: 0,
         filter: "agDateColumnFilter",
         valueGetter: (params) => {
           const createdAt = params.data.createdAt;
