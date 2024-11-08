@@ -6,7 +6,27 @@ import {
     DialogPanel,
 } from "@headlessui/react";
 import React, { Fragment } from "react";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import {
+    ShoppingCartIcon,
+    CheckCircleIcon,
+    CogIcon,
+    TruckIcon,
+    HomeIcon,
+    XCircleIcon,
+    ArrowUpTrayIcon,
+    ArrowPathIcon
+} from "@heroicons/react/24/outline";
+
+const statusFlow = [
+    { status: "Placed", icon: ShoppingCartIcon, description: "The customer has successfully placed the order." },
+    { status: "Confirmed", icon: CheckCircleIcon, description: "The seller has confirmed the order and processed the payment." },
+    { status: "Preparing for Delivery", icon: CogIcon, description: "The seller is preparing the order, including packing or assembling the furniture." },
+    { status: "Ready for Delivery", icon: TruckIcon, description: "The order is ready to be delivered and is waiting for the delivery schedule." },
+    { status: "Out for Delivery", icon: TruckIcon, description: "The order is on its way to the customer." },
+    { status: "Delivered", icon: HomeIcon, description: "The furniture has been delivered to the customer, and the order is now considered completed." },
+    { status: "Picked-up", icon: ArrowUpTrayIcon, description: "The customer picked up the order directly from the store." },
+    { status: "Cancelled", icon: XCircleIcon, description: "The order was canceled by either the customer or the seller before delivery." },
+];
 
 export const OrderStatus = ({ isOpen, close, orderId, status }) => {
     const handleUpdateStatus = () => {
@@ -44,10 +64,10 @@ export const OrderStatus = ({ isOpen, close, orderId, status }) => {
                                     as="h3"
                                     className="text-lg font-medium leading-6 text-gray-900"
                                 >
-                                    Update Status {orderId} {status}
+                                    Update Status
                                 </DialogTitle>
                                 <div className="mt-2">
-                                    <Tracking />
+                                    <Tracking currentStatus={status} />
                                 </div>
                                 <div className="flex justify-between mt-4">
                                     <button
@@ -74,27 +94,36 @@ export const OrderStatus = ({ isOpen, close, orderId, status }) => {
     );
 };
 
+const Tracking = ({ currentStatus }) => {
+    const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
+    const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
 
-const Tracking = () => {
+
     return (
-        <section class="bg-white antialiased">
-            <div class="mx-auto max-w-screen-xl 2xl:px-0">
-                <div class="lg:flex lg:gap-8">
-                    <div class="grow sm:mt-8 lg:mt-0">
-                        <div class="space-y-6 rounded-lg bg-white p-4">
-                            <ol class="relative ms-3 border-s border-gray-200 dark:border-gray-700">
-                                <li class="mb-10 ms-6">
-                                    <span class="absolute -start-3 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700 dark:ring-gray-800">
-                                        <ShoppingCartIcon className="text-green-400 w-4 h-4" />
-                                    </span>
-                                    <p class="mb-0.5 text-sm font-medium text-gray-900 dark:text-white">Estimated delivery in 24 Nov 2023</p>
-                                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Products delivered</p>
-                                </li>
+        <section className="bg-white antialiased">
+            <div className="mx-auto max-w-screen-xl 2xl:px-0">
+                <div className="lg:flex h-96 overflow-y-scroll lg:gap-8">
+                    <div className="grow sm:mt-8 lg:mt-0">
+                        <div className="space-y-6 rounded-lg bg-white p-4">
+                            <ol className="relative ms-3 border-s border-gray-200 dark:border-gray-700">
+                                {statusesToShow.map((item, index) => (
+                                    <li key={index} className="mb-10 ms-6">
+                                        <span className={`absolute -start-3 flex h-7 ${item.status === currentStatus ? "bg-arfagreen" : "bg-gray-100"} w-7 items-center justify-center rounded-full `}>
+                                            <item.icon className={` w-4 h-4 ${item.status === currentStatus ? "text-white" : "text-green-400"}`} />
+                                        </span>
+                                        <p className={`mb-0.5 text-sm ${item.status === currentStatus ? "font-medium text-arfagreen" : "font-normal text-gray-900"}`}>
+                                            {item.status}
+                                        </p>
+                                        <p className={`text-sm  ${item.status === currentStatus ? "text-arfablack font-medium" : "text-gray-500 font-normal"}`}>
+                                            {item.description}
+                                        </p>
+                                    </li>
+                                ))}
                             </ol>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-    )
-}
+    );
+};

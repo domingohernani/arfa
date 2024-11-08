@@ -23,7 +23,7 @@ const ItemsOrdered = ({ orders }) => {
   const pinnedBottomRowData = [
     { name: "Subtotal", totalItemPrice: orders.orderTotal },
     { name: "Free Shipping", totalItemPrice: orders.deliveryFee },
-    { name: "Tax Amount (5%)", totalItemPrice: orders.orderTotal * 0.05 },
+    { name: "Commision Rate (5%)", totalItemPrice: orders.orderTotal * 0.05 },
     {
       name: "Total",
       totalItemPrice: orders.orderTotal + orders.deliveryFee + (orders.orderTotal * 0.05),
