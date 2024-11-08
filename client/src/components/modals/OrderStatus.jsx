@@ -17,6 +17,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { updateOrderStatus } from "../../firebase/orders";
 import { UploadPOD } from "./UploadPOD";
+import toast from "react-hot-toast";
 
 const statusFlowOptions = {
     pickup: [
@@ -49,15 +50,16 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
     const [imagePOD, setImagePOD] = useState(null);
     const [imagePODPreview, setPODPreview] = useState("");
 
+    const nextStatus = getNextStatus(status, statusFlow);
+
     const handleUpdateStatus = async () => {
         if (status === "Picked-up" || status === "Delivered") {
-            console.log("No further updates allowed.");
+            toast.info("No further updates allowed.");
             return;
         }
 
         try {
-            const nextStatus = getNextStatus(status, statusFlow);
-            if (nextStatus === "Preparing") {
+            if (((nextStatus === "Delivered" && onDelivery) || (nextStatus === "Picked-up")) && !imagePOD) {
                 setIsUploadPOD(true);
                 return;
             }
@@ -66,16 +68,17 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
                 if (refreshPage) {
                     refreshPage();
                 }
+                toast.success(`Order status updated to: ${nextStatus}`);
                 console.log(`Order ${orderId} status updated to: ${nextStatus}`);
             } else {
-                console.log("No further status to update.");
+                toast.info("No further status to update.");
             }
         } catch (error) {
-            console.log("Error updating status:", error);
+            console.error("Error updating status:", error);
+            toast.error("Failed to update order status. Please try again.");
         }
         close();
-    };
-
+    }
     const handleImagePOD = (file) => {
         if (file) {
             setPODPreview(URL.createObjectURL(file));
@@ -93,7 +96,7 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
 
     return (
         <>
-            <UploadPOD close={handleClosePOD} isOpen={isUploadPOD} upload={handleImagePOD} />
+            <UploadPOD close={handleClosePOD} isOpen={isUploadPOD} upload={handleImagePOD} onDelivery={onDelivery} />
             <Transition appear show={isOpen} as={Fragment} className="z-40">
                 <Dialog as="div" className="relative z-10" onClose={close}>
                     <TransitionChild as={Fragment}>
@@ -132,7 +135,7 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
                                             className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md bg-arfagreen hover:bg-green-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-opacity-75"
                                             onClick={handleUpdateStatus}
                                         >
-                                            Update
+                                            {nextStatus ? `Next: ${nextStatus}` : "No further updates"}
                                         </button>
                                         <button
                                             type="button"
@@ -149,7 +152,6 @@ export const OrderStatus = ({ refreshPage, isOpen, close, orderId, status, onDel
                 </Dialog>
             </Transition>
         </>
-
     );
 };
 
