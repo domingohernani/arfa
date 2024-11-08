@@ -9,10 +9,14 @@ import { fetchOrdersByShopId } from "../../firebase/orders";
 import { useStore } from "../../stores/useStore";
 import { Toaster } from "react-hot-toast";
 import { where } from "firebase/firestore";
-import { formatToPeso, getOrderStatusStyles } from "../../components/globalFunctions";
+import {
+  formatToPeso,
+  getOrderStatusStyles,
+} from "../../components/globalFunctions";
 import { CustomRowActions } from "../../components/tables/CustomRowActions";
 import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -106,15 +110,22 @@ const SellerOrders = () => {
       field: "action",
       filter: false,
       flex: 1,
-      cellRenderer: CustomRowActions,
-      cellRendererParams: (params) => {
-        return {
-          data: params.data,
-          viewAction: true,
-          viewFunc: handleViewOrder,
-          editAction: false,
-          deleteAction: true,
-        };
+      cellRenderer: (params) => {
+        const furnitureId = params.data.id
+
+        return (
+          <section className="flex items-center justify-center gap-2 px-2 mt-1">
+            <button
+              className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
+              onClick={() => {
+                navigate(`details/${furnitureId}`);
+              }}
+            >
+              <EyeIcon className="inline-block w-4 h-4 mr-1" />
+              <span className="text-sm">View </span>
+            </button>
+          </section>
+        );
       },
     },
   ]);
@@ -130,7 +141,7 @@ const SellerOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       const filter = [
-        where("orderStatus", "!=", "Delivered"),
+        where("orderStatus", "not-in", ["Delivered", "Picked-up"]),
         where("shopId", "==", loggedUser.userId),
       ];
       const orders = await fetchOrdersByShopId(filter);
