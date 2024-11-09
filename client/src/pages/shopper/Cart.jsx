@@ -277,8 +277,8 @@ const Cart = () => {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white sm:text-2xl">
                   Shopping Cart
                 </h2>
-                {cart.length > 0 ? (
-                  <ShowMultiModel data={cart}></ShowMultiModel>
+                {cart.length > 0 && cart.some((item) => item.modelUrl) ? (
+                  <ShowMultiModel data={cart.filter((item) => item.modelUrl)} />
                 ) : null}
                 <div className=" mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
                   <div className="flex-none w-full mx-auto lg:max-w-2xl xl:max-w-4xl">

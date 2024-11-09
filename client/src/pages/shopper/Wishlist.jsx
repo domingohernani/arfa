@@ -205,8 +205,8 @@ const Wishlist = () => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white sm:text-2xl">
               Wishlist
             </h2>
-            {wishlist.length > 0 ? (
-              <ShowMultiModel data={wishlist}></ShowMultiModel>
+            {wishlist.length > 0 && wishlist.some((item) => item.modelUrl) ? (
+              <ShowMultiModel data={wishlist.filter((item) => item.modelUrl)} />
             ) : null}
 
             <div className=" mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
