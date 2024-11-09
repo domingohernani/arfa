@@ -9,6 +9,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { auth } from "../../firebase/firebase";
 import { Carousel } from "flowbite-react";
 import { getUserInfo } from "../../firebase/user";
+import { useEffect } from "react";
+import { getAllImageDownloadUrl } from "../../firebase/photos";
 
 const AddToCartSelection = ({ path, furniture }) => {
   const isAddToCartOpen = useStore((state) => state.isAddToCartOpen);
@@ -17,6 +19,7 @@ const AddToCartSelection = ({ path, furniture }) => {
   );
   const sellerId = furniture.shopData.userId;
   const [selectedVariant, setSelectedVariant] = useState(furniture.variants[0]);
+  const [variantlessImg, setVariantlessImg] = useState([]);
 
   const handleAddToCart = async (variantName) => {
     const userInfo = await getUserInfo();
@@ -56,6 +59,18 @@ const AddToCartSelection = ({ path, furniture }) => {
   };
 
   const handleClose = () => updateIsAddToCartOpen(false);
+
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        const imgs = await getAllImageDownloadUrl(furniture.imagesUrl);
+        setVariantlessImg(imgs);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPhotos();
+  }, [furniture]);
 
   return (
     <Drawer
@@ -103,7 +118,18 @@ const AddToCartSelection = ({ path, furniture }) => {
                 </select>
               </div>
             ) : (
-              <div className="flex items-center mt-9"></div>
+              <div className="relative max-w-2xl mx-auto mt-14 h-96">
+                <Carousel>
+                  {variantlessImg.map((image, index) => (
+                    <img
+                      src={image}
+                      alt="Image"
+                      key={index}
+                      className="object-cover w-full h-full"
+                    />
+                  ))}
+                </Carousel>
+              </div>
             )}
             <div
               className="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 absolute bottom-3 left-0 right-0 mx-auto mt-4 flex w-fit cursor-pointer items-center justify-center rounded-lg bg-arfagreen px-5 py-2.5 text-sm font-medium text-white focus:ring-4 sm:mt-0"
