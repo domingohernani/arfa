@@ -18,10 +18,18 @@ const AddToCartSelection = ({ path, furniture }) => {
     (state) => state.updateIsAddToCartOpen
   );
   const sellerId = furniture.shopData.userId;
+  const [selectedVariantStock, setSelectedVariantStock] = useState(
+    furniture.variants[0].name ? furniture.variants[0].stock : furniture.stock
+  );
   const [selectedVariant, setSelectedVariant] = useState(furniture.variants[0]);
   const [variantlessImg, setVariantlessImg] = useState([]);
 
   const handleAddToCart = async (variantName) => {
+    if (selectedVariantStock == 0) {
+      toast.error("The selected product is currently out of stock.");
+      return;
+    }
+
     const userInfo = await getUserInfo();
     try {
       const userId = auth.currentUser?.uid;
@@ -56,6 +64,12 @@ const AddToCartSelection = ({ path, furniture }) => {
     const variantName = event.target.value;
     const variant = furniture.variants.find((v) => v.name === variantName);
     setSelectedVariant(variant);
+    setSelectedVariantStock(variant.stock);
+  };
+
+  const handleSelectedStockChange = (variantName) => {
+    const variant = furniture.variants.find((v) => v.name === variantName);
+    setSelectedVariantStock(variant.stock);
   };
 
   const handleClose = () => updateIsAddToCartOpen(false);
@@ -90,6 +104,9 @@ const AddToCartSelection = ({ path, furniture }) => {
         </h1>
         <p className="">{formatToPeso(furniture.discountedPrice)}</p>
       </div>
+      <p className="absolute text-sm text-black top-20">
+        On Stock: {selectedVariantStock}
+      </p>
 
       <div className="rounded-none h-5/6 md:rounded-lg">
         {path ? (
@@ -97,6 +114,7 @@ const AddToCartSelection = ({ path, furniture }) => {
             path={path}
             addToCartBtn={true}
             handleAddToCart={handleAddToCart}
+            handleSelectedStockChange={handleSelectedStockChange}
           />
         ) : (
           // If the furniture has no 3d model
@@ -118,7 +136,7 @@ const AddToCartSelection = ({ path, furniture }) => {
                 </select>
               </div>
             ) : (
-              <div className="relative max-w-2xl mx-auto mt-14 h-96">
+              <div className="max-w-2xl mx-auto mt-14 h-96">
                 <Carousel>
                   {variantlessImg.map((image, index) => (
                     <img
@@ -133,7 +151,9 @@ const AddToCartSelection = ({ path, furniture }) => {
             )}
             <div
               className="bg-primary-700 z-10 hover:bg-primary-800 focus:ring-primary-300 absolute bottom-5 left-0 right-0 mx-auto mt-4 flex w-fit cursor-pointer items-center justify-center rounded-lg bg-arfagreen px-5 py-2.5 text-sm font-medium text-white focus:ring-4 sm:mt-0"
-              onClick={() => handleAddToCart(selectedVariant.name)}
+              onClick={() => {
+                handleAddToCart(selectedVariant.name);
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
