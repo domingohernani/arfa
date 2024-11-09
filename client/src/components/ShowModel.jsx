@@ -6,7 +6,12 @@ import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
 import { CubeTransparentIcon } from "@heroicons/react/20/solid";
 
-function ShowModel({ path, addToCartBtn = false, handleAddToCart }) {
+function ShowModel({
+  path,
+  addToCartBtn = false,
+  handleAddToCart,
+  handleSelectedStockChange = () => {},
+}) {
   const modelViewerRef = useRef(null);
   const [variants, setVariants] = useState([]);
   const setDetectedVariants = useStore((state) => state.setDetectedVariants);
@@ -206,6 +211,9 @@ function ShowModel({ path, addToCartBtn = false, handleAddToCart }) {
       event.target.value === "default" ? null : event.target.value;
     modelViewerRef.current.variantName = variantName;
     setInitialVariant(variantName);
+    if (handleSelectedStockChange) {
+      handleSelectedStockChange(variantName);
+    }
   };
 
   const handleArClick = () => {
