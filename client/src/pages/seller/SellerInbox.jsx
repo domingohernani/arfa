@@ -39,6 +39,8 @@ const SellerInbox = () => {
   const { selectedChat, setSelectedChat } = useStore();
   const [loading, setLoading] = useState(false);
   const [mobileViewChat, setMobileViewChat] = useState(false);
+  const [searchInput, setSearchInput] = useState(""); // New state for search input
+  const [filteredChats, setFilteredChats] = useState(chats); // State for filtered chats
 
   useEffect(() => {
     let unsubscribe;
@@ -49,6 +51,7 @@ const SellerInbox = () => {
 
         unsubscribe = getChatsByShopId(loggedUser.userId, (chats) => {
           setChats(chats);
+          setFilteredChats(chats); // Initialize filteredChats with fetched chats
           setLoading(false);
         });
       } catch (error) {
@@ -61,7 +64,6 @@ const SellerInbox = () => {
       fetchChats();
     }
 
-    // Clean up the listener on unmount or when loggedUser changes
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -73,13 +75,26 @@ const SellerInbox = () => {
     if (chats.length > 0) {
       setSelectedChat(chats[0]);
     }
-  }, []);
+  }, [chats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
     setMobileViewChat(true);
   }, []);
 
+  const handleSearch = () => {
+    const lowerCaseInput = searchInput.toLowerCase();
+    const results = chats.filter((chat) => {
+      const fullName =
+        `${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`.toLowerCase();
+      return (
+        chat.shopperInfo.firstName.toLowerCase().includes(lowerCaseInput) ||
+        chat.shopperInfo.lastName.toLowerCase().includes(lowerCaseInput) ||
+        fullName.includes(lowerCaseInput)
+      );
+    });
+    setFilteredChats(results);
+  };
   if (loading && chats.length < 1) {
     return <div>Loading...</div>;
   }
@@ -91,24 +106,31 @@ const SellerInbox = () => {
           <div className="flex flex-col bg-white max-w-60">
             <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
               <div className="relative">
-                <input
-                  type="text"
-                  className="w-full py-2 text-sm border border-gray-200 px-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
-                  placeholder="Search..."
-                  id="catalogSearchbar convoSearchBar"
-                />
                 <img
                   src={search}
                   alt="Search"
-                  className="absolute top-0 w-3 h-full cursor-pointer left-2"
-                  width=""
-                  height="auto"
+                  className="absolute top-0 w-3 h-full cursor-pointer right-2"
+                  onClick={handleSearch} // Trigger search on click
+                />
+                <input
+                  type="text"
+                  className="w-full py-2 text-sm border border-gray-200 pl-2 pr-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
+                  placeholder="Search..."
+                  value={searchInput}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchInput(value);
+
+                    if (value === "") {
+                      setFilteredChats(chats);
+                    }
+                  }}
                 />
               </div>
             </div>
 
             <div className="flex-auto mt-5 overflow-y-auto">
-              {chats.map((chat, index) => {
+              {filteredChats.map((chat, index) => {
                 const isActive = chat.id === selectedChat.id;
                 return (
                   <section
@@ -159,7 +181,7 @@ const SellerInbox = () => {
           </div>
 
           <div className="flex flex-col flex-1 bg-white border-l">
-            {chats.length > 0 ? (
+            {filteredChats.length > 0 ? (
               selectedChat && <DisplayChat chat={selectedChat} />
             ) : (
               <div className="flex flex-col items-center gap-3 mt-28">
