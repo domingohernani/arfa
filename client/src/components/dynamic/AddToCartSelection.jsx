@@ -1,9 +1,8 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { Button, Drawer } from "flowbite-react";
 import { useStore } from "../../stores/useStore";
 import ShowModel from "../ShowModel";
 import { formatToPeso } from "../globalFunctions";
-import { useEffect } from "react";
 import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
 import { addToCart } from "../../firebase/cart";
 import toast, { Toaster } from "react-hot-toast";
@@ -11,12 +10,13 @@ import { auth } from "../../firebase/firebase";
 import { Carousel } from "flowbite-react";
 import { getUserInfo } from "../../firebase/user";
 
-const AddToCartSelection = ({ path, furniture, furnitureImgUrls }) => {
+const AddToCartSelection = ({ path, furniture }) => {
   const isAddToCartOpen = useStore((state) => state.isAddToCartOpen);
   const updateIsAddToCartOpen = useStore(
     (state) => state.updateIsAddToCartOpen
   );
   const sellerId = furniture.shopData.userId;
+  const [selectedVariant, setSelectedVariant] = useState(furniture.variants[0]);
 
   const handleAddToCart = async (variantName) => {
     const userInfo = await getUserInfo();
@@ -49,9 +49,13 @@ const AddToCartSelection = ({ path, furniture, furnitureImgUrls }) => {
     }
   };
 
-  const handleClose = () => updateIsAddToCartOpen(false);
+  const handleVariantChange = (event) => {
+    const variantName = event.target.value;
+    const variant = furniture.variants.find((v) => v.name === variantName);
+    setSelectedVariant(variant);
+  };
 
-  console.log(furniture);
+  const handleClose = () => updateIsAddToCartOpen(false);
 
   return (
     <Drawer
@@ -84,12 +88,12 @@ const AddToCartSelection = ({ path, furniture, furnitureImgUrls }) => {
           <>
             {furniture.variants.length !== 0 &&
             furniture.variants.some((variant) => variant.name) ? (
-              <div className="absolute flex items-center left-4 right-4 bottom-5">
+              <div className="absolute flex items-center left-4 right-4 bottom-12">
                 <span>Variant:</span>
-
                 <select
                   id="variant"
                   className="text-sm text-center border-none border-x-transparent border-t-transparent focus:border-transparent focus:outline-none focus:ring-transparent"
+                  onChange={handleVariantChange}
                 >
                   {furniture.variants.map((variant, index) => (
                     <option key={index} value={variant.name}>
@@ -103,7 +107,7 @@ const AddToCartSelection = ({ path, furniture, furnitureImgUrls }) => {
             )}
             <div
               className="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 absolute bottom-3 left-0 right-0 mx-auto mt-4 flex w-fit cursor-pointer items-center justify-center rounded-lg bg-arfagreen px-5 py-2.5 text-sm font-medium text-white focus:ring-4 sm:mt-0"
-              onClick={handleAddToCart}
+              onClick={() => handleAddToCart(selectedVariant.name)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -122,16 +126,14 @@ const AddToCartSelection = ({ path, furniture, furnitureImgUrls }) => {
             </div>
             <div className="relative max-w-2xl mx-auto mt-14 h-96">
               <Carousel>
-                {furnitureImgUrls.map((image, index) => {
-                  return (
-                    <img
-                      src={image}
-                      alt="..."
-                      key={index}
-                      className="object-cover w-full h-full"
-                    />
-                  );
-                })}
+                {selectedVariant.imagePaths.map((image, index) => (
+                  <img
+                    src={image}
+                    alt="Variant image"
+                    key={index}
+                    className="object-cover w-full h-full"
+                  />
+                ))}
               </Carousel>
             </div>
           </>
