@@ -40,6 +40,8 @@ const Inbox = () => {
   const { selectedChat, setSelectedChat } = useStore();
   const [loading, setLoading] = useState(false);
   const [mobileViewChat, setMobileViewChat] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [filteredChats, setFilteredChats] = useState(chats);
 
   useEffect(() => {
     let unsubscribe;
@@ -47,10 +49,10 @@ const Inbox = () => {
     const fetchChats = async () => {
       try {
         setLoading(true);
-
         const loggedUser = await getUserInfo();
         unsubscribe = getChatsByShopperId(loggedUser.id, (chats) => {
           setChats(chats);
+          setFilteredChats(chats); // Initialize filteredChats with fetched chats
           setLoading(false);
         });
       } catch (error) {
@@ -72,12 +74,21 @@ const Inbox = () => {
     if (chats.length > 0) {
       setSelectedChat(chats[0]);
     }
-  }, []);
+  }, [chats, setSelectedChat]);
 
   const handleChatSelect = useCallback((chat) => {
     setSelectedChat(chat);
     setMobileViewChat(true);
   }, []);
+
+  const handleSearch = () => {
+    const lowerCaseInput = searchInput.toLowerCase();
+    const results = chats.filter((chat) => {
+      const shopName = chat.shopInfo.name.toLowerCase();
+      return shopName.includes(lowerCaseInput);
+    });
+    setFilteredChats(results);
+  };
 
   if (loading && chats.length < 1) {
     return <div>Loading...</div>;
@@ -88,27 +99,33 @@ const Inbox = () => {
       {/* <ProductCard></ProductCard> */}
       <div className="flex-row hidden h-screen m-5 border lg:flex">
         <div className="flex flex-row flex-auto rounded-tl-xl">
-          <div className="flex flex-col w-1/5">
+          <div className="flex flex-col bg-white max-w-60">
             <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
               <div className="relative">
                 <input
                   type="text"
                   className="w-full py-2 text-sm border border-gray-200 px-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
                   placeholder="Search..."
-                  id="catalogSearchbar convoSearchBar"
+                  value={searchInput}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchInput(value);
+                    if (value === "") {
+                      setFilteredChats(chats);
+                    }
+                  }}
                 />
                 <img
                   src={search}
                   alt="Search"
                   className="absolute top-0 w-3 h-full cursor-pointer left-2"
-                  width=""
-                  height="auto"
+                  onClick={handleSearch} // Trigger search on click
                 />
               </div>
             </div>
 
             <div className="flex-auto mt-5 overflow-y-auto">
-              {chats.map((chat, index) => {
+              {filteredChats.map((chat, index) => {
                 const isActive = chat.id === selectedChat.id;
                 const shopInfo = chat.shopInfo;
                 return (
@@ -160,12 +177,8 @@ const Inbox = () => {
           </div>
 
           <div className="flex flex-col flex-1 w-3/5 border-l">
-            {chats.length > 0 ? (
-              selectedChat && (
-                <DisplayChat
-                  chat={selectedChat}
-                />
-              )
+            {filteredChats.length > 0 ? (
+              selectedChat && <DisplayChat chat={selectedChat} />
             ) : (
               <div className="flex flex-col items-center gap-3 mt-28">
                 <img src={noResult} alt="No Result" className="w-64 h-auto" />
@@ -186,20 +199,26 @@ const Inbox = () => {
                 type="text"
                 className="w-full py-2 text-sm border border-gray-200 px-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
                 placeholder="Search..."
-                id="catalogSearchbar convoSearchBar"
+                value={searchInput}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSearchInput(value);
+                  if (value === "") {
+                    setFilteredChats(chats);
+                  }
+                }}
               />
               <img
                 src={search}
                 alt="Search"
                 className="absolute top-0 w-3 h-full cursor-pointer left-2"
-                width=""
-                height="auto"
+                onClick={handleSearch}
               />
             </div>
           </div>
 
           <div className="flex-auto mt-5 overflow-y-auto">
-            {chats.map((chat, index) => {
+            {filteredChats.map((chat, index) => {
               const isActive = chat.id === selectedChat.id;
               return (
                 <section
@@ -214,16 +233,14 @@ const Inbox = () => {
                         : "p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100"
                     }`}
                   >
-                    <div className="flex flex-row items-center space-x-2 ">
-                      <div className="flex items-center flex-1 gap-2">
-                        <DisplayAvatar
-                          url={chat.shopInfo.logo}
-                          className="w-10 h-10"
-                          name={chat.shopInfo.name}
-                        />
-                        <div className="flex w-full text-sm font-medium truncate text-arfablack">
-                          {chat.shopInfo.name}
-                        </div>
+                    <div className="flex flex-row items-center space-x-2">
+                      <DisplayAvatar
+                        url={chat.shopInfo.logo}
+                        className="w-10 h-10"
+                        name={chat.shopInfo.name}
+                      />
+                      <div className="flex w-full text-sm font-medium truncate text-arfablack">
+                        {chat.shopInfo.name}
                       </div>
                       <div className="text-sm text-gray-500">
                         {formatTimeAgo(chat.lastMessageTimestamp)}
@@ -250,7 +267,7 @@ const Inbox = () => {
 
       {mobileViewChat && (
         <div className="flex flex-col flex-1 w-full px-3 border lg:hidden">
-          {chats.length > 0 ? (
+          {filteredChats.length > 0 ? (
             selectedChat && (
               <DisplayChat
                 chat={selectedChat}
