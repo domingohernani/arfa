@@ -132,7 +132,7 @@ const AddToCartSelection = ({ path, furniture }) => {
               </div>
             )}
             <div
-              className="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 absolute bottom-3 left-0 right-0 mx-auto mt-4 flex w-fit cursor-pointer items-center justify-center rounded-lg bg-arfagreen px-5 py-2.5 text-sm font-medium text-white focus:ring-4 sm:mt-0"
+              className="bg-primary-700 z-10 hover:bg-primary-800 focus:ring-primary-300 absolute bottom-5 left-0 right-0 mx-auto mt-4 flex w-fit cursor-pointer items-center justify-center rounded-lg bg-arfagreen px-5 py-2.5 text-sm font-medium text-white focus:ring-4 sm:mt-0"
               onClick={() => handleAddToCart(selectedVariant.name)}
             >
               <svg
