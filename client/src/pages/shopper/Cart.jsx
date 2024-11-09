@@ -180,7 +180,11 @@ const Cart = () => {
           );
           // grabbing lahat ng variants
           let variantImgUrls = "";
-          if (furniture.variants.length === 0) {
+          if (
+            furniture.variants.length === 0 ||
+            (furniture.variants[0].imagePaths.length === 0 &&
+              !furniture.variants[0].name)
+          ) {
             const urls = await getAllImageDownloadUrl(furniture.imagesUrl);
             const placeholder = {
               imagePaths: urls,
