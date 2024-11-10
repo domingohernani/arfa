@@ -23,7 +23,7 @@ import {
   MinusIcon,
   ArrowLongRightIcon,
 } from "@heroicons/react/24/outline";
-import { updateCartQuantity } from "../../firebase/delivery";
+import { getDeliveryFee, updateCartQuantity } from "../../firebase/delivery";
 
 const DisplayFurnituresOnCart = ({
   items,
@@ -32,6 +32,7 @@ const DisplayFurnituresOnCart = ({
   setCart,
 }) => {
   const [logoUrls, setLogoUrls] = useState({});
+  const [deliveryFees, setDeliveryFees] = useState({});
 
   useEffect(() => {
     // Group items by shopData.userId
@@ -48,8 +49,8 @@ const DisplayFurnituresOnCart = ({
       return groups;
     }, {});
 
-    // Fetch logos for each shop
-    const fetchLogos = async () => {
+    // Fetch logos and delivery fees for each shop
+    const fetchLogosAndFees = async () => {
       const logoPromises = Object.entries(groupedItems).map(
         async ([shopId, group]) => {
           const url = await getImageDownloadUrl(group.logoPath);
@@ -57,12 +58,28 @@ const DisplayFurnituresOnCart = ({
         }
       );
 
+      const feePromises = Object.keys(groupedItems).map(async (shopId) => {
+        // Assuming `auth.currentUser.uid` is available to get the user data for region
+        const userInfo = await getUserInfo(auth.currentUser.uid);
+        const userRegion = userInfo?.location?.region;
+        if (userRegion) {
+          const fee = await getDeliveryFee(shopId, userRegion);
+          return [shopId, fee];
+        }
+        return [shopId, null];
+      });
+
       const resolvedLogos = await Promise.all(logoPromises);
+      const resolvedFees = await Promise.all(feePromises);
+
       const logoUrlsMap = Object.fromEntries(resolvedLogos);
+      const deliveryFeesMap = Object.fromEntries(resolvedFees);
+
       setLogoUrls(logoUrlsMap);
+      setDeliveryFees(deliveryFeesMap);
     };
 
-    fetchLogos();
+    fetchLogosAndFees();
   }, [items]);
 
   const incrementQuantity = async (item) => {
@@ -262,7 +279,9 @@ const DisplayFurnituresOnCart = ({
                   Delivery Fee
                 </dt>
                 <dd className="text-sm font-medium text-gray-900 dark:text-white">
-                  $99
+                  {deliveryFees[shopId] !== null
+                    ? formatToPeso(deliveryFees[shopId] || 0)
+                    : "Not available"}
                 </dd>
               </dl>
 
