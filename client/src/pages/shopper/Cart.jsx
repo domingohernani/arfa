@@ -23,8 +23,14 @@ import {
   MinusIcon,
   ArrowLongRightIcon,
 } from "@heroicons/react/24/outline";
+import { updateCartQuantity } from "../../firebase/delivery";
 
-const DisplayFurnituresOnCart = ({ items, handleRemoveItem }) => {
+const DisplayFurnituresOnCart = ({
+  items,
+  handleRemoveItem,
+  fetchCart,
+  setCart,
+}) => {
   const [logoUrls, setLogoUrls] = useState({});
 
   useEffect(() => {
@@ -58,6 +64,52 @@ const DisplayFurnituresOnCart = ({ items, handleRemoveItem }) => {
 
     fetchLogos();
   }, [items]);
+
+  const incrementQuantity = async (item) => {
+    const newQuantity = item.quantity + 1;
+
+    // Update the quantity in Firebase
+    await updateCartQuantity(
+      auth.currentUser.uid,
+      item.id,
+      item.selectedVariant,
+      item.shopData.userId,
+      newQuantity
+    );
+
+    // Update the quantity in the local state
+    setCart((prevCart) =>
+      prevCart.map((cartItem) =>
+        cartItem.id === item.id &&
+        cartItem.selectedVariant === item.selectedVariant
+          ? { ...cartItem, quantity: newQuantity }
+          : cartItem
+      )
+    );
+  };
+
+  const decrementQuantity = async (item) => {
+    const newQuantity = Math.max(1, item.quantity - 1);
+
+    // Update the quantity in Firebase
+    await updateCartQuantity(
+      auth.currentUser.uid,
+      item.id,
+      item.selectedVariant,
+      item.shopData.userId,
+      newQuantity
+    );
+
+    // Update the quantity in the local state
+    setCart((prevCart) =>
+      prevCart.map((cartItem) =>
+        cartItem.id === item.id &&
+        cartItem.selectedVariant === item.selectedVariant
+          ? { ...cartItem, quantity: newQuantity }
+          : cartItem
+      )
+    );
+  };
 
   // Render the grouped items
   return Object.entries(
@@ -109,6 +161,7 @@ const DisplayFurnituresOnCart = ({ items, handleRemoveItem }) => {
                   <button
                     type="button"
                     id="decrement-button"
+                    onClick={() => decrementQuantity(item)}
                     className="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                   >
                     <MinusIcon className="w-4 h-4 text-gray-900" />
@@ -117,12 +170,13 @@ const DisplayFurnituresOnCart = ({ items, handleRemoveItem }) => {
                     type="text"
                     id="counter-input"
                     className="w-10 text-sm font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white"
-                    value="2"
+                    value={item.quantity}
                     required
                   />
                   <button
                     type="button"
                     id="increment-button"
+                    onClick={() => incrementQuantity(item)}
                     className="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                   >
                     <PlusIcon className="w-4 h-4 text-gray-900" />
@@ -130,7 +184,9 @@ const DisplayFurnituresOnCart = ({ items, handleRemoveItem }) => {
                 </div>
                 <div className="text-end md:order-4 md:w-32">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {formatToPeso(item.price)}
+                    {item.isSale
+                      ? formatToPeso(item.discountedPrice)
+                      : formatToPeso(item.price)}
                   </p>
                 </div>
               </div>
@@ -297,10 +353,11 @@ const Cart = () => {
           ...furniture,
           selectedVariant: item.variant,
           variantImgUrls: variantImgUrls,
+          quantity: item.quantity,
         };
       });
 
-      const results = (await Promise.all(fetchPromises)).reverse();
+      const results = await Promise.all(fetchPromises);
       setCart(results);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -392,6 +449,8 @@ const Cart = () => {
                       <DisplayFurnituresOnCart
                         items={cart}
                         handleRemoveItem={handleRemoveItem}
+                        fetchCart={fetchCart}
+                        setCart={setCart}
                       />
                     </div>
                   </div>
