@@ -7,7 +7,13 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-export const addToCart = async (userId, furnitureId, variant, sellerId) => {
+export const addToCart = async (
+  userId,
+  furnitureId,
+  variant,
+  sellerId,
+  quantity
+) => {
   const userRef = doc(db, "users", userId);
 
   try {
@@ -28,7 +34,7 @@ export const addToCart = async (userId, furnitureId, variant, sellerId) => {
         return { success: true, isDuplicate: true };
       } else {
         await updateDoc(userRef, {
-          cart: arrayUnion({ furnitureId, variant, sellerId }),
+          cart: arrayUnion({ furnitureId, variant, sellerId, quantity }),
         });
         return { success: true, isDuplicate: false };
       }

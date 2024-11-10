@@ -42,7 +42,8 @@ const AddToCartSelection = ({ path, furniture }) => {
         userId,
         furniture.id,
         variantName,
-        sellerId
+        sellerId,
+        1
       );
 
       if (result.success) {
@@ -102,7 +103,11 @@ const AddToCartSelection = ({ path, furniture }) => {
         <h1 className="text-base font-semibold text-gray-900 dark:text-white sm:text-lg">
           {furniture.name}
         </h1>
-        <p className="">{formatToPeso(furniture.discountedPrice)}</p>
+        <p className="">
+          {furniture.isSale
+            ? formatToPeso(furniture.discountedPrice)
+            : formatToPeso(furniture.price)}
+        </p>
       </div>
       <p className="absolute text-sm text-black top-20">
         On Stock: {selectedVariantStock}
