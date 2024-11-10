@@ -115,7 +115,7 @@ const SellerUserSecurity = () => {
           </div>
           <header className="mt-5 mb-4">
             <div className="font-medium text-gray-900">Change Password</div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm leading-relaxed text-gray-600">
               To change your password, please fill in the fields below. Your
               password must contain at least 8 characters, including one
               uppercase letter, one lowercase letter, one number, and one
