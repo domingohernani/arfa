@@ -242,7 +242,6 @@ const DisplayFurnituresOnCart = ({
                         index,
                         item.shopData.userId
                       );
-                      fetchCart();
                     }}
                   >
                     <XMarkIcon className="w-5 h-5 me-1.5 " />
@@ -319,7 +318,7 @@ const DisplayFurnituresOnCart = ({
 
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Tax (5%)
+                      Commission Rate (5%)
                     </dt>
                     <dd className="text-sm font-medium text-gray-900 dark:text-white">
                       {formatToPeso(
@@ -466,18 +465,11 @@ const Cart = () => {
 
       if (result.success && result.isRemoved) {
         // Filter out the item at the specified index
-        const newCart = furnitures.filter((_, i) => i !== index);
-        setCart(newCart);
         fetchCart();
         toast.success("Item removed from cart!");
       } else if (!result.isRemoved) {
+        fetchCart();
         toast.error("Item was not in the cart.");
-        console.warn("Item not found in Firebase for removal:", {
-          userId,
-          furnitureId,
-          variant,
-          sellerId,
-        });
       }
     } catch (error) {
       toast.error("An error occurred while removing the item from the cart.");
