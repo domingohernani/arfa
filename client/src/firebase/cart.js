@@ -57,17 +57,18 @@ export const removeFromCart = async (
       const userData = userDoc.data();
       const cart = userData.cart || [];
 
-      const isInCart = cart.some(
+      // Filter out the item that matches the provided furnitureId, variant, and sellerId
+      const updatedCart = cart.filter(
         (item) =>
-          item.furnitureId === furnitureId &&
-          item.variant === variant &&
-          item.sellerId === sellerId
+          !(
+            item.furnitureId === furnitureId &&
+            item.variant === variant &&
+            item.sellerId === sellerId
+          )
       );
 
-      if (isInCart) {
-        await updateDoc(userRef, {
-          cart: arrayRemove({ furnitureId, variant, sellerId }),
-        });
+      if (updatedCart.length !== cart.length) {
+        await updateDoc(userRef, { cart: updatedCart });
         return { success: true, isRemoved: true };
       } else {
         return {
