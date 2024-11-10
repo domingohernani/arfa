@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import gcash from "../../../assets/icons/gcash.png";
 import paypal from "../../../assets/icons/paypal.png";
+import { getShopInfo } from "../../../firebase/shop";
+import { getAuth } from "firebase/auth";
+import { updatePayout } from "../../../firebase/shop";
+import toast from "react-hot-toast";
 
 const SellerUserPayout = () => {
   const [payoutMethod, setPayoutMethod] = useState("");
@@ -17,26 +21,46 @@ const SellerUserPayout = () => {
     setPaypalName("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (payoutMethod === "gcash" && gcashNumber && gcashName) {
-      console.log(
-        "Payout method: GCash, Number:",
-        gcashNumber,
-        "Name:",
-        gcashName
-      );
-    } else if (payoutMethod === "paypal" && paypalEmail && paypalName) {
-      console.log(
-        "Payout method: PayPal, Email:",
-        paypalEmail,
-        "Name:",
-        paypalName
-      );
+
+    const auth = getAuth();
+    const shopId = auth.currentUser.uid;
+
+    const newPayoutDetails = {
+      method: payoutMethod,
+      gcashNumber: payoutMethod === "gcash" ? gcashNumber : "",
+      gcashName: payoutMethod === "gcash" ? gcashName : "",
+      paypalEmail: payoutMethod === "paypal" ? paypalEmail : "",
+      paypalName: payoutMethod === "paypal" ? paypalName : "",
+    };
+
+    const success = await updatePayout(shopId, newPayoutDetails);
+    if (success) {
+      toast.success("Payout details updated successfully.");
     } else {
-      console.log("Please fill out the form correctly.");
+      toast.success("Failed to update payout details.");
     }
   };
+
+  useEffect(() => {
+    const fetchShop = async () => {
+      try {
+        const auth = getAuth();
+        const id = auth.currentUser.uid;
+        const result = await getShopInfo(id);
+
+        setPayoutMethod(result.payout.method);
+        setGcashNumber(result.payout.gcashNumber);
+        setGcashName(result.payout.gcashName);
+        setPaypalEmail(result.payout.paypalEmail);
+        setPaypalName(result.payout.paypalName);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchShop();
+  }, []);
 
   return (
     <div className="mx-auto" style={{ width: "min(700px, 90%)" }}>
@@ -107,6 +131,7 @@ const SellerUserPayout = () => {
               required
               pattern="^\d{11}$"
               inputMode="numeric"
+              maxLength="11"
               title="Please enter exactly 11 digits for your GCash number."
             />
             <label className="flex items-center gap-2 mt-3 mb-2 text-sm font-medium text-gray-900">

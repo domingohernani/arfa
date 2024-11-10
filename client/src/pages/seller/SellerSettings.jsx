@@ -68,7 +68,7 @@ const SellerSettings = () => {
                   : "border-transparent text-arfablack"
               }`}
             >
-              Payment
+              Payout
             </Link>
           </li>
           <li className="me-2">
