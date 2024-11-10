@@ -205,9 +205,10 @@ const DisplayFurnituresOnCart = ({
                 </div>
                 <div className="text-end md:order-4 md:w-32">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {item.isSale
-                      ? formatToPeso(item.discountedPrice)
-                      : formatToPeso(item.price)}
+                    {formatToPeso(
+                      (item.isSale ? item.discountedPrice : item.price) *
+                        item.quantity
+                    )}
                   </p>
                 </div>
               </div>
@@ -448,7 +449,14 @@ const Cart = () => {
     sellerId
   ) => {
     const userId = auth.currentUser?.uid;
+
+    if (!userId) {
+      console.error("User is not logged in.");
+      return;
+    }
+
     try {
+      // Attempt to remove the item from Firebase
       const result = await removeFromCart(
         userId,
         furnitureId,
@@ -457,18 +465,25 @@ const Cart = () => {
       );
 
       if (result.success && result.isRemoved) {
+        // Filter out the item at the specified index
         const newCart = furnitures.filter((_, i) => i !== index);
         setCart(newCart);
+        fetchCart();
         toast.success("Item removed from cart!");
       } else if (!result.isRemoved) {
         toast.error("Item was not in the cart.");
+        console.warn("Item not found in Firebase for removal:", {
+          userId,
+          furnitureId,
+          variant,
+          sellerId,
+        });
       }
     } catch (error) {
       toast.error("An error occurred while removing the item from the cart.");
       console.error("Error in handleRemoveItem:", error);
     }
   };
-
   return (
     <section className="antialiased dark:bg-gray-900">
       <section className="mx-6 my-3">
