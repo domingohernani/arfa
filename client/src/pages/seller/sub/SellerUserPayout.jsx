@@ -5,9 +5,9 @@ import paypal from "../../../assets/icons/paypal.png";
 const SellerUserPayout = () => {
   const [payoutMethod, setPayoutMethod] = useState("");
   const [gcashNumber, setGcashNumber] = useState("");
-  const [gcashName, setGcashName] = useState(""); // Optional name for GCash
+  const [gcashName, setGcashName] = useState("");
   const [paypalEmail, setPaypalEmail] = useState("");
-  const [paypalName, setPaypalName] = useState(""); // Optional name for PayPal
+  const [paypalName, setPaypalName] = useState("");
 
   const handlePayoutMethodChange = (e) => {
     setPayoutMethod(e.target.value);
@@ -19,14 +19,14 @@ const SellerUserPayout = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (payoutMethod === "gcash" && gcashNumber) {
+    if (payoutMethod === "gcash" && gcashNumber && gcashName) {
       console.log(
         "Payout method: GCash, Number:",
         gcashNumber,
         "Name:",
         gcashName
       );
-    } else if (payoutMethod === "paypal" && paypalEmail) {
+    } else if (payoutMethod === "paypal" && paypalEmail && paypalName) {
       console.log(
         "Payout method: PayPal, Email:",
         paypalEmail,
@@ -63,6 +63,7 @@ const SellerUserPayout = () => {
               value="gcash"
               checked={payoutMethod === "gcash"}
               onChange={handlePayoutMethodChange}
+              required
             />
             <img src={gcash} alt="GCash" className="object-contain w-6 h-6" />
             <span>GCash</span>
@@ -74,6 +75,7 @@ const SellerUserPayout = () => {
               value="paypal"
               checked={payoutMethod === "paypal"}
               onChange={handlePayoutMethodChange}
+              required
             />
             <img src={paypal} alt="PayPal" className="w-6 h-6" />
             <span>PayPal</span>
@@ -103,9 +105,12 @@ const SellerUserPayout = () => {
               placeholder="Enter your GCash number"
               className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
               required
+              pattern="^\d{11}$"
+              inputMode="numeric"
+              title="Please enter exactly 11 digits for your GCash number."
             />
             <label className="flex items-center gap-2 mt-3 mb-2 text-sm font-medium text-gray-900">
-              Account Holder's Name (Optional):
+              Account Holder's Name:
             </label>
             <input
               type="text"
@@ -113,6 +118,7 @@ const SellerUserPayout = () => {
               onChange={(e) => setGcashName(e.target.value)}
               placeholder="Enter your name"
               className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+              required
             />
           </div>
         )}
@@ -131,7 +137,7 @@ const SellerUserPayout = () => {
               required
             />
             <label className="flex items-center gap-2 mt-3 mb-2 text-sm font-medium text-gray-900">
-              Account Holder's Name (Optional):
+              Account Holder's Name:
             </label>
             <input
               type="text"
@@ -139,6 +145,7 @@ const SellerUserPayout = () => {
               onChange={(e) => setPaypalName(e.target.value)}
               placeholder="Enter your name"
               className="bg-gray-50 border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-full p-2.5"
+              required
             />
           </div>
         )}
