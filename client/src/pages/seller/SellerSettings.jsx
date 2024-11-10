@@ -60,10 +60,10 @@ const SellerSettings = () => {
           </li>
           <li className="me-2">
             <Link
-              to="payment"
-              onClick={() => setActiveTab("payment")}
+              to="payout"
+              onClick={() => setActiveTab("payout")}
               className={`inline-block p-4 font-medium border-b-2 rounded-t-lg ${
-                activeTab === "payment"
+                activeTab === "payout"
                   ? "border-b-black text-arfablack"
                   : "border-transparent text-arfablack"
               }`}
