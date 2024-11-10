@@ -219,7 +219,7 @@ export const SellerUserProfile = () => {
   return (
     <section>
       <form
-        className="w-full px-4 py-5 mx-auto mt-5 border md:px-8"
+        className="w-full px-4 py-5 mx-auto mt-5 md:px-8"
         onSubmit={handleSaveBtn}
       >
         <div className="mb-4">

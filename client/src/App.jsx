@@ -49,7 +49,7 @@ import { Toaster } from "react-hot-toast";
 import SellerSettings from "./pages/seller/SellerSettings";
 import SellerUserProfile from "./pages/seller/sub/SellerUserProfile";
 import SellerUserSecurity from "./pages/seller/sub/SellerUserSecurity";
-import { SellerUserPayment } from "./pages/seller/sub/SellerUserPayment";
+import SellerUserPayout from "./pages/seller/sub/SellerUserPayout";
 import { FurnitureTransaction } from "./components/tables/FurnitureTransaction";
 import TransactionDetails from "./pages/seller/sub/TransactionDetails";
 import SellerImageHotspot from "./pages/seller/SellerImageHotspot";
@@ -144,7 +144,7 @@ function App() {
                 <Route index element={<SellerUserProfile />} />
                 <Route path="profile" element={<SellerUserProfile />} />
                 <Route path="security" element={<SellerUserSecurity />} />
-                <Route path="payment" element={<SellerUserPayment />} />
+                <Route path="payout" element={<SellerUserPayout />} />
               </Route>
             </Route>
           </Route>
