@@ -129,7 +129,7 @@ const DisplayFurnituresOnCart = ({
   };
 
   // Render the grouped items
-  return Object.entries(
+  const groupedItems = Object.entries(
     items.reduce((groups, item) => {
       const shopId = item.shopData.userId;
       if (!groups[shopId]) {
@@ -138,8 +138,12 @@ const DisplayFurnituresOnCart = ({
       groups[shopId].items.push(item);
       return groups;
     }, {})
-  ).map(([shopId, group]) => (
-    <section key={shopId} className="flex gap-4 p-4 py-5 border">
+  );
+
+  const lastIndex = groupedItems.length - 1;
+
+  return groupedItems.map(([shopId, group], index) => (
+    <section key={shopId} className="flex flex-col gap-4 p-4 py-5">
       <div>
         <section className="flex items-center gap-2">
           <div className="w-16 h-16">
@@ -208,7 +212,7 @@ const DisplayFurnituresOnCart = ({
                 </div>
               </div>
 
-              <div className="flex-1 w-full min-w-0 space-y-2 md:order-2 md:max-w-md">
+              <div className="flex-1 w-full min-w-0 space-y-2 md:order-2 ">
                 <Link
                   to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
                   className="text-sm font-medium text-gray-900 hover:underline dark:text-white"
@@ -217,7 +221,7 @@ const DisplayFurnituresOnCart = ({
                 </Link>
                 <p className="text-sm text-gray-600">
                   {item.description?.length > 20
-                    ? item.description.slice(0, 100) + "..."
+                    ? item.description.slice(0, 200) + "..."
                     : item.description}
                 </p>
                 <p className="text-sm text-gray-600">
@@ -249,82 +253,135 @@ const DisplayFurnituresOnCart = ({
           </div>
         ))}
       </div>
-      {/* Order summary and checkout button can go here */}
-      <div className="flex-1 max-w-4xl mx-auto mt-6 space-y-6 lg:mt-0 lg:w-full">
-        <div className="p-4 space-y-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-          <p className="text-xl font-semibold text-gray-900 dark:text-white">
-            Order summary
-          </p>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <dl className="flex items-center justify-between gap-4">
-                <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Original price
-                </dt>
-                <dd className="text-sm font-medium text-gray-900 dark:text-white">
-                  $7,592.00
-                </dd>
-              </dl>
+      {index === lastIndex && (
+        <>
+          <hr />
+          <div className="flex-1 max-w-3xl mx-auto mt-6 space-y-6 lg:mt-0 lg:w-full">
+            <div className="p-4 space-y-4 bg-white rounded-lg sm:p-6">
+              <p className="text-xl font-semibold text-gray-900 dark:text-white">
+                Order Summary
+              </p>
 
-              <dl className="flex items-center justify-between gap-4">
-                <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Savings
-                </dt>
-                <dd className="text-sm font-medium text-green-600">-$299.00</dd>
-              </dl>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <dl className="flex items-center justify-between gap-4">
+                    <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Original Price
+                    </dt>
+                    <dd className="text-sm font-medium text-gray-900 dark:text-white">
+                      {formatToPeso(
+                        items.reduce(
+                          (total, item) =>
+                            total +
+                            (item.isSale ? item.discountedPrice : item.price) *
+                              item.quantity,
+                          0
+                        )
+                      )}
+                    </dd>
+                  </dl>
 
-              <dl className="flex items-center justify-between gap-4">
-                <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Delivery Fee
-                </dt>
-                <dd className="text-sm font-medium text-gray-900 dark:text-white">
-                  {deliveryFees[shopId] !== null
-                    ? formatToPeso(deliveryFees[shopId] || 0)
-                    : "Not available"}
-                </dd>
-              </dl>
+                  <dl className="flex items-center justify-between gap-4">
+                    <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Savings
+                    </dt>
+                    <dd className="text-sm font-medium text-green-600">
+                      -
+                      {formatToPeso(
+                        items.reduce(
+                          (total, item) =>
+                            total +
+                            (item.isSale
+                              ? item.price - item.discountedPrice
+                              : 0) *
+                              item.quantity,
+                          0
+                        )
+                      )}
+                    </dd>
+                  </dl>
 
-              <dl className="flex items-center justify-between gap-4">
-                <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  Tax
-                </dt>
-                <dd className="text-sm font-medium text-gray-900 dark:text-white">
-                  $799
-                </dd>
-              </dl>
+                  <dl className="flex items-center justify-between gap-4">
+                    <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Delivery Fee
+                    </dt>
+                    <dd className="text-sm font-medium text-gray-900 dark:text-white">
+                      {formatToPeso(
+                        Object.values(deliveryFees).reduce(
+                          (total, fee) => total + (fee || 0),
+                          0
+                        )
+                      )}
+                    </dd>
+                  </dl>
+
+                  <dl className="flex items-center justify-between gap-4">
+                    <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Tax (5%)
+                    </dt>
+                    <dd className="text-sm font-medium text-gray-900 dark:text-white">
+                      {formatToPeso(
+                        items.reduce(
+                          (total, item) =>
+                            total +
+                            (item.isSale ? item.discountedPrice : item.price) *
+                              item.quantity *
+                              0.05,
+                          0
+                        )
+                      )}
+                    </dd>
+                  </dl>
+                </div>
+
+                <dl className="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <dt className="text-sm font-bold text-gray-900 dark:text-white">
+                    Total
+                  </dt>
+                  <dd className="text-sm font-bold text-gray-900 dark:text-white">
+                    {formatToPeso(
+                      items.reduce(
+                        (total, item) => {
+                          const price = item.isSale
+                            ? item.discountedPrice
+                            : item.price;
+                          const itemTotal = price * item.quantity;
+                          const itemTax = itemTotal * 0.05;
+                          return total + itemTotal + itemTax;
+                        },
+                        Object.values(deliveryFees).reduce(
+                          (total, fee) => total + (fee || 0),
+                          0
+                        )
+                      )
+                    )}
+                  </dd>
+                </dl>
+              </div>
+
+              <a
+                href="#"
+                className="flex w-fit mx-auto bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
+              >
+                Proceed to Checkout
+              </a>
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                  or
+                </span>
+                <Link
+                  to={"/catalog"}
+                  className="inline-flex items-center gap-2 text-sm font-medium underline text-primary-700 hover:no-underline dark:text-primary-500"
+                >
+                  Continue Shopping
+                  <ArrowLongRightIcon className="w-5 h-5 text-blue-600" />
+                </Link>
+              </div>
             </div>
-
-            <dl className="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
-              <dt className="text-sm font-bold text-gray-900 dark:text-white">
-                Total
-              </dt>
-              <dd className="text-sm font-bold text-gray-900 dark:text-white">
-                $8,191.00
-              </dd>
-            </dl>
           </div>
-
-          <a
-            href="#"
-            className="flex w-full bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
-          >
-            Proceed to Checkout
-          </a>
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-              or
-            </span>
-            <Link
-              to={"/catalog"}
-              className="inline-flex items-center gap-2 text-sm font-medium underline text-primary-700 hover:no-underline dark:text-primary-500"
-            >
-              Continue Shopping
-              <ArrowLongRightIcon className="w-5 h-5 text-blue-600" />
-            </Link>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </section>
   ));
 };
