@@ -24,6 +24,7 @@ import {
   ArrowLongRightIcon,
 } from "@heroicons/react/24/outline";
 import { getDeliveryFee, updateCartQuantity } from "../../firebase/delivery";
+import { Switch } from "@headlessui/react";
 
 const DisplayFurnituresOnCart = ({
   items,
@@ -33,6 +34,7 @@ const DisplayFurnituresOnCart = ({
 }) => {
   const [logoUrls, setLogoUrls] = useState({});
   const [deliveryFees, setDeliveryFees] = useState({});
+  const [enabled, setEnabled] = useState(true);
 
   useEffect(() => {
     // Group items by shopData.userId
@@ -302,16 +304,34 @@ const DisplayFurnituresOnCart = ({
                     </dd>
                   </dl>
 
+                  <div className="flex items-center">
+                    <span className="mr-2 text-sm font-normal text-gray-500">
+                      Delivery Option:
+                    </span>
+                    <Switch
+                      checked={enabled}
+                      onChange={() => setEnabled(!enabled)}
+                      className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
+                    >
+                      <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
+                    </Switch>
+                    <span className="ml-2 text-sm font-normal text-gray-500">
+                      {enabled ? "Delivery" : "Pick-up"}
+                    </span>
+                  </div>
+
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                       Delivery Fee
                     </dt>
                     <dd className="text-sm font-medium text-gray-900 dark:text-white">
                       {formatToPeso(
-                        Object.values(deliveryFees).reduce(
-                          (total, fee) => total + (fee || 0),
-                          0
-                        )
+                        enabled
+                          ? Object.values(deliveryFees).reduce(
+                              (total, fee) => total + (fee || 0),
+                              0
+                            )
+                          : 0
                       )}
                     </dd>
                   </dl>
@@ -350,10 +370,12 @@ const DisplayFurnituresOnCart = ({
                           const itemTax = itemTotal * 0.05;
                           return total + itemTotal + itemTax;
                         },
-                        Object.values(deliveryFees).reduce(
-                          (total, fee) => total + (fee || 0),
-                          0
-                        )
+                        enabled
+                          ? Object.values(deliveryFees).reduce(
+                              (total, fee) => total + (fee || 0),
+                              0
+                            )
+                          : 0
                       )
                     )}
                   </dd>
