@@ -25,6 +25,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { getDeliveryFee, updateCartQuantity } from "../../firebase/delivery";
 import { Switch } from "@headlessui/react";
+import { saveOrder } from "../../firebase/orders";
 
 const DisplayFurnituresOnCart = ({
   items,
@@ -61,7 +62,6 @@ const DisplayFurnituresOnCart = ({
       );
 
       const feePromises = Object.keys(groupedItems).map(async (shopId) => {
-        // Assuming `auth.currentUser.uid` is available to get the user data for region
         const userInfo = await getUserInfo(auth.currentUser.uid);
         const userRegion = userInfo?.location?.region;
         if (userRegion) {
@@ -130,7 +130,51 @@ const DisplayFurnituresOnCart = ({
     );
   };
 
-  // Render the grouped items
+  const saveOrderToDatabase = async () => {
+    // Container for all shop orders
+    const allOrders = [];
+
+    // Group items by shop to create individual orders for each shop
+    const groupedItems = items.reduce((groups, item) => {
+      const shopId = item.shopData.userId;
+      if (!groups[shopId]) {
+        groups[shopId] = {
+          shopName: item.shopData.name,
+          items: [],
+          deliveryFee: enabled ? deliveryFees[shopId] || 0 : 0,
+        };
+      }
+      groups[shopId].items.push(item);
+      return groups;
+    }, {});
+
+    // Iterate over each shop to prepare order data and push to allOrders array
+    Object.entries(groupedItems).forEach(([shopId, group]) => {
+      // Calculate the order total for this shop's items only (exclude delivery fee)
+      const orderTotal = group.items.reduce((total, item) => {
+        const itemPrice = item.isSale ? item.discountedPrice : item.price;
+        return total + itemPrice * item.quantity;
+      }, 0); // Start from 0 to exclude delivery fee
+
+      const orderData = {
+        shopId,
+        shopName: group.shopName,
+        items: group.items,
+        deliveryFee: group.deliveryFee,
+        orderTotal, // Only includes the total cost of items
+        deliveryEnabled: enabled,
+        createdAt: new Date(),
+      };
+
+      // Add this shop's order data to the allOrders container
+      allOrders.push(orderData);
+    });
+
+    // Call saveOrder with allOrders array
+    await saveOrder(allOrders);
+    console.log("All shop orders:", allOrders);
+  };
+
   const groupedItems = Object.entries(
     items.reduce((groups, item) => {
       const shopId = item.shopData.userId;
@@ -382,12 +426,12 @@ const DisplayFurnituresOnCart = ({
                 </dl>
               </div>
 
-              <a
-                href="#"
+              <button
+                onClick={saveOrderToDatabase}
                 className="flex w-fit mx-auto bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
               >
                 Proceed to Checkout
-              </a>
+              </button>
               <div className="flex items-center justify-center gap-2">
                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                   or
