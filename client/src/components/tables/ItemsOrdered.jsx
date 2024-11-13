@@ -7,6 +7,7 @@ import { formatToPeso } from "../globalFunctions";
 const ItemsOrdered = ({ orders }) => {
   const columnDefs = [
     { headerName: "Items Name", field: "name", flex: 1 },
+    { headerName: "Variant", field: "variant", flex: 1 },
     { headerName: "Quantity", field: "quantity", flex: 1, editable: true },
     {
       headerName: "Total (₱)",
@@ -16,9 +17,7 @@ const ItemsOrdered = ({ orders }) => {
     },
   ];
 
-  const rowData = [
-    ...orders.orderItems,
-  ];
+  const rowData = [...orders.orderItems];
 
   const pinnedBottomRowData = [
     { name: "Subtotal", totalItemPrice: orders.orderTotal },
@@ -26,7 +25,8 @@ const ItemsOrdered = ({ orders }) => {
     { name: "Commision Rate (5%)", totalItemPrice: orders.orderTotal * 0.05 },
     {
       name: "Total",
-      totalItemPrice: orders.orderTotal + orders.deliveryFee + (orders.orderTotal * 0.05),
+      totalItemPrice:
+        orders.orderTotal + orders.deliveryFee + orders.orderTotal * 0.05,
     },
   ];
 
