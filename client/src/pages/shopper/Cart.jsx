@@ -36,7 +36,7 @@ const DisplayFurnituresOnCart = ({
 }) => {
   const [logoUrls, setLogoUrls] = useState({});
   const [deliveryFees, setDeliveryFees] = useState({});
-  const [enabledDelivery, setEnabledDelivery] = useState({}); // Modified to hold individual delivery states per shop
+  const [enabledDelivery, setEnabledDelivery] = useState({});
 
   useEffect(() => {
     const fetchLogosAndFees = async () => {
@@ -93,7 +93,50 @@ const DisplayFurnituresOnCart = ({
     fetchLogosAndFees();
   }, [items]);
 
+  const checkStockAvailability = (item) => {
+    if (!item.selectedVariant) {
+      if (item.quantity >= item.stock) {
+        console.log("Not enough stock available for the main item.");
+        return false;
+      } else {
+        console.log("Stock is available for the main item.");
+        return true;
+      }
+    } else {
+      const selectedVariant = item.variants.find(
+        (variant) => variant.name === item.selectedVariant
+      );
+
+      if (selectedVariant) {
+        if (item.quantity >= selectedVariant.stock) {
+          console.log(
+            `Not enough stock available for variant: ${item.selectedVariant}.`
+          );
+          return false;
+        } else {
+          console.log(
+            `Stock is available for variant: ${item.selectedVariant}.`
+          );
+          return true;
+        }
+      } else {
+        console.log("Selected variant not found in the variants array.");
+        return false;
+      }
+    }
+  };
+
   const incrementQuantity = async (item) => {
+    const stockAvailability = checkStockAvailability(item);
+    console.log(stockAvailability);
+
+    if (!stockAvailability) {
+      toast.error(
+        "Insufficient stock available for the selected item or variant. "
+      );
+      return;
+    }
+
     const newQuantity = item.quantity + 1;
 
     // Update the quantity in Firebase
