@@ -7,7 +7,13 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-export const addToCart = async (userId, furnitureId, variant, sellerId) => {
+export const addToCart = async (
+  userId,
+  furnitureId,
+  variant,
+  sellerId,
+  quantity
+) => {
   const userRef = doc(db, "users", userId);
 
   try {
@@ -28,7 +34,7 @@ export const addToCart = async (userId, furnitureId, variant, sellerId) => {
         return { success: true, isDuplicate: true };
       } else {
         await updateDoc(userRef, {
-          cart: arrayUnion({ furnitureId, variant, sellerId }),
+          cart: arrayUnion({ furnitureId, variant, sellerId, quantity }),
         });
         return { success: true, isDuplicate: false };
       }
@@ -39,6 +45,19 @@ export const addToCart = async (userId, furnitureId, variant, sellerId) => {
   } catch (error) {
     console.error("Error adding to cart:", error);
     return { success: false, isDuplicate: false };
+  }
+};
+
+export const clearCart = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      cart: [],
+    });
+    return true;
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    return false;
   }
 };
 
@@ -57,17 +76,18 @@ export const removeFromCart = async (
       const userData = userDoc.data();
       const cart = userData.cart || [];
 
-      const isInCart = cart.some(
+      // Filter out the item that matches the provided furnitureId, variant, and sellerId
+      const updatedCart = cart.filter(
         (item) =>
-          item.furnitureId === furnitureId &&
-          item.variant === variant &&
-          item.sellerId === sellerId
+          !(
+            item.furnitureId === furnitureId &&
+            item.variant === variant &&
+            item.sellerId === sellerId
+          )
       );
 
-      if (isInCart) {
-        await updateDoc(userRef, {
-          cart: arrayRemove({ furnitureId, variant, sellerId }),
-        });
+      if (updatedCart.length !== cart.length) {
+        await updateDoc(userRef, { cart: updatedCart });
         return { success: true, isRemoved: true };
       } else {
         return {

@@ -1,6 +1,84 @@
-import { collection, getDoc, getDocs, doc, query, updateDoc, serverTimestamp } from "firebase/firestore";
-import { db, storage } from "./firebase";
+import {
+  collection,
+  getDoc,
+  getDocs,
+  doc,
+  query,
+  updateDoc,
+  serverTimestamp,
+  writeBatch,
+} from "firebase/firestore";
+import { auth, db, storage } from "./firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
+const getDeviceType = () => {
+  const ua = navigator.userAgent;
+  if (/mobile/i.test(ua)) return "Mobile";
+  if (/tablet/i.test(ua)) return "Tablet";
+  return "Desktop";
+};
+
+export const saveOrder = async (allOrders) => {
+  try {
+    let batch = writeBatch(db);
+    let operationCount = 0;
+
+    const commitBatch = async () => {
+      await batch.commit();
+      batch = writeBatch(db);
+      operationCount = 0;
+    };
+
+    const deviceType = getDeviceType();
+
+    for (const order of allOrders) {
+      const orderId = doc(collection(db, "orders")).id;
+      const orderRef = doc(db, "orders", orderId);
+
+      const orderData = {
+        shopId: order.shopId,
+        deliveryFee: order.deliveryFee,
+        orderTotal: order.orderTotal,
+        onDelivery: order.deliveryEnabled,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        modeOfPayment: "",
+        orderStatus: "Placed",
+        statusTimestamps: {
+          Placed: serverTimestamp(),
+        },
+        shopperId: auth.currentUser?.uid || "",
+        deviceType,
+
+        orderItems: order.items.map((item) => ({
+          id: item.id || "",
+          name: item.name,
+          price: item.isSale ? item.discountedPrice : item.price,
+          quantity: item.quantity,
+          totalItemPrice:
+            (item.isSale ? item.discountedPrice : item.price) * item.quantity,
+          variant: item.selectedVariant || "",
+        })),
+      };
+
+      batch.set(orderRef, orderData);
+      operationCount++;
+
+      if (operationCount >= 500) {
+        await commitBatch();
+      }
+    }
+
+    if (operationCount > 0) {
+      await batch.commit();
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error saving orders to database:", error);
+    return false;
+  }
+};
 
 export const fetchOrdersByShopId = async (filters = []) => {
   try {
@@ -82,7 +160,6 @@ export const getOrderById = async (orderId) => {
   }
 };
 
-
 export const updateOrderStatus = async (orderId, newStatus) => {
   try {
     const orderDocRef = doc(db, "orders", orderId);
@@ -100,7 +177,7 @@ export const updateOrderStatus = async (orderId, newStatus) => {
     console.error("Error updating order status:", error);
     return false;
   }
-}
+};
 
 export const uploadPOD = async (orderId, file) => {
   if (!file) throw new Error("No file provided for upload.");

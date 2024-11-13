@@ -126,7 +126,9 @@ export const OrderStatus = ({
         return;
       }
       if (nextStatus) {
-        await uploadPOD(orderId, imagePOD);
+        if (nextStatus === "Delivered" || nextStatus === "Picked-up") {
+          await uploadPOD(orderId, imagePOD);
+        }
         await updateOrderStatus(orderId, nextStatus);
         if (refreshPage) {
           refreshPage();
@@ -188,7 +190,7 @@ export const OrderStatus = ({
                   >
                     {isOrderPage ? "Update Status" : "Order Status Logs"}
                   </DialogTitle>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="mt-1 text-sm text-gray-500">
                     {isOrderPage
                       ? "Review the current order status and select the next stage in the process. This will help keep both the customer and the delivery team updated on the progress of the order."
                       : "This is a record of the completed stages in the order process, providing a history of updates for this transaction."}
@@ -241,9 +243,9 @@ const Tracking = ({
   const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
 
   return (
-    <section className="bg-white antialiased">
-      <div className="mx-auto max-w-screen-xl 2xl:px-0">
-        <div className="lg:flex h-96 overflow-y-auto lg:gap-8">
+    <section className="antialiased bg-white">
+      <div className="max-w-screen-xl mx-auto 2xl:px-0">
+        <div className="overflow-y-auto lg:flex h-96 lg:gap-8">
           <div className="grow sm:mt-8 lg:mt-0">
             {previewPODUrl && (
               <section>
@@ -258,7 +260,7 @@ const Tracking = ({
             {podUrl && (
               <section>
                 <a
-                  className="text-sm underline text-arfablack mb-2"
+                  className="mb-2 text-sm underline text-arfablack"
                   href={podUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -273,8 +275,8 @@ const Tracking = ({
               </section>
             )}
 
-            <div className="space-y-6 rounded-lg bg-white p-4">
-              <ol className="relative ms-3 border-s border-gray-200 dark:border-gray-700">
+            <div className="p-4 space-y-6 bg-white rounded-lg">
+              <ol className="relative border-gray-200 ms-3 border-s dark:border-gray-700">
                 {statusesToShow.map((item, index) => (
                   <li key={index} className="mb-10 ms-6">
                     <span
@@ -311,7 +313,7 @@ const Tracking = ({
                       {item.description}
                     </p>
                     {statusTimestamps && statusTimestamps[item.status] && (
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="mt-1 text-xs text-gray-400">
                         Updated on:{" "}
                         {new Date(
                           statusTimestamps[item.status].seconds * 1000

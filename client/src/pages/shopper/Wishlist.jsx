@@ -67,7 +67,7 @@ const displayFurnituresOnWishlist = (items, images, handleRemoveItem) => {
             </p>
 
             <div className="flex items-center gap-4">
-              <button
+              {/* <button
                 type="button"
                 className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900"
               >
@@ -85,7 +85,7 @@ const displayFurnituresOnWishlist = (items, images, handleRemoveItem) => {
                   <circle cx="17" cy="22" r="2" />
                 </svg>
                 Add to Cart
-              </button>
+              </button> */}
 
               <button
                 type="button"
@@ -205,8 +205,8 @@ const Wishlist = () => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white sm:text-2xl">
               Wishlist
             </h2>
-            {wishlist.length > 0 ? (
-              <ShowMultiModel data={wishlist}></ShowMultiModel>
+            {wishlist.length > 0 && wishlist.some((item) => item.modelUrl) ? (
+              <ShowMultiModel data={wishlist.filter((item) => item.modelUrl)} />
             ) : null}
 
             <div className=" mt-14 sm:mt-16 md:gap-6 lg:flex lg:items-start xl:gap-8">
@@ -220,7 +220,7 @@ const Wishlist = () => {
                 </div>
               </div>
             </div>
-            {wishlist.length > 0 ? (
+            {/* {wishlist.length > 0 ? (
               <div className="w-full max-w-md mt-8 ml-auto">
                 <a
                   href="#"
@@ -255,7 +255,7 @@ const Wishlist = () => {
                   </Link>
                 </div>
               </div>
-            ) : null}
+            ) : null} */}
           </Tabs.Item>
           <Tabs.Item title="Cart"></Tabs.Item>
         </Tabs>
