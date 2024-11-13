@@ -97,9 +97,7 @@ const SellerOrders = () => {
         );
         return (
           <div className="flex items-center justify-between">
-            <span className={`font-bold ${colorClass} font-normal`}>
-              {statusText}
-            </span>
+            <span className={`font-semibold ${colorClass}`}>{statusText}</span>
             <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>
           </div>
         );
@@ -111,7 +109,7 @@ const SellerOrders = () => {
       filter: false,
       flex: 1,
       cellRenderer: (params) => {
-        const furnitureId = params.data.id
+        const furnitureId = params.data.id;
 
         return (
           <section className="flex items-center justify-center gap-2 px-2 mt-1">

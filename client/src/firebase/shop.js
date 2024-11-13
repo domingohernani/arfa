@@ -388,3 +388,27 @@ export const getMonthlyMetrics = async (shopId) => {
     return { success: false, error: error.message };
   }
 };
+
+export const updatePayout = async (shopId, newPayoutDetails) => {
+  try {
+    const shopRef = doc(db, "shops", shopId);
+    await setDoc(
+      shopRef,
+      {
+        payout: {
+          method: newPayoutDetails.method,
+          gcashNumber: newPayoutDetails.gcashNumber || "",
+          gcashName: newPayoutDetails.gcashName || "",
+          paypalEmail: newPayoutDetails.paypalEmail || "",
+          paypalName: newPayoutDetails.paypalName || "",
+        },
+      },
+      { merge: true }
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Error updating payout details:", error);
+    return false;
+  }
+};

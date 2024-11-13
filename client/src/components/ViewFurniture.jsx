@@ -22,6 +22,7 @@ import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { addToWishlist } from "../firebase/wishlist";
 import toast, { Toaster } from "react-hot-toast";
 import AddToCartSelection from "./dynamic/AddToCartSelection";
+import { getUserInfo } from "../firebase/user";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -68,7 +69,9 @@ const ViewFurniture = () => {
 
       setFurniture(data);
       setCustomerReview(data.reviewsData);
-      fetchModel(data.modelUrl);
+      if (data.modelUrl) {
+        fetchModel(data.modelUrl);
+      }
       fetchFurnitureImages(data.imagesUrl);
     } catch (error) {
       console.error("Error fetching furniture:", error);
@@ -82,9 +85,10 @@ const ViewFurniture = () => {
   }, []);
 
   const handleAddWishlistBtn = async () => {
+    const userInfo = await getUserInfo();
     try {
       const userId = auth.currentUser?.uid;
-      if (!userId) {
+      if (!userId || userInfo.role !== "shopper") {
         toast.error("You must be logged in to add items to your wishlist.");
         return;
       }
@@ -274,6 +278,7 @@ const ViewFurniture = () => {
         <AddToCartSelection
           path={modelURL}
           furniture={furniture}
+          furnitureImgUrls={furnitureImgUrls}
         ></AddToCartSelection>
       </section>
     </section>
