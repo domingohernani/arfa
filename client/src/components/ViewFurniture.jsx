@@ -69,7 +69,9 @@ const ViewFurniture = () => {
 
       setFurniture(data);
       setCustomerReview(data.reviewsData);
-      fetchModel(data.modelUrl);
+      if (data.modelUrl) {
+        fetchModel(data.modelUrl);
+      }
       fetchFurnitureImages(data.imagesUrl);
     } catch (error) {
       console.error("Error fetching furniture:", error);
