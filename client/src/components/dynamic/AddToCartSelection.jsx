@@ -25,6 +25,23 @@ const AddToCartSelection = ({ path, furniture }) => {
   const [variantlessImg, setVariantlessImg] = useState([]);
 
   const handleAddToCart = async (variantName) => {
+    // if wala pang address ang user
+    const user = await getUserInfo();
+
+    const { firstName, lastName, phoneNumber, location } = user;
+    const isLocationEmpty =
+      location &&
+      Object.values(location).every((field) => field === null || field === "");
+    const isProfileIncomplete =
+      !firstName || !lastName || !phoneNumber || isLocationEmpty;
+
+    if (isProfileIncomplete) {
+      toast.error(
+        "Please complete your profile by setting up your location, first name, last name, and phone number."
+      );
+      return;
+    }
+
     if (selectedVariantStock == 0) {
       toast.error("The selected product is currently out of stock.");
       return;
