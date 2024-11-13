@@ -48,6 +48,19 @@ export const addToCart = async (
   }
 };
 
+export const clearCart = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      cart: [],
+    });
+    return true;
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    return false;
+  }
+};
+
 export const removeFromCart = async (
   userId,
   furnitureId,

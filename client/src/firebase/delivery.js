@@ -68,8 +68,6 @@ export const updateCartQuantity = async (
         await updateDoc(userCartRef, {
           cart: arrayUnion(updatedItem),
         });
-
-        console.log("Cart quantity updated successfully.");
       } else {
         console.error("Item not found in the cart.");
       }

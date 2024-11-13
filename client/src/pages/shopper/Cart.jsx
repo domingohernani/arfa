@@ -14,7 +14,7 @@ import {
 } from "../../firebase/photos";
 import ShowMultiModel from "../../components/ShowMultiModel";
 import { formatToPeso, toSlug } from "../../components/globalFunctions";
-import { removeFromCart } from "../../firebase/cart";
+import { clearCart, removeFromCart } from "../../firebase/cart";
 import toast, { Toaster } from "react-hot-toast";
 import { auth } from "../../firebase/firebase";
 import {
@@ -26,6 +26,7 @@ import {
 import { getDeliveryFee, updateCartQuantity } from "../../firebase/delivery";
 import { Switch } from "@headlessui/react";
 import { saveOrder } from "../../firebase/orders";
+import { updateStockFromOrder } from "../../firebase/stock";
 
 const DisplayFurnituresOnCart = ({
   items,
@@ -38,22 +39,22 @@ const DisplayFurnituresOnCart = ({
   const [enabledDelivery, setEnabledDelivery] = useState({}); // Modified to hold individual delivery states per shop
 
   useEffect(() => {
-    // Group items by shopData.userId
-    const groupedItems = items.reduce((groups, item) => {
-      const shopId = item.shopData.userId;
-      if (!groups[shopId]) {
-        groups[shopId] = {
-          shopName: item.shopData.name,
-          logoPath: item.shopData.logo,
-          items: [],
-        };
-      }
-      groups[shopId].items.push(item);
-      return groups;
-    }, {});
-
-    // Fetch logos and delivery fees for each shop
     const fetchLogosAndFees = async () => {
+      // Group items by shopData.userId
+      const groupedItems = items.reduce((groups, item) => {
+        const shopId = item.shopData.userId;
+        if (!groups[shopId]) {
+          groups[shopId] = {
+            shopName: item.shopData.name,
+            logoPath: item.shopData.logo,
+            items: [],
+          };
+        }
+        groups[shopId].items.push(item);
+        return groups;
+      }, {});
+
+      // Fetch logos and delivery fees for each shop
       const logoPromises = Object.entries(groupedItems).map(
         async ([shopId, group]) => {
           const url = await getImageDownloadUrl(group.logoPath);
@@ -80,10 +81,10 @@ const DisplayFurnituresOnCart = ({
       setLogoUrls(logoUrlsMap);
       setDeliveryFees(deliveryFeesMap);
 
-      // Initialize individual delivery options for each shop as enabled by default
+      // Set enabledDelivery based on whether delivery is available for each shop
       setEnabledDelivery(
-        Object.keys(groupedItems).reduce((acc, shopId) => {
-          acc[shopId] = true; // Default to true (delivery enabled)
+        Object.entries(deliveryFeesMap).reduce((acc, [shopId, fee]) => {
+          acc[shopId] = fee !== null && fee >= 0; // Enable delivery only if fee is available
           return acc;
         }, {})
       );
@@ -176,7 +177,27 @@ const DisplayFurnituresOnCart = ({
       allOrders.push(orderData);
     });
 
-    await saveOrder(allOrders);
+    const orderResult = await saveOrder(allOrders);
+    if (orderResult) {
+      const userId = auth.currentUser?.uid;
+      const clearResult = await clearCart(userId);
+      const stockResult = await updateStockFromOrder(allOrders);
+
+      if (clearResult && stockResult) {
+        toast.success("Your order was placed successfully!");
+        fetchCart();
+      } else if (clearResult) {
+        toast.error(
+          "Order placed, but we encountered an issue updating stock."
+        );
+      } else {
+        toast.error(
+          "Order placed, but we encountered an issue clearing your cart."
+        );
+      }
+    } else {
+      toast.error("Unable to place your order. Please try again.");
+    }
   };
 
   const groupedItems = Object.entries(
@@ -317,6 +338,7 @@ const DisplayFurnituresOnCart = ({
               }))
             }
             className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
+            disabled={deliveryFees[shopId] === null}
           >
             <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
           </Switch>
@@ -324,6 +346,16 @@ const DisplayFurnituresOnCart = ({
             {enabledDelivery[shopId] ? "Delivery" : "Pick-up"}
           </span>
         </div>
+        <span className="text-xs text-arfagreen">
+          {deliveryFees[shopId] === null
+            ? "Delivery service is not available in your location."
+            : ""}
+        </span>
+        <span className="text-xs text-red-600">
+          {deliveryFees[shopId] === 0
+            ? "Enjoy free delivery on this order!"
+            : ""}
+        </span>
       </div>
 
       {index === lastIndex && (
@@ -331,7 +363,7 @@ const DisplayFurnituresOnCart = ({
           <hr />
           <div className="flex-1 max-w-3xl mx-auto mt-6 space-y-6 lg:mt-0 lg:w-full">
             <div className="p-4 space-y-4 bg-white rounded-lg sm:p-6">
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <p className="text-base font-semibold text-gray-900 dark:text-white">
                 Order Summary
               </p>
 
@@ -414,10 +446,10 @@ const DisplayFurnituresOnCart = ({
 
                 {/* Display Total */}
                 <dl className="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
-                  <dt className="text-sm font-bold text-gray-900 dark:text-white">
+                  <dt className="text-sm font-semibold text-gray-900 dark:text-white">
                     Total
                   </dt>
-                  <dd className="text-sm font-bold text-gray-900 dark:text-white">
+                  <dd className="text-sm font-semibold text-gray-900 dark:text-white">
                     {formatToPeso(
                       items.reduce((total, item) => {
                         const price = item.isSale
