@@ -18,7 +18,6 @@ export const getDeliveryFee = async (shopId, userRegion) => {
       if (deliveryData.doDeliver) {
         return deliveryData.isFreeDelivery ? 0 : deliveryData.price;
       } else {
-        console.warn("Delivery not available for this region.");
         return null;
       }
     } else {
