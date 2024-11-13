@@ -50,6 +50,62 @@ export const getStocks = async (furnitureId) => {
   }
 };
 
+export const updateStockFromOrder = async (allOrders) => {
+  try {
+    for (const order of allOrders) {
+      for (const item of order.items) {
+        const furnitureRef = doc(db, "furnitures", item.id);
+        const docSnapshot = await getDoc(furnitureRef);
+
+        if (!docSnapshot.exists()) {
+          console.warn(`Furniture item with ID ${item.id} not found.`);
+          continue;
+        }
+
+        const furnitureData = docSnapshot.data();
+        const { variants } = furnitureData;
+
+        if (item.selectedVariant) {
+          const variantIndex = variants.findIndex(
+            (variant) => variant.name === item.selectedVariant
+          );
+
+          if (variantIndex > -1) {
+            const updatedVariants = [...variants];
+            updatedVariants[variantIndex].stock =
+              (updatedVariants[variantIndex].stock || 0) - item.quantity;
+
+            if (updatedVariants[variantIndex].stock < 0) {
+              updatedVariants[variantIndex].stock = 0;
+            }
+
+            await updateDoc(furnitureRef, {
+              variants: updatedVariants,
+              stockUpdatedAt: new Date(),
+            });
+          } else {
+            console.warn(
+              `Variant "${item.selectedVariant}" not found for item ${item.id}.`
+            );
+          }
+        } else {
+          const newStock = (furnitureData.stock || 0) - item.quantity;
+
+          await updateDoc(furnitureRef, {
+            stock: newStock < 0 ? 0 : newStock,
+            stockUpdatedAt: new Date(),
+          });
+        }
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error updating stock:", error);
+    return false;
+  }
+};
+
 export const addStockVariantless = async (furnitureId, newStock) => {
   try {
     const furnitureDocRef = doc(db, "furnitures", furnitureId);
