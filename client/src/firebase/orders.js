@@ -11,6 +11,13 @@ import {
 import { auth, db, storage } from "./firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
+const getDeviceType = () => {
+  const ua = navigator.userAgent;
+  if (/mobile/i.test(ua)) return "Mobile";
+  if (/tablet/i.test(ua)) return "Tablet";
+  return "Desktop";
+};
+
 export const saveOrder = async (allOrders) => {
   try {
     let batch = writeBatch(db);
@@ -21,6 +28,8 @@ export const saveOrder = async (allOrders) => {
       batch = writeBatch(db);
       operationCount = 0;
     };
+
+    const deviceType = getDeviceType();
 
     for (const order of allOrders) {
       const orderId = doc(collection(db, "orders")).id;
@@ -39,6 +48,7 @@ export const saveOrder = async (allOrders) => {
           Placed: serverTimestamp(),
         },
         shopperId: auth.currentUser?.uid || "",
+        deviceType,
 
         orderItems: order.items.map((item) => ({
           id: item.id || "",
