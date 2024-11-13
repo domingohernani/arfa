@@ -35,7 +35,7 @@ const DisplayFurnituresOnCart = ({
 }) => {
   const [logoUrls, setLogoUrls] = useState({});
   const [deliveryFees, setDeliveryFees] = useState({});
-  const [enabled, setEnabled] = useState(true);
+  const [enabledDelivery, setEnabledDelivery] = useState({}); // Modified to hold individual delivery states per shop
 
   useEffect(() => {
     // Group items by shopData.userId
@@ -79,6 +79,14 @@ const DisplayFurnituresOnCart = ({
 
       setLogoUrls(logoUrlsMap);
       setDeliveryFees(deliveryFeesMap);
+
+      // Initialize individual delivery options for each shop as enabled by default
+      setEnabledDelivery(
+        Object.keys(groupedItems).reduce((acc, shopId) => {
+          acc[shopId] = true; // Default to true (delivery enabled)
+          return acc;
+        }, {})
+      );
     };
 
     fetchLogosAndFees();
@@ -131,48 +139,44 @@ const DisplayFurnituresOnCart = ({
   };
 
   const saveOrderToDatabase = async () => {
-    // Container for all shop orders
     const allOrders = [];
 
-    // Group items by shop to create individual orders for each shop
     const groupedItems = items.reduce((groups, item) => {
       const shopId = item.shopData.userId;
       if (!groups[shopId]) {
         groups[shopId] = {
           shopName: item.shopData.name,
           items: [],
-          deliveryFee: enabled ? deliveryFees[shopId] || 0 : 0,
         };
       }
       groups[shopId].items.push(item);
       return groups;
     }, {});
 
-    // Iterate over each shop to prepare order data and push to allOrders array
     Object.entries(groupedItems).forEach(([shopId, group]) => {
-      // Calculate the order total for this shop's items only (exclude delivery fee)
       const orderTotal = group.items.reduce((total, item) => {
         const itemPrice = item.isSale ? item.discountedPrice : item.price;
         return total + itemPrice * item.quantity;
-      }, 0); // Start from 0 to exclude delivery fee
+      }, 0);
+
+      // Use the delivery fee based on the `enabledDelivery` state
+      const deliveryFee = enabledDelivery[shopId]
+        ? deliveryFees[shopId] || 0
+        : 0;
 
       const orderData = {
         shopId,
-        shopName: group.shopName,
         items: group.items,
-        deliveryFee: group.deliveryFee,
-        orderTotal, // Only includes the total cost of items
-        deliveryEnabled: enabled,
+        deliveryFee,
+        orderTotal,
+        deliveryEnabled: enabledDelivery[shopId],
         createdAt: new Date(),
       };
 
-      // Add this shop's order data to the allOrders container
       allOrders.push(orderData);
     });
 
-    // Call saveOrder with allOrders array
     await saveOrder(allOrders);
-    console.log("All shop orders:", allOrders);
   };
 
   const groupedItems = Object.entries(
@@ -298,6 +302,28 @@ const DisplayFurnituresOnCart = ({
             </div>
           </div>
         ))}
+
+        {/* Delivery Option Switch for each shop */}
+        <div className="flex items-center mt-4">
+          <span className="mr-2 text-sm font-normal text-gray-500">
+            Delivery Option:
+          </span>
+          <Switch
+            checked={enabledDelivery[shopId]}
+            onChange={() =>
+              setEnabledDelivery((prev) => ({
+                ...prev,
+                [shopId]: !prev[shopId],
+              }))
+            }
+            className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
+          >
+            <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
+          </Switch>
+          <span className="ml-2 text-sm font-normal text-gray-500">
+            {enabledDelivery[shopId] ? "Delivery" : "Pick-up"}
+          </span>
+        </div>
       </div>
 
       {index === lastIndex && (
@@ -311,6 +337,7 @@ const DisplayFurnituresOnCart = ({
 
               <div className="space-y-4">
                 <div className="space-y-2">
+                  {/* Display Original Price */}
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                       Original Price
@@ -328,6 +355,7 @@ const DisplayFurnituresOnCart = ({
                     </dd>
                   </dl>
 
+                  {/* Display Savings */}
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                       Savings
@@ -348,38 +376,23 @@ const DisplayFurnituresOnCart = ({
                     </dd>
                   </dl>
 
-                  <div className="flex items-center">
-                    <span className="mr-2 text-sm font-normal text-gray-500">
-                      Delivery Option:
-                    </span>
-                    <Switch
-                      checked={enabled}
-                      onChange={() => setEnabled(!enabled)}
-                      className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-[checked]:bg-arfagreen"
-                    >
-                      <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-[checked]:translate-x-6" />
-                    </Switch>
-                    <span className="ml-2 text-sm font-normal text-gray-500">
-                      {enabled ? "Delivery" : "Pick-up"}
-                    </span>
-                  </div>
-
+                  {/* Display Delivery Fees */}
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                       Delivery Fee
                     </dt>
                     <dd className="text-sm font-medium text-gray-900 dark:text-white">
                       {formatToPeso(
-                        enabled
-                          ? Object.values(deliveryFees).reduce(
-                              (total, fee) => total + (fee || 0),
-                              0
-                            )
-                          : 0
+                        Object.entries(deliveryFees).reduce(
+                          (total, [shopId, fee]) =>
+                            total + (enabledDelivery[shopId] ? fee || 0 : 0),
+                          0
+                        )
                       )}
                     </dd>
                   </dl>
 
+                  {/* Display Commission Rate */}
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
                       Commission Rate (5%)
@@ -399,28 +412,27 @@ const DisplayFurnituresOnCart = ({
                   </dl>
                 </div>
 
+                {/* Display Total */}
                 <dl className="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
                   <dt className="text-sm font-bold text-gray-900 dark:text-white">
                     Total
                   </dt>
                   <dd className="text-sm font-bold text-gray-900 dark:text-white">
                     {formatToPeso(
-                      items.reduce(
-                        (total, item) => {
-                          const price = item.isSale
-                            ? item.discountedPrice
-                            : item.price;
-                          const itemTotal = price * item.quantity;
-                          const itemTax = itemTotal * 0.05;
-                          return total + itemTotal + itemTax;
-                        },
-                        enabled
-                          ? Object.values(deliveryFees).reduce(
-                              (total, fee) => total + (fee || 0),
-                              0
-                            )
-                          : 0
-                      )
+                      items.reduce((total, item) => {
+                        const price = item.isSale
+                          ? item.discountedPrice
+                          : item.price;
+                        const itemTotal = price * item.quantity;
+                        const itemTax = itemTotal * 0.05;
+                        return total + itemTotal + itemTax;
+                      }, 0) + // Close the first reduce function here
+                        // Add the delivery fees to the final total based on each shop's delivery status
+                        Object.entries(deliveryFees).reduce(
+                          (total, [shopId, fee]) =>
+                            total + (enabledDelivery[shopId] ? fee || 0 : 0),
+                          0
+                        )
                     )}
                   </dd>
                 </dl>
