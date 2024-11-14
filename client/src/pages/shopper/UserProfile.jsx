@@ -146,7 +146,7 @@ const UserProfile = () => {
     <>
       <Toaster />
       <section className="px-4 md:px-8">
-        <div className="font-medium">Profile Information</div>
+        <div className="text-sm font-medium">Profile Information</div>
         <form
           className="w-full px-4 py-5 mx-auto mt-5 border md:px-8"
           onSubmit={handleFormSubmit}

@@ -53,6 +53,9 @@ import SellerUserPayout from "./pages/seller/sub/SellerUserPayout";
 import { FurnitureTransaction } from "./components/tables/FurnitureTransaction";
 import TransactionDetails from "./pages/seller/sub/TransactionDetails";
 import SellerImageHotspot from "./pages/seller/SellerImageHotspot";
+import AllOrders from "./pages/shopper/sub/AllOrders";
+import InProcessOrders from "./pages/shopper/sub/InProcessOrders";
+import CompletedOrders from "./pages/shopper/sub/CompletedOrders";
 
 function App() {
   useEffect(() => {
@@ -98,6 +101,13 @@ function App() {
             <Route path="/profile" element={<Profile />}>
               <Route element={<UserProfile />} path="user-profile" />
               <Route element={<Order />} path="order" />
+
+              <Route path="order" element={<Order />}>
+                <Route index path="all-orders" element={<AllOrders />} />
+                <Route path="in-process" element={<InProcessOrders />} />
+                <Route path="completed" element={<CompletedOrders />} />
+              </Route>
+
               <Route element={<Inbox />} path="inbox" />
               {/* <Route element={<PaymentMethod />} path="payment-method" /> */}
               <Route element={<Security />} path="security" />
