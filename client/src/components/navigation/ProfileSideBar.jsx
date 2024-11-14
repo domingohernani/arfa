@@ -147,7 +147,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
               )}
             </NavLink>
           </li>
-          <li>
+          {/* <li>
             <NavLink
               to={"payment-method"}
               className={({ isActive }) =>
@@ -179,7 +179,7 @@ export const ProfileSideBar = ({ setVisibility }) => {
                 </>
               )}
             </NavLink>
-          </li>
+          </li> */}
           <li>
             <NavLink
               to={"security"}
