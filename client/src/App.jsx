@@ -11,7 +11,7 @@ import Profile from "./pages/shopper/Profile";
 import UserProfile from "./pages/shopper/UserProfile";
 import Order from "./pages/shopper/Order";
 import Inbox from "./pages/shopper/Inbox";
-import PaymentMethod from "./pages/shopper/PaymentMethod";
+// import PaymentMethod from "./pages/shopper/PaymentMethod";
 import Security from "./pages/shopper/Security";
 import LoginShopper from "./pages/auth/LoginShopper";
 import SignupShopper from "./pages/auth/SignupShopper";
@@ -99,7 +99,7 @@ function App() {
               <Route element={<UserProfile />} path="user-profile" />
               <Route element={<Order />} path="order" />
               <Route element={<Inbox />} path="inbox" />
-              <Route element={<PaymentMethod />} path="payment-method" />
+              {/* <Route element={<PaymentMethod />} path="payment-method" /> */}
               <Route element={<Security />} path="security" />
             </Route>
           </Route>
