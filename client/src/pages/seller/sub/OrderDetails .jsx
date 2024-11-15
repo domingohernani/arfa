@@ -4,7 +4,7 @@ import {
   ArrowLeftIcon,
   FolderIcon,
   PencilIcon,
-  ArrowPathIcon
+  ArrowPathIcon,
 } from "@heroicons/react/20/solid";
 import ItemsOrdered from "../../../components/tables/ItemsOrdered";
 import OrderReceipt from "../../../components/tables/OrderReceipt";
@@ -24,9 +24,13 @@ const OrderDetails = () => {
   const reactToPrintFn = useReactToPrint({ contentRef });
   const [isModalOpen, setModalOpen] = useState(false);
 
-  <style type="text/css" media="print">{"\
-    @page {\ size: landscape;\ }\
-  "}</style>
+  <style type="text/css" media="print">
+    {
+      "\
+    @page { size: landscape; }\
+  "
+    }
+  </style>;
 
   const fetchOrder = async () => {
     try {
@@ -41,7 +45,6 @@ const OrderDetails = () => {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchOrder();
@@ -61,15 +64,24 @@ const OrderDetails = () => {
 
   const handleModalClose = () => {
     setModalOpen(false);
-  }
+  };
 
   const refreshPage = () => {
     fetchOrder();
-  }
+  };
 
   return (
     <>
-      <OrderStatus refreshPage={refreshPage} isOpen={isModalOpen} close={handleModalClose} orderId={order.id} status={order.orderStatus} onDelivery={order.onDelivery} statusTimestamps={order.statusTimestamps} isOrderPage={true} />
+      <OrderStatus
+        refreshPage={refreshPage}
+        isOpen={isModalOpen}
+        close={handleModalClose}
+        orderId={order.id}
+        status={order.orderStatus}
+        onDelivery={order.onDelivery}
+        statusTimestamps={order.statusTimestamps}
+        isOrderPage={true}
+      />
       <section className="m-5" ref={contentRef}>
         <nav className="flex items-center gap-2">
           <div className="p-1 w-fit">
@@ -95,12 +107,19 @@ const OrderDetails = () => {
               <h6 className="font-medium">Order #{order.id}</h6>
               <div className="flex gap-2">
                 <p
-                  className={`px-2 py-1 text-sm font-semibold rounded-sm ${getStatusColor().bgColorClass
-                    } w-fit ${getStatusColor().colorClass}`}
+                  className={`px-2 py-1 text-sm font-semibold rounded-sm ${
+                    getStatusColor().bgColorClass
+                  } w-fit ${getStatusColor().colorClass}`}
                 >
                   {order.orderStatus}
                 </p>
-                <p className={`px-2 py-1 text-sm font-semibold  ${order.onDelivery ? "text-red-500 bg-red-50" : "text-blue-500 bg-blue-50"} rounded-sm  w-fit`}>
+                <p
+                  className={`px-2 py-1 text-sm font-semibold  ${
+                    order.onDelivery
+                      ? "text-red-500 bg-red-50"
+                      : "text-blue-500 bg-blue-50"
+                  } rounded-sm  w-fit`}
+                >
                   {order.onDelivery ? "Delivery" : "Pick-up"}
                 </p>
               </div>
@@ -113,7 +132,8 @@ const OrderDetails = () => {
                 <FolderIcon className="w-4 h-4 text-gray-400" />
                 Print
               </button>
-              <button className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen"
+              <button
+                className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-center text-white rounded-sm min-w-max bg-arfagreen"
                 onClick={() => {
                   setModalOpen(true);
                 }}
@@ -126,22 +146,24 @@ const OrderDetails = () => {
           <section className="flex flex-wrap justify-start gap-2">
             <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
               <b className="font-medium text-black">Paid: </b>
-              {order.createdAt && (
-                new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
-                new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
-              )}
+              {order.createdAt &&
+                new Date(order.createdAt.seconds * 1000).toLocaleDateString() +
+                  " " +
+                  new Date(order.createdAt.seconds * 1000).toLocaleTimeString()}
             </div>
             <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-              <b className="font-medium text-black">Placed: </b> {order.createdAt && (
-                new Date(order.createdAt.seconds * 1000).toLocaleDateString() + " " +
-                new Date(order.createdAt.seconds * 1000).toLocaleTimeString()
-              )}
+              <b className="font-medium text-black">Placed: </b>{" "}
+              {order.createdAt &&
+                new Date(order.createdAt.seconds * 1000).toLocaleDateString() +
+                  " " +
+                  new Date(order.createdAt.seconds * 1000).toLocaleTimeString()}
             </div>
             <div className="p-2 text-sm text-gray-600 rounded-sm bg-arfagray">
-              <b className="font-medium text-black">Updated: </b> {order.updatedAt && (
-                new Date(order.updatedAt.seconds * 1000).toLocaleDateString() + " " +
-                new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()
-              )}
+              <b className="font-medium text-black">Updated: </b>{" "}
+              {order.updatedAt &&
+                new Date(order.updatedAt.seconds * 1000).toLocaleDateString() +
+                  " " +
+                  new Date(order.updatedAt.seconds * 1000).toLocaleTimeString()}
             </div>
           </section>
         </header>
@@ -161,7 +183,9 @@ const OrderDetails = () => {
               </div>
               <div className="flex justify-between gap-2">
                 <div className="flex-1 font-medium">Phone: </div>
-                <div className="flex-1 text-gray-600">{customer.phoneNumber}</div>
+                <div className="flex-1 text-gray-600">
+                  {customer.phoneNumber}
+                </div>
               </div>
             </section>
           </section>
@@ -184,7 +208,6 @@ const OrderDetails = () => {
         </main>
       </section>
     </>
-
   );
 };
 
