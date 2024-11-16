@@ -9,8 +9,6 @@ import {
 import { formatToPeso } from "../globalFunctions";
 
 export const InvoiceModal = ({ isOpen, close, invoice }) => {
-  console.log(invoice);
-
   const handleCancel = () => {
     close();
   };

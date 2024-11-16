@@ -11,6 +11,7 @@ import { DeliveryLogs } from "../../../components/modals/DeliveryLogs";
 import { InvoiceModal } from "../../../components/modals/InvoiceModal";
 import toast from "react-hot-toast";
 import noResult from "../../../assets/images/no-result.png";
+import { MakeReview } from "../../../components/modals/MakeReview";
 
 const PAGE_SIZE = 10;
 
@@ -19,6 +20,8 @@ const CompletedOrders = () => {
   const [isInvoiceOpen, setInvoiceOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [isMakeReview, setMakeReview] = useState(false);
+  const [furnitureId, setFurnitureId] = useState(null);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [filterApplied, setFilterApplied] = useState(false);
@@ -80,6 +83,10 @@ const CompletedOrders = () => {
     setInvoiceOpen(false);
   };
 
+  const handleReviewClose = () => {
+    setMakeReview(false);
+  };
+
   const handleApplyFilter = () => {
     if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) {
       toast.error("The 'From' date cannot be later than the 'To' date.");
@@ -109,7 +116,7 @@ const CompletedOrders = () => {
       <div className="w-full mx-auto md:px-8">
         {/* Date Range Selector */}
         <div className="flex flex-wrap items-center gap-3 mx-2 my-4 ml-auto md:w-fit md:justify-start">
-          <div className="relative flex items-center flex-1 px-4 border rounded-full">
+          <div className="relative flex items-center flex-1 px-4 border rounded-md">
             <input
               type="date"
               name="from-dt"
@@ -120,7 +127,7 @@ const CompletedOrders = () => {
             />
           </div>
           <div className="hidden text-sm text-black sm:block">To</div>
-          <div className="relative flex flex-1 px-4 border border-gray-300 rounded-full">
+          <div className="relative flex flex-1 px-4 border border-gray-300 rounded-md">
             <input
               type="date"
               name="to-dt"
@@ -132,13 +139,13 @@ const CompletedOrders = () => {
           </div>
           <div className="block ml-auto sm:flex w-fit">
             <button
-              className="px-4 py-2 mr-2 text-sm font-medium text-white rounded-full bg-arfagreen"
+              className="px-4 py-2 mr-2 text-sm font-medium text-white rounded-md bg-arfagreen"
               onClick={handleApplyFilter}
             >
               Apply
             </button>
             <button
-              className="px-4 py-2 mr-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-full"
+              className="px-4 py-2 mr-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-md"
               onClick={handleClearFilter}
             >
               Clear
@@ -190,15 +197,15 @@ const CompletedOrders = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 max-md:mt-5">
+                    <div className="flex flex-wrap items-center gap-3 max-md:mt-5">
                       <button
-                        className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-full shadow-sm px-7 shadow-transparent"
+                        className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
                         onClick={() => handleInvoiceOpen(order)}
                       >
-                        Show Invoice
+                        Invoice
                       </button>
                       <button
-                        className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-full shadow-sm bg-arfagreen px-7 shadow-transparent"
+                        className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-md shadow-sm bg-arfagreen px-7 shadow-transparent"
                         onClick={() => handleModalOpen(order)}
                       >
                         Delivery Logs
@@ -239,13 +246,22 @@ const CompletedOrders = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-start justify-center max-sm:items-center">
+                      <div className="flex items-center justify-center gap-4">
                         <Link
                           className="text-sm font-semibold leading-8 text-left cursor-pointer hover:underline text-arfagreen whitespace-nowrap"
                           to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
                         >
                           View Product
                         </Link>
+                        <button
+                          className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
+                          onClick={() => {
+                            setMakeReview(true);
+                            setFurnitureId(item.id);
+                          }}
+                        >
+                          Review
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -261,7 +277,7 @@ const CompletedOrders = () => {
             <button
               onClick={() => fetchNextPage()}
               disabled={!hasNextPage || isFetchingNextPage}
-              className="px-4 py-2 text-sm font-normal text-white rounded-full bg-arfagreen"
+              className="px-4 py-2 text-sm font-normal text-white rounded-md bg-arfagreen"
             >
               {isFetchingNextPage
                 ? "Loading more..."
@@ -292,6 +308,14 @@ const CompletedOrders = () => {
             close={handleInvoiceClose}
             isOpen={isInvoiceOpen}
             invoice={selectedInvoice}
+          />
+        )}
+
+        {isMakeReview && furnitureId && (
+          <MakeReview
+            close={handleReviewClose}
+            isOpen={isMakeReview}
+            furnitureId={furnitureId}
           />
         )}
       </div>
