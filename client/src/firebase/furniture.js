@@ -10,6 +10,7 @@ import {
   updateDoc,
   limit,
   startAfter,
+  where,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { blobsToImagesPaths } from "../components/globalFunctions";
@@ -202,7 +203,64 @@ const getReviewCollections = async (docRef) => {
   }
 };
 
-// Function to update a furniture document
+export const writeReview = async (furnitureId, reviewData) => {
+  try {
+    const reviewsCollectionRef = collection(
+      doc(db, "furnitures", furnitureId),
+      "reviews"
+    );
+
+    const reviewDoc = await addDoc(reviewsCollectionRef, {
+      date: serverTimestamp(),
+      title: reviewData.title,
+      description: reviewData.description,
+      rating: reviewData.rating,
+      user: doc(db, "users", reviewData.userId),
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error writing review:", error);
+    return false;
+  }
+};
+
+export const getReview = async (furnitureId, userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    const reviewsRef = collection(
+      doc(db, "furnitures", furnitureId),
+      "reviews"
+    );
+    const reviewQuery = query(reviewsRef, where("user", "==", userRef));
+    const querySnapshot = await getDocs(reviewQuery);
+
+    if (!querySnapshot.empty) {
+      const review = querySnapshot.docs[0].data();
+      review.id = querySnapshot.docs[0].id;
+      return review;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching review:", error);
+    return null;
+  }
+};
+
+export const updateReview = async (furnitureId, reviewId, updatedData) => {
+  try {
+    const reviewRef = doc(db, "furnitures", furnitureId, "reviews", reviewId);
+
+    await updateDoc(reviewRef, updatedData);
+
+    return true;
+  } catch (error) {
+    console.error("Error updating review:", error);
+    return false;
+  }
+};
+
 export const updateFurniture = async (furnitureId, updatedData) => {
   try {
     const furnitureRef = doc(db, "furnitures", furnitureId);

@@ -90,15 +90,13 @@ const getNextStatus = (currentStatus, statusFlow) => {
   return statusFlow[currentIndex + 1].status;
 };
 
-export const OrderStatus = ({
-  refreshPage,
+export const DeliveryLogs = ({
   isOpen,
   close,
   orderId,
   status,
   onDelivery,
   statusTimestamps,
-  isOrderPage,
   podUrl = "",
 }) => {
   const statusFlow = onDelivery
@@ -188,12 +186,12 @@ export const OrderStatus = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    {isOrderPage ? "Update Status" : "Order Status Logs"}
+                    {onDelivery ? "Delivery " : "Pick-up "}
+                    Logs
                   </DialogTitle>
                   <p className="mt-1 text-sm text-gray-500">
-                    {isOrderPage
-                      ? "Review the current order status and select the next stage in the process. This will help keep both the customer and the delivery team updated on the progress of the order."
-                      : "This is a record of the completed stages in the order process, providing a history of updates for this transaction."}
+                    Here is the current status of your order. Track each stage
+                    to stay updated on the progress.
                   </p>
                   <div>
                     <Tracking
@@ -208,19 +206,10 @@ export const OrderStatus = ({
                   <div className="flex justify-between mt-4">
                     <button
                       type="button"
-                      className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md bg-arfagreen hover:bg-green-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-opacity-75"
-                      onClick={handleUpdateStatus}
-                    >
-                      {nextStatus
-                        ? `Next: ${nextStatus}`
-                        : "No further updates"}
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-opacity-75"
+                      className="inline-flex justify-center px-4 py-2 ml-auto text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-opacity-75"
                       onClick={handleCancel}
                     >
-                      Cancel
+                      Close
                     </button>
                   </div>
                 </DialogPanel>
@@ -251,9 +240,7 @@ const Tracking = ({
           <div className="grow sm:mt-8 lg:mt-0">
             {previewPODUrl && (
               <section>
-                <p className="text-sm text-arfablack">
-                  Proof of {onDelivery ? "Delivery" : "Pick-up"}
-                </p>
+                <p className="text-sm text-arfablack">Proof of Delivery</p>
                 <img
                   src={previewPODUrl}
                   alt="Image Preview"
