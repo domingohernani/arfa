@@ -202,6 +202,7 @@ export const OrderStatus = ({
                       statusTimestamps={statusTimestamps}
                       previewPODUrl={imagePODPreview}
                       podUrl={podUrl}
+                      onDelivery={onDelivery}
                     />
                   </div>
                   <div className="flex justify-between mt-4">
@@ -238,6 +239,7 @@ const Tracking = ({
   statusTimestamps,
   previewPODUrl,
   podUrl,
+  onDelivery,
 }) => {
   const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
   const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
@@ -249,7 +251,9 @@ const Tracking = ({
           <div className="grow sm:mt-8 lg:mt-0">
             {previewPODUrl && (
               <section>
-                <p className="text-sm text-arfablack">Proof of Delivery</p>
+                <p className="text-sm text-arfablack">
+                  Proof of {onDelivery ? "Delivery" : "Pick-up"}
+                </p>
                 <img
                   src={previewPODUrl}
                   alt="Image Preview"
@@ -265,7 +269,7 @@ const Tracking = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Proof of Delivery
+                  Proof of {onDelivery ? "Delivery" : "Pick-up"}
                 </a>
                 <img
                   src={podUrl}
