@@ -211,7 +211,7 @@ const Inbox = () => {
               <img
                 src={search}
                 alt="Search"
-                className="absolute top-0 h-full cursor-pointer left-2"
+                className="absolute top-0 w-3 h-full cursor-pointer left-2"
                 onClick={handleSearch}
               />
             </div>
