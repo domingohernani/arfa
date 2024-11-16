@@ -97,7 +97,6 @@ export const DeliveryLogs = ({
   status,
   onDelivery,
   statusTimestamps,
-  isOrderPage,
   podUrl = "",
 }) => {
   const statusFlow = onDelivery
@@ -187,11 +186,12 @@ export const DeliveryLogs = ({
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Delivery Logs
+                    {onDelivery ? "Delivery " : "Pick-up "}
+                    Logs
                   </DialogTitle>
                   <p className="mt-1 text-sm text-gray-500">
                     Here is the current status of your order. Track each stage
-                    to stay updated on the delivery progress.
+                    to stay updated on the progress.
                   </p>
                   <div>
                     <Tracking
@@ -200,6 +200,7 @@ export const DeliveryLogs = ({
                       statusTimestamps={statusTimestamps}
                       previewPODUrl={imagePODPreview}
                       podUrl={podUrl}
+                      onDelivery={onDelivery}
                     />
                   </div>
                   <div className="flex justify-between mt-4">
@@ -227,6 +228,7 @@ const Tracking = ({
   statusTimestamps,
   previewPODUrl,
   podUrl,
+  onDelivery,
 }) => {
   const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
   const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
@@ -254,7 +256,7 @@ const Tracking = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Proof of Delivery
+                  Proof of {onDelivery ? "Delivery" : "Pick-up"}
                 </a>
                 <img
                   src={podUrl}
