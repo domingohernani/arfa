@@ -109,7 +109,7 @@ const AllOrders = () => {
       <div className="w-full mx-auto md:px-8">
         {/* Date Range Selector */}
         <div className="flex flex-wrap items-center gap-3 mx-2 my-4 ml-auto md:w-fit md:justify-start">
-          <div className="relative flex items-center flex-1 px-4 border rounded-full">
+          <div className="relative flex items-center flex-1 px-4 border rounded-md">
             <input
               type="date"
               name="from-dt"
@@ -120,7 +120,7 @@ const AllOrders = () => {
             />
           </div>
           <div className="hidden text-sm text-black sm:block">To</div>
-          <div className="relative flex flex-1 px-4 border border-gray-300 rounded-full">
+          <div className="relative flex flex-1 px-4 border border-gray-300 rounded-md">
             <input
               type="date"
               name="to-dt"
@@ -132,13 +132,13 @@ const AllOrders = () => {
           </div>
           <div className="block ml-auto sm:flex w-fit">
             <button
-              className="px-4 py-2 mr-2 text-sm font-medium text-white rounded-full bg-arfagreen"
+              className="px-4 py-2 mr-2 text-sm font-medium text-white rounded-md bg-arfagreen"
               onClick={handleApplyFilter}
             >
               Apply
             </button>
             <button
-              className="px-4 py-2 mr-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-full"
+              className="px-4 py-2 mr-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-md"
               onClick={handleClearFilter}
             >
               Clear
@@ -192,13 +192,13 @@ const AllOrders = () => {
                     </div>
                     <div className="flex items-center gap-3 max-md:mt-5">
                       <button
-                        className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-full shadow-sm px-7 shadow-transparent"
+                        className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
                         onClick={() => handleInvoiceOpen(order)}
                       >
                         Show Invoice
                       </button>
                       <button
-                        className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-full shadow-sm bg-arfagreen px-7 shadow-transparent"
+                        className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-md shadow-sm bg-arfagreen px-7 shadow-transparent"
                         onClick={() => handleModalOpen(order)}
                       >
                         Delivery Logs
@@ -261,7 +261,7 @@ const AllOrders = () => {
             <button
               onClick={() => fetchNextPage()}
               disabled={!hasNextPage || isFetchingNextPage}
-              className="px-4 py-2 text-sm font-normal text-white rounded-full bg-arfagreen"
+              className="px-4 py-2 text-sm font-normal text-white rounded-md bg-arfagreen"
             >
               {isFetchingNextPage
                 ? "Loading more..."
