@@ -3,7 +3,7 @@ import { Outlet, Link, useNavigate } from "react-router-dom";
 
 const Order = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState("all-orders");
 
   useEffect(() => {
     navigate("all-orders");

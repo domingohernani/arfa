@@ -7,6 +7,10 @@ import {
   updateDoc,
   serverTimestamp,
   writeBatch,
+  where,
+  orderBy,
+  limit,
+  startAfter,
 } from "firebase/firestore";
 import { auth, db, storage } from "./firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -16,6 +20,206 @@ const getDeviceType = () => {
   if (/mobile/i.test(ua)) return "Mobile";
   if (/tablet/i.test(ua)) return "Tablet";
   return "Desktop";
+};
+
+// Function to get orders based on shopperId and filter
+export const getShopperOrders = async (shopperId, filter) => {
+  try {
+    let ordersQuery;
+
+    if (filter === "All Orders") {
+      ordersQuery = query(
+        collection(db, "orders"),
+        where("shopperId", "==", shopperId),
+        orderBy("createdAt", "desc")
+      );
+    } else if (filter === "In Process") {
+      ordersQuery = query(
+        collection(db, "orders"),
+        where("shopperId", "==", shopperId),
+        where("orderStatus", "!=", "Delivered"),
+        where("orderStatus", "!=", "Picked-up"),
+        orderBy("createdAt", "desc")
+      );
+    } else if (filter === "Completed") {
+      ordersQuery = query(
+        collection(db, "orders"),
+        where("shopperId", "==", shopperId),
+        where("orderStatus", "in", ["Delivered", "Picked-up"]),
+        orderBy("createdAt", "desc")
+      );
+    }
+
+    const querySnapshot = await getDocs(ordersQuery);
+    const orders = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return orders;
+  } catch (error) {
+    console.error("Error getting orders: ", error);
+    return false;
+  }
+};
+
+// Function to get the full image URL for each order item
+// Function to get the full image URL for each order item
+const getFurnitureImageUrl = async (orderItem) => {
+  try {
+    const furnitureDocRef = doc(db, "furnitures", orderItem.id);
+    const furnitureSnapshot = await getDoc(furnitureDocRef);
+
+    if (!furnitureSnapshot.exists()) {
+      console.error(`Furniture with id ${orderItem.id} does not exist.`);
+      return null;
+    }
+
+    const furnitureData = furnitureSnapshot.data();
+    let imageUrl = "";
+
+    if (furnitureData.variants && furnitureData.variants.length > 0) {
+      // Variants exist, search for the matching variant
+      const matchingVariant = furnitureData.variants.find(
+        (variant) => variant.name === orderItem.variant
+      );
+
+      if (
+        matchingVariant &&
+        matchingVariant.imagePaths &&
+        matchingVariant.imagePaths.length > 0
+      ) {
+        // Check if the first image path in variant is a full URL
+        if (matchingVariant.imagePaths[0].startsWith("http")) {
+          imageUrl = matchingVariant.imagePaths[0]; // Use the URL directly
+        } else {
+          // Construct the path if it's not a full URL
+          const imageRef = ref(
+            storage,
+            `images/${orderItem.id}/${matchingVariant.imagePaths[0]}`
+          );
+          imageUrl = await getDownloadURL(imageRef); // Get the download URL from Firebase Storage
+        }
+      } else if (furnitureData.imgPreviewFilename) {
+        // If no matching variant image found, fallback to imgPreviewFilename
+        const imageRef = ref(
+          storage,
+          `images/${orderItem.id}/${furnitureData.imgPreviewFilename}`
+        );
+        imageUrl = await getDownloadURL(imageRef);
+      }
+    } else if (furnitureData.imgPreviewFilename) {
+      // No variants, use imgPreviewFilename
+      const imageRef = ref(
+        storage,
+        `images/${orderItem.id}/${furnitureData.imgPreviewFilename}`
+      );
+      imageUrl = await getDownloadURL(imageRef);
+    }
+
+    return imageUrl;
+  } catch (error) {
+    console.error("Error fetching furniture data:", error);
+    return null;
+  }
+};
+
+// Function to get the shop name based on shopId
+const getShopName = async (shopId) => {
+  try {
+    const shopDocRef = doc(db, "shops", shopId);
+    const shopSnapshot = await getDoc(shopDocRef);
+
+    if (!shopSnapshot.exists()) {
+      console.error(`Shop with id ${shopId} does not exist.`);
+      return "Unknown Shop";
+    }
+
+    const shopData = shopSnapshot.data();
+
+    return shopData.name || "Unnamed Shop";
+  } catch (error) {
+    console.error("Error fetching shop data:", error);
+    return "Unknown Shop";
+  }
+};
+
+// Main function to process orders, fetch images, and include shop name
+const processOrdersWithImagesAndShopNames = async (orders) => {
+  const processedOrders = await Promise.all(
+    orders.map(async (order) => {
+      // Fetch the shop name
+      const shopName = await getShopName(order.shopId);
+
+      // Process each order item to include the image URL
+      const processedOrderItems = await Promise.all(
+        order.orderItems.map(async (orderItem) => {
+          const imageUrl = await getFurnitureImageUrl(orderItem);
+          return { ...orderItem, imageUrl };
+        })
+      );
+
+      // Include shop name in the order data
+      return { ...order, orderItems: processedOrderItems, shopName };
+    })
+  );
+
+  return processedOrders;
+};
+
+// Update getOrders to use the new processing function
+export const getOrders = async (
+  shopperId,
+  filter,
+  lastDoc = null,
+  pageSize = 10
+) => {
+  try {
+    let ordersQuery = query(
+      collection(db, "orders"),
+      where("shopperId", "==", shopperId),
+      orderBy("createdAt", "desc"),
+      limit(pageSize)
+    );
+
+    if (filter === "In Process") {
+      ordersQuery = query(
+        collection(db, "orders"),
+        where("shopperId", "==", shopperId),
+        where("orderStatus", "not-in", ["Delivered", "Picked-up"]),
+        orderBy("createdAt", "desc"),
+        limit(pageSize)
+      );
+    } else if (filter === "Completed") {
+      ordersQuery = query(
+        collection(db, "orders"),
+        where("shopperId", "==", shopperId),
+        where("orderStatus", "in", ["Delivered", "Picked-up"]),
+        orderBy("createdAt", "desc"),
+        limit(pageSize)
+      );
+    }
+
+    if (lastDoc) {
+      ordersQuery = query(ordersQuery, startAfter(lastDoc));
+    }
+
+    const querySnapshot = await getDocs(ordersQuery);
+    const lastVisible =
+      querySnapshot.docs[querySnapshot.docs.length - 1] || null;
+
+    const orders = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const processedOrders = await processOrdersWithImagesAndShopNames(orders);
+
+    return { orders: processedOrders, lastVisible };
+  } catch (error) {
+    console.error("Error getting orders:", error);
+    throw error;
+  }
 };
 
 export const saveOrder = async (allOrders) => {
