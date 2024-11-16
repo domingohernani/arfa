@@ -68,24 +68,22 @@ const AllOrders = () => {
     <section className="relative">
       <div className="w-full mx-auto md:px-8">
         {/* Date Range Selector */}
-        <div className="flex items-center justify-end gap-2 max-sm:flex-col max-lg:mt-5">
-          <div className="relative flex items-center px-4 border rounded-full">
+        <div className="flex flex-wrap items-center gap-3 mx-2 my-4 ml-auto md:w-fit md:justify-start">
+          <div className="relative flex items-center flex-1 px-4 border rounded-full">
             <input
               type="date"
               name="from-dt"
               id="from-dt"
               className="flex flex-row-reverse text-sm text-gray-900 placeholder-gray-900 border-none appearance-none cursor-pointer focus:ring-transparent outline-0"
-              placeholder="11-01-2023"
             />
           </div>
-          <p className="leading-8 text-black">To</p>
-          <div className="relative flex px-4 border border-gray-300 rounded-full">
+          <div className="hidden text-sm text-black sm:block">To</div>
+          <div className="relative flex flex-1 px-4 border border-gray-300 rounded-full">
             <input
               type="date"
               name="to-dt"
               id="to-dt"
               className="flex flex-row-reverse text-sm text-gray-900 placeholder-gray-900 border-none appearance-none cursor-pointer focus:ring-transparent outline-0"
-              placeholder="11-01-2023"
             />
           </div>
         </div>
@@ -96,7 +94,7 @@ const AllOrders = () => {
             page.orders.map((order) => (
               <div key={order.id} className="mt-3 mb-5 border">
                 <div className="flex items-center justify-between p-3 max-md:flex-col md:p-5">
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-2 mr-auto">
                     <div className="text-sm text-black whitespace-nowrap">
                       Shop:{" "}
                       <span className="text-gray-500">{order.shopName}</span>
@@ -146,7 +144,7 @@ const AllOrders = () => {
                     key={item.id}
                     className="flex items-center px-3 mb-4 max-lg:flex-col md:px-11"
                   >
-                    <div className="grid w-full grid-cols-4">
+                    <div className="flex w-full gap-2 md:grid md:grid-cols-4">
                       <div className="col-span-4 sm:col-span-1">
                         <img
                           src={item.imageUrl}
@@ -154,7 +152,7 @@ const AllOrders = () => {
                           className="object-cover border rounded-md h-36 w-36 max-sm:mx-auto aspect-square"
                         />
                       </div>
-                      <div className="flex flex-col justify-center col-span-4 sm:col-span-3 max-sm:mt-4 sm:pl-8 max-sm:items-center">
+                      <div className="flex flex-col justify-center flex-1 col-span-4 sm:col-span-3 max-sm:mt-4 sm:pl-8 max-sm:items-center">
                         <h6 className="text-sm font-semibold leading-9 text-black whitespace-nowrap">
                           {item.name}
                         </h6>
@@ -202,7 +200,7 @@ const AllOrders = () => {
               : "No more orders"}
           </button>
         </div>
-        {isFetching && !isFetchingNextPage && <p>Loading...</p>}
+        {isFetching && !isFetchingNextPage && null}
 
         {/* Single Instance of OrderStatus Modal */}
         {isModalOpen && selectedOrder && (
