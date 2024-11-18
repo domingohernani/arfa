@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // Import hooks for routing
 import search from "../../assets/icons/search.svg";
 import { getChatsByShopId } from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
@@ -17,15 +18,13 @@ const PreviewChat = ({ isYou, text, image, video }) => {
   } else if (image) {
     return (
       <div className="flex-grow text-xs text-gray-500 truncate">
-        {isYou ? "You: " : ""}
-        Sent an image
+        {isYou ? "You: " : ""} Sent an image
       </div>
     );
   } else if (video) {
     return (
       <div className="flex-grow text-xs text-gray-500 truncate">
-        {isYou ? "You: " : ""}
-        Sent a video
+        {isYou ? "You: " : ""} Sent a video
       </div>
     );
   } else {
@@ -34,12 +33,14 @@ const PreviewChat = ({ isYou, text, image, video }) => {
 };
 
 const SellerInbox = () => {
+  const { id } = useParams(); // Get dynamic route parameter
+  const navigate = useNavigate(); // Navigate programmatically
   const { loggedUser } = useStore();
   const { chats, setChats } = useStore();
   const { selectedChat, setSelectedChat } = useStore();
   const [loading, setLoading] = useState(false);
   const [mobileViewChat, setMobileViewChat] = useState(false);
-  const [searchInput, setSearchInput] = useState(""); // New state for search input
+  const [searchInput, setSearchInput] = useState(""); // State for search input
   const [filteredChats, setFilteredChats] = useState(chats); // State for filtered chats
 
   useEffect(() => {
@@ -48,7 +49,6 @@ const SellerInbox = () => {
     const fetchChats = () => {
       try {
         setLoading(true);
-
         unsubscribe = getChatsByShopId(loggedUser.userId, (chats) => {
           setChats(chats);
           setFilteredChats(chats); // Initialize filteredChats with fetched chats
@@ -69,18 +69,34 @@ const SellerInbox = () => {
         unsubscribe();
       }
     };
-  }, [setChats, setSelectedChat]);
+  }, [loggedUser, setChats]);
 
+  // Update selected chat based on route param `id`
   useEffect(() => {
-    if (chats.length > 0) {
-      setSelectedChat(chats[0]);
+    if (id && chats.length > 0) {
+      const chat = chats.find((chat) => chat.id === id);
+      if (chat) {
+        setSelectedChat(chat);
+      } else {
+        setSelectedChat(null);
+      }
     }
-  }, [chats, setSelectedChat]);
+  }, [id, chats, setSelectedChat]);
 
-  const handleChatSelect = useCallback((chat) => {
-    setSelectedChat(chat);
-    setMobileViewChat(true);
-  }, []);
+  // Automatically select the first chat if no route param is provided
+  useEffect(() => {
+    if (!id && chats.length > 0) {
+      navigate(`/seller-page/inbox/${chats[0].id}`);
+    }
+  }, [id, chats, navigate]);
+
+  const handleChatSelect = useCallback(
+    (chat) => {
+      navigate(`/seller-page/inbox/${chat.id}`); // Update URL to include chat ID
+      setMobileViewChat(true);
+    },
+    [navigate]
+  );
 
   const handleSearch = () => {
     const lowerCaseInput = searchInput.toLowerCase();
@@ -95,6 +111,7 @@ const SellerInbox = () => {
     });
     setFilteredChats(results);
   };
+
   if (loading && chats.length < 1) {
     return <div>Loading...</div>;
   }
@@ -114,7 +131,7 @@ const SellerInbox = () => {
                 />
                 <input
                   type="text"
-                  className="w-full py-2 text-sm border border-gray-200 pl-2 pr-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
+                  className="w-full py-2 pl-2 text-sm border border-gray-200 pr-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
                   placeholder="Search..."
                   value={searchInput}
                   onChange={(e) => {
@@ -131,7 +148,7 @@ const SellerInbox = () => {
 
             <div className="flex-auto mt-5 overflow-y-auto">
               {filteredChats.map((chat, index) => {
-                const isActive = chat.id === selectedChat.id;
+                const isActive = chat.id === selectedChat?.id;
                 return (
                   <section
                     className="cursor-pointer"
@@ -166,7 +183,7 @@ const SellerInbox = () => {
                           chat.imageUrl ||
                           chat.videoUrl) && (
                           <PreviewChat
-                            isYou={chat.shopId == chat.senderId}
+                            isYou={chat.shopId === chat.senderId}
                             text={chat.lastMessage}
                             image={chat.imageUrl}
                             video={chat.videoUrl}
@@ -203,21 +220,28 @@ const SellerInbox = () => {
                 type="text"
                 className="w-full py-2 text-sm border border-gray-200 px-7 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
                 placeholder="Search..."
-                id="catalogSearchbar convoSearchBar"
+                value={searchInput}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSearchInput(value);
+
+                  if (value === "") {
+                    setFilteredChats(chats);
+                  }
+                }}
               />
               <img
                 src={search}
                 alt="Search"
                 className="absolute top-0 w-3 h-full cursor-pointer left-2"
-                width=""
-                height="auto"
+                onClick={handleSearch}
               />
             </div>
           </div>
 
           <div className="flex-auto mt-5 overflow-y-auto">
-            {chats.map((chat, index) => {
-              const isActive = chat.id === selectedChat.id;
+            {filteredChats.map((chat, index) => {
+              const isActive = chat.id === selectedChat?.id;
               return (
                 <section
                   className="cursor-pointer"
@@ -250,7 +274,7 @@ const SellerInbox = () => {
                     <div className="flex flex-row items-center space-x-1">
                       {(chat.lastMessage || chat.imageUrl || chat.videoUrl) && (
                         <PreviewChat
-                          isYou={chat.shopId == chat.senderId}
+                          isYou={chat.shopId === chat.senderId}
                           text={chat.lastMessage}
                           image={chat.imageUrl}
                           video={chat.videoUrl}
@@ -267,7 +291,7 @@ const SellerInbox = () => {
 
       {mobileViewChat && (
         <div className="flex flex-col flex-1 w-full px-3 bg-white border lg:hidden">
-          {chats.length > 0 ? (
+          {filteredChats.length > 0 ? (
             selectedChat && (
               <DisplayChat
                 chat={selectedChat}
