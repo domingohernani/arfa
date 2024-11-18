@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // Import hooks for routing
 import search from "../../assets/icons/search.svg";
-import { getChatsByShopperId, sendMessage } from "../../firebase/chats";
+import { getChatsByShopperId } from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
 import DisplayChat from "../../components/dynamic/DisplayChat";
@@ -36,6 +37,8 @@ const PreviewChat = ({ isYou, text, image, video }) => {
 };
 
 const Inbox = () => {
+  const { id } = useParams(); // Get dynamic route parameter
+  const navigate = useNavigate(); // Navigate programmatically
   const { chats, setChats } = useStore();
   const { selectedChat, setSelectedChat } = useStore();
   const [loading, setLoading] = useState(false);
@@ -68,18 +71,34 @@ const Inbox = () => {
         unsubscribe();
       }
     };
-  }, [setChats, setSelectedChat]);
+  }, [setChats]);
 
+  // Update selected chat based on route param `id`
   useEffect(() => {
-    if (chats.length > 0) {
-      setSelectedChat(chats[0]);
+    if (id && chats.length > 0) {
+      const chat = chats.find((chat) => chat.id === id);
+      if (chat) {
+        setSelectedChat(chat);
+      } else {
+        setSelectedChat(null);
+      }
     }
-  }, [chats, setSelectedChat]);
+  }, [id, chats, setSelectedChat]);
 
-  const handleChatSelect = useCallback((chat) => {
-    setSelectedChat(chat);
-    setMobileViewChat(true);
-  }, []);
+  // Automatically select the first chat if no route param is provided
+  useEffect(() => {
+    if (!id && chats.length > 0) {
+      navigate(`/profile/inbox/${chats[0].id}`);
+    }
+  }, [id, chats, navigate]);
+
+  const handleChatSelect = useCallback(
+    (chat) => {
+      navigate(`/profile/inbox/${chat.id}`); // Update URL to include chat ID
+      setMobileViewChat(true);
+    },
+    [navigate]
+  );
 
   const handleSearch = () => {
     const lowerCaseInput = searchInput.toLowerCase();
@@ -126,7 +145,7 @@ const Inbox = () => {
 
             <div className="flex-auto mt-5 overflow-y-auto">
               {filteredChats.map((chat, index) => {
-                const isActive = chat.id === selectedChat.id;
+                const isActive = chat.id === selectedChat?.id;
                 const shopInfo = chat.shopInfo;
                 return (
                   <section
@@ -190,9 +209,9 @@ const Inbox = () => {
           </div>
         </div>
       </div>
-
       {!mobileViewChat && (
         <div className="flex flex-col w-full lg:hidden">
+          {/* Search Bar */}
           <div className="flex flex-col gap-6 px-2 pt-5 md:px-5">
             <div className="relative">
               <input
@@ -217,9 +236,10 @@ const Inbox = () => {
             </div>
           </div>
 
+          {/* Chat List */}
           <div className="flex-auto mt-5 overflow-y-auto">
             {filteredChats.map((chat, index) => {
-              const isActive = chat.id === selectedChat.id;
+              const isActive = chat.id === selectedChat?.id; // Ensure safe access to `selectedChat`
               return (
                 <section
                   className="cursor-pointer"
@@ -229,7 +249,7 @@ const Inbox = () => {
                   <div
                     className={`${
                       isActive
-                        ? "p-3 space-y-2  border-l-2 hover:bg-gray-100"
+                        ? "p-3 space-y-2 border-l-2 border-arfagreen bg-gray-100"
                         : "p-3 space-y-2 border-l-2 border-transparent hover:bg-gray-100"
                     }`}
                   >
@@ -250,7 +270,7 @@ const Inbox = () => {
                     <div className="flex flex-row items-center space-x-1">
                       {(chat.lastMessage || chat.imageUrl || chat.videoUrl) && (
                         <PreviewChat
-                          isYou={chat.shopperId == chat.senderId}
+                          isYou={chat.shopperId === chat.senderId}
                           text={chat.lastMessage}
                           image={chat.imageUrl}
                           video={chat.videoUrl}
@@ -267,6 +287,7 @@ const Inbox = () => {
 
       {mobileViewChat && (
         <div className="flex flex-col flex-1 w-full px-3 border lg:hidden">
+          {/* Chat Display */}
           {filteredChats.length > 0 ? (
             selectedChat && (
               <DisplayChat
