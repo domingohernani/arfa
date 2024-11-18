@@ -101,14 +101,13 @@ function App() {
             <Route path="/profile" element={<Profile />}>
               <Route element={<UserProfile />} path="user-profile" />
               <Route element={<Order />} path="order" />
-
               <Route path="order" element={<Order />}>
                 <Route index path="all-orders" element={<AllOrders />} />
                 <Route path="in-process" element={<InProcessOrders />} />
                 <Route path="completed" element={<CompletedOrders />} />
               </Route>
-
-              <Route element={<Inbox />} path="inbox" />
+              <Route element={<Inbox />} path="inbox/:id" />
+              <Route path="inbox" element={<Inbox />} />
               {/* <Route element={<PaymentMethod />} path="payment-method" /> */}
               <Route element={<Security />} path="security" />
             </Route>
@@ -148,6 +147,7 @@ function App() {
                 />
               </Route>
 
+              <Route element={<SellerInbox />} path="inbox/:id" />
               <Route element={<SellerInbox />} path="inbox" />
 
               <Route path="settings" element={<SellerSettings />}>
