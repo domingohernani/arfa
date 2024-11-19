@@ -9,6 +9,7 @@ import { getUserInfo } from "../../firebase/user";
 import { useStore } from "../../stores/useStore";
 import noResult from "../../assets/images/no-result.png";
 import ProductCard from "../../components/dynamic/ProductCard";
+import { AddChat } from "../../components/modals/AddChat";
 
 const PreviewChat = ({ isYou, text, image, video }) => {
   if (text.length > 0) {
@@ -37,7 +38,7 @@ const PreviewChat = ({ isYou, text, image, video }) => {
 };
 
 const Inbox = () => {
-  const { id } = useParams(); // Get dynamic route parameter
+  const { id, furnitureId, sellerId } = useParams(); // Get dynamic route parameter
   const navigate = useNavigate(); // Navigate programmatically
   const { chats, setChats } = useStore();
   const { selectedChat, setSelectedChat } = useStore();
@@ -45,6 +46,9 @@ const Inbox = () => {
   const [mobileViewChat, setMobileViewChat] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredChats, setFilteredChats] = useState(chats);
+  const [isAddChatModal, setAddChatModal] = useState(false);
+  const [backUpFurnitureId, setBackUpFurnitureId] = useState("");
+  const [backUpSellerId, setBackUpSellerId] = useState("");
 
   useEffect(() => {
     let unsubscribe;
@@ -59,7 +63,7 @@ const Inbox = () => {
           setLoading(false);
         });
       } catch (error) {
-        console.error("Error fetching chats:", error);
+        error("Error fetching chats:", error);
         setLoading(false);
       }
     };
@@ -75,6 +79,21 @@ const Inbox = () => {
 
   // Update selected chat based on route param `id`
   useEffect(() => {
+    if (sellerId && furnitureId && chats.length > 0) {
+      const matchingChat = chats.find((chat) => chat.shopId === sellerId);
+
+      if (matchingChat) {
+        navigate(`/profile/inbox/${matchingChat.id}`);
+        setBackUpFurnitureId(furnitureId);
+        setBackUpSellerId(sellerId);
+      } else {
+        setBackUpFurnitureId(furnitureId);
+        setBackUpSellerId(sellerId);
+      }
+      setAddChatModal(true);
+      return;
+    }
+
     if (id && chats.length > 0) {
       const chat = chats.find((chat) => chat.id === id);
       if (chat) {
@@ -87,7 +106,7 @@ const Inbox = () => {
 
   // Automatically select the first chat if no route param is provided
   useEffect(() => {
-    if (!id && chats.length > 0) {
+    if (!id && chats.length > 0 && !furnitureId && !sellerId) {
       navigate(`/profile/inbox/${chats[0].id}`);
     }
   }, [id, chats, navigate]);
@@ -109,6 +128,11 @@ const Inbox = () => {
     setFilteredChats(results);
   };
 
+  const handleAddChatClose = () => {
+    setAddChatModal(false);
+    navigate(`/profile/inbox/${chats[0].id}`);
+  };
+
   if (loading && chats.length < 1) {
     return <div>Loading...</div>;
   }
@@ -116,6 +140,14 @@ const Inbox = () => {
   return (
     <>
       {/* <ProductCard></ProductCard> */}
+      {isAddChatModal && (
+        <AddChat
+          close={handleAddChatClose}
+          isOpen={isAddChatModal}
+          furnitureId={backUpFurnitureId}
+          sellerId={backUpSellerId}
+        />
+      )}
       <div className="flex-row hidden h-screen m-5 border lg:flex">
         <div className="flex flex-row flex-auto rounded-tl-xl">
           <div className="flex flex-col bg-white max-w-60">
