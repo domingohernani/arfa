@@ -106,8 +106,13 @@ function App() {
                 <Route path="in-process" element={<InProcessOrders />} />
                 <Route path="completed" element={<CompletedOrders />} />
               </Route>
-              <Route element={<Inbox />} path="inbox/:id" />
-              <Route path="inbox" element={<Inbox />} />
+              <Route path="inbox" element={<Inbox />}>
+                <Route
+                  path="new-chat/:furnitureId/:sellerId"
+                  element={<Inbox />}
+                />
+                <Route path=":id" element={<Inbox />} />
+              </Route>
               {/* <Route element={<PaymentMethod />} path="payment-method" /> */}
               <Route element={<Security />} path="security" />
             </Route>
