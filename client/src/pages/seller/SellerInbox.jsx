@@ -44,7 +44,7 @@ const SellerInbox = () => {
   const [filteredChats, setFilteredChats] = useState(chats); // State for filtered chats
 
   useEffect(() => {
-    let unsubscribe;
+    let unsubscribe = null;
 
     const fetchChats = () => {
       try {
@@ -81,7 +81,7 @@ const SellerInbox = () => {
         setSelectedChat(null);
       }
     }
-  }, [id, chats, setSelectedChat]);
+  }, [id, chats.length, setSelectedChat]);
 
   // Automatically select the first chat if no route param is provided
   useEffect(() => {
@@ -257,11 +257,11 @@ const SellerInbox = () => {
                   >
                     <div className="flex flex-row items-center space-x-2 ">
                       <div className="flex items-center flex-1 gap-2">
-                        <DisplayAvatar
-                          url={chat.shopperInfo.profileUrl}
+                        {/* <DisplayAvatar
+                          url={chat.shopperInfo?.profileUrl}
                           className="w-10 h-10"
-                          name={chat.shopperInfo.firstName}
-                        />
+                          name={chat.shopperInfo?.firstName}
+                        /> */}
                         <div className="flex w-full text-sm font-medium truncate text-arfablack">
                           {`${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`}
                         </div>

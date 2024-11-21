@@ -41,17 +41,19 @@ export const startChat = async ({ shopId, shopperId, messageText }) => {
       await updateDoc(chatRef, {
         lastMessage: messageText,
         lastMessageTimestamp: serverTimestamp(),
+        createdAt: serverTimestamp(),
         senderId: shopperId,
       });
     } else {
       // Chat does not exist, create a new one
-      chatRef = doc(chatsCollection); // Generate a new document ID
+      chatRef = doc(chatsCollection);
       await setDoc(chatRef, {
         shopId: shopId,
         shopperId: shopperId,
         senderId: shopperId,
         lastMessage: messageText,
         lastMessageTimestamp: serverTimestamp(),
+        createdAt: serverTimestamp(),
         isSellerTyping: false,
         isShopperTyping: false,
         imageUrl: null,
@@ -84,25 +86,26 @@ export const getChatsByShopId = (shopId, callback) => {
   }
 
   try {
-    const q = query(collection(db, "chats"), where("shopId", "==", shopId));
+    const q = query(
+      collection(db, "chats"),
+      where("shopId", "==", shopId),
+      orderBy("createdAt", "desc")
+    );
 
-    // Set up a Firestore real-time listener using onSnapshot
     const unsubscribe = onSnapshot(q, async (querySnapshot) => {
       let chats = [];
 
       for (let chatDoc of querySnapshot.docs) {
         const chatData = { id: chatDoc.id, ...chatDoc.data() };
 
-        // Fetch user data based on shopperId
         const shopperId = chatData.shopperId;
         if (shopperId) {
           const userRef = doc(db, "users", shopperId);
           const userDoc = await getDoc(userRef);
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            chatData.shopperInfo = userData; // Add user data to the chat
+            chatData.shopperInfo = userData;
 
-            // Get the profile URL from Storage if available
             if (
               userData.profileUrl &&
               userData.profileUrl.includes("profile")
@@ -110,7 +113,7 @@ export const getChatsByShopId = (shopId, callback) => {
               const profileRef = ref(storage, userData.profileUrl);
               try {
                 const profileUrl = await getDownloadURL(profileRef);
-                chatData.shopperInfo.profileUrl = profileUrl; // Add the full URL to shopperInfo
+                chatData.shopperInfo.profileUrl = profileUrl;
               } catch (error) {
                 console.error("Error getting profile image URL: ", error);
               }
@@ -123,11 +126,9 @@ export const getChatsByShopId = (shopId, callback) => {
         chats.push(chatData);
       }
 
-      // Call the callback with the updated chats
       callback(chats);
     });
 
-    // Return the unsubscribe function so it can be called to stop listening
     return unsubscribe;
   } catch (error) {
     console.error(
@@ -147,17 +148,16 @@ export const getChatsByShopperId = (shopperId, callback) => {
   try {
     const q = query(
       collection(db, "chats"),
-      where("shopperId", "==", shopperId)
+      where("shopperId", "==", shopperId),
+      orderBy("createdAt", "desc")
     );
 
-    // Set up a Firestore real-time listener using onSnapshot
     const unsubscribe = onSnapshot(q, async (querySnapshot) => {
       let chats = [];
 
       for (let chatDoc of querySnapshot.docs) {
         const chatData = { id: chatDoc.id, ...chatDoc.data() };
 
-        // Fetch shop data based on shopId
         const shopId = chatData.shopId;
 
         if (shopId) {
@@ -165,16 +165,15 @@ export const getChatsByShopperId = (shopperId, callback) => {
           const shopDoc = await getDoc(shopRef);
           if (shopDoc.exists()) {
             const shopData = shopDoc.data();
-            chatData.shopInfo = shopData; // Add shop data to the chat
+            chatData.shopInfo = shopData;
 
-            // Get the profile URL from Storage if available
             if (shopData.logo) {
               const logoRef = ref(storage, shopData.logo);
               try {
                 const logo = await getDownloadURL(logoRef);
-                chatData.shopInfo.logo = logo; // Add the full URL to shopInfo
+                chatData.shopInfo.logo = logo;
               } catch (error) {
-                console.error("Error getting profile image URL: ", error);
+                console.error("Error getting logo image URL: ", error);
               }
             } else {
               chatData.shopInfo.logo = null;
@@ -187,11 +186,9 @@ export const getChatsByShopperId = (shopperId, callback) => {
         chats.push(chatData);
       }
 
-      // Call the callback with the updated chats
       callback(chats);
     });
 
-    // Return the unsubscribe function so it can be called to stop listening
     return unsubscribe;
   } catch (error) {
     console.error(
@@ -227,7 +224,7 @@ export const fetchMessages = async (chatId) => {
   }
 };
 
-const updatePeviewChat = async (
+const updatePreviewChat = async (
   chatId,
   senderId,
   text,
@@ -236,12 +233,25 @@ const updatePeviewChat = async (
 ) => {
   const chatDocRef = doc(db, "chats", chatId);
   try {
-    await updateDoc(chatDocRef, {
-      senderId: senderId,
-      lastMessage: text,
-      imageUrl: imageUrl,
-      videoUrl: videoUrl,
-    });
+    // Fetch the existing chat document
+    const chatDoc = await getDoc(chatDocRef);
+
+    if (chatDoc.exists()) {
+      const chatData = chatDoc.data();
+
+      // If createdAt doesn't exist, add it
+      const updateData = {
+        senderId: senderId,
+        lastMessage: text,
+        imageUrl: imageUrl,
+        videoUrl: videoUrl,
+        createdAt: serverTimestamp(),
+      };
+
+      await updateDoc(chatDocRef, updateData);
+    } else {
+      console.error("Chat does not exist. Cannot update.");
+    }
   } catch (error) {
     console.error("Error updating preview chat: ", error);
   }
@@ -262,7 +272,7 @@ export const sendMessage = async (chatId, text, imageUrl, videoUrl) => {
       videoUrl: videoUrl ? videoUrl : "",
     });
 
-    await updatePeviewChat(
+    await updatePreviewChat(
       chatId,
       auth.currentUser.uid,
       text,
