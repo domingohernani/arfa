@@ -20,19 +20,46 @@ const storage = getStorage();
 
 export const startChat = async ({ shopId, shopperId, messageText }) => {
   try {
-    const chatRef = doc(collection(db, "chats"));
-    await setDoc(chatRef, {
-      shopId: shopId,
-      shopperId: shopperId,
-      senderId: shopperId,
-      lastMessage: messageText,
-      lastMessageTimestamp: serverTimestamp(),
-      isSellerTyping: false,
-      isShopperTyping: false,
-      imageUrl: null,
-      videoUrl: null,
-    });
+    // Check if a chat between the shop and shopper already exists
+    const chatsCollection = collection(db, "chats");
+    const existingChatQuery = query(
+      chatsCollection,
+      where("shopId", "==", shopId),
+      where("shopperId", "==", shopperId)
+    );
 
+    const querySnapshot = await getDocs(existingChatQuery);
+
+    let chatRef;
+
+    if (!querySnapshot.empty) {
+      // Chat exists, get its reference
+      const chatDoc = querySnapshot.docs[0];
+      chatRef = doc(db, "chats", chatDoc.id);
+
+      // Update the existing chat's last message and timestamp
+      await updateDoc(chatRef, {
+        lastMessage: messageText,
+        lastMessageTimestamp: serverTimestamp(),
+        senderId: shopperId,
+      });
+    } else {
+      // Chat does not exist, create a new one
+      chatRef = doc(chatsCollection); // Generate a new document ID
+      await setDoc(chatRef, {
+        shopId: shopId,
+        shopperId: shopperId,
+        senderId: shopperId,
+        lastMessage: messageText,
+        lastMessageTimestamp: serverTimestamp(),
+        isSellerTyping: false,
+        isShopperTyping: false,
+        imageUrl: null,
+        videoUrl: null,
+      });
+    }
+
+    // Add the message to the messages subcollection
     const messagesRef = collection(chatRef, "messages");
     await addDoc(messagesRef, {
       senderId: shopperId,
@@ -43,7 +70,7 @@ export const startChat = async ({ shopId, shopperId, messageText }) => {
       videoUrl: "",
     });
 
-    return true;
+    return chatRef.id;
   } catch (error) {
     console.error("Error starting chat:", error);
     return false;
