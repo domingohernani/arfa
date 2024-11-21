@@ -80,6 +80,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
   const fetchProfileUrlsAndRating = useCallback(async () => {
     try {
       setLoading(true);
+
       // Calculate rating
       const rate = calculateRatingSummary(reviews);
 
@@ -109,16 +110,40 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
     fetchProfileUrlsAndRating();
   }, [fetchProfileUrlsAndRating]);
 
-  // Filter reviews based on selected star rating
   useEffect(() => {
-    if (selectedRating === "All") {
-      setFilteredReviews(Object.values(reviews));
-    } else {
-      const filtered = Object.values(reviews).filter(
-        (review) => review.rating === Number(selectedRating)
-      );
-      setFilteredReviews(filtered);
-    }
+    const fetchFilteredProfileUrls = async () => {
+      try {
+        setLoading(true);
+
+        // Filter reviews based on the selected rating
+        let filtered = Object.values(reviews);
+        if (selectedRating !== "All") {
+          filtered = filtered.filter(
+            (review) => review.rating === Number(selectedRating)
+          );
+        }
+
+        // Fetch profile URLs for the filtered reviews
+        const urls = await Promise.all(
+          filtered.map(async (review) => {
+            const profileUrl = review.userData?.profileUrl;
+            if (profileUrl) {
+              return await getImageDownloadUrl(profileUrl);
+            }
+            return null;
+          })
+        );
+
+        setFilteredReviews(filtered);
+        setProfileUrls(urls); // Update profile URLs for filtered reviews
+      } catch (error) {
+        console.error("Error fetching profile URLs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilteredProfileUrls();
   }, [selectedRating, reviews]);
 
   if (loading) {
