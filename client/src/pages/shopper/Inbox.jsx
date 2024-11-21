@@ -130,7 +130,6 @@ const Inbox = () => {
 
   const handleAddChatClose = () => {
     setAddChatModal(false);
-    navigate(`/profile/inbox/${chats[0].id}`);
   };
 
   if (loading && chats.length < 1) {
