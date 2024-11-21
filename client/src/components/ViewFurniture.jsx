@@ -172,9 +172,13 @@ const ViewFurniture = () => {
                   <span className="underline">
                     {furniture.shopData?.name || "No shop assigned"}
                   </span>
-                  <Link to={"/profile/inbox"}>
-                    <ChatBubbleLeftEllipsisIcon className="w-5 h-5 cursor-pointer text-arfablack" />
-                  </Link>
+                  {furniture.id && furniture.shopData.userId && (
+                    <Link
+                      to={`/profile/inbox/new-chat/${furniture.id}/${furniture.shopData.userId}`}
+                    >
+                      <ChatBubbleLeftEllipsisIcon className="w-5 h-5 cursor-pointer text-arfablack" />
+                    </Link>
+                  )}
                 </span>
               </p>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
