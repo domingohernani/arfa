@@ -18,6 +18,38 @@ import { auth, db } from "./firebase";
 // Initialize Firebase Storage
 const storage = getStorage();
 
+export const startChat = async ({ shopId, shopperId, messageText }) => {
+  try {
+    const chatRef = doc(collection(db, "chats"));
+    await setDoc(chatRef, {
+      shopId: shopId,
+      shopperId: shopperId,
+      senderId: shopperId,
+      lastMessage: messageText,
+      lastMessageTimestamp: serverTimestamp(),
+      isSellerTyping: false,
+      isShopperTyping: false,
+      imageUrl: null,
+      videoUrl: null,
+    });
+
+    const messagesRef = collection(chatRef, "messages");
+    await addDoc(messagesRef, {
+      senderId: shopperId,
+      text: messageText,
+      timestamp: serverTimestamp(),
+      status: "sent",
+      imageUrl: "",
+      videoUrl: "",
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error starting chat:", error);
+    return false;
+  }
+};
+
 export const getChatsByShopId = (shopId, callback) => {
   if (!shopId) {
     callback([]);
