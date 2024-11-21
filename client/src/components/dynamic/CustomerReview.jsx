@@ -6,6 +6,7 @@ import { calculateRatingSummary, formatTimestamp } from "../globalFunctions";
 import { getImageDownloadUrl } from "../../firebase/photos";
 import noReview from "../../assets/images/no-review.jpg";
 import { Progress } from "flowbite-react";
+import defaultImg from "../../assets/icons/default.png";
 
 const displayReviews = (reviews, urls) => {
   if (reviews.length === 0) {
@@ -33,7 +34,7 @@ const displayReviews = (reviews, urls) => {
       </div>
       <div className="flex sm:items-center flex-col min-[400px]:flex-row justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center overflow-hidden rounded-md bg-arfagray w-14 h-14 aspect-square">
+          <div className="flex items-center justify-center overflow-hidden rounded-md w-14 h-14 aspect-square">
             {urls[index] ? (
               <img
                 className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
@@ -42,7 +43,13 @@ const displayReviews = (reviews, urls) => {
                 alt="User profile"
               />
             ) : (
-              <span className="font-bold">HD</span>
+              <img
+                className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                src={defaultImg}
+                loading="lazy"
+                alt="User profile"
+              />
+              // <span className="font-bold">HD</span>
             )}
           </div>
           <h6 className="text-sm font-medium leading-8 text-arfablack">
