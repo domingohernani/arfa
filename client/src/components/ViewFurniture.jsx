@@ -78,11 +78,11 @@ const ViewFurniture = () => {
     } finally {
       setLoading(false);
     }
-  }, [id, fetchModel]);
+  }, [id]);
 
   useEffect(() => {
     fetchFurniture();
-  }, []);
+  }, [id, fetchFurniture]);
 
   const handleAddWishlistBtn = async () => {
     const userInfo = await getUserInfo();

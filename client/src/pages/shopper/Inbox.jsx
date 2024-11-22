@@ -79,7 +79,7 @@ const Inbox = () => {
 
   // Update selected chat based on route param `id`
   useEffect(() => {
-    if (sellerId && furnitureId && chats.length > 0) {
+    if (sellerId && furnitureId && chats) {
       const matchingChat = chats.find((chat) => chat.shopId === sellerId);
 
       if (matchingChat) {
