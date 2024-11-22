@@ -4,10 +4,30 @@ import notif from "../../assets/icons/notif.svg";
 import { Timeline } from "flowbite-react";
 import { HiCalendar } from "react-icons/hi";
 import { auth } from "../../firebase/firebase";
-import { getNotifNewStock } from "../../firebase/notification";
+import { getAllNotif } from "../../firebase/notification";
 import { CubeIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { toSlug } from "../globalFunctions";
+import {
+  ShoppingCartIcon,
+  CheckCircleIcon,
+  CogIcon,
+  TruckIcon,
+  HomeIcon,
+  XCircleIcon,
+  ArrowUpTrayIcon,
+} from "@heroicons/react/24/outline";
+
+const iconMap = {
+  ShoppingCartIcon,
+  CheckCircleIcon,
+  CogIcon,
+  TruckIcon,
+  HomeIcon,
+  XCircleIcon,
+  ArrowUpTrayIcon,
+};
+
 export function NotificationDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -22,9 +42,7 @@ export function NotificationDrawer() {
 
       if (user) {
         // Use the getNotifNewStock function to fetch notifications
-        const userNotifications = await getNotifNewStock(user.uid);
-        console.log(userNotifications);
-
+        const userNotifications = await getAllNotif(user.uid);
         setNotifications(userNotifications);
       } else {
         console.warn("User not logged in");
@@ -40,6 +58,8 @@ export function NotificationDrawer() {
     if (notif.type === "stock" && notif.furnitureId && notif.title) {
       const name = toSlug(notif.furnitureName);
       navigate(`/catalog/item/${name}/${notif.furnitureId}`);
+    } else if (notif.type === "order") {
+      navigate(`/profile/order/all-orders`);
     }
   };
 
@@ -54,15 +74,23 @@ export function NotificationDrawer() {
 
     return notifications.map((notif, index) => {
       // Determine the icon based on the notification type
-      const Icon = notif.type === "stock" ? CubeIcon : HiCalendar;
+      console.log(notif.icon);
 
+      let Icon = "";
+      if (notif.type === "stock") {
+        Icon = CubeIcon;
+      } else if (notif.type === "order") {
+        Icon = iconMap[notif.icon] || XCircleIcon;
+      } else {
+        Icon = HiCalendar;
+      }
       return (
         <section className="px-4 " key={notif.id || index}>
           <Timeline>
             <Timeline.Item>
               <Timeline.Point
-                className="bg-yellow-400"
-                icon={() => <Icon className="text-white" />}
+                className="flex items-center justify-center bg-yellow-400"
+                icon={() => <Icon className="w-5 h-5 text-white" />}
               />
               <Timeline.Content>
                 <Timeline.Time className="text-sm">
