@@ -10,6 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { notifNewStock } from "./notification";
 
 export const getStocks = async (furnitureId) => {
   try {
@@ -118,6 +119,9 @@ export const addStockVariantless = async (furnitureId, newStock) => {
 
     await updateDoc(furnitureDocRef, { stock: newStock });
 
+    const name = furnitureDocSnapshot.data().name;
+    await notifNewStock(furnitureId, name);
+
     console.log("Stock updated successfully:", newStock);
     return {
       success: true,
@@ -158,6 +162,8 @@ export const addStockByVariantName = async (
 
     // Update the variants array in Firestore
     await updateDoc(furnitureDocRef, { variants: updatedVariants });
+    const name = furnitureDocSnapshot.data().name;
+    await notifNewStock(furnitureId, name);
     return { success: true, message: "Stock updated successfully!" };
   } catch (error) {
     console.error("Error updating stock:", error);
