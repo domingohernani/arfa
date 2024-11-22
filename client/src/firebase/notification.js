@@ -2,14 +2,15 @@ import {
   collection,
   addDoc,
   serverTimestamp,
-  doc,
   getDocs,
-  getDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
 export const notifNewStock = async (furnitureId, furnitureName) => {
   try {
+    const usersRef = collection(db, "users");
+    const usersSnapshot = await getDocs(usersRef);
+
     const notificationOptions = [
       {
         title: "New Stock Available!",
@@ -33,64 +34,55 @@ export const notifNewStock = async (furnitureId, furnitureName) => {
       },
     ];
 
-    const randomNotification =
-      notificationOptions[
-        Math.floor(Math.random() * notificationOptions.length)
-      ];
+    for (const userDoc of usersSnapshot.docs) {
+      const userId = userDoc.id;
+      const userData = userDoc.data();
 
-    const { title, message } = randomNotification;
+      const userWishlist = userData.wishlist || []; // Replace "wishlist" with the actual field name
+      if (userWishlist.includes(furnitureId)) {
+        try {
+          const randomNotification =
+            notificationOptions[
+              Math.floor(Math.random() * notificationOptions.length)
+            ];
+          const { title, message } = randomNotification;
 
-    const notificationsRef = collection(
-      db,
-      `furnitures/${furnitureId}/notifications`
-    );
+          const notificationsRef = collection(
+            db,
+            `users/${userId}/notifications`
+          );
+          await addDoc(notificationsRef, {
+            title,
+            message,
+            furnitureId,
+            furnitureName,
+            type: "stock",
+            timestamp: serverTimestamp(),
+          });
+        } catch (error) {
+          console.error(`Error adding notification for user ${userId}:`, error);
+        }
+      }
+    }
 
-    // Add the notification document
-    await addDoc(notificationsRef, {
-      title,
-      message,
-      furnitureId,
-      furnitureName,
-      type: "stock",
-      timestamp: serverTimestamp(),
-    });
-
+    console.log("Notifications sent successfully.");
     return true;
   } catch (error) {
-    console.error("Error adding notification:", error);
+    console.error("Error sending notifications:", error);
     return false;
   }
 };
 
 export const getNotifNewStock = async (userId) => {
   try {
-    const userDocRef = doc(db, "users", userId);
-    const userDocSnapshot = await getDoc(userDocRef);
+    const notificationsRef = collection(db, `users/${userId}/notifications`);
 
-    if (!userDocSnapshot.exists()) {
-      throw new Error("User not found");
-    }
+    const notificationsSnapshot = await getDocs(notificationsRef);
 
-    const cart = userDocSnapshot.data().cart || [];
-    const notifications = [];
-
-    for (const item of cart) {
-      const furnitureId = item.furnitureId;
-
-      const notificationsRef = collection(
-        db,
-        `furnitures/${furnitureId}/notifications`
-      );
-      const notificationsSnapshot = await getDocs(notificationsRef);
-
-      notificationsSnapshot.forEach((notifDoc) => {
-        notifications.push({
-          id: notifDoc.id,
-          furnitureId,
-          ...notifDoc.data(),
-        });
-      });
-    }
+    const notifications = notificationsSnapshot.docs.map((notifDoc) => ({
+      id: notifDoc.id,
+      ...notifDoc.data(),
+    }));
 
     return notifications;
   } catch (error) {
