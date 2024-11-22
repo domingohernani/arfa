@@ -4,8 +4,13 @@ import {
   serverTimestamp,
   getDocs,
   doc,
+  query,
+  orderBy,
+  startAfter,
+  limit,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { auth, db } from "./firebase";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 export const notifNewStock = async (furnitureId, furnitureName) => {
   try {
@@ -193,4 +198,93 @@ export const getAllNotif = async (userId) => {
     console.error("Error fetching notifications:", error);
     return [];
   }
+};
+
+export const fetchNotifications = async (
+  userId,
+  pageSize = 10,
+  cursor = null
+) => {
+  try {
+    // Fetch stock notifications with pagination
+    const userNotificationsRef = collection(
+      db,
+      `users/${userId}/notifications`
+    );
+    let stockNotifQuery = query(
+      userNotificationsRef,
+      orderBy("timestamp", "desc"),
+      limit(pageSize)
+    );
+
+    if (cursor) {
+      stockNotifQuery = query(
+        userNotificationsRef,
+        orderBy("timestamp", "desc"),
+        startAfter(cursor),
+        limit(pageSize)
+      );
+    }
+
+    const stockSnapshot = await getDocs(stockNotifQuery);
+
+    const stockNotifications = stockSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Fetch order notifications for the user (no pagination applied)
+    const ordersRef = collection(db, "orders");
+    const ordersSnapshot = await getDocs(ordersRef);
+
+    const orderNotifications = [];
+
+    for (const orderDoc of ordersSnapshot.docs) {
+      const notificationsRef = collection(
+        db,
+        `orders/${orderDoc.id}/notifications`
+      );
+      const notificationsSnapshot = await getDocs(notificationsRef);
+
+      const notifications = notificationsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        orderId: orderDoc.id,
+        ...doc.data(),
+      }));
+
+      orderNotifications.push(...notifications);
+    }
+
+    // Combine stock and order notifications
+    const combinedNotifications = [
+      ...stockNotifications,
+      ...orderNotifications,
+    ];
+
+    // Sort by timestamp
+    combinedNotifications.sort(
+      (a, b) =>
+        (b.timestamp?.toMillis?.() || 0) - (a.timestamp?.toMillis?.() || 0)
+    );
+
+    return {
+      notifications: combinedNotifications,
+      lastVisible: stockSnapshot.docs[stockSnapshot.docs.length - 1] || null, // Return cursor for stock notifications
+    };
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return { notifications: [], lastVisible: null };
+  }
+};
+
+export const useNotifications = () => {
+  const user = auth.currentUser;
+
+  return useInfiniteQuery({
+    queryKey: ["notifications", user?.uid],
+    queryFn: ({ pageParam = null }) =>
+      fetchNotifications(user?.uid, 10, pageParam), // Fetch 10 notifications per page
+    getNextPageParam: (lastPage) => lastPage.lastVisible || null, // Provide cursor for next page
+    enabled: !!user, // Enable query only when user is logged in
+  });
 };
