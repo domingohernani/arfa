@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { auth, db, storage } from "./firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { notifOrder } from "./notification";
 
 const getDeviceType = () => {
   const ua = navigator.userAgent;
@@ -376,6 +377,8 @@ export const updateOrderStatus = async (orderId, newStatus) => {
       [timestampField]: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
+
+    await notifOrder(orderId, newStatus);
     return true;
   } catch (error) {
     console.error("Error updating order status:", error);

@@ -3,6 +3,7 @@ import {
   addDoc,
   serverTimestamp,
   getDocs,
+  doc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -73,18 +74,121 @@ export const notifNewStock = async (furnitureId, furnitureName) => {
   }
 };
 
-export const getNotifNewStock = async (userId) => {
+const statusNotificationOptions = {
+  Placed: {
+    icon: "ShoppingCartIcon",
+    title: "Order Placed Successfully 🎉",
+    message:
+      "Your order has been placed successfully. We're getting things started!",
+  },
+  Confirmed: {
+    icon: "CheckCircleIcon",
+    title: "Order Confirmed ✅",
+    message: "Good news! Your order has been confirmed by the seller.",
+  },
+  Preparing: {
+    icon: "CogIcon",
+    title: "Preparing Your Order 🛠️",
+    message:
+      "Your order is being prepared. Our team is carefully packing or assembling your items.",
+  },
+  Ready: {
+    icon: "TruckIcon",
+    title: "Order Ready 🚚",
+    message:
+      "Your order is ready for pick-up or delivery. Get ready to receive it soon!",
+  },
+  "Out for Delivery": {
+    icon: "TruckIcon",
+    title: "Out for Delivery 🚛",
+    message: "Your order is on its way. Keep an eye out for our delivery team!",
+  },
+  Delivered: {
+    icon: "HomeIcon",
+    title: "Order Delivered 🎁",
+    message:
+      "Hooray! Your order has been delivered. We hope you love your new items!",
+  },
+  "Picked-up": {
+    icon: "ArrowUpTrayIcon",
+    title: "Order Picked Up 🛍️",
+    message:
+      "Thank you! You have successfully picked up your order from the store.",
+  },
+};
+
+export const notifOrder = async (orderId, status) => {
+  const statusDetails = statusNotificationOptions[status];
+
+  if (!statusDetails) {
+    console.error(`Unknown status: "${status}"`);
+    return;
+  }
+
+  const notification = {
+    title: statusDetails.title,
+    message: `${statusDetails.message} (Order #${orderId})`,
+    icon: statusDetails.icon,
+    type: "order",
+    orderId,
+    timestamp: serverTimestamp(),
+  };
+
   try {
-    const notificationsRef = collection(db, `users/${userId}/notifications`);
+    const orderRef = doc(db, "orders", orderId);
+    const notificationsRef = collection(orderRef, "notifications");
 
-    const notificationsSnapshot = await getDocs(notificationsRef);
+    await addDoc(notificationsRef, notification);
+    console.log("Notification added to Firestore:", notification);
+  } catch (error) {
+    console.error("Error adding notification to Firestore:", error);
+  }
+};
 
-    const notifications = notificationsSnapshot.docs.map((notifDoc) => ({
-      id: notifDoc.id,
-      ...notifDoc.data(),
+export const getAllNotif = async (userId) => {
+  try {
+    const userNotificationsRef = collection(
+      db,
+      `users/${userId}/notifications`
+    );
+    const userNotificationsSnapshot = await getDocs(userNotificationsRef);
+
+    const userNotifications = userNotificationsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
     }));
 
-    return notifications;
+    const ordersRef = collection(db, "orders");
+    const ordersSnapshot = await getDocs(ordersRef);
+
+    const orderNotifications = [];
+
+    for (const orderDoc of ordersSnapshot.docs) {
+      const notificationsRef = collection(
+        db,
+        `orders/${orderDoc.id}/notifications`
+      );
+      const notificationsSnapshot = await getDocs(notificationsRef);
+
+      const notifications = notificationsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        orderId: orderDoc.id,
+        ...doc.data(),
+      }));
+
+      orderNotifications.push(...notifications);
+    }
+
+    // Combine all notifications
+    const combinedNotifications = [...userNotifications, ...orderNotifications];
+
+    // Sort by timestamp (newest first)
+    combinedNotifications.sort(
+      (a, b) =>
+        (b.timestamp?.toMillis?.() || 0) - (a.timestamp?.toMillis?.() || 0)
+    );
+
+    return combinedNotifications;
   } catch (error) {
     console.error("Error fetching notifications:", error);
     return [];
