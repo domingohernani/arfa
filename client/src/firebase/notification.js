@@ -1,4 +1,11 @@
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  getDocs,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "./firebase";
 
 export const notifNewStock = async (furnitureId, furnitureName) => {
@@ -43,6 +50,7 @@ export const notifNewStock = async (furnitureId, furnitureName) => {
       title,
       message,
       furnitureId,
+      furnitureName,
       type: "stock",
       timestamp: serverTimestamp(),
     });
@@ -51,5 +59,42 @@ export const notifNewStock = async (furnitureId, furnitureName) => {
   } catch (error) {
     console.error("Error adding notification:", error);
     return false;
+  }
+};
+
+export const getNotifNewStock = async (userId) => {
+  try {
+    const userDocRef = doc(db, "users", userId);
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (!userDocSnapshot.exists()) {
+      throw new Error("User not found");
+    }
+
+    const cart = userDocSnapshot.data().cart || [];
+    const notifications = [];
+
+    for (const item of cart) {
+      const furnitureId = item.furnitureId;
+
+      const notificationsRef = collection(
+        db,
+        `furnitures/${furnitureId}/notifications`
+      );
+      const notificationsSnapshot = await getDocs(notificationsRef);
+
+      notificationsSnapshot.forEach((notifDoc) => {
+        notifications.push({
+          id: notifDoc.id,
+          furnitureId,
+          ...notifDoc.data(),
+        });
+      });
+    }
+
+    return notifications;
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return [];
   }
 };
