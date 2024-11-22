@@ -6,6 +6,7 @@ import { calculateRatingSummary, formatTimestamp } from "../globalFunctions";
 import { getImageDownloadUrl } from "../../firebase/photos";
 import noReview from "../../assets/images/no-review.jpg";
 import { Progress } from "flowbite-react";
+import defaultImg from "../../assets/icons/default.png";
 
 const displayReviews = (reviews, urls) => {
   if (reviews.length === 0) {
@@ -33,7 +34,7 @@ const displayReviews = (reviews, urls) => {
       </div>
       <div className="flex sm:items-center flex-col min-[400px]:flex-row justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center overflow-hidden rounded-md bg-arfagray w-14 h-14 aspect-square">
+          <div className="flex items-center justify-center overflow-hidden rounded-md w-14 h-14 aspect-square">
             {urls[index] ? (
               <img
                 className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
@@ -42,7 +43,13 @@ const displayReviews = (reviews, urls) => {
                 alt="User profile"
               />
             ) : (
-              <span className="font-bold">HD</span>
+              <img
+                className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                src={defaultImg}
+                loading="lazy"
+                alt="User profile"
+              />
+              // <span className="font-bold">HD</span>
             )}
           </div>
           <h6 className="text-sm font-medium leading-8 text-arfablack">
@@ -73,6 +80,7 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
   const fetchProfileUrlsAndRating = useCallback(async () => {
     try {
       setLoading(true);
+
       // Calculate rating
       const rate = calculateRatingSummary(reviews);
 
@@ -102,16 +110,40 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
     fetchProfileUrlsAndRating();
   }, [fetchProfileUrlsAndRating]);
 
-  // Filter reviews based on selected star rating
   useEffect(() => {
-    if (selectedRating === "All") {
-      setFilteredReviews(Object.values(reviews));
-    } else {
-      const filtered = Object.values(reviews).filter(
-        (review) => review.rating === Number(selectedRating)
-      );
-      setFilteredReviews(filtered);
-    }
+    const fetchFilteredProfileUrls = async () => {
+      try {
+        setLoading(true);
+
+        // Filter reviews based on the selected rating
+        let filtered = Object.values(reviews);
+        if (selectedRating !== "All") {
+          filtered = filtered.filter(
+            (review) => review.rating === Number(selectedRating)
+          );
+        }
+
+        // Fetch profile URLs for the filtered reviews
+        const urls = await Promise.all(
+          filtered.map(async (review) => {
+            const profileUrl = review.userData?.profileUrl;
+            if (profileUrl) {
+              return await getImageDownloadUrl(profileUrl);
+            }
+            return null;
+          })
+        );
+
+        setFilteredReviews(filtered);
+        setProfileUrls(urls); // Update profile URLs for filtered reviews
+      } catch (error) {
+        console.error("Error fetching profile URLs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilteredProfileUrls();
   }, [selectedRating, reviews]);
 
   if (loading) {
@@ -127,32 +159,33 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
           </h2>
           <div className="grid grid-cols-1 border-b border-gray-100 xl:grid-cols-2 gap-11 pb-11 max-xl:max-w-2xl max-xl:mx-auto">
             <div className="flex flex-col w-full box">
-              {Object.entries(rating.percentages).map(([star, percentage]) => (
-                <div className="flex items-center w-full" key={star}>
-                  <p className="text-arfablack mr-0.5">{star}</p>
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="green"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.10326 2.31699C9.47008 1.57374 10.5299 1.57374 10.8967 2.31699L12.7063 5.98347C12.8519 6.27862 13.1335 6.48319 13.4592 6.53051L17.5054 7.11846C18.3256 7.23765 18.6531 8.24562 18.0596 8.82416L15.1318 11.6781C14.8961 11.9079 14.7885 12.2389 14.8442 12.5632L15.5353 16.5931C15.6754 17.41 14.818 18.033 14.0844 17.6473L10.4653 15.7446C10.174 15.5915 9.82598 15.5915 9.53466 15.7446L5.91562 17.6473C5.18199 18.033 4.32456 17.41 4.46467 16.5931L5.15585 12.5632C5.21148 12.2389 5.10393 11.9079 4.86825 11.6781L1.94038 8.82416C1.34687 8.24562 1.67438 7.23765 2.4946 7.11846L6.54081 6.53051C6.86652 6.48319 7.14808 6.27862 7.29374 5.98347L9.10326 2.31699Z"
-                      fill="#0E9F6E"
-                    />
-                  </svg>
-                  <div className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
-                    <Progress
-                      progress={percentage}
-                      className="bg-arfagray progressBarBg"
-                    />
+              {rating.percentages &&
+                Object.entries(rating.percentages).map(([star, percentage]) => (
+                  <div className="flex items-center w-full" key={star}>
+                    <p className="text-arfablack mr-0.5">{star}</p>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="green"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9.10326 2.31699C9.47008 1.57374 10.5299 1.57374 10.8967 2.31699L12.7063 5.98347C12.8519 6.27862 13.1335 6.48319 13.4592 6.53051L17.5054 7.11846C18.3256 7.23765 18.6531 8.24562 18.0596 8.82416L15.1318 11.6781C14.8961 11.9079 14.7885 12.2389 14.8442 12.5632L15.5353 16.5931C15.6754 17.41 14.818 18.033 14.0844 17.6473L10.4653 15.7446C10.174 15.5915 9.82598 15.5915 9.53466 15.7446L5.91562 17.6473C5.18199 18.033 4.32456 17.41 4.46467 16.5931L5.15585 12.5632C5.21148 12.2389 5.10393 11.9079 4.86825 11.6781L1.94038 8.82416C1.34687 8.24562 1.67438 7.23765 2.4946 7.11846L6.54081 6.53051C6.86652 6.48319 7.14808 6.27862 7.29374 5.98347L9.10326 2.31699Z"
+                        fill="#0E9F6E"
+                      />
+                    </svg>
+                    <div className="h-2 w-full xl:min-w-[278px] rounded-3xl bg-arfagray ml-5 mr-3">
+                      <Progress
+                        progress={percentage}
+                        className="bg-arfagray progressBarBg"
+                      />
+                    </div>
+                    <p className="text-arfablack mr-0.5">
+                      {rating.ratingCounter[star]}
+                    </p>
                   </div>
-                  <p className="text-arfablack mr-0.5">
-                    {rating.ratingCounter[star]}
-                  </p>
-                </div>
-              ))}
+                ))}
             </div>
             <div className="flex flex-col items-center justify-center p-8 rounded-lg bg-arfagray">
               <h2 className="text-3xl font-bold text-arfagreen sm:text-3xl">

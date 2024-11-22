@@ -11,8 +11,10 @@ import toast from "react-hot-toast";
 import { fetchFurnitureById } from "../../firebase/furniture";
 import { startChat } from "../../firebase/chats";
 import { auth } from "../../firebase/firebase";
+import { useNavigate } from "react-router-dom";
 
 export const AddChat = ({ isOpen, close, furnitureId, sellerId }) => {
+  const navigate = useNavigate();
   const [furnitureData, setFurnitureData] = useState(null);
   const [includeFurniture, setIncludeFurniture] = useState(true);
   const [messageText, setMessageText] = useState(""); // State to track the textarea value
@@ -71,6 +73,7 @@ export const AddChat = ({ isOpen, close, furnitureId, sellerId }) => {
       const result = await startChat(data);
       if (result) {
         toast.success("Chat started successfully!");
+        navigate(`/profile/inbox/${result}`);
       }
     } catch (error) {
       console.error(error);
