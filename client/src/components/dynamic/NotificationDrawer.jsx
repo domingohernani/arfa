@@ -1,13 +1,15 @@
-import { Drawer } from "flowbite-react";
-import { useState, useEffect } from "react";
-import notif from "../../assets/icons/notif.svg";
-import { Timeline } from "flowbite-react";
-import { HiCalendar } from "react-icons/hi";
-import { auth } from "../../firebase/firebase";
-import { getAllNotif } from "../../firebase/notification";
-import { CubeIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
-import { toSlug } from "../globalFunctions";
+import {
+  Drawer,
+  DrawerHeader,
+  DrawerItems,
+  Timeline,
+  TimelineItem,
+  TimelinePoint,
+  TimelineContent,
+  TimelineTime,
+  TimelineBody,
+  TimelineTitle,
+} from "flowbite-react";
 import {
   ShoppingCartIcon,
   CheckCircleIcon,
@@ -16,46 +18,29 @@ import {
   HomeIcon,
   XCircleIcon,
   ArrowUpTrayIcon,
+  ArrowsPointingOutIcon,
+  ArrowsPointingInIcon,
 } from "@heroicons/react/24/outline";
-
-const iconMap = {
-  ShoppingCartIcon,
-  CheckCircleIcon,
-  CogIcon,
-  TruckIcon,
-  HomeIcon,
-  XCircleIcon,
-  ArrowUpTrayIcon,
-};
+import { HiCalendar } from "react-icons/hi";
+import { CubeIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
+// import { useNotifications } from "../../hooks/useNotifications";
+import { toSlug } from "../globalFunctions";
+import { useNotifications } from "../../firebase/notification";
+import { useState } from "react";
+import notif from "../../assets/icons/notif.svg";
 
 export function NotificationDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const navigate = useNavigate(); // React Router hook for navigation
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const navigate = useNavigate();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useNotifications();
 
   const handleClose = () => setIsOpen(false);
 
-  // Fetch notifications when the drawer is opened
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      const user = auth.currentUser;
-
-      if (user) {
-        // Use the getNotifNewStock function to fetch notifications
-        const userNotifications = await getAllNotif(user.uid);
-        setNotifications(userNotifications);
-      } else {
-        console.warn("User not logged in");
-      }
-    };
-
-    if (isOpen) {
-      fetchNotifications();
-    }
-  }, [isOpen]);
-
   const handleNotificationClick = (notif) => {
-    if (notif.type === "stock" && notif.furnitureId && notif.title) {
+    if (notif.type === "stock" && notif.furnitureId) {
       const name = toSlug(notif.furnitureName);
       navigate(`/catalog/item/${name}/${notif.furnitureId}`);
     } else if (notif.type === "order") {
@@ -63,8 +48,18 @@ export function NotificationDrawer() {
     }
   };
 
-  const displayNotification = () => {
-    if (notifications.length === 0) {
+  const iconMap = {
+    ShoppingCartIcon,
+    CheckCircleIcon,
+    CogIcon,
+    TruckIcon,
+    HomeIcon,
+    XCircleIcon,
+    ArrowUpTrayIcon,
+  };
+
+  const displayNotifications = () => {
+    if (!data || data.pages[0]?.notifications.length === 0) {
       return (
         <section className="px-4 text-center">
           <p className="text-sm text-arfablack">No notifications available</p>
@@ -72,45 +67,41 @@ export function NotificationDrawer() {
       );
     }
 
-    return notifications.map((notif, index) => {
-      // Determine the icon based on the notification type
-      console.log(notif.icon);
+    return data.pages.map((page, pageIndex) =>
+      page.notifications.map((notif, notifIndex) => {
+        console.log(notif.icon);
 
-      let Icon = "";
-      if (notif.type === "stock") {
-        Icon = CubeIcon;
-      } else if (notif.type === "order") {
-        Icon = iconMap[notif.icon] || XCircleIcon;
-      } else {
-        Icon = HiCalendar;
-      }
-      return (
-        <section className="px-4 " key={notif.id || index}>
-          <Timeline>
-            <Timeline.Item>
-              <Timeline.Point
-                className="flex items-center justify-center bg-yellow-400"
-                icon={() => <Icon className="w-5 h-5 text-white" />}
-              />
-              <Timeline.Content>
-                <Timeline.Time className="text-sm">
-                  {notif.timestamp?.toDate().toLocaleString() || "No Date"}
-                </Timeline.Time>
-                <Timeline.Title
-                  className="text-sm cursor-pointer hover:underline"
-                  onClick={() => handleNotificationClick(notif)}
-                >
-                  {notif.title}
-                </Timeline.Title>
-                <Timeline.Body className="text-sm">
-                  {notif.message}
-                </Timeline.Body>
-              </Timeline.Content>
-            </Timeline.Item>
-          </Timeline>
-        </section>
-      );
-    });
+        const Icon =
+          notif.type === "stock" ? CubeIcon : iconMap[notif.icon] || HiCalendar;
+
+        return (
+          <section className="px-4" key={`${pageIndex}-${notifIndex}`}>
+            <Timeline>
+              <TimelineItem>
+                <TimelinePoint
+                  className="flex items-center justify-center bg-yellow-400"
+                  icon={() => <Icon className="w-4 h-4 text-white" />}
+                />
+                <TimelineContent>
+                  <TimelineTime className="text-sm">
+                    {notif.timestamp?.toDate?.().toLocaleString() || "No Date"}
+                  </TimelineTime>
+                  <TimelineTitle
+                    className="text-sm cursor-pointer hover:underline"
+                    onClick={() => handleNotificationClick(notif)}
+                  >
+                    {notif.title}
+                  </TimelineTitle>
+                  <TimelineBody className="text-sm">
+                    {notif.message}
+                  </TimelineBody>
+                </TimelineContent>
+              </TimelineItem>
+            </Timeline>
+          </section>
+        );
+      })
+    );
   };
 
   return (
@@ -121,13 +112,45 @@ export function NotificationDrawer() {
         alt="notif"
         className="w-4 h-auto mx-3 cursor-pointer"
       />
-      <Drawer open={isOpen} onClose={handleClose} position="right">
-        <Drawer.Header
-          className="text-arfablack"
+      {/* <ArrowsPointingOutIcon className="w-4 h-auto mx-3 cursor-pointer" /> */}
+      <Drawer
+        open={isOpen}
+        onClose={handleClose}
+        position="right"
+        className="transition-all ease-out"
+        style={{ width: `${isFullScreen ? "90%" : "25rem"}` }}
+      >
+        <DrawerHeader
+          className="mb-3 text-arfablack"
           title="Notification"
-          titleIcon={() => <></>}
+          titleIcon={() =>
+            isFullScreen ? (
+              <ArrowsPointingInIcon
+                className="w-4 h-4 mx-3 cursor-pointer"
+                onClick={() => setIsFullScreen(false)}
+              />
+            ) : (
+              <ArrowsPointingOutIcon
+                className="w-4 h-4 mx-3 cursor-pointer"
+                onClick={() => setIsFullScreen(true)}
+              />
+            )
+          }
         />
-        <Drawer.Items>{displayNotification()}</Drawer.Items>
+        <DrawerItems>
+          {displayNotifications()}
+          {hasNextPage && (
+            <div className="my-4 text-center">
+              <button
+                onClick={fetchNextPage}
+                disabled={isFetchingNextPage}
+                className="px-4 py-2 text-sm font-normal text-white rounded bg-arfagreen"
+              >
+                {isFetchingNextPage ? "Loading..." : "Show More"}
+              </button>
+            </div>
+          )}
+        </DrawerItems>
       </Drawer>
     </>
   );
