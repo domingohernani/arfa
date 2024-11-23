@@ -34,6 +34,7 @@
     "react-to-print": "^3.0.2",
     "recharts": "^2.12.7",
     "select-philippines-address": "^1.0.6",
+    "swiper": "^11.1.15",
     "three": "^0.163.0",
     "uuid": "^10.0.0",
     "zustand": "^4.5.4"
