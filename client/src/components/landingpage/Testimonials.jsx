@@ -56,7 +56,7 @@ export default function Testimonials() {
             </h1>
             <p className="text-xl text-gray-500">
               Discover how our e-commerce platform empowers sellers and enhances
-              shopping experiences for buyers.
+              shopping experiences for buyers 📈🛋️
             </p>
           </div>
 
