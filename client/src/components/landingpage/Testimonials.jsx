@@ -1,153 +1,112 @@
-import TestimonialImage01 from "../../../public/images/testimonial-01.jpg";
-import TestimonialImage02 from "../../../public/images/testimonial-02.jpg";
-import TestimonialImage03 from "../../../public/images/testimonial-03.jpg";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
 
-import FeatImage01 from "../../../public/images/features-03-image-01.png";
-import FeatImage02 from "../../../public/images/features-03-image-02.png";
-import FeatImage03 from "../../../public/images/features-03-image-03.png";
+import { Autoplay, Pagination } from "swiper/modules";
+
+const testimonialsData = [
+  {
+    text: "This platform has revolutionized how I sell furniture. The ability to showcase 3D models has increased my sales by 40%. Shoppers love interacting with the products before purchasing!",
+    name: "Sophia Green",
+    role: "Furniture Seller",
+    company: "Cozy Living",
+  },
+  {
+    text: "As a shopper, I love how easy it is to visualize furniture in my space using augmented reality. The checkout process is seamless, and delivery is always on time!",
+    name: "John Doe",
+    role: "Happy Shopper",
+    location: "Los Angeles, CA",
+  },
+  {
+    text: "The seller dashboard is incredibly intuitive. Managing my inventory and orders has never been easier. This platform gives me the tools I need to scale my business.",
+    name: "Emily Carter",
+    role: "Shop Owner",
+    company: "Modern Luxe",
+  },
+  {
+    text: "I was hesitant to buy furniture online, but the AR feature allowed me to see exactly how it would fit in my home. It's like shopping with a personal designer!",
+    name: "Sarah Johnson",
+    role: "Satisfied Shopper",
+    location: "Austin, TX",
+  },
+  {
+    text: "As a seller, I appreciate the detailed analytics. I can see which products perform best and adjust my strategy accordingly. It's a game-changer for my business.",
+    name: "William Martinez",
+    role: "Seller",
+    company: "Rustic Charm",
+  },
+  // {
+  //   text: "The multi-shop checkout feature is amazing. I was able to purchase from three different sellers in one go. It's so convenient!",
+  //   name: "Olivia Brown",
+  //   role: "Shopper",
+  //   location: "New York, NY",
+  // },
+];
 
 export default function Testimonials() {
   return (
-    <section>
-      <div className="max-w-6xl px-4 mx-auto sm:px-6">
-        <div className="py-12 border-t border-gray-800 md:py-20">
+    <section className="h-screen bg-white">
+      <div className="px-4 mx-auto sm:px-6">
+        <div className="py-12 border-gray-800 md:py-20">
           {/* Section header */}
           <div className="max-w-3xl pb-12 mx-auto text-center md:pb-20">
-            <h2 className="mb-4 h2">Don't take our word for it</h2>
-            <p className="text-xl text-gray-400">
-              Vitae aliquet nec ullamcorper sit amet risus nullam eget felis
-              semper quis lectus nulla at volutpat diam ut venenatis tellus—in
-              ornare.
+            <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-green-500 dark:text-green">
+              What Our Users Say
+            </h1>
+            <p className="text-xl text-gray-500">
+              Discover how our e-commerce platform empowers sellers and enhances
+              shopping experiences for buyers 📈🛋️
             </p>
           </div>
 
-          {/* Testimonials */}
-          <div className="grid items-start max-w-sm gap-8 mx-auto lg:grid-cols-3 lg:gap-6 lg:max-w-none">
-            {/* 1st testimonial */}
-            <div
-              className="flex flex-col h-full p-6 bg-gray-800"
-              data-aos="fade-up"
-            >
-              <div>
-                <div className="relative inline-flex flex-col mb-4">
-                  {/* <Image
-                    className="rounded-full"
-                    src={TestimonialImage01}
-                    width={48}
-                    height={48}
-                    alt="Testimonial 01"
-                  /> */}
-                  <svg
-                    className="absolute top-0 right-0 w-6 h-5 -mr-3 text-purple-600 fill-current"
-                    viewBox="0 0 24 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M0 13.517c0-2.346.611-4.774 1.833-7.283C3.056 3.726 4.733 1.648 6.865 0L11 2.696C9.726 4.393 8.777 6.109 8.152 7.844c-.624 1.735-.936 3.589-.936 5.56v4.644H0v-4.531zm13 0c0-2.346.611-4.774 1.833-7.283 1.223-2.508 2.9-4.586 5.032-6.234L24 2.696c-1.274 1.697-2.223 3.413-2.848 5.148-.624 1.735-.936 3.589-.936 5.56v4.644H13v-4.531z" />
-                  </svg>
+          {/* Swiper Testimonials */}
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            autoplay={{
+              delay: 4000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={true}
+            pagination={{ clickable: true }}
+            slidesPerView={1}
+            spaceBetween={30}
+            breakpoints={{
+              1024: {
+                slidesPerView: 3,
+              },
+              768: {
+                slidesPerView: 2,
+              },
+            }}
+            speed={800} // Smooth animation
+          >
+            {testimonialsData.map((testimonial, index) => (
+              <SwiperSlide key={index}>
+                <div className="flex flex-col h-full p-6 mb-10 rounded-lg shadow-md bg-arfagray">
+                  <blockquote className="text-lg text-gray-500 grow">
+                    — {testimonial.text}
+                  </blockquote>
+                  <div className="pt-5 mt-6 font-medium text-gray-500 border-t">
+                    <cite className="not-italic text-gray-500">
+                      {testimonial.name}
+                    </cite>{" "}
+                    -{" "}
+                    {testimonial.company ? (
+                      <span className="text-arfagreen">
+                        {testimonial.role} at {testimonial.company}
+                      </span>
+                    ) : (
+                      <span className="text-arfagreen">
+                        {testimonial.role}, {testimonial.location}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <blockquote className="text-lg text-gray-400 grow">
-                — Open PRO lets me quickly get the insights I care about so that
-                I can focus on my productive work. I've had Open PRO for about
-                24 hours now and I honestly don't know how I functioned without
-                it before.
-              </blockquote>
-              <div className="pt-5 mt-6 font-medium text-gray-700 border-t border-gray-700">
-                <cite className="not-italic text-gray-200">Anastasia Dan</cite>{" "}
-                -{" "}
-                <a
-                  className="text-purple-600 transition duration-150 ease-in-out hover:text-gray-200"
-                  href="#0"
-                >
-                  UX Board
-                </a>
-              </div>
-            </div>
-
-            {/* 2nd testimonial */}
-            <div
-              className="flex flex-col h-full p-6 bg-gray-800"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <div>
-                <div className="relative inline-flex flex-col mb-4">
-                  {/* <Image
-                    className="rounded-full"
-                    src={TestimonialImage02}
-                    width={48}
-                    height={48}
-                    alt="Testimonial 02"
-                  /> */}
-                  <svg
-                    className="absolute top-0 right-0 w-6 h-5 -mr-3 text-purple-600 fill-current"
-                    viewBox="0 0 24 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M0 13.517c0-2.346.611-4.774 1.833-7.283C3.056 3.726 4.733 1.648 6.865 0L11 2.696C9.726 4.393 8.777 6.109 8.152 7.844c-.624 1.735-.936 3.589-.936 5.56v4.644H0v-4.531zm13 0c0-2.346.611-4.774 1.833-7.283 1.223-2.508 2.9-4.586 5.032-6.234L24 2.696c-1.274 1.697-2.223 3.413-2.848 5.148-.624 1.735-.936 3.589-.936 5.56v4.644H13v-4.531z" />
-                  </svg>
-                </div>
-              </div>
-              <blockquote className="text-lg text-gray-400 grow">
-                — Open PRO lets me quickly get the insights I care about so that
-                I can focus on my productive work. I've had Open PRO for about
-                24 hours now and I honestly don't know how I functioned without
-                it before.
-              </blockquote>
-              <div className="pt-5 mt-6 font-medium text-gray-700 border-t border-gray-700">
-                <cite className="not-italic text-gray-200">Anastasia Dan</cite>{" "}
-                -{" "}
-                <a
-                  className="text-purple-600 transition duration-150 ease-in-out hover:text-gray-200"
-                  href="#0"
-                >
-                  UX Board
-                </a>
-              </div>
-            </div>
-
-            {/* 3rd testimonial */}
-            <div
-              className="flex flex-col h-full p-6 bg-gray-800"
-              data-aos="fade-up"
-              data-aos-delay="400"
-            >
-              <div>
-                <div className="relative inline-flex flex-col mb-4">
-                  {/* <Image
-                    className="rounded-full"
-                    src={TestimonialImage03}
-                    width={48}
-                    height={48}
-                    alt="Testimonial 03"
-                  /> */}
-                  <svg
-                    className="absolute top-0 right-0 w-6 h-5 -mr-3 text-purple-600 fill-current"
-                    viewBox="0 0 24 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M0 13.517c0-2.346.611-4.774 1.833-7.283C3.056 3.726 4.733 1.648 6.865 0L11 2.696C9.726 4.393 8.777 6.109 8.152 7.844c-.624 1.735-.936 3.589-.936 5.56v4.644H0v-4.531zm13 0c0-2.346.611-4.774 1.833-7.283 1.223-2.508 2.9-4.586 5.032-6.234L24 2.696c-1.274 1.697-2.223 3.413-2.848 5.148-.624 1.735-.936 3.589-.936 5.56v4.644H13v-4.531z" />
-                  </svg>
-                </div>
-              </div>
-              <blockquote className="text-lg text-gray-400 grow">
-                — Open PRO lets me quickly get the insights I care about so that
-                I can focus on my productive work. I've had Open PRO for about
-                24 hours now and I honestly don't know how I functioned without
-                it before.
-              </blockquote>
-              <div className="pt-5 mt-6 font-medium text-gray-700 border-t border-gray-700">
-                <cite className="not-italic text-gray-200">Anastasia Dan</cite>{" "}
-                -{" "}
-                <a
-                  className="text-purple-600 transition duration-150 ease-in-out hover:text-gray-200"
-                  href="#0"
-                >
-                  UX Board
-                </a>
-              </div>
-            </div>
-          </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </div>
     </section>

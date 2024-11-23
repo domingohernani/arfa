@@ -8,7 +8,7 @@ import Features from "../components/landingpage/Features";
 import Zigzag from "../components/landingpage/Zigzag";
 import Testimonials from "../components/landingpage/Testimonials";
 import Newsletter from "../components/landingpage/Newsletter";
-import Footer from "../components/landingpage/Footer";
+// import Footer from "../components/landingpage/Footer";
 import heroBg from "../assets/images/hero-bg.jpg";
 import logo from "../assets/logos/logo_green.svg";
 
@@ -24,14 +24,12 @@ const LandingPage = () => {
               <img src={logo} alt="ARFA" className="h-auto min-w-16 md:w-24" />
             </Link>
           </section>
-          <div className="fixed w-screen h-screen -z-10">
+          <div className="fixed inset-0 -z-10">
             <img
               src="https://images.unsplash.com/photo-1521689058547-ad3350ffe5ea?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              // src={heroBg}
-              className="top-0 left-0 object-cover w-full h-full "
+              className="object-cover w-full h-full md:object-contain"
               style={{ transform: "scaleX(-1)" }}
             />
-            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-5"></div>
           </div>
 
           <article className="flex flex-col gap-5 px-6 mt-32">
@@ -73,161 +71,22 @@ const LandingPage = () => {
             </Link>
           </article>
         </div>
-
-        {/* Latest Trends */}
-        {/* <section className="pb-10 bg-arfagray">
-          <LatestTrends></LatestTrends>
-        </section> */}
-
-        {/* Categories */}
-        {/* <section>
-          <ul className="grid items-start grid-cols-1 p-8 xl:grid-cols-3 gap-y-10 gap-x-6">
-            <li className="relative flex flex-col items-start sm:flex-row xl:flex-col">
-              <div className="order-1 sm:ml-6 xl:ml-0">
-                <h3 className="mb-1 font-semibold text-slate-900">
-                  <span className="block mb-1 text-sm leading-6 text-indigo-500">
-                    Headless UI
-                  </span>
-                  Completely unstyled, fully accessible UI components
-                </h3>
-                <div className="text-sm prose-sm prose prose-slate">
-                  <p>
-                    Completely unstyled, fully accessible UI components,
-                    designed to integrate beautifully with Tailwind CSS.
-                  </p>
-                </div>
-                <a
-                  className="inline-flex items-center px-3 mt-6 text-sm font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
-                  href=""
-                >
-                  Learn more
-                  <span className="sr-only">
-                    , Completely unstyled, fully accessible UI components
-                  </span>
-                  <svg
-                    className="ml-3 overflow-visible text-slate-300 group-hover:text-slate-400"
-                    width="3"
-                    height="6"
-                    viewBox="0 0 3 6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M0 0L3 3L0 6"></path>
-                  </svg>
-                </a>
-              </div>
-              <img
-                src="https://tailwindcss.com/_next/static/media/headlessui@75.c1d50bc1.jpg"
-                alt=""
-                className="mb-6 shadow-md bg-slate-50 w-full sm:w-[17rem] sm:mb-0 xl:mb-6 xl:w-full"
-                width="1216"
-                height="640"
-              />
-            </li>
-            <li className="relative flex flex-col items-start sm:flex-row xl:flex-col">
-              <div className="order-1 sm:ml-6 xl:ml-0">
-                <h3 className="mb-1 font-semibold text-slate-900">
-                  <span className="block mb-1 text-sm leading-6 text-purple-500">
-                    Heroicons
-                  </span>
-                  Beautiful hand-crafted SVG icons, by the makers of Tailwind
-                  CSS.
-                </h3>
-                <div className="text-sm prose-sm prose prose-slate">
-                  <p>
-                    A set of 450+ free MIT-licensed SVG icons. Available as
-                    basic SVG icons and via first-party React and Vue libraries.
-                  </p>
-                </div>
-                <a
-                  className="inline-flex items-center px-3 mt-6 text-sm font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
-                  href=""
-                >
-                  Learn more
-                  <span className="sr-only">
-                    , Beautiful hand-crafted SVG icons, by the makers of
-                    Tailwind CSS.
-                  </span>
-                  <svg
-                    className="ml-3 overflow-visible text-slate-300 group-hover:text-slate-400"
-                    width="3"
-                    height="6"
-                    viewBox="0 0 3 6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M0 0L3 3L0 6"></path>
-                  </svg>
-                </a>
-              </div>
-              <img
-                src="https://tailwindcss.com/_next/static/media/heroicons@75.4a558f35.jpg"
-                alt=""
-                className="mb-6 shadow-md bg-slate-50 w-full sm:w-[17rem] sm:mb-0 xl:mb-6 xl:w-full"
-                width="1216"
-                height="640"
-              />
-            </li>
-            <li className="relative flex flex-col items-start sm:flex-row xl:flex-col">
-              <div className="order-1 sm:ml-6 xl:ml-0">
-                <h3 className="mb-1 font-semibold text-slate-900">
-                  <span className="block mb-1 text-sm leading-6 text-cyan-500">
-                    Hero Patterns
-                  </span>
-                  Seamless SVG background patterns by the makers of Tailwind
-                  CSS.
-                </h3>
-                <div className="text-sm prose-sm prose prose-slate">
-                  <p>
-                    A collection of over 100 free MIT-licensed high-quality SVG
-                    patterns for you to use in your web projects.
-                  </p>
-                </div>
-                <a
-                  className="inline-flex items-center px-3 mt-6 text-sm font-semibold rounded-full group h-9 whitespace-nowrap focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500"
-                  href=""
-                >
-                  Learn more
-                  <span className="sr-only">
-                    , Seamless SVG background patterns by the makers of Tailwind
-                    CSS.
-                  </span>
-                  <svg
-                    className="ml-3 overflow-visible text-slate-300 group-hover:text-slate-400"
-                    width="3"
-                    height="6"
-                    viewBox="0 0 3 6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M0 0L3 3L0 6"></path>
-                  </svg>
-                </a>
-              </div>
-              <img
-                src="https://tailwindcss.com/_next/static/media/heropatterns@75.82a09697.jpg"
-                alt=""
-                className="mb-6 shadow-md bg-slate-50 w-full sm:w-[17rem] sm:mb-0 xl:mb-6 xl:w-full"
-                width="1216"
-                height="640"
-              />
-            </li>
-          </ul>
-        </section> */}
         <section>
-          <Features></Features>
-        </section>
-        <section>
-          <FooterSection></FooterSection>
+          <section>
+            <Testimonials />
+          </section>
+          <section>
+            <Zigzag />
+          </section>
+          <section>
+            <Features></Features>
+          </section>
+          <section className="bg-white">
+            <Newsletter />
+          </section>
+          <section>
+            <FooterSection></FooterSection>
+          </section>
         </section>
       </div>
     </>
