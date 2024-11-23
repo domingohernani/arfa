@@ -1,3 +1,5 @@
+import yourSpaceYourFurniture from "../../assets/videos/your-space-your-furniture.mp4";
+
 export default function Zigzag() {
   return (
     <section className="overflow-hidden" style={{ backgroundColor: "#F1F0EC" }}>
@@ -25,14 +27,26 @@ export default function Zigzag() {
                 data-aos="fade-up"
               >
                 <div
-                  className="relative flex justify-center h-[520px] w-[250px] border-4 border-black rounded-2xl"
+                  className="relative flex justify-center items-center h-[520px] w-[235px] border-4 border-black rounded-2xl bg-black"
                   style={{ boxShadow: "3px 3px 5px rgb(209, 218, 218)" }}
                 >
-                  <span className="w-16 h-4 mt-2 bg-black border border-black rounded-full"></span>
-                  <span className="absolute -right-1.5 top-20 border-2 border-black h-10 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-16 border-2 border-black h-6 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-32 border-2 border-black h-12 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-48 border-2 border-black h-12 rounded-md"></span>
+                  {/* Phone Details */}
+                  <span className="absolute top-0 z-10 w-16 h-4 mt-2 bg-black border border-black rounded-full"></span>
+                  <span className="absolute -right-1.5 top-20 border-4 border-black h-14 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-16 border-4 border-black h-6 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-32 border-4 border-black h-14 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-48 border-4 border-black h-14 rounded-lg"></span>
+
+                  {/* Video inside the phone */}
+
+                  <video
+                    src={yourSpaceYourFurniture}
+                    loop
+                    muted
+                    playsInline
+                    controls
+                    className="absolute object-contain w-full h-full rounded-2xl"
+                  />
                 </div>
               </div>
               {/* Content */}
@@ -141,14 +155,26 @@ export default function Zigzag() {
                 data-aos="fade-up"
               >
                 <div
-                  className="relative flex justify-center h-[520px] w-[250px] border-4 border-black rounded-2xl"
+                  className="relative flex justify-center items-center h-[520px] w-[235px] border-4 border-black rounded-2xl bg-black"
                   style={{ boxShadow: "3px 3px 5px rgb(209, 218, 218)" }}
                 >
-                  <span className="w-16 h-4 mt-2 bg-black border border-black rounded-full"></span>
-                  <span className="absolute -right-1.5 top-20 border-2 border-black h-10 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-16 border-2 border-black h-6 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-32 border-2 border-black h-12 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-48 border-2 border-black h-12 rounded-md"></span>
+                  {/* Phone Details */}
+                  <span className="absolute top-0 z-10 w-16 h-4 mt-2 bg-black border border-black rounded-full"></span>
+                  <span className="absolute -right-1.5 top-20 border-4 border-black h-14 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-16 border-4 border-black h-6 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-32 border-4 border-black h-14 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-48 border-4 border-black h-14 rounded-lg"></span>
+
+                  {/* Video inside the phone */}
+
+                  <video
+                    src={yourSpaceYourFurniture}
+                    loop
+                    muted
+                    playsInline
+                    controls
+                    className="absolute object-contain w-full h-full rounded-2xl"
+                  />
                 </div>
               </div>
             </div>
@@ -161,14 +187,25 @@ export default function Zigzag() {
                 data-aos="fade-up"
               >
                 <div
-                  className="relative flex justify-center h-[520px] w-[250px] border-4 border-black rounded-2xl"
+                  className="relative flex justify-center items-center h-[520px] w-[235px] border-4 border-black rounded-2xl bg-black"
                   style={{ boxShadow: "3px 3px 5px rgb(209, 218, 218)" }}
                 >
-                  <span className="w-16 h-4 mt-2 bg-black border border-black rounded-full"></span>
-                  <span className="absolute -right-1.5 top-20 border-2 border-black h-10 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-16 border-2 border-black h-6 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-32 border-2 border-black h-12 rounded-md"></span>
-                  <span className="absolute -left-1.5 top-48 border-2 border-black h-12 rounded-md"></span>
+                  {/* Phone Details */}
+                  <span className="absolute top-0 z-10 w-16 h-4 mt-2 bg-black border border-black rounded-full"></span>
+                  <span className="absolute -right-1.5 top-20 border-4 border-black h-14 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-16 border-4 border-black h-6 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-32 border-4 border-black h-14 rounded-lg"></span>
+                  <span className="absolute -left-1.5 top-48 border-4 border-black h-14 rounded-lg"></span>
+
+                  {/* Video inside the phone */}
+                  <video
+                    src={yourSpaceYourFurniture}
+                    loop
+                    muted
+                    playsInline
+                    controls
+                    className="absolute object-contain w-full h-full rounded-2xl"
+                  />
                 </div>
               </div>
               {/* Content */}
