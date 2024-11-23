@@ -40,11 +40,11 @@ export default function Zigzag() {
                 className="w-full md:col-span-7 lg:col-span-6"
                 data-aos="fade-right"
               >
-                <div className="pr-4 lg:pr-12 xl:pr-16">
-                  <h3 className="mb-2 text-xl font-bold text-green-500">
+                <div className="pr-4 text-base lg:pr-12 xl:pr-16">
+                  <h3 className="mb-2 font-bold text-green-500">
                     Your Space, Your Furniture
                   </h3>
-                  <p className="mb-4 text-gray-500">
+                  <p className="mb-4 text-gray-500 t">
                     Use augmented reality to place furniture virtually in your
                     room. Rotate, zoom, and interact with furniture like never
                     before. See how it fits before you buy!
@@ -92,8 +92,8 @@ export default function Zigzag() {
                 className="w-full md:col-span-7 lg:col-span-6"
                 data-aos="fade-left"
               >
-                <div className="pl-4 lg:pl-12 xl:pl-16">
-                  <h3 className="mb-2 text-xl font-bold text-green-500">
+                <div className="pl-4 text-base lg:pl-12 xl:pl-16">
+                  <h3 className="mb-2 font-bold text-green-500">
                     Styles That Complement Your Space
                   </h3>
                   <p className="mb-4 text-gray-500">
@@ -176,8 +176,8 @@ export default function Zigzag() {
                 className="w-full md:col-span-7 lg:col-span-6"
                 data-aos="fade-right"
               >
-                <div className="pr-4 lg:pr-12 xl:pr-16">
-                  <h3 className="mb-2 text-xl font-bold text-green-500">
+                <div className="pr-4 text-base lg:pr-12 xl:pr-16">
+                  <h3 className="mb-2 font-bold text-green-500">
                     Bring Furniture to Life
                   </h3>
                   <p className="mb-4 text-gray-500">
