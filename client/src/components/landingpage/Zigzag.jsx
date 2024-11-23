@@ -11,7 +11,7 @@ export default function Zigzag() {
             <p className="text-gray-500 sm:text-xl">
               Discover the next generation of online shopping with 3D models and
               augmented reality. View furniture from every angle, place it in
-              your space, and ensure the perfect fit before making a purchase.
+              your space, and ensure the perfect fit before making a purchase ✨
             </p>
           </div>
 
@@ -47,7 +47,7 @@ export default function Zigzag() {
                   <p className="mb-4 text-gray-500 t">
                     Use augmented reality to place furniture virtually in your
                     room. Rotate, zoom, and interact with furniture like never
-                    before. See how it fits before you buy!
+                    before. See how it fits before you buy! 🏡
                   </p>
                   <ul className="-mb-2 text-gray-500">
                     <li className="flex items-center mb-2">
@@ -99,7 +99,7 @@ export default function Zigzag() {
                   <p className="mb-4 text-gray-500">
                     Whether you're looking for a cozy sofa, an elegant dining
                     table, or a modern coffee table, our platform helps you find
-                    the perfect match for your space and style.
+                    the perfect match for your space and style 🪑
                   </p>
                   <ul className="-mb-2 text-gray-500">
                     <li className="flex items-center mb-2">
@@ -182,7 +182,7 @@ export default function Zigzag() {
                   </h3>
                   <p className="mb-4 text-gray-500">
                     Use augmented reality to see how furniture fits into your
-                    space and create the perfect environment for your needs.
+                    space and create the perfect environment for your needs 📐
                   </p>
                   <ul className="-mb-2 text-gray-500">
                     <li className="flex items-center mb-2">

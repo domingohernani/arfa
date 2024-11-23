@@ -8,7 +8,7 @@ import Features from "../components/landingpage/Features";
 import Zigzag from "../components/landingpage/Zigzag";
 import Testimonials from "../components/landingpage/Testimonials";
 import Newsletter from "../components/landingpage/Newsletter";
-import Footer from "../components/landingpage/Footer";
+// import Footer from "../components/landingpage/Footer";
 import heroBg from "../assets/images/hero-bg.jpg";
 import logo from "../assets/logos/logo_green.svg";
 
@@ -73,6 +73,16 @@ const LandingPage = () => {
             </Link>
           </article>
         </div>
+
+        <section>
+          <Testimonials />
+        </section>
+        <section>
+          <Zigzag />
+        </section>
+        <section>
+          <Newsletter />
+        </section>
 
         {/* Latest Trends */}
         {/* <section className="pb-10 bg-arfagray">

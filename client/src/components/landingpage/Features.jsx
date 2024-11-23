@@ -11,7 +11,7 @@ export default function Features() {
           <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-green-500 dark:text-green">
             Designed for your furniture business
           </h2>
-          <p className="text-gray-400 sm:text-xl dark:text-gray-400">
+          <p className="text-gray-500 sm:text-xl">
             Let us transform furniture shopping in the Philippines with our
             Augmented Reality Web Application! 🛋️ <br /> We offer customers an
             immersive experience, letting them visualize products in their
@@ -19,14 +19,14 @@ export default function Features() {
           </p>
         </div>
         <div className="mx-auto space-y-8 md:w-5/6 md:grid md:grid-cols-2 lg:grid-cols-2 md:gap-8 md:space-y-0">
-          <p
+          {/* <p
             data-aos="fade-right"
             data-aos-delay="220"
             className="relative col-start-1 col-end-3 text-gray-400 -bottom-5 md:-bottom-14 sm:text-xl"
           >
             Shoppers:
-          </p>
-          <div data-aos="fade-right" data-aos-delay="200">
+          </p> */}
+          {/* <div data-aos="fade-right" data-aos-delay="200">
             <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
               <svg
                 id="Layer_1"
@@ -47,8 +47,8 @@ export default function Features() {
               Explore our furniture in 3D. Rotate, zoom, and inspect every
               detail before making your purchase
             </p>
-          </div>
-          <div data-aos="fade-left" data-aos-delay="200">
+          </div> */}
+          {/* <div data-aos="fade-left" data-aos-delay="200">
             <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -68,14 +68,14 @@ export default function Features() {
               Place furniture virtually in your home using AR. Ensure it fits
               perfectly with your décor before placing an order
             </p>
-          </div>
-          <p
+          </div> */}
+          {/* <p
             data-aos="fade-right"
             data-aos-delay="220"
             className="relative col-start-1 col-end-3 text-gray-400 -bottom-3 md:-bottom-8 sm:text-xl"
           >
             Sellers:
-          </p>
+          </p> */}
           <div data-aos="fade-right" data-aos-delay="240">
             <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
               <svg
