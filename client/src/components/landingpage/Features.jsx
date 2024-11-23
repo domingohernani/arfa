@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Features() {
   return (
-    <section className="py-20 bg-white dark:bg-white">
+    <section className="py-20 overflow-hidden bg-white dark:bg-white">
       <div className="max-w-screen-xl px-4 py-8 mx-auto sm:py-16 lg:px-6">
         <div
           className="max-w-screen-lg mx-auto mb-8 text-center lg:mb-16"

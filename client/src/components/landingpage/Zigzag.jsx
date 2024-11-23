@@ -21,7 +21,7 @@ export default function Zigzag() {
             <div className="flex flex-col items-center md:flex-row">
               {/* Image */}
               <div
-                className="mx-auto mb-8 md:ml-auto w-fit md:col-span-5 lg:col-span-6 md:mb-0 md:order-1"
+                className="hidden mx-auto mb-8 md:block md:ml-auto w-fit md:col-span-5 lg:col-span-6 md:mb-0 md:order-1"
                 data-aos="fade-up"
               >
                 <div
@@ -92,7 +92,7 @@ export default function Zigzag() {
                 className="w-full md:col-span-7 lg:col-span-6"
                 data-aos="fade-left"
               >
-                <div className="pl-4 text-base lg:pl-12 xl:pl-16">
+                <div className="text-base md:pl-4 lg:pl-12 xl:pl-16">
                   <h3 className="mb-2 font-bold text-green-500">
                     Styles That Complement Your Space
                   </h3>
@@ -137,7 +137,7 @@ export default function Zigzag() {
               </div>
               {/* Image */}
               <div
-                className="mx-auto mb-8 md:mr-auto w-fit md:col-span-5 lg:col-span-6 md:mb-0"
+                className="hidden mx-auto mb-8 md:block md:mr-auto w-fit md:col-span-5 lg:col-span-6 md:mb-0"
                 data-aos="fade-up"
               >
                 <div
@@ -157,7 +157,7 @@ export default function Zigzag() {
             <div className="flex flex-col items-center md:flex-row">
               {/* Image */}
               <div
-                className="mx-auto mb-8 md:ml-auto w-fit md:col-span-5 lg:col-span-6 md:mb-0 md:order-1"
+                className="hidden mx-auto mb-8 md:block md:ml-auto w-fit md:col-span-5 lg:col-span-6 md:mb-0 md:order-1"
                 data-aos="fade-up"
               >
                 <div
