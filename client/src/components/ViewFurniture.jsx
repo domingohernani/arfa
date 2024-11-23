@@ -124,7 +124,10 @@ const ViewFurniture = () => {
         <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
             <div className="flex flex-col w-full lg:gap-4 shrink-0">
-              <div className="relative h-64 sm:h-80 md:h-96 lg:h-full">
+              <div
+                className="relative h-64 carousel sm:h-80 md:h-96 lg:h-full"
+                id="carousel"
+              >
                 <Carousel>
                   {furnitureImgUrls.map((image, index) => {
                     return (
