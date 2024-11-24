@@ -7,7 +7,7 @@ export function FooterSection() {
     <>
       <div class="flex items-end w-full bg-white">
         <footer class="w-full text-gray-700 bg-gray-100 body-font mt-28">
-          <div class="container flex flex-col flex-wrap px-24 py-24 mx-auto md:items-center lg:items-start md:flex-row md:flex-no-wrap">
+          <div class="container flex flex-col flex-wrap px-6 md:px-24 py-24 mx-auto md:items-center lg:items-start md:flex-row md:flex-no-wrap">
             <div class="flex-shrink-0 w-full lg:w-64 mx-auto text-center md:mx-0 md:text-left">
               <a class="flex items-center justify-center font-medium text-gray-900 title-font md:justify-start">
                 <img src={logo} alt="ARFA" className="w-auto h-14" />
@@ -191,11 +191,11 @@ export function FooterSection() {
             </div>
           </div>
           <div class="bg-arfagreen">
-            <div class="container px-24 py-6 mx-auto flex justify-between">
+            <div class="container px-6 text-center md:flex-row md:justify-between md:px-24 py-6 mx-auto flex flex-col">
               <span class="text-xs text-white">
                 7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
               </span>
-              <span className="flex gap-3">
+              <span className="flex gap-3 mx-auto mt-3 md:mt-0 md:mr-0">
                 <a href="" class="text-xs text-white underline">
                   Terms & Conditions
                 </a>
