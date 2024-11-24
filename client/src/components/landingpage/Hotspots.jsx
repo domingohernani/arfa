@@ -81,7 +81,7 @@ const Hotspots = () => {
                   className="w-full rounded-md"
                 />
                 <section
-                  className="absolute flex-col hidden gap-4 pointer-events-none sm:flex bottom-5 left-5"
+                  className="absolute flex-col gap-4 pointer-events-none sm:flex bottom-5 left-5"
                   data-aos="fade-right"
                 >
                   <h2
