@@ -3,8 +3,6 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { formatToPeso, toSlug } from "../../components/globalFunctions";
 import { useNavigate } from "react-router-dom";
-import AOS from "aos";
-import "aos/dist/aos.css"; // Import AOS styles
 
 const Hotspots = () => {
   const [sellerHotspots, setSellerHotspots] = useState([]);
@@ -72,7 +70,7 @@ const Hotspots = () => {
           const shopName = seller.hotspots[0].furniture.shopDetails.name;
 
           return (
-            <div key={index} data-aos="fade-up">
+            <div key={index}>
               <div className="relative">
                 {/* Uploaded Image */}
                 <img
@@ -80,10 +78,7 @@ const Hotspots = () => {
                   alt={`Hotspot image from Shop ${seller.shopId}`}
                   className="w-full rounded-md"
                 />
-                <section
-                  className="absolute flex-col gap-4 pointer-events-none sm:flex bottom-5 left-5"
-                  data-aos="fade-right"
-                >
+                <section className="absolute flex-col hidden gap-4 pointer-events-none sm:flex bottom-5 left-5">
                   <h2
                     className="text-sm font-extrabold tracking-tight text-white sm:text-base md:text-lg lg:text-xl dark:text-green"
                     style={{ textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}
@@ -121,7 +116,6 @@ const Hotspots = () => {
                       transform: "translate(-50%, -50%)",
                     }}
                     className="flex items-center justify-center bg-gray-600 border-2 border-gray-700 group"
-                    data-aos="zoom-in"
                   >
                     {/* Hotspot Marker */}
                     <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
