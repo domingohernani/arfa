@@ -78,7 +78,7 @@ export default function Testimonials() {
           >
             {testimonialsData.map((testimonial, index) => (
               <SwiperSlide key={index}>
-                <div className="flex flex-col h-full p-6 mb-10 rounded-lg shadow-md bg-arfagray">
+                <div className="flex flex-col h-full p-6 mb-10 bg-gray-100 rounded-lg">
                   <blockquote className="text-lg text-gray-500 grow">
                     — {testimonial.text}
                   </blockquote>
