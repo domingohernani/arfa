@@ -22,7 +22,7 @@ const LandingPage = () => {
           {/* <NavigationBar></NavigationBar> */}
           <section className="mx-6 my-3">
             <Link to="/">
-              <img src={logo} alt="ARFA" className="h-auto min-w-16 md:w-24" />
+              <img src={logo} alt="ARFA" className="h-auto w-14 md:w-24" />
             </Link>
           </section>
           <div className="fixed inset-0 -z-10">
