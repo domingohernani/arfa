@@ -7,12 +7,6 @@ import { Autoplay, Pagination } from "swiper/modules";
 
 const testimonialsData = [
   {
-    text: "This platform has revolutionized how I sell furniture. The ability to showcase 3D models has increased my sales by 40%. Shoppers love interacting with the products before purchasing!",
-    name: "Sophia Green",
-    role: "Furniture Seller",
-    company: "Cozy Living",
-  },
-  {
     text: "As a shopper, I love how easy it is to visualize furniture in my space using augmented reality. The checkout process is seamless, and delivery is always on time!",
     name: "John Doe",
     role: "Happy Shopper",
