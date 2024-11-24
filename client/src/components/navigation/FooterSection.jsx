@@ -3,7 +3,7 @@ import logo from "../../assets/logos/logo_green.svg";
 
 export function FooterSection() {
   return (
-    <Footer container className="!shadow-none bg-arfagray">
+    <Footer container className="!shadow-none bg-white !rounded-none">
       <div className="w-full mx-auto text-center">
         <div className="w-full sm:flex sm:items-center sm:justify-between">
           <img src={logo} alt="ARFA" className="w-auto h-14" />

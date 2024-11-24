@@ -3,6 +3,8 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { formatToPeso, toSlug } from "../../components/globalFunctions";
 import { useNavigate } from "react-router-dom";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 
 const Hotspots = () => {
   const [sellerHotspots, setSellerHotspots] = useState([]);
@@ -50,6 +52,8 @@ const Hotspots = () => {
 
         const randomHotspots = getRandomItems(hotspotsData, 2);
         setSellerHotspots(randomHotspots);
+
+        // Refresh AOS after content is loaded
       } catch (error) {
         console.error("Error fetching hotspots:", error);
       }
@@ -62,13 +66,13 @@ const Hotspots = () => {
     text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
 
   return (
-    <section className="flex flex-col">
+    <section className="flex flex-col bg-white">
       {sellerHotspots &&
         sellerHotspots.map((seller, index) => {
           const shopName = seller.hotspots[0].furniture.shopDetails.name;
 
           return (
-            <div key={index}>
+            <div key={index} data-aos="fade-up">
               <div className="relative">
                 {/* Uploaded Image */}
                 <img
@@ -76,7 +80,10 @@ const Hotspots = () => {
                   alt={`Hotspot image from Shop ${seller.shopId}`}
                   className="w-full rounded-md"
                 />
-                <section className="absolute flex flex-col gap-4 bottom-5 left-5">
+                <section
+                  className="absolute flex flex-col gap-4 pointer-events-none bottom-5 left-5"
+                  data-aos="fade-right"
+                >
                   <h2
                     className="text-xl font-extrabold tracking-tight text-white dark:text-green"
                     style={{ textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}
@@ -93,52 +100,51 @@ const Hotspots = () => {
                 </section>
 
                 {/* Render Hotspots */}
-                {seller.hotspots.map((hotspot) => {
-                  return (
-                    <div
-                      title={`Click this cicle to visit '${hotspot.furniture?.name}'`}
-                      onClick={() => {
-                        const slugName = toSlug(hotspot.furniture.name);
-                        const id = hotspot.furniture.id;
-                        window.scrollTo({ top: 0 });
-                        navigate(`/catalog/item/${slugName}/${id}`);
-                      }}
-                      key={hotspot.id}
-                      style={{
-                        position: "absolute",
-                        top: hotspot.top,
-                        left: hotspot.left,
-                        width: "25px",
-                        height: "25px",
-                        borderRadius: "50%",
-                        cursor: "pointer",
-                        transform: "translate(-50%, -50%)",
-                      }}
-                      className="flex items-center justify-center bg-gray-600 border-2 border-gray-700 group"
-                    >
-                      {/* Hotspot Marker */}
-                      <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
+                {seller.hotspots.map((hotspot) => (
+                  <div
+                    title={`Click this circle to visit '${hotspot.furniture?.name}'`}
+                    onClick={() => {
+                      const slugName = toSlug(hotspot.furniture.name);
+                      const id = hotspot.furniture.id;
+                      window.scrollTo({ top: 0 });
+                      navigate(`/catalog/item/${slugName}/${id}`);
+                    }}
+                    key={hotspot.id}
+                    style={{
+                      position: "absolute",
+                      top: hotspot.top,
+                      left: hotspot.left,
+                      width: "25px",
+                      height: "25px",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      transform: "translate(-50%, -50%)",
+                    }}
+                    className="flex items-center justify-center bg-gray-600 border-2 border-gray-700 group"
+                    data-aos="zoom-in"
+                  >
+                    {/* Hotspot Marker */}
+                    <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
 
-                      {/* Tooltip */}
-                      <div
-                        className="absolute hidden w-48 p-4 mb-2 text-sm text-black transform -translate-x-1/2 bg-white rounded-md shadow-lg bottom-full left-1/2 group-hover:block"
-                        style={{ zIndex: 10 }}
-                      >
-                        <div className="font-semibold text-arfagreen">
-                          {truncateText(hotspot.furniture.name, 30)}
-                        </div>
-                        <div className="text-sm">
-                          {truncateText(hotspot.furniture.description, 50)}
-                        </div>
-                        <div className="mt-2 text-lg font-bold">
-                          {hotspot.furniture.isSale
-                            ? formatToPeso(hotspot.furniture.discountedPrice)
-                            : formatToPeso(hotspot.furniture.price)}
-                        </div>
+                    {/* Tooltip */}
+                    <div
+                      className="absolute hidden w-48 p-4 mb-2 text-sm text-black transform -translate-x-1/2 bg-white rounded-md shadow-lg bottom-full left-1/2 group-hover:block"
+                      style={{ zIndex: 10 }}
+                    >
+                      <div className="font-semibold text-arfagreen">
+                        {truncateText(hotspot.furniture.name, 30)}
+                      </div>
+                      <div className="text-sm">
+                        {truncateText(hotspot.furniture.description, 50)}
+                      </div>
+                      <div className="mt-2 text-lg font-bold">
+                        {hotspot.furniture.isSale
+                          ? formatToPeso(hotspot.furniture.discountedPrice)
+                          : formatToPeso(hotspot.furniture.price)}
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
           );
