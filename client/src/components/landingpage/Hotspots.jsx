@@ -85,14 +85,14 @@ const Hotspots = () => {
                   data-aos="fade-right"
                 >
                   <h2
-                    className="text-xl font-extrabold tracking-tight text-white dark:text-green"
+                    className="text-sm font-extrabold tracking-tight text-white sm:text-base md:text-lg lg:text-xl dark:text-green"
                     style={{ textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}
                   >
-                    Featured Collection
+                    Featured Collection - {index + 1}
                   </h2>
                   <hr />
                   <h2
-                    className="mb-4 text-4xl font-extrabold tracking-tight text-white dark:text-green"
+                    className="mb-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl md:text-4xl lg:text-4xl dark:text-green"
                     style={{ textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}
                   >
                     {shopName}
@@ -127,10 +127,7 @@ const Hotspots = () => {
                     <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
 
                     {/* Tooltip */}
-                    <div
-                      className="absolute hidden w-48 p-4 mb-2 text-sm text-black transform -translate-x-1/2 bg-white rounded-md shadow-lg bottom-full left-1/2 group-hover:block"
-                      style={{ zIndex: 10 }}
-                    >
+                    <div className="absolute z-20 hidden w-48 p-4 mb-2 text-sm text-black transform -translate-x-1/2 bg-white rounded-md shadow-lg bottom-full left-1/2 group-hover:block">
                       <div className="font-semibold text-arfagreen">
                         {truncateText(hotspot.furniture.name, 30)}
                       </div>
