@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function Features() {
   return (
@@ -19,63 +19,7 @@ export default function Features() {
           </p>
         </div>
         <div className="mx-auto space-y-8 md:w-5/6 md:grid md:grid-cols-2 lg:grid-cols-2 md:gap-8 md:space-y-0">
-          {/* <p
-            data-aos="fade-right"
-            data-aos-delay="220"
-            className="relative col-start-1 col-end-3 text-gray-400 -bottom-5 md:-bottom-14 sm:text-xl"
-          >
-            Shoppers:
-          </p> */}
-          {/* <div data-aos="fade-right" data-aos-delay="200">
-            <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
-              <svg
-                id="Layer_1"
-                height="512"
-                viewBox="0 0 24 24"
-                width="21"
-                xmlns="http://www.w3.org/2000/svg"
-                data-name="Layer 1"
-                fill="rgb(107 114 128)"
-              >
-                <path d="m12.883 15.216-7.935 7.935a2.9 2.9 0 1 1 -4.1-4.1l7.935-7.935zm4.217-8.316a2.967 2.967 0 0 0 -4.1 0l-2.8 2.8 4.1 4.1 2.8-2.8a2.9 2.9 0 0 0 0-4.1zm-12.237-1.755 1.55.442.442 1.55a1.191 1.191 0 0 0 2.29 0l.442-1.55 1.55-.442a1.191 1.191 0 0 0 0-2.29l-1.55-.442-.442-1.55a1.191 1.191 0 0 0 -2.29 0l-.442 1.55-1.55.442a1.191 1.191 0 0 0 0 2.29zm12 12 1.55.442.442 1.55a1.191 1.191 0 0 0 2.29 0l.442-1.55 1.55-.442a1.191 1.191 0 0 0 0-2.29l-1.55-.442-.442-1.55a1.191 1.191 0 0 0 -2.29 0l-.442 1.55-1.55.442a1.191 1.191 0 0 0 0 2.29zm.893-12.645 1.355.387.389 1.357a1.042 1.042 0 0 0 2 0l.387-1.355 1.357-.389a1.042 1.042 0 0 0 0-2l-1.355-.387-.389-1.357a1.042 1.042 0 0 0 -2 0l-.387 1.355-1.357.389a1.042 1.042 0 0 0 0 2z" />
-              </svg>
-            </div>
-            <h3 className="mb-2 text-xl font-bold text-green-400 dark:text-green-400">
-              3D Furniture Models
-            </h3>
-            <p className="text-gray-400 dark:text-gray-400">
-              Explore our furniture in 3D. Rotate, zoom, and inspect every
-              detail before making your purchase
-            </p>
-          </div> */}
-          {/* <div data-aos="fade-left" data-aos-delay="200">
-            <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                id="Layer_1"
-                data-name="Layer 1"
-                viewBox="0 0 24 24"
-                width="24"
-                fill="rgb(107 114 128)"
-              >
-                <path d="m8,13.71v-2.844l3,1.714v3.424l-2.496-1.426c-.311-.178-.504-.511-.504-.868Zm4.498-5.999c-.153-.088-.325-.132-.498-.132s-.345.044-.498.132l-2.49,1.43,2.988,1.708,2.988-1.708-2.491-1.43Zm-5.426.321c.139-.118.274-.241.435-.333l3-1.723c.922-.529,2.065-.529,2.987,0l3.001,1.723c.161.092.296.215.434.333l4.418-2.525c-.253-.257-.541-.484-.863-.667l-6.5-3.715c-1.225-.699-2.745-.699-3.968,0h0l-6.5,3.715c-.321.183-.609.41-.863.667l4.419,2.525Zm3.928,10.195c-.166-.059-.334-.111-.489-.199l-3-1.714c-.933-.533-1.512-1.531-1.512-2.604v-3.409c0-.183.039-.359.072-.537L1.65,7.237c-.097.346-.15.707-.15,1.075v7.375c0,1.432.772,2.763,2.016,3.473l6.5,3.715c.312.178.643.31.984.397v-5.044Zm6.928-8.464c.033.177.072.353.072.537v3.409c0,1.073-.579,2.071-1.511,2.604l-3.001,1.714c-.155.089-.323.141-.488.199v5.044c.341-.087.672-.219.984-.397l6.5-3.715c1.243-.711,2.016-2.041,2.016-3.473v-7.375c0-.368-.053-.729-.15-1.075l-4.422,2.527Zm-1.928,3.946v-2.844l-3,1.714v3.424l2.496-1.426c.311-.178.504-.511.504-.868Z" />
-              </svg>
-            </div>
-            <h3 className="mb-2 text-xl font-bold text-green-400 dark:text-green-400">
-              Try Before You Buy
-            </h3>
-            <p className="text-gray-400 dark:text-gray-400">
-              Place furniture virtually in your home using AR. Ensure it fits
-              perfectly with your décor before placing an order
-            </p>
-          </div> */}
-          {/* <p
-            data-aos="fade-right"
-            data-aos-delay="220"
-            className="relative col-start-1 col-end-3 text-gray-400 -bottom-3 md:-bottom-8 sm:text-xl"
-          >
-            Sellers:
-          </p> */}
+          {/* Feature Item 1 */}
           <div data-aos="fade-right" data-aos-delay="240">
             <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
               <svg
@@ -97,6 +41,7 @@ export default function Features() {
               of interior design with confidence and style!
             </p>
           </div>
+          {/* Feature Item 2 */}
           <div data-aos="fade-left" data-aos-delay="240">
             <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
               <svg
@@ -115,9 +60,10 @@ export default function Features() {
             </h3>
             <p className="text-gray-500 dark:text-gray-500">
               Enable shoppers to visualize your products in their space with AR.
-              Make their decision-making process easier."
+              Make their decision-making process easier.
             </p>
           </div>
+          {/* Feature Item 3 */}
           <div data-aos="fade-right" data-aos-delay="260">
             <div className="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
               <svg
