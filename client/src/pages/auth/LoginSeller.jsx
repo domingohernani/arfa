@@ -12,6 +12,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { Toast } from "flowbite-react";
 import { ForgotPassword } from "../../components/modals/ForgotPassword";
+import { FooterSection } from "../../components/navigation/FooterSection";
 
 const LoginSeller = () => {
   const [email, setEmail] = useState("");
@@ -221,6 +222,9 @@ const LoginSeller = () => {
             className="absolute bottom-0 right-0 hidden object-cover lg:h-full lg:flex-1 lg:inline-flex"
           />
         </div>
+      </section>
+      <section>
+        <FooterSection></FooterSection>
       </section>
       <Toaster />
     </>

@@ -24,6 +24,7 @@ import {
 } from "select-philippines-address";
 import { createShopDocument } from "../../firebase/user";
 import { uploadFile } from "../../firebase/files";
+import { FooterSection } from "../../components/navigation/FooterSection";
 
 const SignupSeller = () => {
   const navigate = useNavigate();
@@ -753,6 +754,9 @@ const SignupSeller = () => {
             className="absolute right-0 hidden object-cover lg:h-full lg:flex-1 lg:inline-flex"
           />
         </div>
+      </section>
+      <section>
+        <FooterSection></FooterSection>
       </section>
     </>
   );
