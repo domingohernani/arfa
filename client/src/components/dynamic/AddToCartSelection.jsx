@@ -158,7 +158,7 @@ const AddToCartSelection = ({ path, furniture }) => {
                 </select>
               </div>
             ) : (
-              <div className="max-w-2xl mx-auto mt-14 h-96">
+              <div className="max-w-2xl mx-auto carousel mt-14 h-96">
                 <Carousel>
                   {variantlessImg.map((image, index) => (
                     <img
@@ -192,7 +192,7 @@ const AddToCartSelection = ({ path, furniture }) => {
               </svg>
               Add to cart
             </div>
-            <div className="relative max-w-2xl mx-auto mt-14 h-96">
+            <div className="relative max-w-2xl mx-auto carousel mt-14 h-96">
               <Carousel>
                 {selectedVariant.imagePaths.map((image, index) => (
                   <img
