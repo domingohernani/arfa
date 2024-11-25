@@ -184,6 +184,7 @@ const ProductDetails = () => {
     value.height = dimensions.height;
     value.width = dimensions.width;
     value.depth = dimensions.depth;
+    value.lower_case_name = value.name.toLowerCase();
 
     const result = await updateFurniture(id, value);
 

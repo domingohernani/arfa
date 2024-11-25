@@ -69,8 +69,6 @@ export function NotificationDrawer() {
 
     return data.pages.map((page, pageIndex) =>
       page.notifications.map((notif, notifIndex) => {
-        console.log(notif.icon);
-
         const Icon =
           notif.type === "stock" ? CubeIcon : iconMap[notif.icon] || HiCalendar;
 

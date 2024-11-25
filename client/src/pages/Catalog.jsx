@@ -323,7 +323,7 @@ const Catalog = () => {
                                                   setDepth
                                                 );
                                               } else if (
-                                                option.label === "Height (H)"
+                                                option.label === "Height (cm)"
                                               ) {
                                                 handlePriceAndDimensionChange(
                                                   e.target.value,
@@ -590,7 +590,7 @@ const Catalog = () => {
                                                   setDepth
                                                 );
                                               } else if (
-                                                option.label === "Height (H)"
+                                                option.label === "Height (cm)"
                                               ) {
                                                 handlePriceAndDimensionChange(
                                                   e.target.value,

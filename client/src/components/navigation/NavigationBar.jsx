@@ -1,16 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../assets/logos/logo_green.svg";
 import profile from "../../assets/icons/profile-black.svg";
-import cart from "../../assets/icons/cart.svg";
-import search from "../../assets/icons/search.svg";
 import heart from "../../assets/icons/heart-black.svg";
 import { Link } from "react-router-dom";
 import { NotificationDrawer } from "../dynamic/NotificationDrawer";
+import { useStore } from "../../stores/useStore";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 function NavigationBar() {
+  const searchValue = useStore((state) => state.searchValue);
+  const [textValue, setTextValue] = useState(searchValue);
+  const updateSearchValue = useStore((state) => state.updateSearchValue);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
+
+  // Debounced input change handler
+  const handleInputChange = (value) => {
+    setTextValue(value);
+
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      if (value.trim() !== "") {
+        updateSearchValue(value.trim());
+      } else {
+        updateSearchValue("");
+      }
+    }, 700);
+
+    setDebounceTimeout(timeout);
+  };
+
   return (
     <div className="grid items-center grid-cols-11 grid-rows-2 gap-2 md:grid-rows-1">
-      <div className="flex justify-start col-span-1 ">
+      <div className="flex justify-start col-span-1">
         <Link to="/">
           <img src={logo} alt="ARFA" className="h-auto min-w-16 md:w-24" />
         </Link>
@@ -18,21 +42,17 @@ function NavigationBar() {
       <div className="relative col-span-11 row-start-2 text-xs md:text-sm md:col-start-2 md:col-span-4 md:row-start-1">
         <input
           type="text"
-          className="w-full px-4 py-2 text-sm bg-transparent border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white "
+          className="w-full px-2 py-2 text-sm bg-transparent border border-gray-300 focus:outline-none focus:border-arfagreen focus:ring-0 focus:ring-arfagreen focus:bg-white"
           placeholder="Search furniture"
           id="catalogSearchbar"
+          value={textValue}
+          onChange={(e) => handleInputChange(e.target.value)} // Handle input changes with debounce
         />
-        <img
-          src={search}
-          alt="Search"
-          className="absolute w-4 cursor-pointer md:w-5 right-4 top-2 "
-          width=""
-          height="auto"
-        />
+        <MagnifyingGlassIcon className="absolute w-4 text-gray-600 md:w-4 right-4 top-2" />
       </div>
-      <div className="flex items-center justify-end col-start-11 ">
+      <div className="flex items-center justify-end col-start-11">
         <NotificationDrawer />
-        <Link to={"/profile/user-profile"} className="mr-3 ">
+        <Link to={"/profile/user-profile"} className="mr-3">
           <img
             src={profile}
             alt="profile"
