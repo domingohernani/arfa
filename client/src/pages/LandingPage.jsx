@@ -7,10 +7,12 @@ import Testimonials from "../components/landingpage/Testimonials";
 import heroBg from "../assets/images/hero-bg.png";
 import logo from "../assets/logos/logo_white.svg";
 import Hotspots from "../components/landingpage/Hotspots";
+import CookiesBar from "../components/modals/CookiesBar";
 
 const LandingPage = () => {
   return (
     <>
+      <CookiesBar />
       <div>
         {/* Hero Section */}
         <div className="relative flex flex-col flex-1 w-full h-screen from-green-50/50 via-teal-50 to-green-50/50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800">

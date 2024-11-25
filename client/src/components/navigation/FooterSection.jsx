@@ -207,7 +207,7 @@ export function FooterSection() {
                 >
                   Terms & Conditions
                 </a>
-                <a href="" class="text-xs text-white underline">
+                <a href="/cookies-policy" class="text-xs text-white underline">
                   Cookies Policy
                 </a>
               </span>
