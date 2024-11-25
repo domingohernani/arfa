@@ -41,6 +41,10 @@ const SellerLayout = () => {
           <Outlet />
         </section>
       </section>
+
+      <section>
+        <FooterSection></FooterSection>
+      </section>
     </section>
   );
 };
