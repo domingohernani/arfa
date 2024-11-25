@@ -1,4 +1,6 @@
 import yourSpaceYourFurniture from "../../assets/videos/your-space-your-furniture.mp4";
+import styleThatComplement from "../../assets/videos/styles-that-complement-your-space.mp4";
+import bringFurniture from "../../assets/videos/bring-furniture-to-life.mp4";
 
 export default function Zigzag() {
   return (
@@ -168,7 +170,7 @@ export default function Zigzag() {
                   {/* Video inside the phone */}
 
                   <video
-                    src={yourSpaceYourFurniture}
+                    src={styleThatComplement}
                     loop
                     muted
                     playsInline
@@ -199,7 +201,7 @@ export default function Zigzag() {
 
                   {/* Video inside the phone */}
                   <video
-                    src={yourSpaceYourFurniture}
+                    src={bringFurniture}
                     loop
                     muted
                     playsInline
