@@ -1,15 +1,10 @@
 import React from "react";
-import NavigationBar from "../components/navigation/NavigationBar";
-import LatestTrends from "../components/dynamic/LatestTrends";
 import { Link } from "react-router-dom";
 import { FooterSection } from "../components/navigation/FooterSection";
-import Hero from "../components/landingpage/Hero";
 import Features from "../components/landingpage/Features";
 import Zigzag from "../components/landingpage/Zigzag";
 import Testimonials from "../components/landingpage/Testimonials";
-import Newsletter from "../components/landingpage/Newsletter";
-// import Footer from "../components/landingpage/Footer";
-import heroBg from "../assets/images/hero-bg.jpg";
+import heroBg from "../assets/images/hero-bg.png";
 import logo from "../assets/logos/logo_white.svg";
 import Hotspots from "../components/landingpage/Hotspots";
 
@@ -27,7 +22,7 @@ const LandingPage = () => {
           </section>
           <div className="fixed inset-0 -z-10">
             <img
-              src="https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={heroBg}
               className="object-cover w-full h-full md:object-cover "
             />
             <div className="absolute inset-0 bg-black bg-opacity-25"></div>

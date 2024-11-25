@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import signupImg from "../../assets/images/login-signup.svg";
+import signupImg from "../../assets/images/signup.jpg";
 import google from "../../assets/icons/google.png";
 import facebook from "../../assets/icons/facebook.png";
 import { toast, Toaster } from "react-hot-toast";
@@ -745,9 +745,12 @@ const SignupSeller = () => {
         </div>
         <div className="relative right-0-0 bg-arfagray basis-2/4">
           <img
-            src={signupImg}
+            src="
+          https://images.unsplash.com/photo-1656646424401-2ae620092397?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+          "
+            // src={signupImg}
             alt="Signup illustration"
-            className="absolute right-0 hidden object-cover -bottom-5 lg:h-5/6 lg:flex-1 lg:inline-flex"
+            className="absolute right-0 hidden object-cover lg:h-full lg:flex-1 lg:inline-flex"
           />
         </div>
       </section>
