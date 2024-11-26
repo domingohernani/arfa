@@ -42,7 +42,7 @@ export default function Zigzag() {
     <section className="overflow-hidden" style={{ backgroundColor: "#F1F0EC" }}>
       <div className="w-4/5 px-4 mx-auto sm:px-6 md:w-4/6">
         <div className="py-12 md:py-20">
-          <div className="max-w-3xl pb-12 mx-auto text-center md:pb-16">
+          <div className="max-w-3xl pb-12 mx-auto text-center md:pb-16 ">
             <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-green-500 dark:text-green">
               Shop Smarter, Visualize Better, Buy Confidently
             </h1>
