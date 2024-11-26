@@ -43,7 +43,7 @@ const CookiesBar = () => {
 
         <div className="flex items-center gap-x-4 shrink-0 lg:mt-0">
           <button
-            className="text-xs mx-auto w-1/2 md:w-auto font-medium bg-gray-800 rounded-lg hover:bg-gray-700 text-white px-4 py-2.5 duration-300 transition-colors focus:outline-none"
+            className="text-xs mx-auto w-1/2 md:w-auto font-medium bg-gray-800 rounded-md hover:bg-gray-700 text-white px-4 py-2.5 duration-300 transition-colors focus:outline-none"
             onClick={handleAcceptCookies}
           >
             Accept All Cookies
