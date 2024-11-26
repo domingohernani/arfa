@@ -58,6 +58,7 @@ import InProcessOrders from "./pages/shopper/sub/InProcessOrders";
 import CompletedOrders from "./pages/shopper/sub/CompletedOrders";
 import TermsAndCondition from "./pages/TermsAndCondition";
 import CookiePolicies from "./pages/CookiePolicies";
+import CookiesBar from "./components/modals/CookiesBar";
 
 function App() {
   useEffect(() => {
@@ -176,6 +177,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <CookiesBar />
     </>
   );
 }

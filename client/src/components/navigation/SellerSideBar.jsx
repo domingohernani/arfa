@@ -309,7 +309,7 @@ export const SellerSideBar = ({ setIsOpen }) => {
                   >
                     Inbox
                   </span>
-                  <span
+                  {/* <span
                     className={`hidden ${
                       isActive
                         ? "bg-white text-black"
@@ -317,7 +317,7 @@ export const SellerSideBar = ({ setIsOpen }) => {
                     }  md:inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-xs font-medium   rounded-full`}
                   >
                     4
-                  </span>
+                  </span> */}
                 </>
               )}
             </NavLink>

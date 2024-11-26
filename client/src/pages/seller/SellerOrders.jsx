@@ -32,7 +32,6 @@ const SellerOrders = () => {
       headerName: "Order ID",
       field: "id",
       flex: 1,
-      checkboxSelection: true,
       filter: "agTextColumnFilter",
       cellRenderer: CustomHoverCopyCell,
     },

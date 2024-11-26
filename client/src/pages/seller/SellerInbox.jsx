@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import hooks for routing
 import search from "../../assets/icons/search.svg";
-import { getChatsByShopId } from "../../firebase/chats";
+import { getChatsByShopId, updateChatReadStatus } from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
 import DisplayChat from "../../components/dynamic/DisplayChat";
@@ -98,6 +98,14 @@ const SellerInbox = () => {
     [navigate]
   );
 
+  const messageRead = async (id) => {
+    try {
+      await updateChatReadStatus(id, "seller");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSearch = () => {
     const lowerCaseInput = searchInput.toLowerCase();
     const results = chats.filter((chat) => {
@@ -153,7 +161,10 @@ const SellerInbox = () => {
                   <section
                     className="cursor-pointer"
                     key={index}
-                    onClick={() => handleChatSelect(chat)}
+                    onClick={() => {
+                      handleChatSelect(chat);
+                      messageRead(chat.id);
+                    }}
                   >
                     <div
                       className={`${
@@ -169,16 +180,30 @@ const SellerInbox = () => {
                             className="w-10 h-10"
                             name={chat.shopperInfo.firstName}
                           />
-                          <div className="flex w-full text-sm font-medium truncate text-arfablack">
+                          <div
+                            className={`flex w-full text-sm truncate text-arfablack ${
+                              chat.isSellerRead
+                                ? "font-medium"
+                                : "font-semibold"
+                            }`}
+                          >
                             {`${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div
+                          className={`text-sm text-gray-500 ${
+                            chat.isSellerRead ? "font-medium" : "font-semibold"
+                          }`}
+                        >
                           {formatTimeAgo(chat.lastMessageTimestamp)}
                         </div>
                       </div>
 
-                      <div className="flex flex-row items-center space-x-1">
+                      <div
+                        className={`flex flex-row items-center space-x-1 ${
+                          chat.isSellerRead ? "font-medium" : "font-semibold"
+                        }`}
+                      >
                         {(chat.lastMessage ||
                           chat.imageUrl ||
                           chat.videoUrl) && (
@@ -246,7 +271,10 @@ const SellerInbox = () => {
                 <section
                   className="cursor-pointer"
                   key={index}
-                  onClick={() => handleChatSelect(chat)}
+                  onClick={() => {
+                    handleChatSelect(chat);
+                    messageRead(chat.id);
+                  }}
                 >
                   <div
                     className={`${
@@ -257,11 +285,11 @@ const SellerInbox = () => {
                   >
                     <div className="flex flex-row items-center space-x-2 ">
                       <div className="flex items-center flex-1 gap-2">
-                        {/* <DisplayAvatar
+                        <DisplayAvatar
                           url={chat.shopperInfo?.profileUrl}
                           className="w-10 h-10"
                           name={chat.shopperInfo?.firstName}
-                        /> */}
+                        />
                         <div className="flex w-full text-sm font-medium truncate text-arfablack">
                           {`${chat.shopperInfo.firstName} ${chat.shopperInfo.lastName}`}
                         </div>

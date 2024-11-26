@@ -324,3 +324,24 @@ export const deleteFurniture = async (furnitureId) => {
     throw error;
   }
 };
+
+export const deleteFurnitures = async (furnitureIds) => {
+  try {
+    if (!Array.isArray(furnitureIds)) {
+      throw new Error("furnitureIds must be an array of IDs");
+    }
+
+    const deletePromises = furnitureIds.map((furnitureId) => {
+      const docRef = doc(db, "furnitures", furnitureId);
+      return deleteDoc(docRef);
+    });
+
+    // Wait for all deletions to complete
+    await Promise.all(deletePromises);
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting furnitures: ", error);
+    throw error;
+  }
+};
