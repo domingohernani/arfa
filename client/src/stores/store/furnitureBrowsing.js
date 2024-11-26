@@ -2,6 +2,11 @@ export const furnitureBrowsing = (set) => ({
   isSaleOnly: false,
   updateIsSaleOnly: (value) => set(() => ({ isSaleOnly: value })),
 
+  searchValue: "",
+  updateSearchValue: (value) => set(() => ({ searchValue: value })),
+  // search: false,
+  // searchTrigger: (value) => set(() => ({ searchTrigger: value })),
+
   isNewArrivalsOnly: false,
   updateIsNewArrivalsOnly: (value) => set(() => ({ isNewArrivalsOnly: value })),
 

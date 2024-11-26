@@ -1,12 +1,48 @@
-import yourSpaceYourFurniture from "../../assets/videos/your-space-your-furniture.mp4";
+import { useEffect, useState } from "react";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export default function Zigzag() {
+  const [videoUrls, setVideoUrls] = useState({
+    yourSpaceYourFurniture: "",
+    styleThatComplement: "",
+    bringFurniture: "",
+  });
+
+  useEffect(() => {
+    const fetchVideoUrls = async () => {
+      const storage = getStorage();
+      try {
+        const yourSpaceUrl = await getDownloadURL(
+          ref(storage, "landing-page-video/your-space-your-furniture.mp4")
+        );
+        const styleThatComplementUrl = await getDownloadURL(
+          ref(
+            storage,
+            "landing-page-video/styles-that-complement-your-space.mp4"
+          )
+        );
+        const bringFurnitureUrl = await getDownloadURL(
+          ref(storage, "landing-page-video/bring-furniture-to-life.mp4")
+        );
+
+        setVideoUrls({
+          yourSpaceYourFurniture: yourSpaceUrl,
+          styleThatComplement: styleThatComplementUrl,
+          bringFurniture: bringFurnitureUrl,
+        });
+      } catch (error) {
+        console.error("Error fetching video URLs:", error);
+      }
+    };
+
+    fetchVideoUrls();
+  }, []);
+
   return (
     <section className="overflow-hidden" style={{ backgroundColor: "#F1F0EC" }}>
       <div className="w-4/5 px-4 mx-auto sm:px-6 md:w-4/6">
-        {/* Removed w-8/12 to allow full width */}
         <div className="py-12 md:py-20">
-          <div className="max-w-3xl pb-12 mx-auto text-center md:pb-16">
+          <div className="max-w-3xl pb-12 mx-auto text-center md:pb-16 ">
             <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-green-500 dark:text-green">
               Shop Smarter, Visualize Better, Buy Confidently
             </h1>
@@ -40,7 +76,7 @@ export default function Zigzag() {
                   {/* Video inside the phone */}
 
                   <video
-                    src={yourSpaceYourFurniture}
+                    src={videoUrls.yourSpaceYourFurniture}
                     loop
                     muted
                     playsInline
@@ -58,7 +94,7 @@ export default function Zigzag() {
                   <h3 className="mb-2 font-bold text-green-500">
                     Your Space, Your Furniture
                   </h3>
-                  <p className="mb-4 text-gray-500 t">
+                  <p className="mb-4 text-gray-500">
                     Use augmented reality to place furniture virtually in your
                     room. Rotate, zoom, and interact with furniture like never
                     before. See how it fits before you buy! 🏡
@@ -168,7 +204,7 @@ export default function Zigzag() {
                   {/* Video inside the phone */}
 
                   <video
-                    src={yourSpaceYourFurniture}
+                    src={videoUrls.styleThatComplement}
                     loop
                     muted
                     playsInline
@@ -199,7 +235,7 @@ export default function Zigzag() {
 
                   {/* Video inside the phone */}
                   <video
-                    src={yourSpaceYourFurniture}
+                    src={videoUrls.bringFurniture}
                     loop
                     muted
                     playsInline

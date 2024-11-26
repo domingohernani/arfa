@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import signupImg from "../../assets/images/login-signup.svg";
+import signupImg from "../../assets/images/signin.jpg";
 import google from "../../assets/icons/google.png";
 import facebook from "../../assets/icons/facebook.png";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
@@ -12,6 +12,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { Toast } from "flowbite-react";
 import { ForgotPassword } from "../../components/modals/ForgotPassword";
+import { FooterSection } from "../../components/navigation/FooterSection";
 
 const LoginSeller = () => {
   const [email, setEmail] = useState("");
@@ -19,7 +20,6 @@ const LoginSeller = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [forgotPassModal, setForgotPassModal] = useState(false);
-
 
   const loginEmailAndPassword = async (event) => {
     event.preventDefault();
@@ -92,8 +92,8 @@ const LoginSeller = () => {
     <>
       <ForgotPassword isOpen={forgotPassModal} close={modalClose} />
       <section className="px-5 pt-4 pb-10 sm:px-8 lg:px-0 lg:pb-0 lg:pt-0 lg:flex min-h-svh">
-        <div className="lg:bg-gray-100 lg:px-8 lg:pb-8 lg:pt-4 basis-3/4">
-          <section className="lg:mt-5 lg:px-8 lg:py-8 xl:mx-24 lg:bg-white lg:shadow-lg">
+        <div className="lg:bg-white lg:px-8 lg:pb-8 lg:pt-4 basis-3/4">
+          <section className="lg:mt-5 lg:px-8 lg:py-8 xl:mx-24 lg:bg-white">
             <form
               onSubmit={loginEmailAndPassword}
               className="flex flex-col gap-3"
@@ -109,7 +109,7 @@ const LoginSeller = () => {
               <img
                 src={signupImg}
                 alt="man image"
-                className="lg:hidden sm:w-96 sm:mx-auto"
+                className="lg:hidden sm:w-full sm:mx-auto"
               />
 
               <div className="flex-1">
@@ -215,13 +215,16 @@ const LoginSeller = () => {
             </section> */}
           </section>
         </div>
-        <div className="relative right-0-0 bg-arfagray basis-2/4">
+        <div className="relative right-0-0 bg-arfagray basis-3/5">
           <img
             src={signupImg}
             alt="man image"
-            className="absolute bottom-0 right-0 hidden object-cover lg:h-5/6 lg:flex-1 lg:inline-flex"
+            className="absolute bottom-0 right-0 hidden object-cover lg:h-full lg:flex-1 lg:inline-flex"
           />
         </div>
+      </section>
+      <section>
+        <FooterSection></FooterSection>
       </section>
       <Toaster />
     </>

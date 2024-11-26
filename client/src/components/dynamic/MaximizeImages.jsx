@@ -24,7 +24,7 @@ const MaximizeImages = ({ furnitureImgUrls }) => {
         className="absolute z-10 w-6 h-6 text-white cursor-pointer top-3 right-3"
         onClick={handleClose}
       />
-      <div className="relative h-64 mx-auto sm:h-80 md:w-2/3 lg:h-full">
+      <div className="relative h-64 mx-auto carousel sm:h-80 md:w-2/3 lg:h-full">
         <Carousel className="mx-auto">
           {furnitureImgUrls.map((image, index) => {
             return (

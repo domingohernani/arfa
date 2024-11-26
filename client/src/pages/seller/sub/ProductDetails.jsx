@@ -184,6 +184,7 @@ const ProductDetails = () => {
     value.height = dimensions.height;
     value.width = dimensions.width;
     value.depth = dimensions.depth;
+    value.lower_case_name = value.name.toLowerCase();
 
     const result = await updateFurniture(id, value);
 
@@ -321,7 +322,7 @@ const ProductDetails = () => {
               Visual Overview
             </header>
             <main
-              className="flex flex-col w-full px-5 mt-5 md:mt-0 gap-14 md:gap-5 md:flex-row"
+              className="flex flex-col w-full px-5 mt-5 carousel md:mt-0 gap-14 md:gap-5 md:flex-row"
               style={{ height: "32rem" }}
             >
               {furniture.modelUrl && (

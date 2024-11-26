@@ -14,6 +14,7 @@ import {
   CubeTransparentIcon,
   Bars2Icon,
   ArrowsPointingOutIcon,
+  ShareIcon,
 } from "@heroicons/react/20/solid";
 import Show3D from "./dynamic/Show3D";
 import ViewFurnitureSkeleton from "./skeletons/ViewFurnitureSkeleton";
@@ -79,6 +80,18 @@ const ViewFurniture = () => {
       setLoading(false);
     }
   }, [id]);
+
+  const handleShare = (name) => {
+    const link = window.location.href;
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        toast.success(`Link copied! You can share ${name}`);
+      })
+      .catch(() => {
+        toast.error("Failed to copy the link. Please try again.");
+      });
+  };
 
   useEffect(() => {
     fetchFurniture();
@@ -176,11 +189,21 @@ const ViewFurniture = () => {
                     {furniture.shopData?.name || "No shop assigned"}
                   </span>
                   {furniture.id && furniture.shopData.userId && (
-                    <Link
-                      to={`/profile/inbox/new-chat/${furniture.id}/${furniture.shopData.userId}`}
-                    >
-                      <ChatBubbleLeftEllipsisIcon className="w-5 h-5 cursor-pointer text-arfablack" />
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        to={`/profile/inbox/new-chat/${furniture.id}/${furniture.shopData.userId}`}
+                      >
+                        <ChatBubbleLeftEllipsisIcon className="w-5 h-5 cursor-pointer text-arfablack" />
+                      </Link>
+                      <section>
+                        <ShareIcon
+                          className="w-5 h-5 cursor-pointer text-arfablack"
+                          onClick={() => {
+                            handleShare(furniture.name);
+                          }}
+                        />
+                      </section>
+                    </div>
                   )}
                 </span>
               </p>

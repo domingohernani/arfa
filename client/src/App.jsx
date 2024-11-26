@@ -56,6 +56,8 @@ import SellerImageHotspot from "./pages/seller/SellerImageHotspot";
 import AllOrders from "./pages/shopper/sub/AllOrders";
 import InProcessOrders from "./pages/shopper/sub/InProcessOrders";
 import CompletedOrders from "./pages/shopper/sub/CompletedOrders";
+import TermsAndCondition from "./pages/TermsAndCondition";
+import CookiePolicies from "./pages/CookiePolicies";
 
 function App() {
   useEffect(() => {
@@ -79,6 +81,12 @@ function App() {
 
           <Route element={<SignupSeller />} path="/signup-seller"></Route>
           <Route element={<LoginSeller />} path="/login-seller"></Route>
+
+          <Route
+            element={<TermsAndCondition />}
+            path="/terms-and-conditions"
+          ></Route>
+          <Route element={<CookiePolicies />} path="/cookies-policy"></Route>
 
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />

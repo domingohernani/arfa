@@ -288,6 +288,7 @@ export const addFurniture = async (furnitureData, variants) => {
       shop: shopRef,
       createdAt: serverTimestamp(),
       stockUpdatedAt: serverTimestamp(),
+      lower_case_name: furnitureData.name.toLowerCase(),
     });
 
     const { updatedVariants, imgPreviewFilename } = await blobsToImagesPaths(

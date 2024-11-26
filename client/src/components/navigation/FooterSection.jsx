@@ -1,5 +1,5 @@
 import logo from "../../assets/logos/logo_black.svg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function FooterSection() {
   const navigate = useNavigate();
@@ -10,7 +10,9 @@ export function FooterSection() {
           <div class="container flex flex-col flex-wrap px-6 md:px-24 py-24 mx-auto md:items-center lg:items-start md:flex-row md:flex-no-wrap">
             <div class="flex-shrink-0 w-full lg:w-64 mx-auto text-center md:mx-0 md:text-left">
               <a class="flex items-center justify-center font-medium text-gray-900 title-font md:justify-start">
-                <img src={logo} alt="ARFA" className="w-auto h-14" />
+                <Link to={"/"}>
+                  <img src={logo} alt="ARFA" className="w-auto h-14" />
+                </Link>
               </a>
               <p class="mt-2 text-sm text-gray-500">
                 Furnish Your Space, Simplify Your Style.
@@ -152,7 +154,10 @@ export function FooterSection() {
                 </h2>
                 <nav class="mb-10 list-none text-sm">
                   <li class="mt-3">
-                    <a class="text-gray-500 cursor-pointer hover:text-gray-900">
+                    <a
+                      class="text-gray-500 cursor-pointer hover:text-gray-900"
+                      href="/terms-and-conditions"
+                    >
                       Terms &amp; Conditions
                     </a>
                   </li>
@@ -196,10 +201,13 @@ export function FooterSection() {
                 7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
               </span>
               <span className="flex gap-3 mx-auto mt-3 md:mt-0 md:mr-0">
-                <a href="" class="text-xs text-white underline">
+                <a
+                  href="/terms-and-conditions"
+                  class="text-xs text-white underline"
+                >
                   Terms & Conditions
                 </a>
-                <a href="" class="text-xs text-white underline">
+                <a href="/cookies-policy" class="text-xs text-white underline">
                   Cookies Policy
                 </a>
               </span>
