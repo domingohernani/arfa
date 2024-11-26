@@ -8,6 +8,8 @@ import {
   query,
   where,
   Timestamp,
+  serverTimestamp,
+  addDoc,
 } from "firebase/firestore";
 import { db, storage } from "./firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -154,6 +156,7 @@ export const updateBrandName = async (shopId, brandName) => {
 
 export const updateBusinessPermit = async (shopId, businessPermitFile) => {
   try {
+    // Step 1: Upload the file to Firebase Storage
     const permitPath = `files/permit/${businessPermitFile.name}`;
     const permitRef = ref(storage, permitPath);
 
@@ -161,20 +164,52 @@ export const updateBusinessPermit = async (shopId, businessPermitFile) => {
 
     const permitURL = await getDownloadURL(permitRef);
 
+    // Step 2: Update the shop document with the new business permit URL
     const shopRef = doc(db, "shops", shopId);
     await updateDoc(shopRef, {
       businessPermit: permitURL,
     });
 
+    // Step 3: Get all admin documents
+    const adminsCollectionRef = collection(db, "admins");
+    const adminsSnapshot = await getDocs(adminsCollectionRef);
+
+    // Step 4: Create a notification subcollection for each admin
+    const notificationPromises = [];
+    adminsSnapshot.forEach((adminDoc) => {
+      const adminId = adminDoc.id;
+      const notificationRef = collection(
+        db,
+        "admins",
+        adminId,
+        "notifications"
+      );
+
+      const notificationData = {
+        shopId,
+        businessPermitUrl: permitURL,
+        createdAt: serverTimestamp(),
+        type: "permit",
+      };
+
+      notificationPromises.push(addDoc(notificationRef, notificationData));
+    });
+
+    await Promise.all(notificationPromises);
+
     return permitURL;
   } catch (error) {
-    console.error("Error updating business permit:", error);
+    console.error(
+      "Error updating business permit and sending notifications:",
+      error
+    );
     return null;
   }
 };
 
 export const updateValidID = async (shopId, validIDFile) => {
   try {
+    // Step 1: Upload the file to Firebase Storage
     const validIDPath = `files/validId/${validIDFile.name}`;
     const validIDRef = ref(storage, validIDPath);
 
@@ -182,18 +217,45 @@ export const updateValidID = async (shopId, validIDFile) => {
 
     const validIDURL = await getDownloadURL(validIDRef);
 
+    // Step 2: Update the shop document with the new valid ID URL
     const shopRef = doc(db, "shops", shopId);
     await updateDoc(shopRef, {
       validId: validIDURL,
     });
 
+    // Step 3: Get all admin documents
+    const adminsCollectionRef = collection(db, "admins");
+    const adminsSnapshot = await getDocs(adminsCollectionRef);
+
+    // Step 4: Create a notification subcollection for each admin
+    const notificationPromises = [];
+    adminsSnapshot.forEach((adminDoc) => {
+      const adminId = adminDoc.id;
+      const notificationRef = collection(
+        db,
+        "admins",
+        adminId,
+        "notifications"
+      );
+
+      const notificationData = {
+        shopId,
+        validIdUrl: validIDURL,
+        createdAt: serverTimestamp(),
+        type: "validId",
+      };
+
+      notificationPromises.push(addDoc(notificationRef, notificationData));
+    });
+
+    await Promise.all(notificationPromises);
+
     return validIDURL;
   } catch (error) {
-    console.error("Error updating valid ID:", error);
+    console.error("Error updating valid ID and sending notifications:", error);
     return null;
   }
 };
-
 export const fetchTopSellers = async (shopId, timeFilter) => {
   try {
     let start;
