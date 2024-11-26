@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import DisplayStars from "./DisplayStars";
 import { fetchFurnitureCollectionInfiniteScrolling } from "../../firebase/furniture";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   calculateRatingSummary,
   formatToPeso,
@@ -132,7 +132,6 @@ const DisplayFurnitures = () => {
   });
 
   // Infinite scrolling observer
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
