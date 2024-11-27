@@ -70,7 +70,7 @@ export function FooterSection() {
                 <section className="flex flex-col justify-start gap-2">
                   <span class="text-sm text-gray-500">
                     <span class="text-sm text-black font-bold ">
-                      Join with ARIA!
+                      Join with ARFA!
                     </span>
                   </span>
                   <span class="text-sm text-gray-500 leading-relaxed">
@@ -89,7 +89,7 @@ export function FooterSection() {
                 </section>
                 <section className="flex flex-col justify-start gap-2">
                   <span class="text-sm text-black font-bold ">
-                    Grow with ARIA!
+                    Grow with ARFA!
                   </span>
                   <span class="text-sm text-gray-500 leading-relaxed">
                     Grow your business by showcasing your products to a wider
