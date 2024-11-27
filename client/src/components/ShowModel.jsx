@@ -243,6 +243,7 @@ function ShowModel({
         touch-action="pan-y"
         auto-rotate
         src={path}
+        ar-scale="fixed"
         shadow-intensity="1"
         camera-orbit="0deg 90deg 2.9m"
         ref={modelViewerRef}

@@ -251,6 +251,7 @@ function ShowMultiModel({ data }) {
           ar
           ar-modes="webxr scene-viewer quick-look"
           loading="eager"
+          ar-scale="fixed"
           camera-controls
           touch-action="pan-y"
           auto-rotate
