@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { formatToPeso, toSlug } from "../../components/globalFunctions";
 import { useNavigate } from "react-router-dom";
+import priceTag from "../../assets/icons/price-tag.svg";
 
 const Hotspots = () => {
   const [sellerHotspots, setSellerHotspots] = useState([]);
@@ -97,7 +98,7 @@ const Hotspots = () => {
                 {/* Render Hotspots */}
                 {seller.hotspots.map((hotspot) => (
                   <div
-                    title={`Click this circle to visit '${hotspot.furniture?.name}'`}
+                    title={`Click this price tag to visit '${hotspot.furniture?.name}'`}
                     onClick={() => {
                       const slugName = toSlug(hotspot.furniture.name);
                       const id = hotspot.furniture.id;
@@ -109,16 +110,17 @@ const Hotspots = () => {
                       position: "absolute",
                       top: hotspot.top,
                       left: hotspot.left,
-                      width: "25px",
-                      height: "25px",
+                      // width: "5rem",
+                      // height: "auto",
                       borderRadius: "50%",
                       cursor: "pointer",
                       transform: "translate(-50%, -50%)",
                     }}
-                    className="flex items-center justify-center bg-gray-600 border-2 border-gray-700 group"
+                    className="flex items-center justify-center w-10 h-auto md:w-16 lg:w-20 group"
                   >
                     {/* Hotspot Marker */}
                     <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
+                    <img src={priceTag} />
 
                     {/* Tooltip */}
                     <div className="absolute z-20 hidden w-48 p-4 mb-2 text-sm text-black transform -translate-x-1/2 bg-white rounded-md shadow-lg bottom-full left-1/2 group-hover:block">
