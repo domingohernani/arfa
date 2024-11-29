@@ -195,12 +195,15 @@ export function FooterSection() {
               </div>
             </div>
           </div>
-          <div class="bg-arfagreen">
-            <div class="container px-6 text-center md:flex-row md:justify-between md:px-24 py-6 mx-auto flex flex-col">
+          <div class="bg-arfagreen relative z-10 -bottom-8">
+            <div class="container gap-3 px-6 text-center md:flex-row md:justify-between items-center md:px-24 py-6 mx-auto flex flex-col">
               <span class="text-xs text-white">
                 7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
               </span>
-              <span className="flex gap-3 mx-auto mt-3 md:mt-0 md:mr-0">
+              <span className="text-xs text-white">
+                © 2024 All rights reserved{" "}
+              </span>
+              <span className="flex gap-3 justify-evenly md:mt-0 md:mr-0">
                 <a
                   href="/terms-and-conditions"
                   class="text-xs text-white underline"
@@ -215,9 +218,7 @@ export function FooterSection() {
           </div>
         </footer>
       </div>
-      <div className="absolute w-full h-8 py-2 text-xs text-center bg-white">
-        © 2024 All rights reserved{" "}
-      </div>
+      <div className="absolute w-full h-8 py-2 text-xs text-center bg-arfagreen"></div>
     </>
   );
 }
