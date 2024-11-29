@@ -27,6 +27,7 @@ import { getDeliveryFee, updateCartQuantity } from "../../firebase/delivery";
 import { Switch } from "@headlessui/react";
 import { saveOrder } from "../../firebase/orders";
 import { updateStockFromOrder } from "../../firebase/stock";
+import { checkPaymentStatus, createPaymentLink } from "../../firebase/paymongo";
 
 const DisplayFurnituresOnCart = ({
   items,
@@ -182,6 +183,37 @@ const DisplayFurnituresOnCart = ({
     );
   };
 
+  const monitorPaymentStatus = async (paymentId) => {
+    let status = "pending";
+    const interval = setInterval(async () => {
+      status = await checkPaymentStatus(paymentId);
+      console.log("Payment Status:", status);
+
+      if (status) {
+        await saveOrderToDatabase();
+        clearInterval();
+        return true;
+      } else if (status) {
+        console.log("Payment failed!");
+        clearInterval();
+      }
+    }, 1000); // Poll every 5 seconds
+  };
+
+  const savePaymentOrder = async () => {
+    let amount = 3000;
+    let description = "Order Payment";
+    const { checkoutUrl, paymentId } = await createPaymentLink({
+      amount,
+      description,
+    });
+
+    window.open(checkoutUrl, "_blank");
+
+    console.log("Waiting for user to complete payment...");
+    const isPaid = await monitorPaymentStatus(paymentId);
+  };
+
   const saveOrderToDatabase = async () => {
     const allOrders = [];
 
@@ -219,7 +251,6 @@ const DisplayFurnituresOnCart = ({
 
       allOrders.push(orderData);
     });
-
     const orderResult = await saveOrder(allOrders);
     if (orderResult) {
       const userId = auth.currentUser?.uid;
@@ -227,8 +258,7 @@ const DisplayFurnituresOnCart = ({
       const stockResult = await updateStockFromOrder(allOrders);
 
       if (clearResult && stockResult) {
-        toast.success("Your order was placed successfully!");
-        fetchCart();
+        window.location.reload();
       } else if (clearResult) {
         toast.error(
           "Order placed, but we encountered an issue updating stock."
@@ -514,7 +544,7 @@ const DisplayFurnituresOnCart = ({
               </div>
 
               <button
-                onClick={saveOrderToDatabase}
+                onClick={savePaymentOrder}
                 className="flex w-fit mx-auto bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
               >
                 Proceed to Checkout
