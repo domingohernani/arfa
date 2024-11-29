@@ -11,6 +11,7 @@ import { saveImageHotspotData, getImageHotspotData } from "../../firebase/shop";
 import { useStore } from "../../stores/useStore";
 import imageHotspot from "../../assets/images/image-hotspot.svg";
 import { ImageHotspotExplain } from "../../components/modals/ImageHotspotExplain";
+import priceTag from "../../assets/icons/price-tag.svg";
 
 const SellerImageHotspot = () => {
   const [isMarkMode, setIsMarkMode] = useState(true);
@@ -263,14 +264,12 @@ const SellerImageHotspot = () => {
               {hotspots.map((hotspot) => (
                 <div
                   // title={`Click this cicle to visit '${visibleContent?.name}'`}
-                  className="flex items-center justify-center bg-gray-600 border-2 border-gray-700"
+                  className="flex items-center justify-center w-10 h-auto md:w-10 lg:w-12 group"
                   key={hotspot.id}
                   style={{
                     position: "absolute",
                     top: hotspot.top,
                     left: hotspot.left,
-                    width: "25px",
-                    height: "25px",
                     borderRadius: "50%",
                     cursor: "pointer",
                     transform: "translate(-50%, -50%)",
@@ -283,6 +282,7 @@ const SellerImageHotspot = () => {
                   }}
                 >
                   <div className="w-3 h-3 bg-white rounded-full opacity-100"></div>
+                  <img src={priceTag} />
 
                   {/* Tooltip positioned above the hotspot */}
                   {visibleContent &&

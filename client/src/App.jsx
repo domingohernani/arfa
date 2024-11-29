@@ -60,6 +60,8 @@ import TermsAndCondition from "./pages/TermsAndCondition";
 import CookiePolicies from "./pages/CookiePolicies";
 import CookiesBar from "./components/modals/CookiesBar";
 
+import CookiesBar from "./components/modals/CookiesBar";
+import FAQ from "./pages/FAQ";
 function App() {
   useEffect(() => {
     AOS.init({
@@ -88,6 +90,8 @@ function App() {
             path="/terms-and-conditions"
           ></Route>
           <Route element={<CookiePolicies />} path="/cookies-policy"></Route>
+
+          <Route element={<FAQ />} path="/frequently-asked-questions"></Route>
 
           <Route path="/catalog" element={<Catalog />}>
             <Route index element={<DisplayFurniture />} />
