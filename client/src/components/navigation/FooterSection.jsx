@@ -54,7 +54,10 @@ export function FooterSection() {
                       </svg>
                     </span>
                   </a>
-                  <a className="ml-3 text-gray-500 cursor-pointer hover:text-gray-700">
+                  <a
+                    className="ml-3 text-gray-500 cursor-pointer hover:text-gray-700"
+                    href="https://www.facebook.com/shopwithariaph"
+                  >
                     <span className="[&>svg]:h-5 [&>svg]:w-5">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +111,7 @@ export function FooterSection() {
                 </section>
               </div>
             </div>
-            <div className="grid grid-cols-2 mt-10 -mb-10 text-center md:gap-10 w-fit justify-evenly md:mt-0 md:text-left">
+            <div className="grid grid-cols-2 mt-10 -mb-10 text-center w-fit justify-evenly md:mt-0 md:text-left">
               <div className="w-full px-4 text-left">
                 <h2 className="mb-3 text-sm font-medium text-gray-900 uppercase title-font">
                   About
@@ -154,9 +157,17 @@ export function FooterSection() {
                       FAQ
                     </a>
                   </li>
+                  <li className="mt-3">
+                    <a
+                      href="/cookies-policy"
+                      className="text-gray-500 cursor-pointer hover:text-gray-900"
+                    >
+                      Cookies Policy
+                    </a>
+                  </li>
                 </nav>
               </div>
-              <div className="w-full px-4 text-left">
+              <div className="w-full col-span-2 px-4 text-left">
                 <h2 className="mb-3 text-sm font-medium text-gray-900 uppercase title-font">
                   Contact
                 </h2>
@@ -177,19 +188,24 @@ export function FooterSection() {
                       +639453467841
                     </a>
                   </li>
+                  <li className="mt-3 ">
+                    <a className="text-gray-500 cursor-pointer hover:text-gray-900 w-fit">
+                      7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
+                    </a>
+                  </li>
                 </nav>
               </div>
             </div>
           </div>
           <div className="relative z-10 bg-arfagreen -bottom-8">
             <div className="container flex flex-col items-center gap-3 px-6 py-6 mx-auto text-center md:flex-row md:justify-between md:px-24">
-              <span className="text-xs text-white">
+              {/* <span className="text-xs text-white">
                 7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
-              </span>
-              <span className="text-xs text-white">
+              </span> */}
+              <span className="mx-auto text-xs text-white">
                 © 2024 All rights reserved{" "}
               </span>
-              <span className="flex gap-3 justify-evenly md:mt-0 md:mr-0">
+              {/* <span className="flex gap-3 justify-evenly md:mt-0 md:mr-0">
                 <a
                   href="/terms-and-conditions"
                   className="text-xs text-white underline"
@@ -202,7 +218,7 @@ export function FooterSection() {
                 >
                   Cookies Policy
                 </a>
-              </span>
+              </span> */}
             </div>
           </div>
         </footer>
