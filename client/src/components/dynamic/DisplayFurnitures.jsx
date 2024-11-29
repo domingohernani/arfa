@@ -38,6 +38,7 @@ const DisplayFurnitures = () => {
   const minPrice = useStore((state) => state.minPrice);
   const maxPrice = useStore((state) => state.maxPrice);
   const sortOption = useStore((state) => state.sortOption);
+  const searchValue = useStore((state) => state.searchValue);
 
   // Dimensions
   const width = useStore((state) => state.width);
@@ -53,6 +54,13 @@ const DisplayFurnitures = () => {
       filters.push(where("category", "==", unSlug(category)));
 
     if (sale) filters.push(where("isSale", "==", true));
+
+    if (searchValue && searchValue.trim() !== "") {
+      filters.push(where("lower_case_name", ">=", searchValue.toLowerCase()));
+      filters.push(
+        where("lower_case_name", "<", searchValue.toLowerCase() + "\uf8ff")
+      );
+    }
 
     if (newArrival) {
       const now = new Date();
@@ -114,6 +122,7 @@ const DisplayFurnitures = () => {
         width,
         depth,
         height,
+        searchValue,
       },
     ],
     queryFn: fetchFurnitures,

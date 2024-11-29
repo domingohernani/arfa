@@ -43,6 +43,8 @@ export const startChat = async ({ shopId, shopperId, messageText }) => {
         lastMessageTimestamp: serverTimestamp(),
         createdAt: serverTimestamp(),
         senderId: shopperId,
+        isSellerRead: false,
+        isShopperRead: false,
       });
     } else {
       // Chat does not exist, create a new one
@@ -56,6 +58,8 @@ export const startChat = async ({ shopId, shopperId, messageText }) => {
         createdAt: serverTimestamp(),
         isSellerTyping: false,
         isShopperTyping: false,
+        isSellerRead: false,
+        isShopperRead: false,
         imageUrl: null,
         videoUrl: null,
       });
@@ -246,6 +250,8 @@ const updatePreviewChat = async (
         imageUrl: imageUrl,
         videoUrl: videoUrl,
         createdAt: serverTimestamp(),
+        isSellerRead: false,
+        isShopperRead: false,
       };
 
       await updateDoc(chatDocRef, updateData);
@@ -299,5 +305,25 @@ export const updateTypingStatus = async (chatId, userType, isTyping) => {
     }
   } catch (error) {
     console.error("Error updating typing status:", error);
+  }
+};
+
+export const updateChatReadStatus = async (chatId, userType) => {
+  try {
+    // Reference the Firestore document
+    const chatRef = doc(db, "chats", chatId);
+
+    // Determine the field to update based on userType
+    const fieldToUpdate =
+      userType === "shopper" ? "isShopperRead" : "isSellerRead";
+
+    // Update the document
+    await updateDoc(chatRef, {
+      [fieldToUpdate]: true,
+    });
+    return true;
+  } catch (error) {
+    return false;
+    console.error("Error updating chat read status:", error);
   }
 };

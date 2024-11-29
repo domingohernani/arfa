@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Import hooks for routing
 import search from "../../assets/icons/search.svg";
-import { getChatsByShopperId } from "../../firebase/chats";
+import {
+  getChatsByShopperId,
+  updateChatReadStatus,
+} from "../../firebase/chats";
 import DisplayAvatar from "../../components/dynamic/DisplayAvatar";
 import { formatTimeAgo } from "../../components/globalFunctions";
 import DisplayChat from "../../components/dynamic/DisplayChat";
@@ -76,6 +79,14 @@ const Inbox = () => {
       }
     };
   }, [setChats]);
+
+  const messageRead = async (id) => {
+    try {
+      await updateChatReadStatus(id, "shopper");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Update selected chat based on route param `id`
   useEffect(() => {
@@ -182,7 +193,10 @@ const Inbox = () => {
                   <section
                     className="cursor-pointer"
                     key={index}
-                    onClick={() => handleChatSelect(chat)}
+                    onClick={() => {
+                      handleChatSelect(chat);
+                      messageRead(chat.id);
+                    }}
                   >
                     <div
                       className={`${
@@ -198,16 +212,30 @@ const Inbox = () => {
                             className="w-10 h-10"
                             name={shopInfo.name || ""}
                           />
-                          <div className="flex w-full text-sm font-medium truncate text-arfablack">
+                          <div
+                            className={`flex w-full text-sm font-medium truncate text-arfablack ${
+                              chat.isShopperRead
+                                ? "font-medium"
+                                : "font-semibold"
+                            }`}
+                          >
                             {shopInfo.name || "Unknown Shop"}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div
+                          className={`text-sm text-gray-500 ${
+                            chat.isShopperRead ? "font-medium" : "font-semibold"
+                          }`}
+                        >
                           {formatTimeAgo(chat.lastMessageTimestamp)}
                         </div>
                       </div>
 
-                      <div className="flex flex-row items-center space-x-1">
+                      <div
+                        className={`flex flex-row items-center space-x-1 ${
+                          chat.isShopperRead ? "font-medium" : "font-semibold"
+                        }`}
+                      >
                         {(chat.lastMessage ||
                           chat.imageUrl ||
                           chat.videoUrl) && (
@@ -275,7 +303,10 @@ const Inbox = () => {
                 <section
                   className="cursor-pointer"
                   key={index}
-                  onClick={() => handleChatSelect(chat)}
+                  onClick={() => {
+                    handleChatSelect(chat);
+                    messageRead(chat.id);
+                  }}
                 >
                   <div
                     className={`${

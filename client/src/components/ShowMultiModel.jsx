@@ -253,6 +253,7 @@ function ShowMultiModel({ data }) {
           loading="eager"
           ar-scale="fixed"
           camera-controls
+          ar-scale="fixed"
           touch-action="pan-y"
           auto-rotate
           shadow-intensity="1"

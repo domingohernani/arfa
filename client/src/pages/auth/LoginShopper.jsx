@@ -13,6 +13,7 @@ import facebook from "../../assets/icons/facebook.png";
 import { toast, Toaster } from "react-hot-toast";
 import loginimg from "../../assets/images/signin.png";
 import { ForgotPassword } from "../../components/modals/ForgotPassword";
+import { FooterSection } from "../../components/navigation/FooterSection";
 
 const LoginShopper = () => {
   const [email, setEmail] = useState("");
@@ -234,6 +235,9 @@ const LoginShopper = () => {
           </section>
         </div>
       </div>
+      <section>
+        <FooterSection></FooterSection>
+      </section>
     </>
   );
 };

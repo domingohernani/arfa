@@ -108,7 +108,7 @@ const SellerTransaction = () => {
           );
           return (
             <div className="flex items-center justify-between">
-              <span className={`font-bold ${colorClass} font-normal`}>
+              <span className={`font-bold ${colorClass} font-semibold`}>
                 {statusText}
               </span>
               <div className={`w-3 h-3 rounded-full ${bgColorClass}`}></div>

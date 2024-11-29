@@ -41,7 +41,7 @@ function SellerNavigationBar() {
               aria-hidden="true"
             />
           </Link>
-          <NotificationDrawer />
+          {/* <NotificationDrawer /> */}
         </div>
         <div className="flex items-center w-48 md:w-full">
           <DisplayAvatar

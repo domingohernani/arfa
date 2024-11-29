@@ -7,6 +7,7 @@ import "@ag-grid-community/styles/ag-theme-alpine.css";
 import { useEffect } from "react";
 import {
   deleteFurniture,
+  deleteFurnitures,
   fetchFurnitureCollection,
 } from "../../firebase/furniture";
 import { where } from "firebase/firestore";
@@ -18,6 +19,8 @@ import { CustomHoverCopyCell } from "../../components/tables/CustomHoverCopyCell
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { DeleteProductModal } from "../../components/modals/DeleteProductModal";
 import { formatToPeso } from "../../components/globalFunctions";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { DeleteMultipleProductModal } from "../../components/modals/DeleteMultipleProductModal";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -26,13 +29,22 @@ const SellerProductsListing = () => {
   const location = useLocation();
   const gridRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
+  const [productDeletionModal, setProductDeletionModal] = useState(false);
   const [furnitureName, setFurnitureName] = useState("");
   const [furnitureId, setFurnitureId] = useState("");
+  const [hasSelectedRows, setHasSelectedRows] = useState(false); // Track if rows are selected
   const { loggedUser } = useStore();
   const { rowFurnituresData, setRowFurnituresData } = useStore();
 
   const columnDefs = useMemo(
     () => [
+      {
+        headerCheckboxSelection: true,
+        checkboxSelection: true,
+        width: 50,
+        pinned: "left",
+        floatingFilter: false,
+      },
       {
         headerName: "Product ID",
         field: "id",
@@ -185,6 +197,10 @@ const SellerProductsListing = () => {
     setModalOpen(false);
   };
 
+  const closeMultiModal = () => {
+    setProductDeletionModal(false);
+  };
+
   const deleteProduct = async () => {
     try {
       const result = await deleteFurniture(furnitureId);
@@ -198,24 +214,75 @@ const SellerProductsListing = () => {
       toast.error("Error deleting furniture. Please try again.");
     }
   };
+
+  const multiDeleteProduct = async () => {
+    try {
+      const selectedNodes = gridRef.current.api.getSelectedNodes();
+      const selectedIds = selectedNodes.map((node) => node.data.id);
+
+      if (selectedIds.length === 0) {
+        toast.error("No products selected for deletion.");
+        return;
+      }
+
+      await deleteFurnitures(selectedIds);
+
+      fetchFurniture();
+
+      toast.success("Selected products deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting products: ", error);
+      toast.error("Failed to delete selected products. Please try again.");
+    }
+  };
+
+  // Handle row selection changes
+  const onSelectionChanged = () => {
+    const selectedNodes = gridRef.current.api.getSelectedNodes();
+    setHasSelectedRows(selectedNodes.length > 0); // Update the state based on selection
+  };
+
   const isOutletPage = location.pathname.includes("/product-info/details/");
 
   return (
     <>
       {!isOutletPage ? (
         <>
-          {modalOpen && (
-            <DeleteProductModal
-              isOpen={modalOpen}
-              close={closeModal}
-              name={furnitureName}
-              deleteProduct={deleteProduct}
-            />
-          )}
+          {modalOpen ||
+            (productDeletionModal && (
+              <>
+                <DeleteProductModal
+                  isOpen={modalOpen}
+                  close={closeModal}
+                  name={furnitureName}
+                  deleteProduct={deleteProduct}
+                />
+                <DeleteMultipleProductModal
+                  isOpen={productDeletionModal}
+                  close={closeMultiModal}
+                  name={"these products"}
+                  deleteProduct={multiDeleteProduct}
+                />
+              </>
+            ))}
           <div
             className="p-5 ag-theme-quartz"
             style={{ height: "max(600px, 90%)", width: "100%" }}
           >
+            {/* Conditionally render the button */}
+            {hasSelectedRows && (
+              <div className="flex">
+                <button
+                  onClick={() => {
+                    setProductDeletionModal(true);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 mb-4 text-white rounded bg-arfagreen"
+                >
+                  <TrashIcon className="w-5 h-5 text-white" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            )}
             <AgGridReact
               rowData={rowFurnituresData}
               ref={gridRef}
@@ -227,6 +294,7 @@ const SellerProductsListing = () => {
               paginationPageSize={15}
               paginationPageSizeSelector={[15, 25, 50]}
               domLayout="normal"
+              onSelectionChanged={onSelectionChanged} // Add selection change handler
             />
           </div>
           <Toaster />
