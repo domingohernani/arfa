@@ -59,8 +59,6 @@ import CompletedOrders from "./pages/shopper/sub/CompletedOrders";
 import TermsAndCondition from "./pages/TermsAndCondition";
 import CookiePolicies from "./pages/CookiePolicies";
 import CookiesBar from "./components/modals/CookiesBar";
-
-import CookiesBar from "./components/modals/CookiesBar";
 import FAQ from "./pages/FAQ";
 function App() {
   useEffect(() => {
