@@ -170,6 +170,7 @@ const DisplayFurnitures = () => {
         <Link
           to={`item/${toSlug(furniture.name)}/${furniture.id}`}
           key={furniture.id}
+          onClick={() => window.scrollTo({ top: 0 })}
         >
           <article className="relative cursor-pointer">
             <div className="overflow-hidden border rounded-lg aspect-square">
