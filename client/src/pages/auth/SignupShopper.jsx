@@ -187,7 +187,7 @@ const SignupShopper = () => {
         </div>
       </div>
       <section>
-        <FooterSection></FooterSection>
+        <FooterSection topMargin=""></FooterSection>
       </section>
     </>
   );
