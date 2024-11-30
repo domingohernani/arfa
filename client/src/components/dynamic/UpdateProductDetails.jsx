@@ -534,8 +534,8 @@ const UpdateProductDetails = ({
             </li>
             <span className="text-sm italic text-gray-600">
               Need help? Contact us at{" "}
-              <a href="mailto:arifa@gmail.com" className="text-arfagreen">
-                arifa@gmail.com
+              <a href="mailto:arfa@gmail.com" className="text-arfagreen">
+                arfa@gmail.com
               </a>
             </span>
           </div>
