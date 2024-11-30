@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import DisplayStars from "./DisplayStars";
 import { fetchFurnitureCollectionInfiniteScrolling } from "../../firebase/furniture";
@@ -44,6 +44,8 @@ const DisplayFurnitures = () => {
   const width = useStore((state) => state.width);
   const depth = useStore((state) => state.depth);
   const height = useStore((state) => state.height);
+
+  const [showSkeleton, setShowSkeleton] = useState(false);
 
   // Data Fetching Function
   const fetchFurnitures = async ({
@@ -152,6 +154,18 @@ const DisplayFurnitures = () => {
     };
   }, [hasNextPage, fetchNextPage]);
 
+  useEffect(() => {
+    if (isFetchingNextPage) {
+      const timeout = setTimeout(() => {
+        setShowSkeleton(true);
+      }, 300);
+
+      return () => clearTimeout(timeout);
+    } else {
+      setShowSkeleton(false);
+    }
+  }, [isFetchingNextPage]);
+
   const displaySkeleton = useCallback((numSkeletons) => {
     return (
       <section className="bg-white md:pl-8 text-arfablack">
@@ -251,6 +265,9 @@ const DisplayFurnitures = () => {
         <div className="max-w-screen-xl mx-auto">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
             {displayFurnitures(furnitures, imageUrls)}
+
+            {/* Skeleton loader for infinite scrolling */}
+            {showSkeleton && <DisplayFurnituresSkeleton numSkeletons={5} />}
           </div>
 
           {furnitures.length === 0 && !isLoading && (
@@ -267,13 +284,24 @@ const DisplayFurnitures = () => {
           )}
         </div>
       </section>
-      <div id="load-more-trigger">
-        {isFetchingNextPage && isLoading ? (
-          <section className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
-            <DisplayFurnituresSkeleton numSkeletons={10} />
-          </section>
-        ) : (
-          hasNextPage
+
+      {/* Load More Trigger and End of Page Message */}
+      <div id="load-more-trigger" className="mt-8 text-center">
+        {showSkeleton && (
+          <div className="bg-white md:pl-8 text-arfablack">
+            <div className="max-w-screen-xl mx-auto">
+              <section className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
+                <DisplayFurnituresSkeleton numSkeletons={5} />
+              </section>
+            </div>
+          </div>
+        )}
+
+        {/* End of page message */}
+        {!hasNextPage && furnitures.length > 0 && (
+          <p className="mt-8 text-sm font-medium text-gray-500">
+            You've reached the end of the results.
+          </p>
         )}
       </div>
     </>
