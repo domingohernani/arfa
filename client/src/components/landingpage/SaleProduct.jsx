@@ -71,6 +71,7 @@ const SaleProduct = () => {
             <Link
               to={`catalog/item/${toSlug(product.name)}/${product.id}`}
               key={product.id}
+              onClick={() => window.scrollTo({ top: 0 })}
             >
               <article className="relative cursor-pointer">
                 {/* Image Section */}
