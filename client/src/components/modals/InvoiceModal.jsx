@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Dialog,
   Transition,
@@ -7,14 +7,33 @@ import {
   DialogPanel,
 } from "@headlessui/react";
 import { formatToPeso } from "../globalFunctions";
+import { getCommissionRate, getTax } from "../../firebase/platform";
 
 export const InvoiceModal = ({ isOpen, close, invoice }) => {
-  const handleCancel = () => {
-    close();
-  };
+  const [taxRate, setTaxRate] = useState(0);
+  const [commissionRate, setCommissionRate] = useState(0);
 
-  // Calculate the commission fee
-  const commissionFee = invoice.orderTotal * 0.05;
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const tax = await getTax();
+        setTaxRate(tax.value || 0.12);
+
+        const commission = await getCommissionRate();
+        setCommissionRate(commission.value);
+      } catch (error) {
+        console.error("Failed to fetch rates:", error);
+      }
+    };
+
+    if (isOpen) {
+      fetchRates();
+    }
+  }, [isOpen]);
+
+  const commissionFee = invoice.orderTotal * commissionRate;
+
+  const tax = invoice.orderTotal * taxRate;
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -94,22 +113,34 @@ export const InvoiceModal = ({ isOpen, close, invoice }) => {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm">Commission Fee (5%)</span>
-                      <span className="text-sm font-medium">
-                        {formatToPeso(commissionFee)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
                       <span className="text-sm">Delivery Fee</span>
                       <span className="text-sm font-medium">
                         {formatToPeso(invoice.deliveryFee)}
                       </span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">
+                        Tax ({(taxRate * 100).toFixed(0)}%)
+                      </span>
+                      <span className="text-sm font-medium">
+                        {formatToPeso(tax)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">
+                        Commission Fee ({(commissionRate * 100).toFixed(0)}%)
+                      </span>
+                      <span className="text-sm font-medium">
+                        {formatToPeso(commissionFee)}
+                      </span>
+                    </div>
+
                     <div className="flex justify-between text-base font-semibold">
                       <span>Total</span>
                       <span>
                         {formatToPeso(
                           invoice.orderTotal +
+                            tax +
                             commissionFee +
                             invoice.deliveryFee
                         )}
@@ -123,7 +154,7 @@ export const InvoiceModal = ({ isOpen, close, invoice }) => {
                   <button
                     type="button"
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 focus:outline-none"
-                    onClick={handleCancel}
+                    onClick={close}
                   >
                     Close
                   </button>

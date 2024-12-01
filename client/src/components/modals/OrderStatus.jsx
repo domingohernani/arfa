@@ -18,6 +18,8 @@ import {
 import { updateOrderStatus, uploadPOD } from "../../firebase/orders";
 import { UploadPOD } from "./UploadPOD";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
+import { getCancellations } from "../../firebase/cancellation";
 
 const statusFlowOptions = {
   pickup: [
@@ -25,6 +27,11 @@ const statusFlowOptions = {
       status: "Placed",
       icon: ShoppingCartIcon,
       description: "The customer has successfully placed the order.",
+    },
+    {
+      status: "Cancelled",
+      icon: XCircleIcon,
+      description: "The order has been cancelled and will not proceed further.",
     },
     {
       status: "Confirmed",
@@ -49,6 +56,11 @@ const statusFlowOptions = {
       status: "Placed",
       icon: ShoppingCartIcon,
       description: "The customer has successfully placed the order.",
+    },
+    {
+      status: "Cancelled",
+      icon: XCircleIcon,
+      description: "The order has been cancelled and will not proceed further.",
     },
     {
       status: "Confirmed",
@@ -87,7 +99,13 @@ const getNextStatus = (currentStatus, statusFlow) => {
   if (currentIndex === -1 || currentIndex === statusFlow.length - 1) {
     return null;
   }
-  return statusFlow[currentIndex + 1].status;
+
+  let step = 1;
+  if (currentStatus === "Placed") {
+    step = 2;
+  }
+
+  return statusFlow[currentIndex + step].status;
 };
 
 export const OrderStatus = ({
@@ -107,16 +125,29 @@ export const OrderStatus = ({
   const [isUploadPOD, setIsUploadPOD] = useState(false);
   const [imagePOD, setImagePOD] = useState(null);
   const [imagePODPreview, setPODPreview] = useState("");
+  const [cancellations, setCancellations] = useState([]);
 
   const nextStatus = getNextStatus(status, statusFlow);
 
   const handleUpdateStatus = async () => {
-    if (status === "Picked-up" || status === "Delivered") {
+    // Prevent updates if the current status is not allowed for transitions
+    if (
+      status === "Picked-up" ||
+      status === "Delivered" ||
+      status === "Cancelled"
+    ) {
       toast.error("No further updates allowed.");
       return;
     }
 
     try {
+      // Ensure "Cancelled" cannot be the next status
+      if (nextStatus === "Cancelled") {
+        toast.error("Cannot update the status to 'Cancelled'.");
+        return;
+      }
+
+      // Check for Proof of Delivery (POD) if required
       if (
         ((nextStatus === "Delivered" && onDelivery) ||
           nextStatus === "Picked-up") &&
@@ -125,14 +156,18 @@ export const OrderStatus = ({
         setIsUploadPOD(true);
         return;
       }
+
+      // Update the status if there's a valid next step
       if (nextStatus) {
         if (nextStatus === "Delivered" || nextStatus === "Picked-up") {
           await uploadPOD(orderId, imagePOD);
         }
         await updateOrderStatus(orderId, nextStatus);
+
         if (refreshPage) {
           refreshPage();
         }
+
         toast.success(`Order status updated to: ${nextStatus}`);
       } else {
         toast.error("No further status to update.");
@@ -141,6 +176,7 @@ export const OrderStatus = ({
       console.error("Error updating status:", error);
       toast.error("Failed to update order status. Please try again.");
     }
+
     close();
   };
   const handleImagePOD = (file) => {
@@ -157,6 +193,21 @@ export const OrderStatus = ({
   const handleClosePOD = () => {
     setIsUploadPOD(false);
   };
+
+  useEffect(() => {
+    const fetchCancellations = async () => {
+      try {
+        const data = await getCancellations(orderId);
+        setCancellations(data);
+      } catch (error) {
+        console.error("Error fetching cancellations:", error);
+      }
+    };
+
+    if (orderId) {
+      fetchCancellations();
+    }
+  }, [orderId]);
 
   return (
     <>
@@ -203,6 +254,7 @@ export const OrderStatus = ({
                       previewPODUrl={imagePODPreview}
                       podUrl={podUrl}
                       onDelivery={onDelivery}
+                      cancellations={cancellations}
                     />
                   </div>
                   <div className="flex justify-between mt-4">
@@ -211,9 +263,9 @@ export const OrderStatus = ({
                       className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md bg-arfagreen hover:bg-green-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-opacity-75"
                       onClick={handleUpdateStatus}
                     >
-                      {nextStatus
-                        ? `Next: ${nextStatus}`
-                        : "No further updates"}
+                      {status === "Cancelled" || !nextStatus
+                        ? "No further updates"
+                        : `Next: ${nextStatus}`}
                     </button>
                     <button
                       type="button"
@@ -240,6 +292,7 @@ const Tracking = ({
   previewPODUrl,
   podUrl,
   onDelivery,
+  cancellations,
 }) => {
   const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
   const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
@@ -281,51 +334,114 @@ const Tracking = ({
 
             <div className="p-4 space-y-6 bg-white rounded-lg">
               <ol className="relative border-gray-200 ms-3 border-s dark:border-gray-700">
-                {statusesToShow.map((item, index) => (
-                  <li key={index} className="mb-10 ms-6">
-                    <span
-                      className={`absolute -start-3 flex h-7 ${
-                        item.status === currentStatus
-                          ? "bg-arfagreen"
-                          : "bg-gray-100"
-                      } w-7 items-center justify-center rounded-full `}
-                    >
-                      <item.icon
-                        className={` w-4 h-4 ${
-                          item.status === currentStatus
-                            ? "text-white"
-                            : "text-green-400"
-                        }`}
-                      />
-                    </span>
-                    <p
-                      className={`mb-0.5 text-sm ${
-                        item.status === currentStatus
-                          ? "font-medium text-arfagreen"
-                          : "font-normal text-gray-900"
-                      }`}
-                    >
-                      {item.status}
-                    </p>
-                    <p
-                      className={`text-sm  ${
-                        item.status === currentStatus
-                          ? "text-arfablack font-medium"
-                          : "text-gray-500 font-normal"
-                      }`}
-                    >
-                      {item.description}
-                    </p>
-                    {statusTimestamps && statusTimestamps[item.status] && (
-                      <p className="mt-1 text-xs text-gray-400">
-                        Updated on:{" "}
-                        {new Date(
-                          statusTimestamps[item.status].seconds * 1000
-                        ).toLocaleString()}
-                      </p>
-                    )}
-                  </li>
-                ))}
+                {statusesToShow.map((item, index) => {
+                  if (item.status !== "Cancelled") {
+                    return (
+                      <li key={index} className="mb-10 ms-6">
+                        <span
+                          className={`absolute -start-3 flex h-7 ${
+                            item.status === currentStatus
+                              ? "bg-arfagreen"
+                              : "bg-gray-100"
+                          } w-7 items-center justify-center rounded-full `}
+                        >
+                          <item.icon
+                            className={` w-4 h-4 ${
+                              item.status === currentStatus
+                                ? "text-white"
+                                : "text-green-400"
+                            }`}
+                          />
+                        </span>
+                        <p
+                          className={`mb-0.5 text-sm ${
+                            item.status === currentStatus
+                              ? "font-medium text-arfagreen"
+                              : "font-normal text-gray-900"
+                          }`}
+                        >
+                          {item.status}
+                        </p>
+                        <p
+                          className={`text-sm  ${
+                            item.status === currentStatus
+                              ? "text-arfablack font-medium"
+                              : "text-gray-500 font-normal"
+                          }`}
+                        >
+                          {item.description}
+                        </p>
+                        {statusTimestamps && statusTimestamps[item.status] && (
+                          <p className="mt-1 text-xs text-gray-400">
+                            Updated on:{" "}
+                            {new Date(
+                              statusTimestamps[item.status].seconds * 1000
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  } else if (currentStatus === "Cancelled") {
+                    return (
+                      <li key={index} className="mb-10 ms-6">
+                        <span
+                          className={`absolute -start-3 flex h-7 ${
+                            item.status === currentStatus
+                              ? "bg-arfagreen"
+                              : "bg-gray-100"
+                          } w-7 items-center justify-center rounded-full `}
+                        >
+                          <item.icon
+                            className={` w-4 h-4 ${
+                              item.status === currentStatus
+                                ? "text-white"
+                                : "text-green-400"
+                            }`}
+                          />
+                        </span>
+                        <p
+                          className={`mb-0.5 text-sm ${
+                            item.status === currentStatus
+                              ? "font-medium text-arfagreen"
+                              : "font-normal text-gray-900"
+                          }`}
+                        >
+                          {item.status}
+                        </p>
+                        <p
+                          className={`text-sm  ${
+                            item.status === currentStatus
+                              ? "text-arfablack font-medium"
+                              : "text-gray-500 font-normal"
+                          }`}
+                        >
+                          {item.description}
+                        </p>
+                        {cancellations && cancellations.reason && (
+                          <p className={`text-sm text-black font-medium`}>
+                            • Reason/s:{" "}
+                            {cancellations.reason.map(
+                              (reason, index) =>
+                                `"${reason}"${
+                                  index !== cancellations.reason.length - 1
+                                    ? ", "
+                                    : ""
+                                }`
+                            )}
+                          </p>
+                        )}
+                        {statusTimestamps && statusTimestamps[item.status] && (
+                          <p className="mt-1 text-xs text-gray-400">
+                            Updated on:{" "}
+                            {new Date(
+                              statusTimestamps[item.status].seconds * 1000
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  }
+                })}
               </ol>
             </div>
           </div>

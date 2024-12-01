@@ -8,6 +8,7 @@ import heroBg from "../assets/images/hero-bg.png";
 import logo from "../assets/logos/logo_white.svg";
 import Hotspots from "../components/landingpage/Hotspots";
 import CookiesBar from "../components/modals/CookiesBar";
+import SaleProduct from "../components/landingpage/SaleProduct";
 
 const LandingPage = () => {
   return (
@@ -82,8 +83,12 @@ const LandingPage = () => {
             <Testimonials />
           </section>
           <section>
+            <SaleProduct />
+          </section>
+          <section>
             <Hotspots />
           </section>
+
           {/* <section className="bg-white">
             <Newsletter />
           </section> */}

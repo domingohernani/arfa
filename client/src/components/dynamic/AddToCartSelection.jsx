@@ -26,6 +26,11 @@ const AddToCartSelection = ({ path, furniture }) => {
 
   const handleAddToCart = async (variantName) => {
     // if wala pang address ang user
+    const userLoggedIn = auth.currentUser;
+    if (!userLoggedIn) {
+      toast.error("You must be logged in to add items to your cart.");
+    }
+
     const user = await getUserInfo();
 
     const { firstName, lastName, phoneNumber, location } = user;

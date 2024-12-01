@@ -19,11 +19,15 @@ import {
 import Show3D from "./dynamic/Show3D";
 import ViewFurnitureSkeleton from "./skeletons/ViewFurnitureSkeleton";
 import MaximizeImages from "./dynamic/MaximizeImages";
-import { ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
+import {
+  ChatBubbleLeftEllipsisIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 import { addToWishlist } from "../firebase/wishlist";
 import toast, { Toaster } from "react-hot-toast";
 import AddToCartSelection from "./dynamic/AddToCartSelection";
 import { getUserInfo } from "../firebase/user";
+import { InformationProduct } from "./modals/InformationProduct";
 
 const ViewFurniture = () => {
   const { id } = useParams();
@@ -38,6 +42,7 @@ const ViewFurniture = () => {
   const updateIsAddToCartOpen = useStore(
     (state) => state.updateIsAddToCartOpen
   );
+  const [informationOpen, setInformationOpen] = useState(false);
 
   const showAverageOfReview = (number) => {
     setAveReview(number);
@@ -122,6 +127,10 @@ const ViewFurniture = () => {
     }
   };
 
+  const handleInformationClose = () => {
+    setInformationOpen(false);
+  };
+
   if (loading) {
     return <ViewFurnitureSkeleton></ViewFurnitureSkeleton>;
   }
@@ -133,6 +142,12 @@ const ViewFurniture = () => {
   return (
     <section>
       <Toaster />
+      {informationOpen && (
+        <InformationProduct
+          isOpen={informationOpen}
+          close={handleInformationClose}
+        />
+      )}
       <section className="box-border pt-5 antialiased lg:pl-8 md:pl-4 dark:bg-gray-900">
         <div className="max-w-screen-xl px-4 mx-auto lg:pb-24 min-h-fit 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 xl:gap-6">
@@ -200,6 +215,14 @@ const ViewFurniture = () => {
                           className="w-5 h-5 cursor-pointer text-arfablack"
                           onClick={() => {
                             handleShare(furniture.name);
+                          }}
+                        />
+                      </section>
+                      <section>
+                        <InformationCircleIcon
+                          className="w-5 h-5 cursor-pointer text-arfablack"
+                          onClick={() => {
+                            setInformationOpen(true);
                           }}
                         />
                       </section>
@@ -281,7 +304,7 @@ const ViewFurniture = () => {
 
               <p className="mt-6 text-sm leading-relaxed text-arfablack">
                 {furniture.description}
-                <div className="flex flex-wrap items-center gap-1 mt-4">
+                <div className="flex flex-wrap items-center gap-1 my-2">
                   <span className="text-sm leading-relaxed text-arfablack">
                     Width: {furniture.width} cm /
                   </span>
@@ -291,6 +314,11 @@ const ViewFurniture = () => {
                   <span className="text-sm leading-relaxed text-arfablack">
                     Height: {furniture.height} cm
                   </span>
+                </div>
+                <div>
+                  {furniture?.varantyInYears
+                    ? `Warranty: ${furniture.varantyInYears} year/s`
+                    : ""}
                 </div>
               </p>
             </div>

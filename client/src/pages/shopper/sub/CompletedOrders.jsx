@@ -9,18 +9,20 @@ import {
 } from "../../../components/globalFunctions";
 import { DeliveryLogs } from "../../../components/modals/DeliveryLogs";
 import { InvoiceModal } from "../../../components/modals/InvoiceModal";
-import toast from "react-hot-toast";
-import noResult from "../../../assets/images/no-result.png";
 import { MakeReview } from "../../../components/modals/MakeReview";
+import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import noResult from "../../../assets/images/no-result.png";
 
 const PAGE_SIZE = 10;
 
 const CompletedOrders = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isInvoiceOpen, setInvoiceOpen] = useState(false);
+  const [isMakeReview, setMakeReview] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [isMakeReview, setMakeReview] = useState(false);
   const [furnitureId, setFurnitureId] = useState(null);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -111,6 +113,33 @@ const CompletedOrders = () => {
 
   if (error) return <p>Error fetching orders: {error.message}</p>;
 
+  const renderSkeleton = () => {
+    return Array.from({ length: 5 }).map((_, index) => (
+      <div key={index} className="mt-3 mb-5 border">
+        <div className="flex items-center justify-between p-3 max-md:flex-col md:p-5">
+          <div className="flex flex-col gap-2 mr-auto">
+            <Skeleton width={100} height={20} />
+            <Skeleton width={150} height={20} />
+            <Skeleton width={200} height={20} />
+            <Skeleton width={80} height={20} />
+          </div>
+          <div className="flex flex-wrap items-center gap-3 max-md:mt-5">
+            <Skeleton width={120} height={40} />
+            <Skeleton width={120} height={40} />
+          </div>
+        </div>
+        <div className="flex items-center px-3 mb-4 max-lg:flex-col md:px-11">
+          <Skeleton height={144} width={144} />
+          <div className="flex flex-col justify-center flex-1 col-span-4 sm:pl-8 max-sm:mt-4 max-sm:items-center">
+            <Skeleton width={120} height={20} />
+            <Skeleton width={100} height={20} />
+            <Skeleton width={100} height={20} />
+          </div>
+        </div>
+      </div>
+    ));
+  };
+
   return (
     <section className="relative">
       <div className="w-full mx-auto md:px-8">
@@ -154,7 +183,8 @@ const CompletedOrders = () => {
         </div>
 
         {/* Orders Section */}
-        {noOrders ? (
+        {isFetching && renderSkeleton()}
+        {noOrders && !isFetching ? (
           <div className="flex flex-col items-center justify-center mt-20">
             <img
               src={noResult}
@@ -272,7 +302,7 @@ const CompletedOrders = () => {
         )}
 
         {/* Infinite Scroll Trigger */}
-        {!noOrders && (
+        {!noOrders && !isFetching && (
           <div className="flex items-center justify-center my-5">
             <button
               onClick={() => fetchNextPage()}

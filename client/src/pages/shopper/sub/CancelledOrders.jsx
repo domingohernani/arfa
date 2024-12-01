@@ -9,44 +9,28 @@ import {
 } from "../../../components/globalFunctions";
 import { DeliveryLogs } from "../../../components/modals/DeliveryLogs";
 import { InvoiceModal } from "../../../components/modals/InvoiceModal";
+import { MakeReview } from "../../../components/modals/MakeReview";
 import toast from "react-hot-toast";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import noResult from "../../../assets/images/no-result.png";
-import CancelOrder from "../../../components/modals/CancelOrder";
-import { addCancellation } from "../../../firebase/cancellation";
 
 const PAGE_SIZE = 10;
 
-const InProcessOrders = () => {
+const CancelledOders = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isInvoiceOpen, setInvoiceOpen] = useState(false);
+  const [isMakeReview, setMakeReview] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [furnitureId, setFurnitureId] = useState(null);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [filterApplied, setFilterApplied] = useState(false);
-  const [cancelModal, setCancelModal] = useState(false);
-
-  const handleCancelModalClose = () => {
-    setCancelModal(false);
-  };
-
-  const confirmedCancellation = async (orderId, reason) => {
-    try {
-      const cancellationId = await addCancellation(orderId.id, reason);
-      toast.success("Order successfully canceled!");
-      refetch();
-    } catch (error) {
-      console.error("Error confirming cancellation:", error.message);
-      toast.error("Failed to cancel the order. Please try again.");
-    }
-  };
 
   const fetchOrders = async ({ pageParam = null }) => {
     const shopperId = auth.currentUser?.uid;
-    const filter = "In Process";
+    const filter = "Cancelled";
     const { orders, lastVisible } = await getOrders(
       shopperId,
       filter,
@@ -77,7 +61,7 @@ const InProcessOrders = () => {
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["orders", auth.currentUser?.uid, "In Process", filterApplied],
+    queryKey: ["orders", auth.currentUser?.uid, "Completed", filterApplied],
     queryFn: fetchOrders,
     getNextPageParam: (lastPage) => lastPage.nextPage || undefined,
   });
@@ -91,16 +75,6 @@ const InProcessOrders = () => {
     setSelectedInvoice(order);
     setInvoiceOpen(true);
   };
-  const handleCancelOrderOpen = (order) => {
-    if (order.orderStatus === "Placed") {
-      setSelectedOrderId(order);
-      setCancelModal(true);
-    } else {
-      toast.error(
-        "This order has already been processed by the seller and cannot be cancelled."
-      );
-    }
-  };
 
   const handleModalClose = () => {
     setSelectedOrder(null);
@@ -109,6 +83,10 @@ const InProcessOrders = () => {
 
   const handleInvoiceClose = () => {
     setInvoiceOpen(false);
+  };
+
+  const handleReviewClose = () => {
+    setMakeReview(false);
   };
 
   const handleApplyFilter = () => {
@@ -145,13 +123,10 @@ const InProcessOrders = () => {
             <Skeleton width={200} height={20} />
             <Skeleton width={80} height={20} />
           </div>
-          <section className="flex flex-col items-end gap-2">
-            <Skeleton width={100} height={30} />
-            <section className="flex gap-2">
-              <Skeleton width={120} height={40} />
-              <Skeleton width={120} height={40} />
-            </section>
-          </section>
+          <div className="flex flex-wrap items-center gap-3 max-md:mt-5">
+            <Skeleton width={120} height={40} />
+            <Skeleton width={120} height={40} />
+          </div>
         </div>
         <div className="flex items-center px-3 mb-4 max-lg:flex-col md:px-11">
           <Skeleton height={144} width={144} />
@@ -252,28 +227,20 @@ const InProcessOrders = () => {
                         </span>
                       </div>
                     </div>
-                    <section className="flex flex-col gap-2">
+                    <div className="flex flex-wrap items-center gap-3 max-md:mt-5">
                       <button
-                        className="block px-5 py-1 ml-auto text-sm font-normal text-black rounded-md cursor-pointer w-fit hover:border hover:border-black"
-                        onClick={() => handleCancelOrderOpen(order)}
+                        className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
+                        onClick={() => handleInvoiceOpen(order)}
                       >
-                        Cancel Order
+                        Invoice
                       </button>
-                      <div className="flex items-center gap-3 max-md:mt-5">
-                        <button
-                          className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
-                          onClick={() => handleInvoiceOpen(order)}
-                        >
-                          Show Invoice
-                        </button>
-                        <button
-                          className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-md shadow-sm bg-arfagreen px-7 shadow-transparent"
-                          onClick={() => handleModalOpen(order)}
-                        >
-                          Delivery Logs
-                        </button>
-                      </div>
-                    </section>
+                      <button
+                        className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-md shadow-sm bg-arfagreen px-7 shadow-transparent"
+                        onClick={() => handleModalOpen(order)}
+                      >
+                        Delivery Logs
+                      </button>
+                    </div>
                   </div>
 
                   {/* Order Items */}
@@ -309,7 +276,7 @@ const InProcessOrders = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-start justify-center max-sm:items-center">
+                      <div className="flex items-center justify-center gap-4">
                         <Link
                           className="text-sm font-semibold leading-8 text-left cursor-pointer hover:underline text-arfagreen whitespace-nowrap"
                           to={`/catalog/item/${toSlug(item.name)}/${item.id}`}
@@ -357,7 +324,6 @@ const InProcessOrders = () => {
           />
         )}
 
-        {/* Invoice Modal */}
         {isInvoiceOpen && selectedInvoice && (
           <InvoiceModal
             close={handleInvoiceClose}
@@ -366,13 +332,11 @@ const InProcessOrders = () => {
           />
         )}
 
-        {/* Invoice Modal */}
-        {cancelModal && selectedOrderId && (
-          <CancelOrder
-            close={handleCancelModalClose}
-            isOpen={cancelModal}
-            orderId={selectedOrderId}
-            onCancelOrder={confirmedCancellation}
+        {isMakeReview && furnitureId && (
+          <MakeReview
+            close={handleReviewClose}
+            isOpen={isMakeReview}
+            furnitureId={furnitureId}
           />
         )}
       </div>
@@ -380,4 +344,4 @@ const InProcessOrders = () => {
   );
 };
 
-export default InProcessOrders;
+export default CancelledOders;

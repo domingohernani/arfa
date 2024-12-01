@@ -10,7 +10,7 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 const BasicTable = ({
   rowData,
   columnDefs,
-  defaultColDef = { flex: 1, minWidth: 150, resizable: true, filter: true },
+  defaultColDef = { flex: 1, minWidth: 50, resizable: true, filter: true },
   height = 300,
   width = "100%",
   rowSelection = "single",
@@ -21,7 +21,7 @@ const BasicTable = ({
 
   return (
     <div>
-      <h2 className="px-10 py-3 text-lg font-semibold text-gray-900">
+      <h2 className="px-10 py-3 text-base font-semibold text-gray-900">
         {title}
       </h2>
       <div className={`${theme} px-6`} style={{ height, width }}>

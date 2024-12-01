@@ -6,26 +6,27 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-alpine.css";
 import { fetchFurnitureCollection } from "../../firebase/furniture";
 import { where } from "firebase/firestore";
-import { useStore } from "../../stores/useStore";
+// import { useStore } from "../../stores/useStore";
 import toast, { Toaster } from "react-hot-toast";
 import { UpdateStock } from "../../components/modals/UpdateStock";
 import { getStocks } from "../../firebase/stock";
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { RectangleStackIcon } from "@heroicons/react/24/outline";
+import { useStore } from "../../stores/useStore";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-const SellerProductStock = () => {
+const LowStock = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const gridRef = useRef();
   const { loggedUser } = useStore();
-  const { furnitureStocks, setFurnitureStocks } = useStore();
+  const [furnitureStocks, setFurnitureStocks] = useState([]);
   const [id, setId] = useState("");
   const [currentStock, setCurrentStock] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
-  const [filterOption, setFilterOption] = useState("all");
+  const [filterOption, setFilterOption] = useState("low");
 
   const handleUpdateAction = (rowData) => {
     setId(rowData.id);
@@ -143,7 +144,10 @@ const SellerProductStock = () => {
               <button
                 className="px-2 py-1 text-sm font-normal border border-gray-300 rounded-sm bg-arfagray text-arfablack btn-update"
                 onClick={() => {
-                  navigate(`furniture/${params.data.id}`);
+                  window.scrollTo({ top: 0 });
+                  navigate(
+                    `/seller-page/product-stock/furniture/${params.data.id}`
+                  );
                 }}
               >
                 <RectangleStackIcon className="inline-block w-4 h-4 mr-1" />
@@ -203,32 +207,24 @@ const SellerProductStock = () => {
     <>
       {!isOutletPage ? (
         <>
-          <div className="flex flex-col px-5 pt-5">
-            <select
-              value={filterOption}
-              onChange={(e) => setFilterOption(e.target.value)}
-              className="bg-gray-50 cursor-pointer border pr-6 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-arfagreen focus:border-arfagreen block w-fit p-2.5"
-            >
-              <option value="all">All Stocks</option>
-              <option value="low">Low Stock (≤ 5)</option>
-            </select>
-          </div>
           <div
-            className="p-5 ag-theme-quartz"
-            style={{ height: "max(600px, 90%)", width: "100%" }}
+            className="pb-5 ag-theme-quartz"
+            style={{ height: "max(800px", width: "100%" }}
           >
-            <AgGridReact
-              rowData={filteredFurnitureStocks}
-              ref={gridRef}
-              columnDefs={columnDefs}
-              defaultColDef={defaultColDef}
-              rowSelection="multiple"
-              suppressRowClickSelection={true}
-              pagination={true}
-              paginationPageSize={15}
-              paginationPageSizeSelector={[15, 25, 50]}
-              domLayout="normal"
-            />
+            <div className="w-full h-full px-5">
+              <AgGridReact
+                rowData={filteredFurnitureStocks}
+                ref={gridRef}
+                columnDefs={columnDefs}
+                defaultColDef={defaultColDef}
+                rowSelection="multiple"
+                suppressRowClickSelection={true}
+                pagination={true}
+                paginationPageSize={15}
+                paginationPageSizeSelector={[15, 25, 50]}
+                domLayout="normal"
+              />
+            </div>
           </div>
           <Toaster />
           {modalOpen && id && currentStock && (
@@ -248,4 +244,4 @@ const SellerProductStock = () => {
   );
 };
 
-export default SellerProductStock;
+export default LowStock;

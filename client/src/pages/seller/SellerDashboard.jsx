@@ -21,6 +21,7 @@ import { db } from "../../firebase/firebase";
 import { formatToPeso } from "../../components/globalFunctions";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import LowStock from "../../components/tables/LowStock";
 
 export const SellerDashboard = () => {
   const { loggedUser } = useStore();
@@ -207,6 +208,15 @@ export const SellerDashboard = () => {
             title="Top Products by Units Sold"
           ></BasicTable>
         </div>
+      </section>
+      <section
+        className="flex flex-col mt-5 border"
+        style={{ height: "500px" }}
+      >
+        <h2 className="px-10 py-3 mt-5 text-base font-semibold text-gray-900">
+          Low Stock Products
+        </h2>
+        <LowStock></LowStock>
       </section>
     </section>
   );

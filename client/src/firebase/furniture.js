@@ -12,8 +12,9 @@ import {
   startAfter,
   where,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, storage } from "./firebase";
 import { blobsToImagesPaths } from "../components/globalFunctions";
+import { getDownloadURL, ref } from "firebase/storage";
 
 // Function to fetch all documents from a collection
 export const fetchFurnitureCollection = async (
@@ -342,6 +343,39 @@ export const deleteFurnitures = async (furnitureIds) => {
     return true;
   } catch (error) {
     console.error("Error deleting furnitures: ", error);
+    throw error;
+  }
+};
+
+export const getOnSaleFurnitures = async () => {
+  try {
+    const furnituresRef = collection(db, "furnitures");
+    const q = query(furnituresRef, where("isSale", "==", true), limit(4));
+    const querySnapshot = await getDocs(q);
+
+    const products = await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        const furnitureId = doc.id;
+        const imgPreviewFilename = data.imgPreviewFilename;
+        const imgPath = `images/${furnitureId}/${imgPreviewFilename}`;
+        const imgUrl = await getDownloadURL(ref(storage, imgPath));
+
+        return {
+          id: furnitureId,
+          name: data.name,
+          price: data.price,
+          discountedPrice: data.discountedPrice,
+          isSale: data.isSale,
+          reviewsData: data.reviewsData, // Ensure this exists in Firestore
+          imgUrl,
+        };
+      })
+    );
+
+    return [...products, ...products];
+  } catch (error) {
+    console.error("Error fetching sale furnitures:", error);
     throw error;
   }
 };

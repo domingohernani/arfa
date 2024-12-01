@@ -61,6 +61,7 @@ const SellerAddProduct = () => {
     width: 0,
     depth: 0,
     isSale: false,
+    varantyInYears: 0,
   });
 
   // Handle input changes
@@ -98,6 +99,7 @@ const SellerAddProduct = () => {
     // we will get the stock value sa variants array
     productDetails.stock = enabled ? 0 : parseFloat(productDetails.price);
     productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
+    productDetails.varantyInYears = parseInt(productDetails.varantyInYears);
 
     let newModel = "";
     if (model) {
@@ -322,6 +324,24 @@ const SellerAddProduct = () => {
                   onChange={(e) => {
                     const { name, value } = e.target;
                     if (name === "price") {
+                      const validNumberRegex = /^\d*$/;
+                      if (validNumberRegex.test(value)) {
+                        handleInputChange(e);
+                      }
+                    }
+                  }}
+                  className="rounded-sm bg-gray-50 border border-gray-300 text-gray-900 focus:ring-arfagreen focus:border-arfagreen block flex-1 min-w-0 w-full text-sm p-2.5"
+                />
+              </h3>
+              <h3 className="text-sm font-medium">
+                Warranty (years):{" "}
+                <input
+                  type="text"
+                  name="varantyInYears"
+                  value={productDetails.varantyInYears}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    if (name === "varantyInYears") {
                       const validNumberRegex = /^\d*$/;
                       if (validNumberRegex.test(value)) {
                         handleInputChange(e);
@@ -562,8 +582,8 @@ const SellerAddProduct = () => {
             </li>
             <span className="text-sm italic text-gray-600">
               Need help? Contact us at{" "}
-              <a href="mailto:arifa@gmail.com" className="text-arfagreen">
-                arifa@gmail.com
+              <a href="mailto:arfa@gmail.com" className="text-arfagreen">
+                arfa@gmail.com
               </a>
             </span>
           </div>

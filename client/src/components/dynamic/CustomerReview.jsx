@@ -189,13 +189,13 @@ const CustomerReview = memo(({ reviews, showAverageOfReview }) => {
             </div>
             <div className="flex flex-col items-center justify-center p-8 rounded-lg bg-arfagray">
               <h2 className="text-3xl font-bold text-arfagreen sm:text-3xl">
-                {rating.average.toFixed(1)}
+                {rating?.average?.toFixed(1)}
               </h2>
               <div className="flex items-center justify-center mb-4">
-                <DisplayStars number={Math.round(rating.average)} size={10} />
+                <DisplayStars number={Math.round(rating?.average)} size={10} />
               </div>
               <p className="text-sm leading-8 text-center text-gray-900">
-                {rating.numberOfRatings} ratings
+                {rating?.numberOfRatings} ratings
               </p>
             </div>
           </div>

@@ -756,7 +756,7 @@ const SignupSeller = () => {
         </div>
       </section>
       <section>
-        <FooterSection></FooterSection>
+        <FooterSection topMargin=""></FooterSection>
       </section>
     </>
   );

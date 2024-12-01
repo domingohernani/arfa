@@ -27,6 +27,8 @@ import { getDeliveryFee, updateCartQuantity } from "../../firebase/delivery";
 import { Switch } from "@headlessui/react";
 import { saveOrder } from "../../firebase/orders";
 import { updateStockFromOrder } from "../../firebase/stock";
+import { checkPaymentStatus, createPaymentLink } from "../../firebase/paymongo";
+import { getCommissionRate, getTax } from "../../firebase/platform";
 
 const DisplayFurnituresOnCart = ({
   items,
@@ -37,6 +39,8 @@ const DisplayFurnituresOnCart = ({
   const [logoUrls, setLogoUrls] = useState({});
   const [deliveryFees, setDeliveryFees] = useState({});
   const [enabledDelivery, setEnabledDelivery] = useState({});
+  const [tax, setTax] = useState(0);
+  const [commissionRate, setCommissionRate] = useState(0);
 
   useEffect(() => {
     const fetchLogosAndFees = async () => {
@@ -88,6 +92,11 @@ const DisplayFurnituresOnCart = ({
           return acc;
         }, {})
       );
+
+      const taxValue = await getTax();
+      const commissionValue = await getCommissionRate();
+      setTax(taxValue);
+      setCommissionRate(commissionValue);
     };
 
     fetchLogosAndFees();
@@ -182,7 +191,54 @@ const DisplayFurnituresOnCart = ({
     );
   };
 
-  const saveOrderToDatabase = async () => {
+  const monitorPaymentStatus = async (paymentId, refNumber) => {
+    let status = "pending";
+    const interval = setInterval(async () => {
+      status = await checkPaymentStatus(paymentId);
+      console.log("Payment Status:", status);
+
+      if (status) {
+        await saveOrderToDatabase(refNumber);
+        clearInterval();
+        return true;
+      } else if (status) {
+        console.log("Payment failed!");
+        clearInterval();
+      }
+    }, 1000); // Poll every 5 seconds
+  };
+
+  const savePaymentOrder = async () => {
+    let amount =
+      items.reduce((total, item) => {
+        const price = item.isSale ? item.discountedPrice : item.price;
+        const itemTotal = price * item.quantity;
+        const itemTax = itemTotal * tax.value;
+        const itemCommission = itemTotal * commissionRate.value;
+        return total + itemTotal + itemTax + itemCommission;
+      }, 0) +
+      Object.entries(deliveryFees).reduce(
+        (total, [shopId, fee]) =>
+          total + (enabledDelivery[shopId] ? fee || 0 : 0),
+        0
+      );
+
+    let description = "Order Payment";
+    amount = Math.round(amount);
+    const { checkoutUrl, paymentId } = await createPaymentLink({
+      amount,
+      description,
+    });
+
+    const refNumber = checkoutUrl.split("/").pop();
+
+    window.open(checkoutUrl, "_blank");
+
+    console.log("Waiting for user to complete payment...");
+    const isPaid = await monitorPaymentStatus(paymentId, refNumber);
+  };
+
+  const saveOrderToDatabase = async (refNumber) => {
     const allOrders = [];
 
     const groupedItems = items.reduce((groups, item) => {
@@ -215,11 +271,11 @@ const DisplayFurnituresOnCart = ({
         orderTotal,
         deliveryEnabled: enabledDelivery[shopId],
         createdAt: new Date(),
+        refNumber: refNumber,
       };
 
       allOrders.push(orderData);
     });
-
     const orderResult = await saveOrder(allOrders);
     if (orderResult) {
       const userId = auth.currentUser?.uid;
@@ -227,8 +283,7 @@ const DisplayFurnituresOnCart = ({
       const stockResult = await updateStockFromOrder(allOrders);
 
       if (clearResult && stockResult) {
-        toast.success("Your order was placed successfully!");
-        fetchCart();
+        window.location.reload();
       } else if (clearResult) {
         toast.error(
           "Order placed, but we encountered an issue updating stock."
@@ -467,10 +522,28 @@ const DisplayFurnituresOnCart = ({
                     </dd>
                   </dl>
 
+                  {/* Display Tax */}
+                  <dl className="flex items-center justify-between gap-4">
+                    <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Tax ({tax.value * 100}%)
+                    </dt>
+                    <dd className="text-sm font-medium text-gray-900 dark:text-white">
+                      {formatToPeso(
+                        items.reduce(
+                          (total, item) =>
+                            total +
+                            (item.isSale ? item.discountedPrice : item.price) *
+                              item.quantity,
+                          0
+                        ) * tax.value // Use tax.value from the database
+                      )}
+                    </dd>
+                  </dl>
+
                   {/* Display Commission Rate */}
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Commission Rate (5%)
+                      Commission Rate ({commissionRate.value * 100}%)
                     </dt>
                     <dd className="text-sm font-medium text-gray-900 dark:text-white">
                       {formatToPeso(
@@ -479,7 +552,7 @@ const DisplayFurnituresOnCart = ({
                             total +
                             (item.isSale ? item.discountedPrice : item.price) *
                               item.quantity *
-                              0.05,
+                              commissionRate.value,
                           0
                         )
                       )}
@@ -499,10 +572,10 @@ const DisplayFurnituresOnCart = ({
                           ? item.discountedPrice
                           : item.price;
                         const itemTotal = price * item.quantity;
-                        const itemTax = itemTotal * 0.05;
-                        return total + itemTotal + itemTax;
-                      }, 0) + // Close the first reduce function here
-                        // Add the delivery fees to the final total based on each shop's delivery status
+                        const itemTax = itemTotal * tax.value;
+                        const itemCommission = itemTotal * commissionRate.value;
+                        return total + itemTotal + itemTax + itemCommission;
+                      }, 0) +
                         Object.entries(deliveryFees).reduce(
                           (total, [shopId, fee]) =>
                             total + (enabledDelivery[shopId] ? fee || 0 : 0),
@@ -514,7 +587,7 @@ const DisplayFurnituresOnCart = ({
               </div>
 
               <button
-                onClick={saveOrderToDatabase}
+                onClick={savePaymentOrder}
                 className="flex w-fit mx-auto bg-arfagreen items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800"
               >
                 Proceed to Checkout

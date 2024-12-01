@@ -187,7 +187,7 @@ export const getOrders = async (
       ordersQuery = query(
         collection(db, "orders"),
         where("shopperId", "==", shopperId),
-        where("orderStatus", "not-in", ["Delivered", "Picked-up"]),
+        where("orderStatus", "not-in", ["Delivered", "Picked-up", "Cancelled"]),
         orderBy("createdAt", "desc"),
         limit(pageSize)
       );
@@ -196,6 +196,14 @@ export const getOrders = async (
         collection(db, "orders"),
         where("shopperId", "==", shopperId),
         where("orderStatus", "in", ["Delivered", "Picked-up"]),
+        orderBy("createdAt", "desc"),
+        limit(pageSize)
+      );
+    } else if (filter === "Cancelled") {
+      ordersQuery = query(
+        collection(db, "orders"),
+        where("shopperId", "==", shopperId),
+        where("orderStatus", "==", "Cancelled"),
         orderBy("createdAt", "desc"),
         limit(pageSize)
       );
@@ -252,6 +260,7 @@ export const saveOrder = async (allOrders) => {
         statusTimestamps: {
           Placed: serverTimestamp(),
         },
+        refNumber: order.refNumber,
         shopperId: auth.currentUser?.uid || "",
         deviceType,
 

@@ -51,6 +51,19 @@ const Order = () => {
               Completed
             </Link>
           </li>
+          <li className="me-2">
+            <Link
+              to="cancelled"
+              onClick={() => setActiveTab("cancelled")}
+              className={`inline-block p-4 font-medium border-b-2 rounded-t-lg ${
+                activeTab === "cancelled"
+                  ? "border-b-black text-arfablack"
+                  : "border-transparent text-arfablack"
+              }`}
+            >
+              Cancelled
+            </Link>
+          </li>
         </ul>
         <Outlet />
       </div>

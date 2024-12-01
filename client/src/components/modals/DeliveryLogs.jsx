@@ -5,7 +5,7 @@ import {
   DialogTitle,
   DialogPanel,
 } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   ShoppingCartIcon,
   CheckCircleIcon,
@@ -18,6 +18,7 @@ import {
 import { updateOrderStatus, uploadPOD } from "../../firebase/orders";
 import { UploadPOD } from "./UploadPOD";
 import toast from "react-hot-toast";
+import { getCancellations } from "../../firebase/cancellation";
 
 const statusFlowOptions = {
   pickup: [
@@ -25,6 +26,11 @@ const statusFlowOptions = {
       status: "Placed",
       icon: ShoppingCartIcon,
       description: "The customer has successfully placed the order.",
+    },
+    {
+      status: "Cancelled",
+      icon: XCircleIcon,
+      description: "The order has been cancelled and will not proceed further.",
     },
     {
       status: "Confirmed",
@@ -49,6 +55,11 @@ const statusFlowOptions = {
       status: "Placed",
       icon: ShoppingCartIcon,
       description: "The customer has successfully placed the order.",
+    },
+    {
+      status: "Cancelled",
+      icon: XCircleIcon,
+      description: "The order has been cancelled and will not proceed further.",
     },
     {
       status: "Confirmed",
@@ -105,6 +116,7 @@ export const DeliveryLogs = ({
   const [isUploadPOD, setIsUploadPOD] = useState(false);
   const [imagePOD, setImagePOD] = useState(null);
   const [imagePODPreview, setPODPreview] = useState("");
+  const [cancellations, setCancellations] = useState([]);
 
   const nextStatus = getNextStatus(status, statusFlow);
 
@@ -156,6 +168,21 @@ export const DeliveryLogs = ({
     setIsUploadPOD(false);
   };
 
+  useEffect(() => {
+    const fetchCancellations = async () => {
+      try {
+        const data = await getCancellations(orderId);
+        setCancellations(data);
+      } catch (error) {
+        console.error("Error fetching cancellations:", error);
+      }
+    };
+
+    if (orderId) {
+      fetchCancellations();
+    }
+  }, [orderId]);
+
   return (
     <>
       <UploadPOD
@@ -201,6 +228,7 @@ export const DeliveryLogs = ({
                       previewPODUrl={imagePODPreview}
                       podUrl={podUrl}
                       onDelivery={onDelivery}
+                      cancellations={cancellations}
                     />
                   </div>
                   <div className="flex justify-between mt-4">
@@ -229,6 +257,7 @@ const Tracking = ({
   previewPODUrl,
   podUrl,
   onDelivery,
+  cancellations,
 }) => {
   const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
   const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
@@ -266,7 +295,7 @@ const Tracking = ({
               </section>
             )}
 
-            <div className="p-4 space-y-6 bg-white rounded-lg">
+            {/* <div className="p-4 space-y-6 bg-white rounded-lg">
               <ol className="relative border-gray-200 ms-3 border-s dark:border-gray-700">
                 {statusesToShow.map((item, index) => (
                   <li key={index} className="mb-10 ms-6">
@@ -313,6 +342,118 @@ const Tracking = ({
                     )}
                   </li>
                 ))}
+              </ol>
+            </div> */}
+            <div className="p-4 space-y-6 bg-white rounded-lg">
+              <ol className="relative border-gray-200 ms-3 border-s dark:border-gray-700">
+                {statusesToShow.map((item, index) => {
+                  if (item.status !== "Cancelled") {
+                    return (
+                      <li key={index} className="mb-10 ms-6">
+                        <span
+                          className={`absolute -start-3 flex h-7 ${
+                            item.status === currentStatus
+                              ? "bg-arfagreen"
+                              : "bg-gray-100"
+                          } w-7 items-center justify-center rounded-full `}
+                        >
+                          <item.icon
+                            className={` w-4 h-4 ${
+                              item.status === currentStatus
+                                ? "text-white"
+                                : "text-green-400"
+                            }`}
+                          />
+                        </span>
+                        <p
+                          className={`mb-0.5 text-sm ${
+                            item.status === currentStatus
+                              ? "font-medium text-arfagreen"
+                              : "font-normal text-gray-900"
+                          }`}
+                        >
+                          {item.status}
+                        </p>
+                        <p
+                          className={`text-sm  ${
+                            item.status === currentStatus
+                              ? "text-arfablack font-medium"
+                              : "text-gray-500 font-normal"
+                          }`}
+                        >
+                          {item.description}
+                        </p>
+                        {statusTimestamps && statusTimestamps[item.status] && (
+                          <p className="mt-1 text-xs text-gray-400">
+                            Updated on:{" "}
+                            {new Date(
+                              statusTimestamps[item.status].seconds * 1000
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  } else if (currentStatus === "Cancelled") {
+                    return (
+                      <li key={index} className="mb-10 ms-6">
+                        <span
+                          className={`absolute -start-3 flex h-7 ${
+                            item.status === currentStatus
+                              ? "bg-arfagreen"
+                              : "bg-gray-100"
+                          } w-7 items-center justify-center rounded-full `}
+                        >
+                          <item.icon
+                            className={` w-4 h-4 ${
+                              item.status === currentStatus
+                                ? "text-white"
+                                : "text-green-400"
+                            }`}
+                          />
+                        </span>
+                        <p
+                          className={`mb-0.5 text-sm ${
+                            item.status === currentStatus
+                              ? "font-medium text-arfagreen"
+                              : "font-normal text-gray-900"
+                          }`}
+                        >
+                          {item.status}
+                        </p>
+                        <p
+                          className={`text-sm  ${
+                            item.status === currentStatus
+                              ? "text-arfablack font-medium"
+                              : "text-gray-500 font-normal"
+                          }`}
+                        >
+                          {item.description}
+                        </p>
+                        {cancellations && cancellations.reason && (
+                          <p className={`text-sm text-black font-medium`}>
+                            • Reason/s:{" "}
+                            {cancellations.reason.map(
+                              (reason, index) =>
+                                `"${reason}"${
+                                  index !== cancellations.reason.length - 1
+                                    ? ", "
+                                    : ""
+                                }`
+                            )}
+                          </p>
+                        )}
+                        {statusTimestamps && statusTimestamps[item.status] && (
+                          <p className="mt-1 text-xs text-gray-400">
+                            Updated on:{" "}
+                            {new Date(
+                              statusTimestamps[item.status].seconds * 1000
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  }
+                })}
               </ol>
             </div>
           </div>

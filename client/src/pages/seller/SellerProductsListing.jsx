@@ -248,23 +248,22 @@ const SellerProductsListing = () => {
     <>
       {!isOutletPage ? (
         <>
-          {modalOpen ||
-            (productDeletionModal && (
-              <>
-                <DeleteProductModal
-                  isOpen={modalOpen}
-                  close={closeModal}
-                  name={furnitureName}
-                  deleteProduct={deleteProduct}
-                />
-                <DeleteMultipleProductModal
-                  isOpen={productDeletionModal}
-                  close={closeMultiModal}
-                  name={"these products"}
-                  deleteProduct={multiDeleteProduct}
-                />
-              </>
-            ))}
+          {modalOpen && (
+            <DeleteProductModal
+              isOpen={modalOpen}
+              close={closeModal}
+              name={furnitureName}
+              deleteProduct={deleteProduct}
+            />
+          )}
+          {productDeletionModal && (
+            <DeleteMultipleProductModal
+              isOpen={productDeletionModal}
+              close={closeMultiModal}
+              name={"these products"}
+              deleteProduct={multiDeleteProduct}
+            />
+          )}
           <div
             className="p-5 ag-theme-quartz"
             style={{ height: "max(600px, 90%)", width: "100%" }}

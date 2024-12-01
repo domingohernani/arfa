@@ -60,6 +60,7 @@ import TermsAndCondition from "./pages/TermsAndCondition";
 import CookiePolicies from "./pages/CookiePolicies";
 import CookiesBar from "./components/modals/CookiesBar";
 import FAQ from "./pages/FAQ";
+import CancelledOders from "./pages/shopper/sub/CancelledOrders";
 function App() {
   useEffect(() => {
     AOS.init({
@@ -116,6 +117,7 @@ function App() {
                 <Route index path="all-orders" element={<AllOrders />} />
                 <Route path="in-process" element={<InProcessOrders />} />
                 <Route path="completed" element={<CompletedOrders />} />
+                <Route path="cancelled" element={<CancelledOders />} />
               </Route>
               <Route path="inbox" element={<Inbox />}>
                 <Route
