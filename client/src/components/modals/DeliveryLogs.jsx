@@ -27,6 +27,11 @@ const statusFlowOptions = {
       description: "The customer has successfully placed the order.",
     },
     {
+      status: "Cancelled",
+      icon: XCircleIcon,
+      description: "The order has been cancelled and will not proceed further.",
+    },
+    {
       status: "Confirmed",
       icon: CheckCircleIcon,
       description:
@@ -49,6 +54,11 @@ const statusFlowOptions = {
       status: "Placed",
       icon: ShoppingCartIcon,
       description: "The customer has successfully placed the order.",
+    },
+    {
+      status: "Cancelled",
+      icon: XCircleIcon,
+      description: "The order has been cancelled and will not proceed further.",
     },
     {
       status: "Confirmed",
@@ -266,7 +276,7 @@ const Tracking = ({
               </section>
             )}
 
-            <div className="p-4 space-y-6 bg-white rounded-lg">
+            {/* <div className="p-4 space-y-6 bg-white rounded-lg">
               <ol className="relative border-gray-200 ms-3 border-s dark:border-gray-700">
                 {statusesToShow.map((item, index) => (
                   <li key={index} className="mb-10 ms-6">
@@ -313,6 +323,105 @@ const Tracking = ({
                     )}
                   </li>
                 ))}
+              </ol>
+            </div> */}
+            <div className="p-4 space-y-6 bg-white rounded-lg">
+              <ol className="relative border-gray-200 ms-3 border-s dark:border-gray-700">
+                {statusesToShow.map((item, index) => {
+                  if (item.status !== "Cancelled") {
+                    return (
+                      <li key={index} className="mb-10 ms-6">
+                        <span
+                          className={`absolute -start-3 flex h-7 ${
+                            item.status === currentStatus
+                              ? "bg-arfagreen"
+                              : "bg-gray-100"
+                          } w-7 items-center justify-center rounded-full `}
+                        >
+                          <item.icon
+                            className={` w-4 h-4 ${
+                              item.status === currentStatus
+                                ? "text-white"
+                                : "text-green-400"
+                            }`}
+                          />
+                        </span>
+                        <p
+                          className={`mb-0.5 text-sm ${
+                            item.status === currentStatus
+                              ? "font-medium text-arfagreen"
+                              : "font-normal text-gray-900"
+                          }`}
+                        >
+                          {item.status}
+                        </p>
+                        <p
+                          className={`text-sm  ${
+                            item.status === currentStatus
+                              ? "text-arfablack font-medium"
+                              : "text-gray-500 font-normal"
+                          }`}
+                        >
+                          {item.description}
+                        </p>
+                        {statusTimestamps && statusTimestamps[item.status] && (
+                          <p className="mt-1 text-xs text-gray-400">
+                            Updated on:{" "}
+                            {new Date(
+                              statusTimestamps[item.status].seconds * 1000
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  } else if (currentStatus === "Cancelled") {
+                    return (
+                      <li key={index} className="mb-10 ms-6">
+                        <span
+                          className={`absolute -start-3 flex h-7 ${
+                            item.status === currentStatus
+                              ? "bg-arfagreen"
+                              : "bg-gray-100"
+                          } w-7 items-center justify-center rounded-full `}
+                        >
+                          <item.icon
+                            className={` w-4 h-4 ${
+                              item.status === currentStatus
+                                ? "text-white"
+                                : "text-green-400"
+                            }`}
+                          />
+                        </span>
+                        <p
+                          className={`mb-0.5 text-sm ${
+                            item.status === currentStatus
+                              ? "font-medium text-arfagreen"
+                              : "font-normal text-gray-900"
+                          }`}
+                        >
+                          {item.status}
+                        </p>
+                        <p
+                          className={`text-sm  ${
+                            item.status === currentStatus
+                              ? "text-arfablack font-medium"
+                              : "text-gray-500 font-normal"
+                          }`}
+                        >
+                          {item.description}
+                        </p>
+                        {statusTimestamps && statusTimestamps[item.status] && (
+                          <p className="mt-1 text-xs text-gray-400">
+                            Updated on:{" "}
+                            {new Date(
+                              statusTimestamps[item.status].seconds * 1000
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  }
+                })}
               </ol>
             </div>
           </div>
