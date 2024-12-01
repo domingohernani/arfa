@@ -191,14 +191,14 @@ const DisplayFurnituresOnCart = ({
     );
   };
 
-  const monitorPaymentStatus = async (paymentId) => {
+  const monitorPaymentStatus = async (paymentId, refNumber) => {
     let status = "pending";
     const interval = setInterval(async () => {
       status = await checkPaymentStatus(paymentId);
       console.log("Payment Status:", status);
 
       if (status) {
-        await saveOrderToDatabase(paymentId);
+        await saveOrderToDatabase(refNumber);
         clearInterval();
         return true;
       } else if (status) {
@@ -230,13 +230,15 @@ const DisplayFurnituresOnCart = ({
       description,
     });
 
+    const refNumber = checkoutUrl.split("/").pop();
+
     window.open(checkoutUrl, "_blank");
 
     console.log("Waiting for user to complete payment...");
-    const isPaid = await monitorPaymentStatus(paymentId);
+    const isPaid = await monitorPaymentStatus(paymentId, refNumber);
   };
 
-  const saveOrderToDatabase = async (paymentId) => {
+  const saveOrderToDatabase = async (refNumber) => {
     const allOrders = [];
 
     const groupedItems = items.reduce((groups, item) => {
@@ -269,7 +271,7 @@ const DisplayFurnituresOnCart = ({
         orderTotal,
         deliveryEnabled: enabledDelivery[shopId],
         createdAt: new Date(),
-        paymentId: paymentId,
+        refNumber: refNumber,
       };
 
       allOrders.push(orderData);

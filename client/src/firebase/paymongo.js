@@ -13,7 +13,7 @@ export const createPaymentLink = async ({ amount, description }) => {
     const response = await paymongo.post("/links", {
       data: {
         attributes: {
-          amount: amount * 100, // Convert to centavos
+          amount: amount * 100,
           description,
         },
       },
