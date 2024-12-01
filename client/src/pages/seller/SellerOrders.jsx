@@ -138,7 +138,7 @@ const SellerOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       const filter = [
-        where("orderStatus", "not-in", ["Delivered", "Picked-up"]),
+        where("orderStatus", "not-in", ["Delivered", "Picked-up", "Cancelled"]),
         where("shopId", "==", loggedUser.userId),
       ];
       const orders = await fetchOrdersByShopId(filter);

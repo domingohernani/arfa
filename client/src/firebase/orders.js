@@ -187,7 +187,7 @@ export const getOrders = async (
       ordersQuery = query(
         collection(db, "orders"),
         where("shopperId", "==", shopperId),
-        where("orderStatus", "not-in", ["Delivered", "Picked-up"]),
+        where("orderStatus", "not-in", ["Delivered", "Picked-up", "Cancelled"]),
         orderBy("createdAt", "desc"),
         limit(pageSize)
       );
