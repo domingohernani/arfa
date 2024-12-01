@@ -199,6 +199,14 @@ export const getOrders = async (
         orderBy("createdAt", "desc"),
         limit(pageSize)
       );
+    } else if (filter === "Cancelled") {
+      ordersQuery = query(
+        collection(db, "orders"),
+        where("shopperId", "==", shopperId),
+        where("orderStatus", "==", "Cancelled"),
+        orderBy("createdAt", "desc"),
+        limit(pageSize)
+      );
     }
 
     if (lastDoc) {
