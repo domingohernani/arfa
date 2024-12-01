@@ -208,12 +208,9 @@ const LowStock = () => {
       {!isOutletPage ? (
         <>
           <div
-            className="pt-5 border ag-theme-quartz"
-            style={{ height: "max(600px, 90%)", width: "100%" }}
+            className="pb-5 ag-theme-quartz"
+            style={{ height: "max(800px", width: "100%" }}
           >
-            <h2 className="px-10 py-3 text-base font-semibold text-gray-900">
-              Low Stock Products
-            </h2>
             <div className="w-full h-full px-5">
               <AgGridReact
                 rowData={filteredFurnitureStocks}

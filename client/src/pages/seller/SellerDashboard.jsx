@@ -209,7 +209,13 @@ export const SellerDashboard = () => {
           ></BasicTable>
         </div>
       </section>
-      <section className="flex flex-col mt-5" style={{ height: "500px" }}>
+      <section
+        className="flex flex-col mt-5 border"
+        style={{ height: "500px" }}
+      >
+        <h2 className="px-10 py-3 mt-5 text-base font-semibold text-gray-900">
+          Low Stock Products
+        </h2>
         <LowStock></LowStock>
       </section>
     </section>
