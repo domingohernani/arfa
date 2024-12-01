@@ -10,6 +10,8 @@ import {
 import { DeliveryLogs } from "../../../components/modals/DeliveryLogs";
 import { InvoiceModal } from "../../../components/modals/InvoiceModal";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import noResult from "../../../assets/images/no-result.png";
 
 const PAGE_SIZE = 10;
@@ -104,6 +106,36 @@ const InProcessOrders = () => {
 
   if (error) return <p>Error fetching orders: {error.message}</p>;
 
+  const renderSkeleton = () => {
+    return Array.from({ length: 5 }).map((_, index) => (
+      <div key={index} className="mt-3 mb-5 border">
+        <div className="flex items-center justify-between p-3 max-md:flex-col md:p-5">
+          <div className="flex flex-col gap-2 mr-auto">
+            <Skeleton width={100} height={20} />
+            <Skeleton width={150} height={20} />
+            <Skeleton width={200} height={20} />
+            <Skeleton width={80} height={20} />
+          </div>
+          <section className="flex flex-col items-end gap-2">
+            <Skeleton width={100} height={30} />
+            <section className="flex gap-2">
+              <Skeleton width={120} height={40} />
+              <Skeleton width={120} height={40} />
+            </section>
+          </section>
+        </div>
+        <div className="flex items-center px-3 mb-4 max-lg:flex-col md:px-11">
+          <Skeleton height={144} width={144} />
+          <div className="flex flex-col justify-center flex-1 col-span-4 sm:pl-8 max-sm:mt-4 max-sm:items-center">
+            <Skeleton width={120} height={20} />
+            <Skeleton width={100} height={20} />
+            <Skeleton width={100} height={20} />
+          </div>
+        </div>
+      </div>
+    ));
+  };
+
   return (
     <section className="relative">
       <div className="w-full mx-auto md:px-8">
@@ -147,7 +179,8 @@ const InProcessOrders = () => {
         </div>
 
         {/* Orders Section */}
-        {noOrders ? (
+        {isFetching && renderSkeleton()}
+        {noOrders && !isFetching ? (
           <div className="flex flex-col items-center justify-center mt-20">
             <img
               src={noResult}
@@ -190,20 +223,25 @@ const InProcessOrders = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 max-md:mt-5">
-                      <button
-                        className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
-                        onClick={() => handleInvoiceOpen(order)}
-                      >
-                        Show Invoice
+                    <section className="flex flex-col gap-2">
+                      <button className="block px-5 py-1 ml-auto text-sm font-normal text-black rounded-md cursor-pointer w-fit hover:border hover:border-black">
+                        Cancel Order
                       </button>
-                      <button
-                        className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-md shadow-sm bg-arfagreen px-7 shadow-transparent"
-                        onClick={() => handleModalOpen(order)}
-                      >
-                        Delivery Logs
-                      </button>
-                    </div>
+                      <div className="flex items-center gap-3 max-md:mt-5">
+                        <button
+                          className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
+                          onClick={() => handleInvoiceOpen(order)}
+                        >
+                          Show Invoice
+                        </button>
+                        <button
+                          className="py-2 text-sm font-normal text-white transition-all duration-500 rounded-md shadow-sm bg-arfagreen px-7 shadow-transparent"
+                          onClick={() => handleModalOpen(order)}
+                        >
+                          Delivery Logs
+                        </button>
+                      </div>
+                    </section>
                   </div>
 
                   {/* Order Items */}
@@ -256,7 +294,7 @@ const InProcessOrders = () => {
         )}
 
         {/* Infinite Scroll Trigger */}
-        {!noOrders && (
+        {!noOrders && !isFetching && (
           <div className="flex items-center justify-center my-5">
             <button
               onClick={() => fetchNextPage()}
@@ -287,6 +325,7 @@ const InProcessOrders = () => {
           />
         )}
 
+        {/* Invoice Modal */}
         {isInvoiceOpen && selectedInvoice && (
           <InvoiceModal
             close={handleInvoiceClose}
