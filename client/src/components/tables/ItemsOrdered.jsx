@@ -13,7 +13,7 @@ const ItemsOrdered = ({ orders }) => {
     const fetchTax = async () => {
       try {
         const taxData = await getTax();
-        setTaxRate(taxData.rate || 0);
+        setTaxRate(taxData.value);
       } catch (error) {
         console.error("Failed to fetch tax rate:", error);
       }
@@ -22,7 +22,7 @@ const ItemsOrdered = ({ orders }) => {
     const fetchCommission = async () => {
       try {
         const commissionData = await getCommissionRate();
-        setCommissionRate(commissionData.rate || 0.05);
+        setCommissionRate(commissionData.value);
       } catch (error) {
         console.error("Failed to fetch commission rate:", error);
       }
