@@ -283,15 +283,6 @@ const CancelledOders = () => {
                         >
                           View Product
                         </Link>
-                        <button
-                          className="py-2 text-sm font-normal text-gray-900 transition-all duration-500 bg-white border border-gray-300 rounded-md shadow-sm px-7 shadow-transparent"
-                          onClick={() => {
-                            setMakeReview(true);
-                            setFurnitureId(item.id);
-                          }}
-                        >
-                          Review
-                        </button>
                       </div>
                     </div>
                   ))}

@@ -18,6 +18,8 @@ import {
 import { updateOrderStatus, uploadPOD } from "../../firebase/orders";
 import { UploadPOD } from "./UploadPOD";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
+import { getCancellations } from "../../firebase/cancellation";
 
 const statusFlowOptions = {
   pickup: [
@@ -123,6 +125,7 @@ export const OrderStatus = ({
   const [isUploadPOD, setIsUploadPOD] = useState(false);
   const [imagePOD, setImagePOD] = useState(null);
   const [imagePODPreview, setPODPreview] = useState("");
+  const [cancellations, setCancellations] = useState([]);
 
   const nextStatus = getNextStatus(status, statusFlow);
 
@@ -191,6 +194,21 @@ export const OrderStatus = ({
     setIsUploadPOD(false);
   };
 
+  useEffect(() => {
+    const fetchCancellations = async () => {
+      try {
+        const data = await getCancellations(orderId);
+        setCancellations(data);
+      } catch (error) {
+        console.error("Error fetching cancellations:", error);
+      }
+    };
+
+    if (orderId) {
+      fetchCancellations();
+    }
+  }, [orderId]);
+
   return (
     <>
       <UploadPOD
@@ -236,6 +254,7 @@ export const OrderStatus = ({
                       previewPODUrl={imagePODPreview}
                       podUrl={podUrl}
                       onDelivery={onDelivery}
+                      cancellations={cancellations}
                     />
                   </div>
                   <div className="flex justify-between mt-4">
@@ -273,6 +292,7 @@ const Tracking = ({
   previewPODUrl,
   podUrl,
   onDelivery,
+  cancellations,
 }) => {
   const currentIndex = statusFlow.findIndex((s) => s.status === currentStatus);
   const statusesToShow = statusFlow.slice(0, currentIndex + 1).reverse();
@@ -363,7 +383,7 @@ const Tracking = ({
                     );
                   } else if (currentStatus === "Cancelled") {
                     return (
-                      <li key={index} className="mb-10 bg-red-300 ms-6">
+                      <li key={index} className="mb-10 ms-6">
                         <span
                           className={`absolute -start-3 flex h-7 ${
                             item.status === currentStatus
@@ -397,6 +417,19 @@ const Tracking = ({
                         >
                           {item.description}
                         </p>
+                        {cancellations && cancellations.reason && (
+                          <p className={`text-sm text-black font-medium`}>
+                            • Reason/s:{" "}
+                            {cancellations.reason.map(
+                              (reason, index) =>
+                                `"${reason}"${
+                                  index !== cancellations.reason.length - 1
+                                    ? ", "
+                                    : ""
+                                }`
+                            )}
+                          </p>
+                        )}
                         {statusTimestamps && statusTimestamps[item.status] && (
                           <p className="mt-1 text-xs text-gray-400">
                             Updated on:{" "}

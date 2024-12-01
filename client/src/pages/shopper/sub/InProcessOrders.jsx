@@ -92,8 +92,14 @@ const InProcessOrders = () => {
     setInvoiceOpen(true);
   };
   const handleCancelOrderOpen = (order) => {
-    setSelectedOrderId(order);
-    setCancelModal(true);
+    if (order.orderStatus === "Placed") {
+      setSelectedOrderId(order);
+      setCancelModal(true);
+    } else {
+      toast.error(
+        "This order has already been processed by the seller and cannot be cancelled."
+      );
+    }
   };
 
   const handleModalClose = () => {
