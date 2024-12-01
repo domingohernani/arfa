@@ -252,6 +252,7 @@ export const saveOrder = async (allOrders) => {
         statusTimestamps: {
           Placed: serverTimestamp(),
         },
+        paymentId: order.paymentId,
         shopperId: auth.currentUser?.uid || "",
         deviceType,
 

@@ -28,6 +28,7 @@ import { Switch } from "@headlessui/react";
 import { saveOrder } from "../../firebase/orders";
 import { updateStockFromOrder } from "../../firebase/stock";
 import { checkPaymentStatus, createPaymentLink } from "../../firebase/paymongo";
+import { getCommissionRate, getTax } from "../../firebase/platform";
 
 const DisplayFurnituresOnCart = ({
   items,
@@ -38,6 +39,8 @@ const DisplayFurnituresOnCart = ({
   const [logoUrls, setLogoUrls] = useState({});
   const [deliveryFees, setDeliveryFees] = useState({});
   const [enabledDelivery, setEnabledDelivery] = useState({});
+  const [tax, setTax] = useState(0);
+  const [commissionRate, setCommissionRate] = useState(0);
 
   useEffect(() => {
     const fetchLogosAndFees = async () => {
@@ -89,6 +92,11 @@ const DisplayFurnituresOnCart = ({
           return acc;
         }, {})
       );
+
+      const taxValue = await getTax();
+      const commissionValue = await getCommissionRate();
+      setTax(taxValue);
+      setCommissionRate(commissionValue);
     };
 
     fetchLogosAndFees();
@@ -190,7 +198,7 @@ const DisplayFurnituresOnCart = ({
       console.log("Payment Status:", status);
 
       if (status) {
-        await saveOrderToDatabase();
+        await saveOrderToDatabase(paymentId);
         clearInterval();
         return true;
       } else if (status) {
@@ -201,8 +209,22 @@ const DisplayFurnituresOnCart = ({
   };
 
   const savePaymentOrder = async () => {
-    let amount = 3000;
+    let amount =
+      items.reduce((total, item) => {
+        const price = item.isSale ? item.discountedPrice : item.price;
+        const itemTotal = price * item.quantity;
+        const itemTax = itemTotal * tax.value;
+        const itemCommission = itemTotal * commissionRate.value;
+        return total + itemTotal + itemTax + itemCommission;
+      }, 0) +
+      Object.entries(deliveryFees).reduce(
+        (total, [shopId, fee]) =>
+          total + (enabledDelivery[shopId] ? fee || 0 : 0),
+        0
+      );
+
     let description = "Order Payment";
+    amount = Math.round(amount);
     const { checkoutUrl, paymentId } = await createPaymentLink({
       amount,
       description,
@@ -214,7 +236,7 @@ const DisplayFurnituresOnCart = ({
     const isPaid = await monitorPaymentStatus(paymentId);
   };
 
-  const saveOrderToDatabase = async () => {
+  const saveOrderToDatabase = async (paymentId) => {
     const allOrders = [];
 
     const groupedItems = items.reduce((groups, item) => {
@@ -247,6 +269,7 @@ const DisplayFurnituresOnCart = ({
         orderTotal,
         deliveryEnabled: enabledDelivery[shopId],
         createdAt: new Date(),
+        paymentId: paymentId,
       };
 
       allOrders.push(orderData);
@@ -497,10 +520,28 @@ const DisplayFurnituresOnCart = ({
                     </dd>
                   </dl>
 
+                  {/* Display Tax */}
+                  <dl className="flex items-center justify-between gap-4">
+                    <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Tax ({tax.value * 100}%)
+                    </dt>
+                    <dd className="text-sm font-medium text-gray-900 dark:text-white">
+                      {formatToPeso(
+                        items.reduce(
+                          (total, item) =>
+                            total +
+                            (item.isSale ? item.discountedPrice : item.price) *
+                              item.quantity,
+                          0
+                        ) * tax.value // Use tax.value from the database
+                      )}
+                    </dd>
+                  </dl>
+
                   {/* Display Commission Rate */}
                   <dl className="flex items-center justify-between gap-4">
                     <dt className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Commission Rate (5%)
+                      Commission Rate ({commissionRate.value * 100}%)
                     </dt>
                     <dd className="text-sm font-medium text-gray-900 dark:text-white">
                       {formatToPeso(
@@ -509,7 +550,7 @@ const DisplayFurnituresOnCart = ({
                             total +
                             (item.isSale ? item.discountedPrice : item.price) *
                               item.quantity *
-                              0.05,
+                              commissionRate.value,
                           0
                         )
                       )}
@@ -529,10 +570,10 @@ const DisplayFurnituresOnCart = ({
                           ? item.discountedPrice
                           : item.price;
                         const itemTotal = price * item.quantity;
-                        const itemTax = itemTotal * 0.05;
-                        return total + itemTotal + itemTax;
-                      }, 0) + // Close the first reduce function here
-                        // Add the delivery fees to the final total based on each shop's delivery status
+                        const itemTax = itemTotal * tax.value;
+                        const itemCommission = itemTotal * commissionRate.value;
+                        return total + itemTotal + itemTax + itemCommission;
+                      }, 0) +
                         Object.entries(deliveryFees).reduce(
                           (total, [shopId, fee]) =>
                             total + (enabledDelivery[shopId] ? fee || 0 : 0),
