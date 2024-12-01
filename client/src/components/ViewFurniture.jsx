@@ -304,7 +304,7 @@ const ViewFurniture = () => {
 
               <p className="mt-6 text-sm leading-relaxed text-arfablack">
                 {furniture.description}
-                <div className="flex flex-wrap items-center gap-1 mt-4">
+                <div className="flex flex-wrap items-center gap-1 my-2">
                   <span className="text-sm leading-relaxed text-arfablack">
                     Width: {furniture.width} cm /
                   </span>
@@ -314,6 +314,11 @@ const ViewFurniture = () => {
                   <span className="text-sm leading-relaxed text-arfablack">
                     Height: {furniture.height} cm
                   </span>
+                </div>
+                <div>
+                  {furniture?.varantyInYears
+                    ? `Warranty: ${furniture.varantyInYears} year/s`
+                    : ""}
                 </div>
               </p>
             </div>
