@@ -26,7 +26,7 @@ export const Logout = ({ isOpen, close }) => {
     <Transition appear show={isOpen} as={Fragment} className="z-40">
       <Dialog as="div" className="relative z-10" onClose={close}>
         <TransitionChild as={Fragment}>
-          <div className="fixed inset-0 bg-black bg-opacity-30" />
+          <div className="fixed inset-0 bg-black bg-opacity-30 " />
         </TransitionChild>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
