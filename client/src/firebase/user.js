@@ -143,6 +143,7 @@ export const createShopDocument = async (shopData) => {
       userId: shopData.userId,
       validId: shopData.validId,
       businessPermit: shopData.businessPermit,
+      isDocumentsValid: false,
     });
 
     console.log("Shop document created successfully:", shopData);
