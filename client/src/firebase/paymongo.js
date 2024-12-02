@@ -3,7 +3,7 @@ import axios from "axios";
 const paymongo = axios.create({
   baseURL: import.meta.env.VITE_PAYMONGO_BASE_URL,
   headers: {
-    Authorization: `Basic ${btoa(import.meta.env.VITE_PAYMONGO_SECRET_KEY)}`, // Encode API key
+    Authorization: `Basic ${btoa(import.meta.env.VITE_PAYMONGO_SK)}`, // Encode API key
     "Content-Type": "application/json",
   },
 });
