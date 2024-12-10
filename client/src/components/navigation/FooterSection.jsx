@@ -8,9 +8,9 @@ export function FooterSection({ topMargin = "mt-28" }) {
     <>
       <div className="flex items-end w-full bg-white">
         <footer
-          className={`w-full text-gray-700 bg-gray-100 body-font ${topMargin}`}
+          className={`w-full text-gray-700 bg-red-100 body-font ${topMargin}`}
         >
-          <div className="flex flex-col px-6 py-24 mx-auto md:flex-row md:justify-evenly md:px-24 md:items-center lg:items-start md:flex-no-wrap">
+          <div className="flex flex-col px-6 mx-auto py-14 md:flex-row md:justify-evenly md:px-24 md:items-center lg:items-start md:flex-no-wrap">
             <div className="flex-shrink-0 w-full mx-auto text-center lg:w-6/12 md:mx-0 md:text-left">
               <a className="flex items-center justify-center font-medium text-gray-900 title-font md:justify-start">
                 <Link to={"/"}>
