@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getOrders } from "../../../firebase/orders";
-import { auth } from "../../../firebase/firebase";
+import { auth, db } from "../../../firebase/firebase";
 import { Link } from "react-router-dom";
 import {
   getOrderStatusStyles,
@@ -15,6 +15,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import noResult from "../../../assets/images/no-result.png";
 import CancelOrder from "../../../components/modals/CancelOrder";
 import { addCancellation } from "../../../firebase/cancellation";
+import { doc, getDoc } from "firebase/firestore";
 
 const PAGE_SIZE = 10;
 
@@ -91,14 +92,30 @@ const InProcessOrders = () => {
     setSelectedInvoice(order);
     setInvoiceOpen(true);
   };
-  const handleCancelOrderOpen = (order) => {
-    if (order.orderStatus === "Placed") {
-      setSelectedOrderId(order);
-      setCancelModal(true);
-    } else {
-      toast.error(
-        "This order has already been processed by the seller and cannot be cancelled."
-      );
+  const handleCancelOrderOpen = async (order) => {
+    try {
+      const userDocRef = doc(db, "users", order.shopId);
+      const userSnapshot = await getDoc(userDocRef);
+
+      if (!userSnapshot.exists()) {
+        toast.error("No user found with the specified shopId.");
+        return;
+      }
+
+      const userEmail = userSnapshot.data().email;
+      console.log("User Email:", userEmail);
+
+      if (order.orderStatus === "Placed") {
+        setSelectedOrderId(order);
+        setCancelModal(true);
+      } else {
+        toast.error(
+          `This order has already been processed by the seller and cannot be cancelled. If you need further assistance, please contact the seller at ${userEmail}.`
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast.error("An error occurred while fetching the user information.");
     }
   };
 
