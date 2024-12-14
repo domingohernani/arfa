@@ -296,3 +296,31 @@ export const doPasswordChange = async (currentPassword, newPassword) => {
 //     url: `${window.location.origin}/home`,
 //   });
 // };
+
+export const sendAndCheckEmailVerification = async (user) => {
+  try {
+    await sendEmailVerification(user);
+    const checkEmailVerified = async () => {
+      await reload(user);
+      return user.emailVerified;
+    };
+
+    const startTime = Date.now();
+    const timeout = 300000;
+
+    while (!(await checkEmailVerified())) {
+      if (Date.now() - startTime > timeout) {
+        return false;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+
+    return true;
+  } catch (error) {
+    console.error(
+      "Error sending or checking email verification:",
+      error.message
+    );
+    return false;
+  }
+};
