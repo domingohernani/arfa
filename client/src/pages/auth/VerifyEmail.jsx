@@ -1,32 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { reload, sendEmailVerification } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
+import { auth, db } from "../../firebase/firebase"; // Firebase setup
+import { doc, getDoc } from "firebase/firestore"; // Firestore functions
 import waiting from "../../assets/images/waiting.svg";
 import success from "../../assets/images/success.svg";
 import toast from "react-hot-toast";
 
 const VerifyEmail = () => {
   const [isVerified, setIsVerified] = useState(false);
-  const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState("");
+  const [userRole, setUserRole] = useState(""); // Store the user's role (shopper/seller)
+  const navigate = useNavigate();
 
+  // Check for email verification status
   useEffect(() => {
     const interval = setInterval(async () => {
       const user = auth.currentUser;
       if (user) {
         await reload(user);
         setUserEmail(user.email);
+
         if (user.emailVerified) {
           setIsVerified(true);
           clearInterval(interval);
+
+          // Fetch user role only after email is verified
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUserRole(userData.role); // Store the role (shopper or seller)
+          } else {
+            toast.error("User data not found. Please contact support.");
+          }
         }
       }
-    }, 1000);
+    }, 1000); // Check every second
 
     return () => clearInterval(interval);
   }, []);
 
+  // Resend verification email
   const resendVerificationEmail = async () => {
     const user = auth.currentUser;
     if (user) {
@@ -44,6 +58,17 @@ const VerifyEmail = () => {
     }
   };
 
+  // Handle Proceed button click based on role
+  const handleProceed = () => {
+    if (userRole === "shopper") {
+      navigate("/catalog");
+    } else if (userRole === "seller") {
+      navigate("/seller-page/dashboard");
+    } else {
+      toast.error("User role is not recognized. Please contact support.");
+    }
+  };
+
   return (
     <div
       className="flex flex-col items-center justify-center px-6 text-center"
@@ -53,7 +78,7 @@ const VerifyEmail = () => {
         <>
           <div className="flex items-center justify-center mb-6">
             <div className="flex items-center justify-center bg-green-100 rounded-full">
-              <img src={waiting} className="h-auto w-52" />
+              <img src={waiting} className="h-auto w-52" alt="Waiting" />
             </div>
           </div>
 
@@ -85,8 +110,9 @@ const VerifyEmail = () => {
             <div className="flex items-center justify-center bg-green-100 rounded-full">
               <img
                 src={success}
-                className="h-auto "
+                className="h-auto"
                 style={{ width: "30rem" }}
+                alt="Success"
               />
             </div>
           </div>
@@ -97,7 +123,7 @@ const VerifyEmail = () => {
             You can now proceed to access your account.
           </p>
           <button
-            onClick={() => navigate("/catalog")}
+            onClick={handleProceed}
             className="px-6 py-2 mt-6 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-700"
           >
             Proceed
