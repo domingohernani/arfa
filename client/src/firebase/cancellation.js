@@ -27,6 +27,7 @@ export const addCancellation = async (orderId, reason) => {
       orderStatus: "Cancelled",
       [timestampField]: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      status: "pending",
     });
 
     console.log("Order cancelled and status updated successfully.");
