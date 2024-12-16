@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase/firebase";
 import {
   collection,
@@ -15,9 +15,18 @@ const SellerProtectedRoutes = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [isSeller, setIsSeller] = useState(false);
   const { setLoggedUser } = useStore();
+  const navigate = useNavigate("");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      const verifyUserEmail = () => {
+        console.log(user);
+
+        if (!user.emailVerified) {
+          navigate("email-verification");
+          return;
+        }
+      };
       if (user) {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         const userData = userDoc.data();
@@ -37,6 +46,8 @@ const SellerProtectedRoutes = () => {
           } else {
             console.error("No shop found for this user.");
           }
+
+          verifyUserEmail();
 
           setIsAuthenticated(true);
           setIsSeller(true);

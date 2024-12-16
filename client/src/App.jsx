@@ -61,6 +61,7 @@ import CookiePolicies from "./pages/CookiePolicies";
 import CookiesBar from "./components/modals/CookiesBar";
 import FAQ from "./pages/FAQ";
 import CancelledOders from "./pages/shopper/sub/CancelledOrders";
+import VerifyEmailWithFooter from "./pages/auth/VerifyEmailWithFooter";
 function App() {
   useEffect(() => {
     AOS.init({
@@ -83,6 +84,11 @@ function App() {
 
           <Route element={<SignupSeller />} path="/signup-seller"></Route>
           <Route element={<LoginSeller />} path="/login-seller"></Route>
+
+          <Route
+            element={<VerifyEmailWithFooter />}
+            path="/email-verification"
+          ></Route>
 
           <Route
             element={<TermsAndCondition />}

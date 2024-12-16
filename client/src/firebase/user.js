@@ -144,6 +144,7 @@ export const createShopDocument = async (shopData) => {
       validId: shopData.validId,
       businessPermit: shopData.businessPermit,
       isDocumentsValid: false,
+      logo: "",
     });
 
     console.log("Shop document created successfully:", shopData);

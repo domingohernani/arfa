@@ -67,10 +67,9 @@ const SaleProduct = () => {
         speed={800}
       >
         {saleProducts.map((product) => (
-          <SwiperSlide key={product.id}>
+          <SwiperSlide>
             <Link
               to={`catalog/item/${toSlug(product.name)}/${product.id}`}
-              key={product.id}
               onClick={() => window.scrollTo({ top: 0 })}
             >
               <article className="relative cursor-pointer">

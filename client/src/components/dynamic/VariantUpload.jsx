@@ -87,10 +87,16 @@ const VariantUpload = ({ currentVariants, model = "", variantlessImgs }) => {
                   return (
                     <div key={imgIndex} className="relative flex-shrink-0 mr-3">
                       <XMarkIcon
-                        className="absolute top-0 w-5 h-5 text-gray-600 cursor-pointer -right-2"
+                        className={`absolute top-0 w-5 h-5 ${
+                          variant.imagePaths?.length <= 2
+                            ? "text-gray-300 cursor-not-allowed"
+                            : "text-gray-600 cursor-pointer"
+                        } -right-2`}
                         onClick={async () => {
-                          await deletePhoto(url);
-                          deleteImage(i, imgIndex);
+                          if (variant.imagePaths?.length >= 3) {
+                            await deletePhoto(url);
+                            deleteImage(i, imgIndex);
+                          }
                         }}
                       />
                       <img src={url} className="w-auto h-40" />
