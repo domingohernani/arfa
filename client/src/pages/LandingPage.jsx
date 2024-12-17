@@ -64,7 +64,7 @@ const LandingPage = () => {
             </h2>
             <Link
               to="/catalog"
-              className="px-4 py-3 mx-auto text-sm font-semibold text-white transition rounded-md w-fit bg-arfagreen hover:bg-green-700"
+              className="px-4 py-3 mx-auto text-sm font-semibold text-white transition rounded-md hover:text-white w-fit bg-arfagreen hover:bg-green-700"
               data-aos="fade-right"
               data-aos-delay="240"
             >
