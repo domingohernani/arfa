@@ -97,7 +97,7 @@ const SellerAddProduct = () => {
     productDetails.price = parseFloat(productDetails.price);
     // if the product has variants; so this stock property should be 0,
     // we will get the stock value sa variants array
-    productDetails.stock = enabled ? 0 : parseFloat(productDetails.price);
+    productDetails.stock = enabled ? 0 : parseFloat(productDetails.stock);
     productDetails.discountedPrice = parseInt(productDetails.discountedPrice);
     productDetails.varantyInYears = parseInt(productDetails.varantyInYears);
 
@@ -129,12 +129,54 @@ const SellerAddProduct = () => {
       }
     }
 
+    if (!productDetails.name) {
+      toast.error("Please enter a product name.");
+      return;
+    }
+
+    if (!productDetails.description) {
+      toast.error("Please enter a product description.");
+      return;
+    }
+
+    if (!productDetails.category) {
+      toast.error("Please select a category.");
+      return;
+    }
+
+    if (!productDetails.price || productDetails.price <= 0) {
+      toast.error("Please enter a valid price.");
+      return;
+    }
+
+    if (productDetails.isSale && !productDetails.discountedPrice) {
+      toast.error("Please enter a discounted price.");
+      return;
+    }
+
+    if (!productDetails.stock || productDetails.stock <= 0) {
+      toast.error("Please enter a valid stock.");
+      return;
+    } else {
+      console.log("stock", productDetails.stock);
+    }
+
     // Discount validation
     if (
       productDetails.isSale &&
       productDetails.discountedPrice >= productDetails.price
     ) {
       toast.error("Discounted price must be lower than the regular price.");
+      return;
+    }
+
+    if (
+      !productDetails.height ||
+      (productDetails.height <= 0 && !productDetails.depth) ||
+      (productDetails.depth <= 0 && !productDetails.width) ||
+      productDetails.width <= 0
+    ) {
+      toast.error("Please enter valid dimensions.");
       return;
     }
 
