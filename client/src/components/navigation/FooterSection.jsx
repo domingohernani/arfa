@@ -1,6 +1,10 @@
 import logo from "../../assets/logos/logo_black.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import {
+  PaperAirplaneIcon,
+  PhoneIcon,
+  MapPinIcon,
+} from "@heroicons/react/24/outline";
 
 export function FooterSection({ topMargin = "mt-28" }) {
   const navigate = useNavigate();
@@ -186,13 +190,17 @@ export function FooterSection({ topMargin = "mt-28" }) {
                     </div>
                   </li>
                   <li className="mt-3">
-                    <a className="text-gray-500 cursor-pointer hover:text-gray-900">
-                      +639453467841
+                    <a className="flex items-center gap-1 text-gray-500 cursor-pointer hover:text-gray-900">
+                      <PhoneIcon className="w-4 h-4 text-gray-500" />
+                      <span>+639453467841</span>
                     </a>
                   </li>
                   <li className="mt-3 ">
-                    <a className="text-gray-500 cursor-pointer hover:text-gray-900 w-fit">
-                      7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
+                    <a className="flex items-center text-gray-500 cursor-pointer hover:text-gray-900 w-fit">
+                      <MapPinIcon className="w-5 h-5 text-gray-500" />
+                      <span>
+                        7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
+                      </span>
                     </a>
                   </li>
                 </nav>
@@ -204,7 +212,7 @@ export function FooterSection({ topMargin = "mt-28" }) {
               {/* <span className="text-xs text-white">
                 7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
               </span> */}
-              <span className="mx-auto text-xs text-white">
+              <span className="mx-auto text-sm text-white">
                 © 2024 All rights reserved{" "}
               </span>
               {/* <span className="flex gap-3 justify-evenly md:mt-0 md:mr-0">
