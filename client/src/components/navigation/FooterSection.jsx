@@ -196,7 +196,7 @@ export function FooterSection({ topMargin = "mt-28" }) {
                     </a>
                   </li>
                   <li className="mt-3 ">
-                    <a className="flex items-center text-gray-500 cursor-pointer hover:text-gray-900 w-fit">
+                    <a className="flex items-center gap-1 text-gray-500 cursor-pointer hover:text-gray-900 w-fit">
                       <MapPinIcon className="w-5 h-5 text-gray-500" />
                       <span>
                         7th Floor, MacArthur Highway, Urdaneta City, Pangasinan
