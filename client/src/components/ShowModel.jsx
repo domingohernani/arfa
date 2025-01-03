@@ -5,6 +5,7 @@ import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
 import { CubeTransparentIcon } from "@heroicons/react/20/solid";
+import ruler from "../assets/icons/ruler.svg";
 
 function ShowModel({
   path,
@@ -367,16 +368,7 @@ function ShowModel({
           <div className="flex items-center mt-9"></div>
         )}
 
-        <div className="flex items-center gap-2">
-          <label htmlFor="show-dimensions">Dimensions:</label>
-          <input
-            id="show-dimensions"
-            type="checkbox"
-            checked={toggleDimension}
-            onChange={showDimension}
-            className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
-          ></input>
-        </div>
+        <div className="flex items-center gap-2"></div>
       </div>
       {!addToCartBtn ? (
         <button
