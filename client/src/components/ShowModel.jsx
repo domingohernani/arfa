@@ -355,7 +355,7 @@ function ShowModel({
         </svg>
 
         {isARMode && (
-          <section className="absolute z-50 flex flex-col gap-2 left-3 top-3">
+          <section className="absolute z-40 flex flex-col gap-2 left-3 top-3">
             <div className="">
               {variants.length != 0 && (
                 <div className="flex items-center">
