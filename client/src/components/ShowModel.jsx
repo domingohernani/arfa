@@ -343,8 +343,39 @@ function ShowModel({
           <line className="dimensionLine"></line>
         </svg>
 
-        <section>
-          <button className="bg-arfagray">Hello Po</button>
+        <section className="absolute left-0 z-50 flex flex-col gap-2 top-3">
+          <div className="bg-arfagray">
+            {variants.length != 0 && (
+              <div className="flex items-center">
+                {/* <span>Variant:</span> */}
+                <select
+                  id="variant"
+                  onChange={handleVariantChange}
+                  value={initialVariant}
+                  className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
+                >
+                  {variants.map((variant, index) => (
+                    <option key={index} value={variant.value}>
+                      {variant.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+          <div>
+            <button className="bg-arfagray" onClick={showDimension}>
+              <img src={ruler} className="w-5 h-5" />
+            </button>
+            {/* <label htmlFor="show-dimensions">Dimensions:</label>
+            <input
+              id="show-dimensions"
+              type="checkbox"
+              checked={toggleDimension}
+              onChange={showDimension}
+              className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
+            ></input> */}
+          </div>
         </section>
       </model-viewer>
       <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
@@ -368,7 +399,16 @@ function ShowModel({
           <div className="flex items-center mt-9"></div>
         )}
 
-        <div className="flex items-center gap-2"></div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="show-dimensions">Dimensions:</label>
+          <input
+            id="show-dimensions"
+            type="checkbox"
+            checked={toggleDimension}
+            onChange={showDimension}
+            className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
+          ></input>
+        </div>
       </div>
       {!addToCartBtn ? (
         <button
