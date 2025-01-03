@@ -341,6 +341,10 @@ function ShowModel({
           <line className="dimensionLine"></line>
           <line className="dimensionLine"></line>
         </svg>
+
+        <section>
+          <button className="bg-arfagray">Hello Po</button>
+        </section>
       </model-viewer>
       <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
         {variants.length != 0 ? (
