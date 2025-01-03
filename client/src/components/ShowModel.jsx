@@ -126,6 +126,10 @@ function ShowModel({
       }
     };
 
+    const handleExitWebXR = () => {
+      setIsARMode(false);
+    };
+
     const drawLine = (svgLine, dotHotspot1, dotHotspot2, dimensionHotspot) => {
       if (dotHotspot1 && dotHotspot2) {
         svgLine.setAttribute("x1", dotHotspot1.canvasPosition.x);
@@ -177,11 +181,13 @@ function ShowModel({
     modelViewer.addEventListener("load", handleLoad);
     modelViewer.addEventListener("camera-change", renderSVG);
     modelViewer.addEventListener("ar-status", handleARStatus);
+    modelViewer.addEventListener("exit-webxr", handleExitWebXR);
 
     return () => {
       modelViewer.removeEventListener("load", handleLoad);
       modelViewer.removeEventListener("camera-change", renderSVG);
       modelViewer.removeEventListener("ar-status", handleARStatus);
+      modelViewer.removeEventListener("exit-webxr", handleExitWebXR);
     };
   }, []);
 
