@@ -121,10 +121,11 @@ function ShowModel({
     const handleARStatus = (event) => {
       console.log(event.detail);
 
-      if (event.detail.status === "session-started") {
+      if (
+        event.detail.status === "session-started" ||
+        event.detail.status === "object-placed"
+      ) {
         setIsARMode(true);
-      } else if (event.detail.status === "session-ended") {
-        setIsARMode(false);
       } else {
         setIsARMode(false);
       }
