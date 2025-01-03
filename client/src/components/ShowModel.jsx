@@ -21,6 +21,7 @@ function ShowModel({
   const dimButtons = useRef(Array.from({ length: 11 }, () => useRef(null)));
   const dimLine = useRef(null);
   const updateIsQRCodeOpen = useStore((state) => state.updateIsQRCodeOpen);
+  const [isARMode, setIsARMode] = useState(false);
 
   useEffect(() => {
     const modelViewer = modelViewerRef.current;
@@ -117,6 +118,14 @@ function ShowModel({
       renderSVG();
     };
 
+    const handleARStatus = (event) => {
+      if (event.detail.status === "session-started") {
+        setIsARMode(true);
+      } else if (event.detail.status === "session-ended") {
+        setIsARMode(false);
+      }
+    };
+
     const drawLine = (svgLine, dotHotspot1, dotHotspot2, dimensionHotspot) => {
       if (dotHotspot1 && dotHotspot2) {
         svgLine.setAttribute("x1", dotHotspot1.canvasPosition.x);
@@ -167,10 +176,12 @@ function ShowModel({
 
     modelViewer.addEventListener("load", handleLoad);
     modelViewer.addEventListener("camera-change", renderSVG);
+    modelViewer.addEventListener("ar-status", handleARStatus);
 
     return () => {
       modelViewer.removeEventListener("load", handleLoad);
       modelViewer.removeEventListener("camera-change", renderSVG);
+      modelViewer.removeEventListener("ar-status", handleARStatus);
     };
   }, []);
 
@@ -343,31 +354,36 @@ function ShowModel({
           <line className="dimensionLine"></line>
         </svg>
 
-        <section className="absolute left-0 z-50 flex flex-col gap-2 top-3">
-          <div className="bg-arfagray">
-            {variants.length != 0 && (
-              <div className="flex items-center">
-                {/* <span>Variant:</span> */}
-                <select
-                  id="variant"
-                  onChange={handleVariantChange}
-                  value={initialVariant}
-                  className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
-                >
-                  {variants.map((variant, index) => (
-                    <option key={index} value={variant.value}>
-                      {variant.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
-          <div>
-            <button className="bg-arfagray" onClick={showDimension}>
-              <img src={ruler} className="w-5 h-5" />
-            </button>
-            {/* <label htmlFor="show-dimensions">Dimensions:</label>
+        {isARMode && (
+          <section className="absolute z-50 flex flex-col gap-2 left-3 top-3">
+            <div className="">
+              {variants.length != 0 && (
+                <div className="flex items-center">
+                  {/* <span>Variant:</span> */}
+                  <select
+                    id="variant"
+                    onChange={handleVariantChange}
+                    value={initialVariant}
+                    // className="text-sm font-medium text-center border-gray-300 rounded-md focus:border-black focus:outline-none"
+                    className="text-sm font-medium text-center border-gray-300 rounded-md focus:border-transparent focus:ring-gray-300 focus:outline-none"
+                  >
+                    {variants.map((variant, index) => (
+                      <option key={index} value={variant.value}>
+                        {variant.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+            <div>
+              <button
+                className="p-1 border-gray-300 rounded-md text-arfagreen focus:ring-arfagreen"
+                onClick={showDimension}
+              >
+                <img src={ruler} className="w-4 h-4" />
+              </button>
+              {/* <label htmlFor="show-dimensions">Dimensions:</label>
             <input
               id="show-dimensions"
               type="checkbox"
@@ -375,8 +391,9 @@ function ShowModel({
               onChange={showDimension}
               className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
             ></input> */}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
       </model-viewer>
       <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
         {variants.length != 0 ? (
