@@ -5,6 +5,7 @@ import QRCodeModal from "./QRCodeModal";
 import { useStore } from "../stores/useStore";
 import { useParams } from "react-router-dom";
 import { CubeTransparentIcon } from "@heroicons/react/20/solid";
+import ruler from "../assets/icons/ruler.svg";
 
 function ShowModel({
   path,
@@ -341,6 +342,38 @@ function ShowModel({
           <line className="dimensionLine"></line>
           <line className="dimensionLine"></line>
         </svg>
+
+        <section className="flex flex-col gap-2 mt-4">
+          <div>
+            {variants.length != 0 && (
+              <div className="flex items-center">
+                <select
+                  id="variant"
+                  onChange={handleVariantChange}
+                  value={initialVariant}
+                  className="text-sm text-center border-none focus:border-transparent border-t-transparent border-x-transparent focus:ring-transparent focus:outline-none"
+                >
+                  {variants.map((variant, index) => (
+                    <option key={index} value={variant.value}>
+                      {variant.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+          <div>
+            <img src={ruler} className="w-5 h-5" onClick={showDimension} />
+            {/* <label htmlFor="show-dimensions">Dimensions:</label>
+            <input
+              id="show-dimensions"
+              type="checkbox"
+              checked={toggleDimension}
+              onChange={showDimension}
+              className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
+            ></input> */}
+          </div>
+        </section>
       </model-viewer>
       <div className="flex items-center justify-between mx-auto my-2 text-sm controls">
         {variants.length != 0 ? (
@@ -363,16 +396,7 @@ function ShowModel({
           <div className="flex items-center mt-9"></div>
         )}
 
-        <div className="flex items-center gap-2">
-          <label htmlFor="show-dimensions">Dimensions:</label>
-          <input
-            id="show-dimensions"
-            type="checkbox"
-            checked={toggleDimension}
-            onChange={showDimension}
-            className="w-4 h-4 border-gray-300 rounded text-arfagreen focus:ring-arfagreen"
-          ></input>
-        </div>
+        <div className="flex items-center gap-2"></div>
       </div>
       {!addToCartBtn ? (
         <button
