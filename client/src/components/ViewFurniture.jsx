@@ -252,7 +252,10 @@ const ViewFurniture = () => {
                     href="#"
                     className="text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white"
                   >
-                    {Object.keys(furniture.reviewsData).length} reviews
+                    {furniture.reviewsData
+                      ? Object.keys(furniture.reviewsData).length
+                      : 0}{" "}
+                    reviews
                   </span>
                 </div>
               </div>
